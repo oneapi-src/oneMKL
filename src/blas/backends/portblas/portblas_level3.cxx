@@ -32,6 +32,10 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
           sycl::buffer<std::complex<real_t>, 1> &a, std::int64_t lda,
           sycl::buffer<std::complex<real_t>, 1> &b, std::int64_t ldb, std::complex<real_t> beta,
           sycl::buffer<std::complex<real_t>, 1> &c, std::int64_t ldc) {
+    if (transa == oneapi::mkl::transpose::conjtrans ||
+        transb == oneapi::mkl::transpose::conjtrans) {
+        throw unimplemented("blas", "gemm", "Conjugate Transpose unsupported yet on portBLAS");
+    }
     // Intermediate buffers for conversion purposes as portBLAS expects sycl::complex instead of std::complex
     sycl::buffer<cl::sycl::ext::oneapi::experimental::complex<real_t>, 1> a_pb{ sycl::range<1>(
         a.size()) };
@@ -237,6 +241,10 @@ sycl::event gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl:
                  const std::complex<real_t> *a, std::int64_t lda, const std::complex<real_t> *b,
                  std::int64_t ldb, std::complex<real_t> beta, std::complex<real_t> *c,
                  std::int64_t ldc, const std::vector<sycl::event> &dependencies) {
+    if (transa == oneapi::mkl::transpose::conjtrans ||
+        transb == oneapi::mkl::transpose::conjtrans) {
+        throw unimplemented("blas", "gemm", "Conjugate Transpose unsupported yet on portBLAS");
+    }
     CALL_PORTBLAS_USM_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
                          c, ldc, dependencies);
 }
