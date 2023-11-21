@@ -356,18 +356,15 @@ public:
             cufftSetWorkArea(*plans[0], usm_workspace);
         }
         if (plans[1]) {
-            cufftSetWorkArea(
-                *plans[1], usm_workspace + get_plan0_workspace_size_bytes() / sizeof(scalar_type));
+            cufftSetWorkArea(*plans[1], usm_workspace);
         }
     }
 
-    void set_buffer_workspace(cufftHandle plan, sycl::buffer<scalar_type>& buffer_workspace,
-                              std::size_t range, std::size_t offset) {
+    void set_buffer_workspace(cufftHandle plan, sycl::buffer<scalar_type>& buffer_workspace) {
         this->get_queue()
             .submit([&](sycl::handler& cgh) {
                 auto workspace_acc =
-                    buffer_workspace.template get_access<sycl::access::mode::read_write>(cgh, range,
-                                                                                         offset);
+                    buffer_workspace.template get_access<sycl::access::mode::read_write>(cgh);
                 cgh.host_task([=](sycl::interop_handle ih) {
                     auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
                     auto result = cufftSetStream(plan, stream);
@@ -386,17 +383,11 @@ public:
 
     virtual void set_workspace(sycl::buffer<scalar_type>& buffer_workspace) override {
         this->external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
-        std::size_t plan0_count =
-            static_cast<std::size_t>(get_plan0_workspace_size_bytes()) / sizeof(scalar_type);
-        std::size_t total_workspace_count =
-            static_cast<std::size_t>(this->get_workspace_external_bytes()) / sizeof(scalar_type);
-        std::size_t plan1_count = total_workspace_count - plan0_count;
-        buffer_workspace = buffer_workspace;
         if (plans[0]) {
-            set_buffer_workspace(*plans[0], buffer_workspace, plan0_count, 0);
+            set_buffer_workspace(*plans[0], buffer_workspace);
         }
         if (plans[1]) {
-            set_buffer_workspace(*plans[1], buffer_workspace, plan1_count, plan0_count);
+            set_buffer_workspace(*plans[1], buffer_workspace);
         }
     }
 
@@ -407,18 +398,10 @@ public:
         return padded_size;
     }
 
-    // Separate workspaces are needed for the forward and backward plans. Because the plans[1]'s workspace is offset
-    // by the size of plans[0]'s workspace, we need to be able to get plans[0]'s size individually.
-    std::int64_t get_plan0_workspace_size_bytes() {
-        if (!plans[0]) {
-            return 0;
-        }
-        return get_plan_workspace_size_bytes(*plans[0]);
-    }
-
     virtual std::int64_t get_workspace_external_bytes_impl() override {
-        std::int64_t size = plans[1] ? get_plan_workspace_size_bytes(*plans[1]) : 0;
-        return size + get_plan0_workspace_size_bytes();
+        std::int64_t size0 = plans[0] ? get_plan_workspace_size_bytes(*plans[0]) : 0;
+        std::int64_t size1 = plans[1] ? get_plan_workspace_size_bytes(*plans[1]) : 0;
+        return std::max(size0, size1);
     };
 
 #define BACKEND cufft

@@ -492,35 +492,30 @@ public:
     }
 
     virtual void set_workspace(scalar_type* usm_workspace) override {
-        std::int64_t plan0_bytes = get_plan0_workspace_size_bytes();
         std::int64_t total_workspace_bytes{ this->get_workspace_external_bytes() };
-        std::int64_t plan1_bytes = total_workspace_bytes - plan0_bytes;
         this->external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
         if (handles[0].plan) {
             free_internal_workspace_if_rqd(handles[0], "set_workspace");
-            set_workspace_impl(handles[0], usm_workspace, plan0_bytes, "set_workspace");
+            set_workspace_impl(handles[0], usm_workspace, total_workspace_bytes, "set_workspace");
         }
         if (handles[1].plan) {
             free_internal_workspace_if_rqd(handles[1], "set_workspace");
-            set_workspace_impl(handles[1], usm_workspace + plan0_bytes / sizeof(scalar_type),
-                               plan1_bytes, "set_workspace");
+            set_workspace_impl(handles[1], usm_workspace, total_workspace_bytes, "set_workspace");
         }
     }
 
-    void set_buffer_workspace(rocfft_handle& handle, sycl::buffer<scalar_type>& buffer_workspace,
-                              std::size_t range, std::size_t offset) {
-        if (range == 0) {
+    void set_buffer_workspace(rocfft_handle& handle, sycl::buffer<scalar_type>& buffer_workspace) {
+        auto workspace_bytes = buffer_workspace.size() * sizeof(scalar_type);
+        if (buffer_workspace.size() == 0) {
             return; // Nothing to do.
         }
         this->get_queue().submit([&](sycl::handler& cgh) {
             auto workspace_acc =
-                buffer_workspace.template get_access<sycl::access::mode::read_write>(cgh, range,
-                                                                                     offset);
+                buffer_workspace.template get_access<sycl::access::mode::read_write>(cgh);
             cgh.host_task([=](sycl::interop_handle ih) {
                 auto workspace_native = reinterpret_cast<scalar_type*>(
                     ih.get_native_mem<sycl::backend::ext_oneapi_hip>(workspace_acc));
-                set_workspace_impl(handle, workspace_native, range * sizeof(scalar_type),
-                                   "set_workspace");
+                set_workspace_impl(handle, workspace_native, workspace_bytes, "set_workspace");
             });
         });
         this->get_queue().wait_and_throw();
@@ -528,18 +523,15 @@ public:
 
     virtual void set_workspace(sycl::buffer<scalar_type>& buffer_workspace) override {
         this->external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
-        std::size_t plan0_count =
-            static_cast<std::size_t>(get_plan0_workspace_size_bytes()) / sizeof(scalar_type);
         std::size_t total_workspace_count =
             static_cast<std::size_t>(this->get_workspace_external_bytes()) / sizeof(scalar_type);
-        std::size_t plan1_count = total_workspace_count - plan0_count;
         if (handles[0].plan) {
             free_internal_workspace_if_rqd(handles[0], "set_workspace");
-            set_buffer_workspace(handles[0], buffer_workspace, plan0_count, 0);
+            set_buffer_workspace(handles[0], buffer_workspace);
         }
         if (handles[1].plan) {
             free_internal_workspace_if_rqd(handles[1], "set_workspace");
-            set_buffer_workspace(handles[1], buffer_workspace, plan1_count, plan0_count);
+            set_buffer_workspace(handles[1], buffer_workspace);
         }
     }
 
@@ -557,16 +549,10 @@ public:
         return static_cast<std::int64_t>(work_buf_size);
     }
 
-    std::int64_t get_plan0_workspace_size_bytes() {
-        if (!handles[0].plan) {
-            return 0;
-        }
-        return get_plan_workspace_size_bytes(*handles[0].plan);
-    }
-
     virtual std::int64_t get_workspace_external_bytes_impl() override {
-        std::int64_t size = handles[1].plan ? get_plan_workspace_size_bytes(*handles[1].plan) : 0;
-        return size + get_plan0_workspace_size_bytes();
+        std::int64_t size0 = handles[0].plan ? get_plan_workspace_size_bytes(*handles[0].plan) : 0;
+        std::int64_t size1 = handles[1].plan ? get_plan_workspace_size_bytes(*handles[1].plan) : 0;
+        return std::max(size0, size1);
     };
 
 #define BACKEND rocfft

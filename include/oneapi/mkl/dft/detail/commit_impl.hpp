@@ -139,7 +139,7 @@ public:
      * @param function_name The function name to user in generated exceptions.
     */
     template <typename... ArgTs>
-    inline void compute_call_throw(const char *function_name) {
+    void compute_call_throw(const char *function_name) {
         external_workspace_helper_.template compute_call_throw<ArgTs...>(function_name);
     }
 
@@ -148,8 +148,23 @@ public:
      * @param function_name The function name to user in generated exceptions.
      * @param cgh The command group handler to associate the accessor with.
     */
-    inline void get_workspace_buffer_access_if_rqd(const char *function_name, sycl::handler &cgh) {
-        external_workspace_helper_.get_workspace_buffer_access_if_rqd(function_name, cgh);
+    void add_buffer_dependency_if_rqd(const char *function_name, sycl::handler &cgh) {
+        external_workspace_helper_.add_buffer_dependency_if_rqd(function_name, cgh);
+    }
+
+    /** If WORKSPACE_EXTERNAL is set, depend on the last USM workspace event added via set_last_usm_workspace_event.
+     * @param cgh The command group handler to associate the accessor with.
+    */
+    void depend_on_last_usm_workspace_event_if_rqd(sycl::handler &cgh) {
+        external_workspace_helper_.depend_on_last_usm_workspace_event(cgh);
+    }
+
+    /** If WORKSPACE_EXTERNAL is set, store the given event internally to allow it to be depended upon by
+     * subsequent calls to depend_on_last_usm_workspace_event.
+     * @param sycl_event The last usage of the USM workspace.
+    */
+    void set_last_usm_workspace_event(sycl::event &sycl_event) {
+        external_workspace_helper_.set_last_usm_workspace_event(sycl_event);
     }
 
 protected:

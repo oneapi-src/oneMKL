@@ -58,7 +58,12 @@ private:
     // Minimum size of workspace in bytes. -1 indicates not set.
     std::int64_t m_workspace_bytes_rqd;
 
+    // Needed for adding dependencies to the SYCL runtime for backends that don't take
+    // the buffer as an argument.
     std::optional<sycl::buffer<scalar_t>> m_workspace_buffer;
+
+    // Needed for creating dependencies between forward and backward calls in some backends.
+    sycl::event m_usm_workspace_last_dependency;
 
 public:
     /** Constructor.
@@ -124,7 +129,7 @@ public:
         }
     }
 
-    void get_workspace_buffer_access_if_rqd(const char* function_name, sycl::handler& cgh) {
+    void add_buffer_dependency_if_rqd(const char* function_name, sycl::handler& cgh) {
         if (m_ext_workspace_rqd) {
             if (m_workspace_buffer) {
                 if (m_workspace_buffer->size()) {
@@ -136,6 +141,25 @@ public:
                     "DFT", function_name,
                     "Buffer external workspace must be used with buffer compute calls");
             }
+        }
+    }
+
+    /** If WORKSPACE_EXTERNAL is set, depend on the last USM workspace event added via set_last_usm_workspace_event.
+     * @param cgh The command group handler to associate the accessor with.
+    */
+    inline void depend_on_last_usm_workspace_event_if_rqd(sycl::handler& cgh) {
+        if (m_ext_workspace_rqd) {
+            cgh.depends_on(m_usm_workspace_last_dependency);
+        }
+    }
+
+    /** If WORKSPACE_EXTERNAL is set, store the given event internally to allow it to be depended upon by
+     * subsequent calls to depend_on_last_usm_workspace_event.
+     * @param sycl_event The last usage of the USM workspace.
+    */
+    void set_last_usm_workspace_event(sycl::event& sycl_event) {
+        if (m_ext_workspace_rqd) {
+            m_usm_workspace_last_dependency = sycl_event;
         }
     }
 
