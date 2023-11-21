@@ -51,9 +51,7 @@ int test(sycl::device *dev, intType m, double density_A_matrix, oneapi::mkl::ind
     // Input matrix in CSR format
     std::vector<intType> ia_host, ja_host;
     std::vector<fpType> a_host;
-    // Always require values to be present in the diagonal of the sparse matrix.
-    // The values set in the matrix don't need to be 1s even if diag_val is unit.
-    const bool require_diagonal = true;
+    const bool require_diagonal = diag_val == oneapi::mkl::diag::nonunit;
     intType nnz = generate_random_matrix<fpType, intType>(
         m, m, density_A_matrix, int_index, ia_host, ja_host, a_host, require_diagonal);
 
