@@ -69,8 +69,8 @@ public:
                 vsRngUniform(
                     VSL_RNG_METHOD_UNIFORM_STD,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.a(), distr.b());
             });
         });
@@ -86,8 +86,8 @@ public:
                 vdRngUniform(
                     VSL_RNG_METHOD_UNIFORM_STD,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.a(), distr.b());
             });
         });
@@ -103,8 +103,8 @@ public:
                 viRngUniform(
                     VSL_RNG_METHOD_UNIFORM_STD,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.a(), distr.b());
             });
         });
@@ -120,8 +120,8 @@ public:
                 vsRngUniform(
                     VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.a(), distr.b());
             });
         });
@@ -137,8 +137,8 @@ public:
                 vdRngUniform(
                     VSL_RNG_METHOD_UNIFORM_STD_ACCURATE,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.a(), distr.b());
             });
         });
@@ -154,8 +154,8 @@ public:
                 vsRngGaussian(
                     VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.mean(), distr.stddev());
             });
         });
@@ -171,8 +171,8 @@ public:
                 vdRngGaussian(
                     VSL_RNG_METHOD_GAUSSIAN_BOXMULLER2,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.mean(), distr.stddev());
             });
         });
@@ -188,8 +188,8 @@ public:
                 vsRngGaussian(
                     VSL_RNG_METHOD_GAUSSIAN_ICDF,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.mean(), distr.stddev());
             });
         });
@@ -205,8 +205,8 @@ public:
                 vdRngGaussian(
                     VSL_RNG_METHOD_GAUSSIAN_ICDF,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.mean(), distr.stddev());
             });
         });
@@ -222,8 +222,8 @@ public:
                 vsRngLognormal(
                     VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
@@ -239,8 +239,8 @@ public:
                 vdRngLognormal(
                     VSL_RNG_METHOD_LOGNORMAL_BOXMULLER2,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
@@ -256,8 +256,8 @@ public:
                 vsRngLognormal(
                     VSL_RNG_METHOD_LOGNORMAL_ICDF,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
@@ -273,8 +273,8 @@ public:
                 vdRngLognormal(
                     VSL_RNG_METHOD_LOGNORMAL_ICDF,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.m(), distr.s(), distr.displ(), distr.scale());
             });
         });
@@ -290,8 +290,8 @@ public:
                 viRngBernoulli(
                     VSL_RNG_METHOD_BERNOULLI_ICDF,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.p());
             });
         });
@@ -305,11 +305,11 @@ public:
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<mrg32k3a_impl, decltype(distr)>>(cgh, [=]() {
                 std::uint32_t* r_ptr =
-                    acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw();
+                    get_raw_ptr(acc_r);
                 viRngBernoulli(
                     VSL_RNG_METHOD_BERNOULLI_ICDF,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                        get_raw_ptr(acc_stream)),
                     n, reinterpret_cast<std::int32_t*>(r_ptr), distr.p());
             });
         });
@@ -325,8 +325,8 @@ public:
                 viRngPoisson(
                     VSL_RNG_METHOD_POISSON_POISNORM,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw(),
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r),
                     distr.lambda());
             });
         });
@@ -340,11 +340,11 @@ public:
             auto acc_r = r.get_access<sycl::access::mode::read_write>(cgh);
             host_task<kernel_name<mrg32k3a_impl, decltype(distr)>>(cgh, [=]() {
                 std::uint32_t* r_ptr =
-                    acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw();
+                    get_raw_ptr(acc_r);
                 viRngPoisson(
                     VSL_RNG_METHOD_POISSON_POISNORM,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
+                        get_raw_ptr(acc_stream)),
                     n, reinterpret_cast<std::int32_t*>(r_ptr), distr.lambda());
             });
         });
@@ -360,8 +360,8 @@ public:
                 viRngUniformBits(
                     VSL_RNG_METHOD_UNIFORMBITS_STD,
                     static_cast<VSLStreamStatePtr>(
-                        acc_stream.template get_multi_ptr<sycl::access::decorated::no>().get_raw()),
-                    n, acc_r.template get_multi_ptr<sycl::access::decorated::no>().get_raw());
+                        get_raw_ptr(acc_stream)),
+                    n, get_raw_ptr(acc_r));
             });
         });
     }
