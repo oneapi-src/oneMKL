@@ -17,6 +17,29 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
+sycl::event optimize_gemm(sycl::queue& queue, transpose /*transpose_A*/,
+                          detail::matrix_handle* /*handle*/,
+                          const std::vector<sycl::event>& dependencies) {
+    // TODO: Call to optimize_gemm with 2024.1 oneMKL release
+    // Return an event depending on the dependencies
+    return queue.submit([=](sycl::handler& cgh) {
+        cgh.depends_on(dependencies);
+        cgh.host_task([=]() { /* Empty kernel */ });
+    });
+}
+
+sycl::event optimize_gemm(sycl::queue& queue, transpose /*transpose_A*/, transpose /*transpose_B*/,
+                          layout /*dense_matrix_layout*/, const std::int64_t /*columns*/,
+                          detail::matrix_handle* /*handle*/,
+                          const std::vector<sycl::event>& dependencies) {
+    // TODO: Call to optimize_gemm with 2024.1 oneMKL release
+    // Return an event depending on the dependencies
+    return queue.submit([=](sycl::handler& cgh) {
+        cgh.depends_on(dependencies);
+        cgh.host_task([=]() { /* Empty kernel */ });
+    });
+}
+
 sycl::event optimize_gemv(sycl::queue& queue, transpose transpose_val,
                           detail::matrix_handle* handle,
                           const std::vector<sycl::event>& dependencies) {
@@ -67,21 +90,24 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>> gemm(
-    sycl::queue& /*queue*/, layout /*dense_matrix_layout*/, transpose /*transpose_A*/,
-    transpose /*transpose_B*/, const fpType /*alpha*/, detail::matrix_handle* /*A_handle*/,
-    sycl::buffer<fpType, 1>& /*B*/, const std::int64_t /*columns*/, const std::int64_t /*ldb*/,
-    const fpType /*beta*/, sycl::buffer<fpType, 1>& /*C*/, const std::int64_t /*ldc*/) {
-    throw unimplemented("SPARSE_BLAS", "gemm");
+    sycl::queue& queue, layout dense_matrix_layout, transpose transpose_A, transpose transpose_B,
+    const fpType alpha, detail::matrix_handle* A_handle, sycl::buffer<fpType, 1>& B,
+    const std::int64_t columns, const std::int64_t ldb, const fpType beta,
+    sycl::buffer<fpType, 1>& C, const std::int64_t ldc) {
+    oneapi::mkl::sparse::gemm(queue, dense_matrix_layout, transpose_A, transpose_B, alpha,
+                              detail::get_handle(A_handle), B, columns, ldb, beta, C, ldc);
 }
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemm(
-    sycl::queue& /*queue*/, layout /*dense_matrix_layout*/, transpose /*transpose_A*/,
-    transpose /*transpose_B*/, const fpType /*alpha*/, detail::matrix_handle* /*A_handle*/,
-    const fpType* /*B*/, const std::int64_t /*columns*/, const std::int64_t /*ldb*/,
-    const fpType /*beta*/, fpType* /*C*/, const std::int64_t /*ldc*/,
-    const std::vector<sycl::event>& /*dependencies*/) {
-    throw unimplemented("SPARSE_BLAS", "gemm");
+    sycl::queue& queue, layout dense_matrix_layout, transpose transpose_A, transpose transpose_B,
+    const fpType alpha, detail::matrix_handle* A_handle, const fpType* B,
+    const std::int64_t columns, const std::int64_t ldb, const fpType beta, fpType* C,
+    const std::int64_t ldc, const std::vector<sycl::event>& dependencies) {
+    // TODO: Remove const_cast in future oneMKL release
+    return oneapi::mkl::sparse::gemm(queue, dense_matrix_layout, transpose_A, transpose_B, alpha,
+                                     detail::get_handle(A_handle), const_cast<fpType*>(B), columns,
+                                     ldb, beta, C, ldc, dependencies);
 }
 
 #define INSTANTIATE_GEMV(FP_TYPE)                                                          \

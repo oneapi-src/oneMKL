@@ -45,7 +45,7 @@ namespace {
 template <typename fpType, typename intType>
 int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matrix,
          oneapi::mkl::index_base index, oneapi::mkl::transpose transpose_val, fpType alpha,
-         fpType beta) {
+         fpType beta, bool use_optimize) {
     sycl::queue main_queue(*dev, exception_handler_t());
 
     intType int_index = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
@@ -84,7 +84,9 @@ int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matri
         CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_data, main_queue, handle, nrows, ncols, nnz,
                       index, ia_buf, ja_buf, a_buf);
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemv, main_queue, transpose_val, handle);
+        if (use_optimize) {
+            CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemv, main_queue, transpose_val, handle);
+        }
 
         CALL_RT_OR_CT(oneapi::mkl::sparse::gemv, main_queue, transpose_val, alpha, handle, x_buf,
                       beta, y_buf);
@@ -134,27 +136,32 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     fpType fp_zero = set_fp_value<fpType>()(0.f, 0.f);
     fpType fp_one = set_fp_value<fpType>()(1.f, 0.f);
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
+    bool use_optimize = true;
+
     // Basic test
-    EXPECT_TRUEORSKIP(
-        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero));
+    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero,
+                           use_optimize));
     // Test index_base 1
     EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, oneapi::mkl::index_base::one, transpose_val,
-                           fp_one, fp_zero));
+                           fp_one, fp_zero, use_optimize));
     // Test non-default alpha
     EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val,
-                           set_fp_value<fpType>()(2.f, 1.5f), fp_zero));
+                           set_fp_value<fpType>()(2.f, 1.5f), fp_zero, use_optimize));
     // Test non-default beta
     EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one,
-                           set_fp_value<fpType>()(3.2f, 1.f)));
+                           set_fp_value<fpType>()(3.2f, 1.f), use_optimize));
     // Test 0 alpha
-    EXPECT_TRUEORSKIP(
-        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_one));
+    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_one,
+                           use_optimize));
     // Test 0 alpha and beta
-    EXPECT_TRUEORSKIP(
-        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_zero));
+    EXPECT_TRUEORSKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_zero,
+                           use_optimize));
     // Test int64 indices
+    EXPECT_TRUEORSKIP(test(dev, 27L, 13L, density_A_matrix, index_zero, transpose_val, fp_one,
+                           fp_one, use_optimize));
+    // Test without optimize_gemv
     EXPECT_TRUEORSKIP(
-        test(dev, 27L, 13L, density_A_matrix, index_zero, transpose_val, fp_one, fp_one));
+        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero, false));
 }
 
 TEST_P(SparseGemvBufferTests, RealSinglePrecision) {
