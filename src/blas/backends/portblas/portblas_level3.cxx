@@ -63,6 +63,14 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
 
     CALL_PORTBLAS_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a_pb, lda, b_pb, ldb,
                      beta, c_pb, ldc);
+
+    // Copy c_pb back to c
+    queue.submit([&](cl::sycl::handler &cgh) {
+        auto src = c_pb.get_access<cl::sycl::access::mode::read>(cgh, c.size());
+        auto dest = c.get_access<cl::sycl::access::mode::write>(cgh, c.size());
+
+        cgh.copy(src, dest);
+    });
 }
 
 void symm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
