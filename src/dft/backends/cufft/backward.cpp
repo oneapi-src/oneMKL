@@ -178,7 +178,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
                 func_name, stream, plan, inout + offsets[0], inout + offsets[1]);
         });
     });
-    commit->set_last_usm_workspace_event(sycl_event);
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
     return sycl_event;
 }
 
@@ -224,7 +224,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
                 func_name, stream, plan, in + offsets[0], out + offsets[1]);
         });
     });
-    commit->set_last_usm_workspace_event(sycl_event);
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
     return sycl_event;
 }
 

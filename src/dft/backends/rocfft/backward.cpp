@@ -247,7 +247,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
             detail::sync_checked(func_name, stream);
         });
     });
-    commit->set_last_usm_workspace_event(sycl_event);
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
     return sycl_event;
 }
 
@@ -281,7 +281,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
             detail::sync_checked(func_name, stream);
         });
     });
-    commit->set_last_usm_workspace_event(sycl_event);
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
     return sycl_event;
 }
 
@@ -315,7 +315,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
             detail::sync_checked(func_name, stream);
         });
     });
-    commit->set_last_usm_workspace_event(sycl_event);
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
     return sycl_event;
 }
 
@@ -347,7 +347,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
             detail::sync_checked(func_name, stream);
         });
     });
-    commit->set_last_usm_workspace_event(sycl_event);
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
     return sycl_event;
 }
 

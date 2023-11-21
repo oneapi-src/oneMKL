@@ -156,15 +156,15 @@ public:
      * @param cgh The command group handler to associate the accessor with.
     */
     void depend_on_last_usm_workspace_event_if_rqd(sycl::handler &cgh) {
-        external_workspace_helper_.depend_on_last_usm_workspace_event(cgh);
+        external_workspace_helper_.depend_on_last_usm_workspace_event_if_rqd(cgh);
     }
 
     /** If WORKSPACE_EXTERNAL is set, store the given event internally to allow it to be depended upon by
      * subsequent calls to depend_on_last_usm_workspace_event.
      * @param sycl_event The last usage of the USM workspace.
     */
-    void set_last_usm_workspace_event(sycl::event &sycl_event) {
-        external_workspace_helper_.set_last_usm_workspace_event(sycl_event);
+    void set_last_usm_workspace_event_if_rqd(sycl::event &sycl_event) {
+        external_workspace_helper_.set_last_usm_workspace_event_if_rqd(sycl_event);
     }
 
 protected:

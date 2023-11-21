@@ -147,7 +147,7 @@ public:
     /** If WORKSPACE_EXTERNAL is set, depend on the last USM workspace event added via set_last_usm_workspace_event.
      * @param cgh The command group handler to associate the accessor with.
     */
-    inline void depend_on_last_usm_workspace_event_if_rqd(sycl::handler& cgh) {
+    void depend_on_last_usm_workspace_event_if_rqd(sycl::handler& cgh) {
         if (m_ext_workspace_rqd) {
             cgh.depends_on(m_usm_workspace_last_dependency);
         }
@@ -157,7 +157,7 @@ public:
      * subsequent calls to depend_on_last_usm_workspace_event.
      * @param sycl_event The last usage of the USM workspace.
     */
-    void set_last_usm_workspace_event(sycl::event& sycl_event) {
+    void set_last_usm_workspace_event_if_rqd(sycl::event& sycl_event) {
         if (m_ext_workspace_rqd) {
             m_usm_workspace_last_dependency = sycl_event;
         }
