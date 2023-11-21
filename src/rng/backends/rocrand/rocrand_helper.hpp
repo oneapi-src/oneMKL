@@ -315,10 +315,10 @@ public:
     }
 };
 
-#define HIP_ERROR_FUNC(name, err, ...)                                        \
-    err = name(__VA_ARGS__);                                                  \
-    if (err != HIP_SUCCESS) {                                                 \
-        throw rocm_error(std::string(#name) + std::string(" : "), err);       \
+#define HIP_ERROR_FUNC(name, err, ...)                                  \
+    err = name(__VA_ARGS__);                                            \
+    if (err != HIP_SUCCESS) {                                           \
+        throw rocm_error(std::string(#name) + std::string(" : "), err); \
     }
 
 #define ROCRAND_CALL(func, status, ...)                                       \

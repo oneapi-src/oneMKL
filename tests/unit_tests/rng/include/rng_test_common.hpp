@@ -122,4 +122,10 @@ protected:
     Test test_;
 };
 
+#ifdef CALL_RT_API
+#define QUEUE_WAIT(q) q.wait()
+#else
+#define QUEUE_WAIT(q) q.get_queue().wait()
+#endif
+
 #endif // _RNG_TEST_COMMON_HPP__
