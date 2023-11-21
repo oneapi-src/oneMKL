@@ -56,8 +56,8 @@ class kernel_name {};
 template <typename Engine, typename Distr>
 class kernel_name_usm {};
 
-template<typename T, sycl::access_mode AccMode>
-T* get_raw_ptr(sycl::accessor<T, 1, AccMode> acc) {
+template <typename T, sycl::access_mode AccMode>
+T *get_raw_ptr(sycl::accessor<T, 1, AccMode> acc) {
     return acc.template get_multi_ptr<sycl::access::decorated::no>().get_raw();
 }
 
