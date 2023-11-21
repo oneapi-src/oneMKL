@@ -67,6 +67,7 @@ public:
             for (int i = 0; i < N_ENGINES; i++) {
                 oneapi::mkl::rng::generate(distr, *(engines[i]), N_PORTION, r_buffers[i]);
             }
+            QUEUE_WAIT(queue);
 
             // Clear memory
             for (int i = 0; i < N_ENGINES; i++) {
@@ -118,6 +119,7 @@ public:
 
             oneapi::mkl::rng::generate(distr, engine1, N_GEN, r1_buffer);
             oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
+            QUEUE_WAIT(queue);
         }
         catch (const oneapi::mkl::unimplemented& e) {
             status = test_skipped;
