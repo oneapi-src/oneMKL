@@ -95,9 +95,9 @@ public:
         return values_;
     };
 
-    void set_workspace(scalar_type* usmWorkspace);
+    void set_workspace(scalar_type* usm_workspace);
 
-    void set_workspace(sycl::buffer<scalar_type>& bufferWorkspace);
+    void set_workspace(sycl::buffer<scalar_type>& buffer_workspace);
 
 private:
     // Has a value when the descriptor is committed.

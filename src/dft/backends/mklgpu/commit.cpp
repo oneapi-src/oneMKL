@@ -91,14 +91,14 @@ public:
 
     ~mklgpu_commit() override = default;
 
-    virtual void set_workspace(scalar_type* usmWorkspace) override {
-        this->external_workspace_helper_.set_workspace_throw(*this, usmWorkspace);
-        handle.set_workspace(usmWorkspace);
+    virtual void set_workspace(scalar_type* usm_workspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
+        handle.set_workspace(usm_workspace);
     }
 
-    virtual void set_workspace(sycl::buffer<scalar_type>& bufferWorkspace) override {
-        this->external_workspace_helper_.set_workspace_throw(*this, bufferWorkspace);
-        handle.set_workspace(bufferWorkspace);
+    virtual void set_workspace(sycl::buffer<scalar_type>& buffer_workspace) override {
+        this->external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
+        handle.set_workspace(buffer_workspace);
     }
 
 #define BACKEND mklgpu

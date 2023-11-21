@@ -247,9 +247,9 @@ void descriptor<prec, dom>::get_value(config_param param, ...) const {
 }
 
 template <precision prec, domain dom>
-void descriptor<prec, dom>::set_workspace(scalar_type* usmWorkspace) {
+void descriptor<prec, dom>::set_workspace(scalar_type* usm_workspace) {
     if (pimpl_) {
-        return pimpl_->set_workspace(usmWorkspace);
+        return pimpl_->set_workspace(usm_workspace);
     }
     else {
         throw mkl::uninitialized("DFT", "set_workspace",
@@ -258,9 +258,9 @@ void descriptor<prec, dom>::set_workspace(scalar_type* usmWorkspace) {
 }
 
 template <precision prec, domain dom>
-void descriptor<prec, dom>::set_workspace(sycl::buffer<scalar_type>& bufferWorkspace) {
+void descriptor<prec, dom>::set_workspace(sycl::buffer<scalar_type>& buffer_workspace) {
     if (pimpl_) {
-        return pimpl_->set_workspace(bufferWorkspace);
+        return pimpl_->set_workspace(buffer_workspace);
     }
     else {
         throw mkl::uninitialized("DFT", "set_workspace",
