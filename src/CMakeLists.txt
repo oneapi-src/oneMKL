@@ -41,6 +41,7 @@ file(GENERATE
   OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
   INPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured"
 )
+message(STATUS "the first CMAKE_CURRENT_BINARY_DIR is " ${CMAKE_CURRENT_BINARY_DIR})
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
   DESTINATION include/oneapi/mkl/detail
   COMPONENT Devel
@@ -49,12 +50,16 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
 # Add recipe for onemkl loader library
 if(BUILD_SHARED_LIBS)
   add_library(onemkl SHARED)
-
+  message(STATUS "the second CMAKE_CURRENT_BINARY_DIR is " ${CMAKE_CURRENT_BINARY_DIR})
   target_include_directories(onemkl
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
            $<INSTALL_INTERFACE:include>
   )
+  # # if the FetchContent was called
+  # if(NOT "${FETCHCONTENT_BASE_DIR}" STREQUAL "")
+  #   target_include_directories(onemkl PUBLIC $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/include>
+
   set_target_properties(onemkl PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
