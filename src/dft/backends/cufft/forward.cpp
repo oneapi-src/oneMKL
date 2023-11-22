@@ -72,7 +72,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
-        commit->add_buffer_dependency_if_rqd("compute_forward", cgh);
+        commit->add_buffer_workspace_dependency_if_rqd("compute_forward", cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
@@ -117,7 +117,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descr
     queue.submit([&](sycl::handler &cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
-        commit->add_buffer_dependency_if_rqd("compute_forward", cgh);
+        commit->add_buffer_workspace_dependency_if_rqd("compute_forward", cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
