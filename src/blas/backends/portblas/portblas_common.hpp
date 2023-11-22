@@ -40,6 +40,10 @@ using handle_t = ::blas::SB_Handle;
 template <typename ElemT>
 using buffer_iterator_t = ::blas::BufferIterator<ElemT>;
 
+// sycl complex data type (experimental)
+template <typename ElemT>
+using sycl_complex_t = sycl::ext::oneapi::experimental::complex<ElemT>;
+
 /** A trait for obtaining equivalent portBLAS API types from oneMKL API
  *  types.
  * 
@@ -64,12 +68,10 @@ DEF_PORTBLAS_TYPE(oneapi::mkl::transpose, char)
 DEF_PORTBLAS_TYPE(oneapi::mkl::uplo, char)
 DEF_PORTBLAS_TYPE(oneapi::mkl::side, char)
 DEF_PORTBLAS_TYPE(oneapi::mkl::diag, char)
-DEF_PORTBLAS_TYPE(std::complex<float>, cl::sycl::ext::oneapi::experimental::complex<float>)
-DEF_PORTBLAS_TYPE(std::complex<double>, cl::sycl::ext::oneapi::experimental::complex<double>)
-DEF_PORTBLAS_TYPE(cl::sycl::ext::oneapi::experimental::complex<float>,
-                  cl::sycl::ext::oneapi::experimental::complex<float>)
-DEF_PORTBLAS_TYPE(cl::sycl::ext::oneapi::experimental::complex<double>,
-                  cl::sycl::ext::oneapi::experimental::complex<double>)
+DEF_PORTBLAS_TYPE(std::complex<float>, sycl_complex_t<float>)
+DEF_PORTBLAS_TYPE(std::complex<double>, sycl_complex_t<double>)
+DEF_PORTBLAS_TYPE(sycl_complex_t<float>, sycl_complex_t<float>)
+DEF_PORTBLAS_TYPE(sycl_complex_t<double>, sycl_complex_t<double>)
 // Passthrough of portBLAS arg types for more complex wrapping.
 DEF_PORTBLAS_TYPE(::blas::gemm_batch_type_t, ::blas::gemm_batch_type_t)
 
@@ -88,12 +90,12 @@ struct portblas_type<ElemT*> {
 // USM Complex
 template <typename ElemT>
 struct portblas_type<std::complex<ElemT>*> {
-    using type = cl::sycl::ext::oneapi::experimental::complex<ElemT>*;
+    using type = sycl_complex_t<ElemT>*;
 };
 
 template <typename ElemT>
 struct portblas_type<const std::complex<ElemT>*> {
-    using type = const cl::sycl::ext::oneapi::experimental::complex<ElemT>*;
+    using type = const sycl_complex_t<ElemT>*;
 };
 
 // Buffer Complex

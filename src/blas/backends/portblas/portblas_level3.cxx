@@ -32,17 +32,15 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
           sycl::buffer<std::complex<real_t>, 1> &a, std::int64_t lda,
           sycl::buffer<std::complex<real_t>, 1> &b, std::int64_t ldb, std::complex<real_t> beta,
           sycl::buffer<std::complex<real_t>, 1> &c, std::int64_t ldc) {
+    using sycl_complex_real_t = sycl::ext::oneapi::experimental::complex<real_t>;
     if (transa == oneapi::mkl::transpose::conjtrans ||
         transb == oneapi::mkl::transpose::conjtrans) {
         throw unimplemented("blas", "gemm", "Conjugate Transpose unsupported yet on portBLAS");
     }
     // Intermediate buffers for conversion purposes as portBLAS expects sycl::complex instead of std::complex
-    sycl::buffer<cl::sycl::ext::oneapi::experimental::complex<real_t>, 1> a_pb{ sycl::range<1>(
-        a.size()) };
-    sycl::buffer<cl::sycl::ext::oneapi::experimental::complex<real_t>, 1> b_pb{ sycl::range<1>(
-        b.size()) };
-    sycl::buffer<cl::sycl::ext::oneapi::experimental::complex<real_t>, 1> c_pb{ sycl::range<1>(
-        c.size()) };
+    sycl::buffer<sycl_complex_real_t, 1> a_pb{ sycl::range<1>(a.size()) };
+    sycl::buffer<sycl_complex_real_t, 1> b_pb{ sycl::range<1>(b.size()) };
+    sycl::buffer<sycl_complex_real_t, 1> c_pb{ sycl::range<1>(c.size()) };
 
     queue.submit([&](cl::sycl::handler &cgh) {
         auto src = a.get_access<cl::sycl::access::mode::read>(cgh, a.size());
