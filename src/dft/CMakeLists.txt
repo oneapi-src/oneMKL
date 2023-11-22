@@ -24,12 +24,12 @@ add_subdirectory(backends)
 if(BUILD_SHARED_LIBS)
 add_library(onemkl_dft OBJECT)
 target_sources(onemkl_dft PRIVATE backends/descriptor.cpp dft_loader.cpp)
+message(STATUS "the dft CMAKE_CURRENT_BINARY_DIR is " ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(onemkl_dft
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
-          ${CMAKE_CURRENT_BINARY_DIR}/bin
           $<TARGET_FILE_DIR:onemkl>
 )
 
