@@ -149,7 +149,7 @@ public:
      * @param cgh The command group handler to associate the accessor with.
     */
     void add_buffer_workspace_dependency_if_rqd(const char *function_name, sycl::handler &cgh) {
-        external_workspace_helper_.add_buffer_workspace_dependency_if_rqd(function_name, cgh);
+        external_workspace_helper_.add_buffer_dependency_if_rqd(function_name, cgh);
     }
 
     /** If WORKSPACE_EXTERNAL is set, depend on the last USM workspace event added via set_last_usm_workspace_event.
