@@ -27,6 +27,7 @@ if(BUILD_SHARED_LIBS)
             ${PROJECT_SOURCE_DIR}/src
             ${PROJECT_SOURCE_DIR}/src/include
             ${CMAKE_BINARY_DIR}/bin
+            ${CMAKE_CURRENT_BINARY_DIR}/..
             $<TARGET_FILE_DIR:onemkl>
   )
 

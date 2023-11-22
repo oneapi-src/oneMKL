@@ -29,6 +29,7 @@ target_include_directories(onemkl_blas
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
+          ${CMAKE_CURRENT_BINARY_DIR}/..
           $<TARGET_FILE_DIR:onemkl>
 )
 
