@@ -42,23 +42,23 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
     sycl::buffer<sycl_complex_real_t, 1> b_pb{ sycl::range<1>(b.size()) };
     sycl::buffer<sycl_complex_real_t, 1> c_pb{ sycl::range<1>(c.size()) };
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto src = a.get_access<cl::sycl::access::mode::read>(cgh, a.size());
-        auto dest = a_pb.get_access<cl::sycl::access::mode::write>(cgh, a.size());
+    queue.submit([&](sycl::handler &cgh) {
+        auto src = a.get_access<sycl::access::mode::read>(cgh, a.size());
+        auto dest = a_pb.get_access<sycl::access::mode::write>(cgh, a.size());
 
         cgh.copy(src, dest);
     });
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto src = b.get_access<cl::sycl::access::mode::read>(cgh, b.size());
-        auto dest = b_pb.get_access<cl::sycl::access::mode::write>(cgh, b.size());
+    queue.submit([&](sycl::handler &cgh) {
+        auto src = b.get_access<sycl::access::mode::read>(cgh, b.size());
+        auto dest = b_pb.get_access<sycl::access::mode::write>(cgh, b.size());
 
         cgh.copy(src, dest);
     });
 
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto src = c.get_access<cl::sycl::access::mode::read>(cgh, c.size());
-        auto dest = c_pb.get_access<cl::sycl::access::mode::write>(cgh, c.size());
+    queue.submit([&](sycl::handler &cgh) {
+        auto src = c.get_access<sycl::access::mode::read>(cgh, c.size());
+        auto dest = c_pb.get_access<sycl::access::mode::write>(cgh, c.size());
 
         cgh.copy(src, dest);
     });
@@ -67,9 +67,9 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
                      beta, c_pb, ldc);
 
     // Copy c_pb back to c
-    queue.submit([&](cl::sycl::handler &cgh) {
-        auto src = c_pb.get_access<cl::sycl::access::mode::read>(cgh, c.size());
-        auto dest = c.get_access<cl::sycl::access::mode::write>(cgh, c.size());
+    queue.submit([&](sycl::handler &cgh) {
+        auto src = c_pb.get_access<sycl::access::mode::read>(cgh, c.size());
+        auto dest = c.get_access<sycl::access::mode::write>(cgh, c.size());
 
         cgh.copy(src, dest);
     });
