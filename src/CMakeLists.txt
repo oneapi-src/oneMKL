@@ -41,7 +41,6 @@ file(GENERATE
   OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
   INPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured"
 )
-
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
   DESTINATION include/oneapi/mkl/detail
   COMPONENT Devel
@@ -56,7 +55,6 @@ if(BUILD_SHARED_LIBS)
            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
            $<INSTALL_INTERFACE:include>
   )
-
   set_target_properties(onemkl PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
