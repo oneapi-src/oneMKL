@@ -48,7 +48,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         }
     }
     else {
-        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
+        // General consistency requirements for in-place complex domain transforms require that strides are the same forward and backward.
         modified_strides_fwd = modified_strides_bwd;
     }
 
@@ -164,7 +164,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
         }
     }
     else {
-        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
+        // General consistency requirements for in-place complex domain transforms require that strides are the same forward and backward.
         modified_strides_fwd = modified_strides_bwd;
     }
 
