@@ -48,7 +48,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         }
     }
     else {
-        // spec says modified_strides_bwd is ignored and modified_strides_fwd is reused for backward domain for in-place complex
+        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
         modified_strides_fwd = modified_strides_bwd;
     }
 
@@ -164,7 +164,7 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
         }
     }
     else {
-        // spec says modified_strides_bwd is ignored and modified_strides_fwd is reused for backward domain for in-place complex
+        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
         modified_strides_fwd = modified_strides_bwd;
     }
 
