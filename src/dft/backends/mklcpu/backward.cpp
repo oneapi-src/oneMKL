@@ -123,8 +123,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
 
         detail::host_task<class host_kernel_split_back_inplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], detail::acc_to_ptr(re_acc),
-                                                   detail::acc_to_ptr(im_acc));
+            DFT_ERROR status = DftiComputeBackward(
+                desc_acc[detail::DIR::bwd], detail::acc_to_ptr(re_acc), detail::acc_to_ptr(im_acc));
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/backends/mklcpu", "compute_backward",
@@ -156,8 +156,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
 
         detail::host_task<class host_kernel_back_outofplace>(cgh, [=]() {
             auto in_ptr = const_cast<bwd<descriptor_type> *>(detail::acc_to_ptr(in_acc));
-            DFT_ERROR status =
-                DftiComputeBackward(desc_acc[detail::DIR::bwd], in_ptr, detail::acc_to_ptr(out_acc));
+            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], in_ptr,
+                                                   detail::acc_to_ptr(out_acc));
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/backends/mklcpu", "compute_backward",
@@ -194,8 +194,9 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         detail::host_task<class host_kernel_split_back_outofplace>(cgh, [=]() {
             auto inre_ptr = const_cast<scalar<descriptor_type> *>(detail::acc_to_ptr(inre_acc));
             auto inim_ptr = const_cast<scalar<descriptor_type> *>(detail::acc_to_ptr(inim_acc));
-            DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], inre_ptr, inim_ptr,
-                                                   detail::acc_to_ptr(outre_acc), detail::acc_to_ptr(outim_acc));
+            DFT_ERROR status =
+                DftiComputeBackward(desc_acc[detail::DIR::bwd], inre_ptr, inim_ptr,
+                                    detail::acc_to_ptr(outre_acc), detail::acc_to_ptr(outim_acc));
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/backends/mklcpu", "compute_backward",

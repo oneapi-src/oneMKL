@@ -170,7 +170,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PACKED_FORMAT>(
 using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 
 template <typename AccType>
-typename AccType::value_type *acc_to_ptr(AccType acc) {
+typename AccType::value_type* acc_to_ptr(AccType acc) {
     // no need to decorate the pointer with the address space for mklcpu since its just getting passed to the a host function.
     return acc.template get_multi_ptr<sycl::access::decorated::no>().get();
 }

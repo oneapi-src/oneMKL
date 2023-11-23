@@ -124,8 +124,8 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
         auto im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
 
         detail::host_task<class host_kernel_split_inplace>(cgh, [=]() {
-            DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], detail::acc_to_ptr(re_acc),
-                                                  detail::acc_to_ptr(im_acc));
+            DFT_ERROR status = DftiComputeForward(
+                desc_acc[detail::DIR::fwd], detail::acc_to_ptr(re_acc), detail::acc_to_ptr(im_acc));
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/forward/mklcpu", "compute_forward",
@@ -194,8 +194,9 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
         detail::host_task<class host_kernel_split_outofplace>(cgh, [=]() {
             auto inre_ptr = const_cast<scalar<descriptor_type> *>(detail::acc_to_ptr(inre_acc));
             auto inim_ptr = const_cast<scalar<descriptor_type> *>(detail::acc_to_ptr(inim_acc));
-            DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], inre_ptr, inim_ptr,
-                                                  detail::acc_to_ptr(outre_acc), detail::acc_to_ptr(outim_acc));
+            DFT_ERROR status =
+                DftiComputeForward(desc_acc[detail::DIR::fwd], inre_ptr, inim_ptr,
+                                   detail::acc_to_ptr(outre_acc), detail::acc_to_ptr(outim_acc));
             if (status != DFTI_NO_ERROR) {
                 throw oneapi::mkl::exception(
                     "dft/forward/mklcpu", "compute_forward",
