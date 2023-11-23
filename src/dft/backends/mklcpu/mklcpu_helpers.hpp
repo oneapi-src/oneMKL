@@ -26,11 +26,7 @@
 // MKLCPU header
 #include "mkl_dfti.h"
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
-namespace mklcpu {
-namespace detail {
+namespace oneapi::mkl::dft::mklcpu::detail {
 
 template <typename K, typename H, typename F>
 static inline auto host_task_internal(H& cgh, F f, int) -> decltype(cgh.host_task(f)) {
@@ -173,10 +169,12 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PACKED_FORMAT>(
 
 using mklcpu_desc_t = DFTI_DESCRIPTOR_HANDLE;
 
-} // namespace detail
-} // namespace mklcpu
-} // namespace dft
-} // namespace mkl
-} // namespace oneapi
+template <typename AccType>
+typename AccType::value_type *acc_to_ptr(AccType acc) {
+    // no need to decorate the pointer with the address space for mklcpu since its just getting passed to the a host function.
+    return acc.template get_multi_ptr<sycl::access::decorated::no>().get();
+}
+
+} // namespace oneapi::mkl::dft::mklcpu::detail
 
 #endif // _ONEMKL_DFT_SRC_MKLCPU_HELPERS_HPP_
