@@ -43,7 +43,6 @@ namespace pfft = portfft;
 namespace oneapi::mkl::dft::portfft {
 namespace detail {
 
-/// Commit impl class specialization for cuFFT.
 template <dft::precision prec, dft::domain dom>
 class portfft_commit final : public dft::detail::commit_impl<prec, dom> {
 private:

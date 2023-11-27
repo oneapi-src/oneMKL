@@ -508,7 +508,7 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | Yes | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
 [Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | Yes | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
 [portBLAS](https://github.com/codeplaysoftware/portBLAS) | 0.1 | No | *N/A* | *Installed by user* | [Apache License v2.0](https://github.com/codeplaysoftware/portBLAS/blob/master/LICENSE)
-[portFFT](https://github.com/codeplaysoftware/portFFT) | 0.1 | No | *N/A* | *Installed by user* | [Apache License v2.0](https://github.com/codeplaysoftware/portFFT/blob/master/LICENSE)
+[portFFT](https://github.com/codeplaysoftware/portFFT) | 0.1 | No | *N/A* | *Installed by user or automatically by cmake* | [Apache License v2.0](https://github.com/codeplaysoftware/portFFT/blob/master/LICENSE)
 
 
 *conan-center: https://api.bintray.com/conan/conan/conan-center*
