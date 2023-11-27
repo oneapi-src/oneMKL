@@ -387,7 +387,7 @@ Runtime dispatching example with MKLGPU, cuFFT, rocFFT and portFFT backends:
 $ SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 ########################################################################
-# DFTI complex in-place forward transform with USM API example:
+# DFT complex in-place forward transform with USM API example:
 #
 # Using APIs:
 #   USM forward complex in-place
@@ -412,7 +412,7 @@ DFT example ran OK
 $ SYCL_DEVICE_FILTER=gpu ./bin/example_dft_real_fwd_usm
 
 ########################################################################
-# DFTI complex in-place forward transform with USM API example:
+# DFT complex in-place forward transform with USM API example:
 #
 # Using APIs:
 #   USM forward complex in-place
@@ -437,7 +437,7 @@ DFT example ran OK
 $ ./bin/example_dft_real_fwd_usm
 
 ########################################################################
-# DFTI complex in-place forward transform with USM API example:
+# DFT complex in-place forward transform with USM API example:
 #
 # Using APIs:
 #   USM forward complex in-place
@@ -459,7 +459,7 @@ DFT example ran OK
 ```
 
 ```none
-$ LD_LIBRARY_PATH=lib:$LD_LIBRARY_PATH ./bin/example_dft_real_fwd_usm 
+$ LD_LIBRARY_PATH=lib/:$LD_LIBRARY_PATH ./bin/example_dft_real_fwd_usm
 ########################################################################
 # DFT complex in-place forward transform with USM API example:
 #
