@@ -34,10 +34,9 @@ target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
-          ${MKL_INCLUDE}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
 if (${CMAKE_VERSION} VERSION_LESS "3.17.0")
   find_package(CUDA REQUIRED)
@@ -48,7 +47,7 @@ else()
   target_link_libraries(${LIB_OBJ} PRIVATE CUDA::cufft CUDA::cuda_driver)
 endif()
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_SYCL})
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
