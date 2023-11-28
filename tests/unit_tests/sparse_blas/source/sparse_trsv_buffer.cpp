@@ -134,9 +134,12 @@ class SparseTrsvBufferTests : public ::testing::TestWithParam<sycl::device *> {}
  * @tparam fpType Complex or scalar, single or double precision type
  * @param dev Device to test
  * @param transpose_val Transpose value for the input matrix
+ * @param num_passed Increase the number of configurations passed
+ * @param num_skipped Increase the number of configurations skipped
  */
 template <typename fpType>
-bool test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
+auto test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val, int &num_passed,
+                 int &num_skipped) {
     double density_A_matrix = 0.144;
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
     oneapi::mkl::uplo lower = oneapi::mkl::uplo::lower;
@@ -144,85 +147,87 @@ bool test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val) {
     int m = 277;
     bool use_optimize = true;
 
-    bool skip = false;
     // Basic test
     EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower,
                                             transpose_val, nonunit, use_optimize),
-                               skip);
+                               num_passed, num_skipped);
     // Test index_base 1
     EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, oneapi::mkl::index_base::one,
                                             lower, transpose_val, nonunit, use_optimize),
-                               skip);
+                               num_passed, num_skipped);
     // Test upper triangular matrix
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
                      nonunit, use_optimize),
-        skip);
+        num_passed, num_skipped);
     // Test unit diagonal matrix
     EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower,
                                             transpose_val, oneapi::mkl::diag::unit, use_optimize),
-                               skip);
+                               num_passed, num_skipped);
     // Test int64 indices
     EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower,
                                             transpose_val, nonunit, use_optimize),
-                               skip);
+                               num_passed, num_skipped);
     // Test lower without optimize_trsv
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val, nonunit, false),
-        skip);
+        num_passed, num_skipped);
     // Test upper without optimize_trsv
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
                      nonunit, false),
-        skip);
-    return skip;
+        num_passed, num_skipped);
 }
 
 TEST_P(SparseTrsvBufferTests, RealSinglePrecision) {
     using fpType = float;
-    bool skip = false;
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    if (skip) {
+    int num_passed = 0, num_skipped = 0;
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans, num_passed, num_skipped);
+    if (num_skipped > 0) {
         // Mark that some tests were skipped
-        GTEST_SKIP();
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
     }
 }
 
 TEST_P(SparseTrsvBufferTests, RealDoublePrecision) {
     using fpType = double;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    bool skip = false;
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    if (skip) {
+    int num_passed = 0, num_skipped = 0;
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans, num_passed, num_skipped);
+    if (num_skipped > 0) {
         // Mark that some tests were skipped
-        GTEST_SKIP();
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
     }
 }
 
 TEST_P(SparseTrsvBufferTests, ComplexSinglePrecision) {
     using fpType = std::complex<float>;
-    bool skip = false;
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
-    if (skip) {
+    int num_passed = 0, num_skipped = 0;
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans, num_passed, num_skipped);
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans, num_passed, num_skipped);
+    if (num_skipped > 0) {
         // Mark that some tests were skipped
-        GTEST_SKIP();
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
     }
 }
 
 TEST_P(SparseTrsvBufferTests, ComplexDoublePrecision) {
     using fpType = std::complex<double>;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    bool skip = false;
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans);
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans);
-    skip |= test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans);
-    if (skip) {
+    int num_passed = 0, num_skipped = 0;
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::trans, num_passed, num_skipped);
+    test_helper<fpType>(GetParam(), oneapi::mkl::transpose::conjtrans, num_passed, num_skipped);
+    if (num_skipped > 0) {
         // Mark that some tests were skipped
-        GTEST_SKIP();
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
     }
 }
 
