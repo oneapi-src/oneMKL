@@ -21,12 +21,50 @@
 
 #include <complex>
 
-// INTEL_MKL_VERSION
 #include "mkl_version.h"
 #include "oneapi/mkl/types.hpp"
 
 namespace oneapi {
 namespace mkl {
+
+template <typename T>
+class value_or_pointer {
+    T value_;
+    const T* ptr_;
+
+public:
+    // Constructor from value. Accepts not only type T but anything convertible to T.
+    template <typename U, std::enable_if_t<std::is_convertible_v<U, T>, int> = 0>
+    value_or_pointer(U value) : value_(value),
+                                ptr_(nullptr) {}
+
+    // Constructor from pointer, assumed to be device-accessible.
+    value_or_pointer(const T* ptr) : value_(T(0)), ptr_(ptr) {}
+
+    bool fixed() const {
+        return ptr_ == nullptr;
+    }
+
+    T get_fixed_value() const {
+        return value_;
+    }
+
+    const T* get_pointer() const {
+        return ptr_;
+    }
+
+    T get() const {
+        return ptr_ ? *ptr_ : value_;
+    }
+
+    void make_device_accessible(sycl::queue& queue) {
+        if (!fixed() &&
+            sycl::get_pointer_type(ptr_, queue.get_context()) == sycl::usm::alloc::unknown) {
+            *this = *ptr_;
+        }
+    }
+};
+
 namespace blas {
 
 namespace column_major {
