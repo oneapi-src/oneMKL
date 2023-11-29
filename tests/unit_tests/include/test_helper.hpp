@@ -44,6 +44,9 @@
 #define test_passed  1
 #define test_skipped 2
 
+// Note GTEST_SKIP may not print the associated message when using ctest.
+// However, running a test binary with the flag `--terse-output` will print them.
+
 #define EXPECT_TRUEORSKIP(a)             \
     do {                                 \
         int res = a;                     \
