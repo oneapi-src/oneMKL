@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2022 Intel Corporation
+# Copyright 2023 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,20 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-# Note: compile-time example uses both MKLCPU and CURAND backends, therefore
-# cmake in the sub-directory will only build it if CURAND backend is enabled
-add_subdirectory(compile_time_dispatching)
-add_subdirectory(device)
+# Build object from all test sources
+set(SERVICE_TESTS_SOURCES "skip_ahead.cpp")
 
-# runtime compilation is only possible with dynamic libraries
-if (BUILD_SHARED_LIBS)
-  add_subdirectory(run_time_dispatching)
+add_library(rng_device_service_ct OBJECT ${SERVICE_TESTS_SOURCES})
+target_compile_options(rng_device_service_ct PRIVATE -DNOMINMAX)
+target_include_directories(rng_device_service_ct
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../include
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
+    PUBLIC ${CMAKE_BINARY_DIR}/bin
+)
+if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
+  add_sycl_to_target(TARGET rng_device_service_ct SOURCES ${SERVICE_TESTS_SOURCES})
+else()
+  target_link_libraries(rng_device_service_ct PUBLIC ONEMKL::SYCL::SYCL)
 endif()
