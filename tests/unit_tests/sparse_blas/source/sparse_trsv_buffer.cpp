@@ -40,32 +40,39 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fpType, typename intType>
-int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matrix,
-         oneapi::mkl::index_base index, oneapi::mkl::transpose transpose_val, fpType alpha,
-         fpType beta, bool use_optimize) {
+int test(sycl::device *dev, intType m, double density_A_matrix, oneapi::mkl::index_base index,
+         oneapi::mkl::uplo uplo_val, oneapi::mkl::transpose transpose_val,
+         oneapi::mkl::diag diag_val, bool use_optimize) {
     sycl::queue main_queue(*dev, exception_handler_t());
 
     intType int_index = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
-    std::size_t opa_nrows =
-        static_cast<std::size_t>(transpose_val == oneapi::mkl::transpose::nontrans ? nrows : ncols);
-    std::size_t opa_ncols =
-        static_cast<std::size_t>(transpose_val == oneapi::mkl::transpose::nontrans ? ncols : nrows);
+    const std::size_t mu = static_cast<std::size_t>(m);
 
     // Input matrix in CSR format
     std::vector<intType> ia_host, ja_host;
     std::vector<fpType> a_host;
-    intType nnz = generate_random_matrix<fpType, intType>(nrows, ncols, density_A_matrix, int_index,
-                                                          ia_host, ja_host, a_host);
+    // Always require values to be present in the diagonal of the sparse matrix.
+    // The values set in the matrix don't need to be 1s even if diag_val is unit.
+    const bool require_diagonal = true;
+    intType nnz = generate_random_matrix<fpType, intType>(
+        m, m, density_A_matrix, int_index, ia_host, ja_host, a_host, require_diagonal);
 
-    // Input and output dense vectors
-    // The input `x` and the input-output `y` are both initialized to random values on host and device.
-    std::vector<fpType> x_host, y_host;
-    rand_vector(x_host, opa_ncols);
-    rand_vector(y_host, opa_nrows);
+    // Input dense vector.
+    // The input `x` is initialized to random values on host and device.
+    std::vector<fpType> x_host;
+    rand_vector(x_host, mu);
+
+    // Output and reference dense vectors.
+    // They are both initialized with a dummy value to catch more errors.
+    std::vector<fpType> y_host(mu, -2.0f);
     std::vector<fpType> y_ref_host(y_host);
 
-    // Shuffle ordering of column indices/values to test sortedness
-    shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), static_cast<std::size_t>(nrows));
+    // Intel oneMKL does not support unsorted data if
+    // `sparse::optimize_trsv()` is not called first.
+    if (use_optimize) {
+        // Shuffle ordering of column indices/values to test sortedness
+        shuffle_data(ia_host.data(), ja_host.data(), a_host.data(), mu);
+    }
 
     auto ia_buf = make_buffer(ia_host);
     auto ja_buf = make_buffer(ja_host);
@@ -73,25 +80,26 @@ int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matri
     auto x_buf = make_buffer(x_host);
     auto y_buf = make_buffer(y_host);
 
-    oneapi::mkl::sparse::matrix_handle_t handle = nullptr;
     sycl::event ev_release;
+    oneapi::mkl::sparse::matrix_handle_t handle = nullptr;
     try {
         CALL_RT_OR_CT(oneapi::mkl::sparse::init_matrix_handle, main_queue, &handle);
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_data, main_queue, handle, nrows, ncols, nnz,
-                      index, ia_buf, ja_buf, a_buf);
+        CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_data, main_queue, handle, m, m, nnz, index,
+                      ia_buf, ja_buf, a_buf);
 
         if (use_optimize) {
-            CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_gemv, main_queue, transpose_val, handle);
+            CALL_RT_OR_CT(oneapi::mkl::sparse::optimize_trsv, main_queue, uplo_val, transpose_val,
+                          diag_val, handle);
         }
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::gemv, main_queue, transpose_val, alpha, handle, x_buf,
-                      beta, y_buf);
+        CALL_RT_OR_CT(oneapi::mkl::sparse::trsv, main_queue, uplo_val, transpose_val, diag_val,
+                      handle, x_buf, y_buf);
 
         CALL_RT_OR_CT(ev_release = oneapi::mkl::sparse::release_matrix_handle, main_queue, &handle);
     }
     catch (const sycl::exception &e) {
-        std::cout << "Caught synchronous SYCL exception during sparse GEMV:\n"
+        std::cout << "Caught synchronous SYCL exception during sparse TRSV:\n"
                   << e.what() << std::endl;
         print_error_code(e);
         return 0;
@@ -101,13 +109,13 @@ int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matri
         return test_skipped;
     }
     catch (const std::runtime_error &error) {
-        std::cout << "Error raised during execution of sparse GEMV:\n" << error.what() << std::endl;
+        std::cout << "Error raised during execution of sparse TRSV:\n" << error.what() << std::endl;
         return 0;
     }
 
     // Compute reference.
-    prepare_reference_gemv_data(ia_host.data(), ja_host.data(), a_host.data(), nrows, ncols, nnz,
-                                int_index, transpose_val, alpha, beta, x_host.data(),
+    prepare_reference_trsv_data(ia_host.data(), ja_host.data(), a_host.data(), m, int_index,
+                                uplo_val, transpose_val, diag_val, x_host.data(),
                                 y_ref_host.data());
 
     // Compare the results of reference implementation and DPC++ implementation.
@@ -118,7 +126,7 @@ int test(sycl::device *dev, intType nrows, intType ncols, double density_A_matri
     return static_cast<int>(valid);
 }
 
-class SparseGemvBufferTests : public ::testing::TestWithParam<sycl::device *> {};
+class SparseTrsvBufferTests : public ::testing::TestWithParam<sycl::device *> {};
 
 /**
  * Helper function to run tests in different configuration.
@@ -130,49 +138,48 @@ class SparseGemvBufferTests : public ::testing::TestWithParam<sycl::device *> {}
  * @param num_skipped Increase the number of configurations skipped
  */
 template <typename fpType>
-void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val, int &num_passed,
+auto test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_val, int &num_passed,
                  int &num_skipped) {
-    double density_A_matrix = 0.8;
-    fpType fp_zero = set_fp_value<fpType>()(0.f, 0.f);
-    fpType fp_one = set_fp_value<fpType>()(1.f, 0.f);
+    double density_A_matrix = 0.144;
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
+    oneapi::mkl::uplo lower = oneapi::mkl::uplo::lower;
+    oneapi::mkl::diag nonunit = oneapi::mkl::diag::nonunit;
+    int m = 277;
     bool use_optimize = true;
 
     // Basic test
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero, use_optimize),
-        num_passed, num_skipped);
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower,
+                                            transpose_val, nonunit, use_optimize),
+                               num_passed, num_skipped);
     // Test index_base 1
-    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, oneapi::mkl::index_base::one,
-                                    transpose_val, fp_one, fp_zero, use_optimize),
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, oneapi::mkl::index_base::one,
+                                            lower, transpose_val, nonunit, use_optimize),
                                num_passed, num_skipped);
-    // Test non-default alpha
-    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val,
-                                    set_fp_value<fpType>()(2.f, 1.5f), fp_zero, use_optimize),
-                               num_passed, num_skipped);
-    // Test non-default beta
-    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one,
-                                    set_fp_value<fpType>()(3.2f, 1.f), use_optimize),
-                               num_passed, num_skipped);
-    // Test 0 alpha
+    // Test upper triangular matrix
     EXPECT_TRUE_OR_FUTURE_SKIP(
-        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero, fp_one, use_optimize),
+        test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
+                     nonunit, use_optimize),
         num_passed, num_skipped);
-    // Test 0 alpha and beta
-    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_zero,
-                                    fp_zero, use_optimize),
+    // Test unit diagonal matrix
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, m, density_A_matrix, index_zero, lower,
+                                            transpose_val, oneapi::mkl::diag::unit, use_optimize),
                                num_passed, num_skipped);
     // Test int64 indices
-    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, 27L, 13L, density_A_matrix, index_zero, transpose_val,
-                                    fp_one, fp_one, use_optimize),
+    EXPECT_TRUE_OR_FUTURE_SKIP(test<fpType>(dev, 15L, density_A_matrix, index_zero, lower,
+                                            transpose_val, nonunit, use_optimize),
                                num_passed, num_skipped);
-    // Test without optimize_gemv
+    // Test lower without optimize_trsv
     EXPECT_TRUE_OR_FUTURE_SKIP(
-        test(dev, 4, 6, density_A_matrix, index_zero, transpose_val, fp_one, fp_zero, false),
+        test<fpType>(dev, m, density_A_matrix, index_zero, lower, transpose_val, nonunit, false),
+        num_passed, num_skipped);
+    // Test upper without optimize_trsv
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test<fpType>(dev, m, density_A_matrix, index_zero, oneapi::mkl::uplo::upper, transpose_val,
+                     nonunit, false),
         num_passed, num_skipped);
 }
 
-TEST_P(SparseGemvBufferTests, RealSinglePrecision) {
+TEST_P(SparseTrsvBufferTests, RealSinglePrecision) {
     using fpType = float;
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
@@ -184,7 +191,7 @@ TEST_P(SparseGemvBufferTests, RealSinglePrecision) {
     }
 }
 
-TEST_P(SparseGemvBufferTests, RealDoublePrecision) {
+TEST_P(SparseTrsvBufferTests, RealDoublePrecision) {
     using fpType = double;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
     int num_passed = 0, num_skipped = 0;
@@ -197,7 +204,7 @@ TEST_P(SparseGemvBufferTests, RealDoublePrecision) {
     }
 }
 
-TEST_P(SparseGemvBufferTests, ComplexSinglePrecision) {
+TEST_P(SparseTrsvBufferTests, ComplexSinglePrecision) {
     using fpType = std::complex<float>;
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(GetParam(), oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
@@ -210,7 +217,7 @@ TEST_P(SparseGemvBufferTests, ComplexSinglePrecision) {
     }
 }
 
-TEST_P(SparseGemvBufferTests, ComplexDoublePrecision) {
+TEST_P(SparseTrsvBufferTests, ComplexDoublePrecision) {
     using fpType = std::complex<double>;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
     int num_passed = 0, num_skipped = 0;
@@ -224,7 +231,7 @@ TEST_P(SparseGemvBufferTests, ComplexDoublePrecision) {
     }
 }
 
-INSTANTIATE_TEST_SUITE_P(SparseGemvBufferTestSuite, SparseGemvBufferTests,
+INSTANTIATE_TEST_SUITE_P(SparseTrsvBufferTestSuite, SparseTrsvBufferTests,
                          testing::ValuesIn(devices), ::DeviceNamePrint());
 
 } // anonymous namespace

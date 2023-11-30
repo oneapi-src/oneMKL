@@ -17,11 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include <algorithm>
 #include <complex>
-#include <cstdlib>
 #include <iostream>
-#include <limits>
 #include <vector>
 
 #if __has_include(<sycl/sycl.hpp>)
@@ -139,10 +136,12 @@ class SparseGemmBufferTests : public ::testing::TestWithParam<sycl::device *> {}
  * @param dev Device to test
  * @param transpose_A Transpose value for the A matrix
  * @param transpose_B Transpose value for the B matrix
+ * @param num_passed Increase the number of configurations passed
+ * @param num_skipped Increase the number of configurations skipped
  */
 template <typename fpType>
 void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_A,
-                 oneapi::mkl::transpose transpose_B) {
+                 oneapi::mkl::transpose transpose_B, int &num_passed, int &num_skipped) {
     double density_A_matrix = 0.8;
     fpType fp_zero = set_fp_value<fpType>()(0.f, 0.f);
     fpType fp_one = set_fp_value<fpType>()(1.f, 0.f);
@@ -155,57 +154,77 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_A,
     bool opt_2_inputs = true;
 
     // Basic test
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, no_opt_1_input,
-                           opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_one, fp_zero, ldb, ldc, no_opt_1_input, opt_2_inputs),
+        num_passed, num_skipped);
     // Test index_base 1
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix,
-                           oneapi::mkl::index_base::one, col_major, transpose_A, transpose_B,
-                           fp_one, fp_zero, ldb, ldc, no_opt_1_input, opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, oneapi::mkl::index_base::one,
+             col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, no_opt_1_input,
+             opt_2_inputs),
+        num_passed, num_skipped);
     // Test non-default alpha
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, set_fp_value<fpType>()(2.f, 1.5f), fp_zero,
-                           ldb, ldc, no_opt_1_input, opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, set_fp_value<fpType>()(2.f, 1.5f), fp_zero, ldb, ldc, no_opt_1_input,
+             opt_2_inputs),
+        num_passed, num_skipped);
     // Test non-default beta
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, set_fp_value<fpType>()(3.2f, 1.f), ldb,
-                           ldc, no_opt_1_input, opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_one, set_fp_value<fpType>()(3.2f, 1.f), ldb, ldc, no_opt_1_input,
+             opt_2_inputs),
+        num_passed, num_skipped);
     // Test 0 alpha
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_zero, fp_one, ldb, ldc, no_opt_1_input,
-                           opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_zero, fp_one, ldb, ldc, no_opt_1_input, opt_2_inputs),
+        num_passed, num_skipped);
     // Test 0 alpha and beta
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_zero, fp_zero, ldb, ldc, no_opt_1_input,
-                           opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_zero, fp_zero, ldb, ldc, no_opt_1_input, opt_2_inputs),
+        num_passed, num_skipped);
     // Test non-default ldb
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb + 5, ldc, no_opt_1_input,
-                           opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_one, fp_zero, ldb + 5, ldc, no_opt_1_input, opt_2_inputs),
+        num_passed, num_skipped);
     // Test non-default ldc
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc + 6, no_opt_1_input,
-                           opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_one, fp_zero, ldb, ldc + 6, no_opt_1_input, opt_2_inputs),
+        num_passed, num_skipped);
     // Test row major layout
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                           oneapi::mkl::layout::row_major, transpose_A, transpose_B, fp_one,
-                           fp_zero, ncols_C, ncols_C, no_opt_1_input, opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+             oneapi::mkl::layout::row_major, transpose_A, transpose_B, fp_one, fp_zero, ncols_C,
+             ncols_C, no_opt_1_input, opt_2_inputs),
+        num_passed, num_skipped);
     // Test int64 indices
     long long_nrows_A = 27, long_ncols_A = 13, long_ncols_C = 6;
     long long_ldb = transpose_A == oneapi::mkl::transpose::nontrans ? long_ncols_A : long_nrows_A;
     long long_ldc = transpose_A == oneapi::mkl::transpose::nontrans ? long_nrows_A : long_ncols_A;
-    EXPECT_TRUEORSKIP(test(dev, long_nrows_A, long_ncols_A, long_ncols_C, density_A_matrix,
-                           index_zero, col_major, transpose_A, transpose_B, fp_one, fp_zero,
-                           long_ldb, long_ldc, no_opt_1_input, opt_2_inputs));
+    EXPECT_TRUE_OR_FUTURE_SKIP(test(dev, long_nrows_A, long_ncols_A, long_ncols_C, density_A_matrix,
+                                    index_zero, col_major, transpose_A, transpose_B, fp_one,
+                                    fp_zero, long_ldb, long_ldc, no_opt_1_input, opt_2_inputs),
+                               num_passed, num_skipped);
     // Use optimize_gemm with only the sparse gemm input
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, true, false));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_one, fp_zero, ldb, ldc, true, false),
+        num_passed, num_skipped);
     // Use the 2 optimize_gemm versions
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, true, true));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_one, fp_zero, ldb, ldc, true, true),
+        num_passed, num_skipped);
     // Do not use optimize_gemm
-    EXPECT_TRUEORSKIP(test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major,
-                           transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, false, false));
+    EXPECT_TRUE_OR_FUTURE_SKIP(
+        test(dev, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero, col_major, transpose_A,
+             transpose_B, fp_one, fp_zero, ldb, ldc, false, false),
+        num_passed, num_skipped);
 }
 
 /**
@@ -214,9 +233,11 @@ void test_helper(sycl::device *dev, oneapi::mkl::transpose transpose_A,
  * 
  * @tparam fpType Complex or scalar, single or double precision type
  * @param dev Device to test
+ * @param num_passed Increase the number of configurations passed
+ * @param num_skipped Increase the number of configurations skipped
  */
 template <typename fpType>
-void test_helper_transpose(sycl::device *dev) {
+void test_helper_transpose(sycl::device *dev, int &num_passed, int &num_skipped) {
     std::vector<oneapi::mkl::transpose> transpose_vals{ oneapi::mkl::transpose::nontrans,
                                                         oneapi::mkl::transpose::trans };
     if (complex_info<fpType>::is_complex) {
@@ -224,31 +245,55 @@ void test_helper_transpose(sycl::device *dev) {
     }
     for (auto transpose_A : transpose_vals) {
         for (auto transpose_B : transpose_vals) {
-            test_helper<fpType>(dev, transpose_A, transpose_B);
+            test_helper<fpType>(dev, transpose_A, transpose_B, num_passed, num_skipped);
         }
     }
 }
 
 TEST_P(SparseGemmBufferTests, RealSinglePrecision) {
     using fpType = float;
-    test_helper_transpose<fpType>(GetParam());
+    int num_passed = 0, num_skipped = 0;
+    test_helper_transpose<fpType>(GetParam(), num_passed, num_skipped);
+    if (num_skipped > 0) {
+        // Mark that some tests were skipped
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
+    }
 }
 
 TEST_P(SparseGemmBufferTests, RealDoublePrecision) {
     using fpType = double;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    test_helper_transpose<fpType>(GetParam());
+    int num_passed = 0, num_skipped = 0;
+    test_helper_transpose<fpType>(GetParam(), num_passed, num_skipped);
+    if (num_skipped > 0) {
+        // Mark that some tests were skipped
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
+    }
 }
 
 TEST_P(SparseGemmBufferTests, ComplexSinglePrecision) {
     using fpType = std::complex<float>;
-    test_helper_transpose<fpType>(GetParam());
+    int num_passed = 0, num_skipped = 0;
+    test_helper_transpose<fpType>(GetParam(), num_passed, num_skipped);
+    if (num_skipped > 0) {
+        // Mark that some tests were skipped
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
+    }
 }
 
 TEST_P(SparseGemmBufferTests, ComplexDoublePrecision) {
     using fpType = std::complex<double>;
     CHECK_DOUBLE_ON_DEVICE(GetParam());
-    test_helper_transpose<fpType>(GetParam());
+    int num_passed = 0, num_skipped = 0;
+    test_helper_transpose<fpType>(GetParam(), num_passed, num_skipped);
+    if (num_skipped > 0) {
+        // Mark that some tests were skipped
+        GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
+                     << " configurations." << std::endl;
+    }
 }
 
 INSTANTIATE_TEST_SUITE_P(SparseGemmBufferTestSuite, SparseGemmBufferTests,

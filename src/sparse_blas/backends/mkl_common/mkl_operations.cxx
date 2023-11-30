@@ -47,10 +47,16 @@ sycl::event optimize_gemv(sycl::queue& queue, transpose transpose_val,
                                               dependencies);
 }
 
-sycl::event optimize_trsv(sycl::queue& /*queue*/, uplo /*uplo_val*/, transpose /*transpose_val*/,
-                          diag /*diag_val*/, detail::matrix_handle* /*handle*/,
-                          const std::vector<sycl::event>& /*dependencies*/) {
-    throw unimplemented("SPARSE_BLAS", "optimize_trsv");
+sycl::event optimize_trsv(sycl::queue& queue, uplo uplo_val, transpose transpose_val, diag diag_val,
+                          detail::matrix_handle* handle,
+                          const std::vector<sycl::event>& dependencies) {
+    // TODO: Remove this if condition once Intel oneMKL adds support for trans/conjtrans to optimize_trsv
+    if (transpose_val != transpose::nontrans) {
+        throw mkl::unimplemented("sparse_blas/backends/mkl", __FUNCTION__,
+                                 "Transposed or conjugate trsv is not supported");
+    }
+    return oneapi::mkl::sparse::optimize_trsv(queue, uplo_val, transpose_val, diag_val,
+                                              detail::get_handle(handle), dependencies);
 }
 
 template <typename fpType>
@@ -71,21 +77,34 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
 }
 
 template <typename fpType>
-std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(sycl::queue& /*queue*/, uplo /*uplo_val*/,
-                                                         transpose /*transpose_val*/,
-                                                         diag /*diag_val*/,
-                                                         detail::matrix_handle* /*A_handle*/,
-                                                         sycl::buffer<fpType, 1>& /*x*/,
-                                                         sycl::buffer<fpType, 1>& /*y*/) {
-    throw unimplemented("SPARSE_BLAS", "trsv");
+std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(sycl::queue& queue, uplo uplo_val,
+                                                         transpose transpose_val, diag diag_val,
+                                                         detail::matrix_handle* A_handle,
+                                                         sycl::buffer<fpType, 1>& x,
+                                                         sycl::buffer<fpType, 1>& y) {
+    // TODO: Remove this if condition once Intel oneMKL adds support for trans/conjtrans to trsv
+    if (transpose_val != transpose::nontrans) {
+        throw mkl::unimplemented("sparse_blas/backends/mkl", __FUNCTION__,
+                                 "Transposed or conjugate trsv is not supported");
+    }
+    oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,
+                              detail::get_handle(A_handle), x, y);
 }
 
 template <typename fpType>
 std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
-    sycl::queue& /*queue*/, uplo /*uplo_val*/, transpose /*transpose_val*/, diag /*diag_val*/,
-    detail::matrix_handle* /*A_handle*/, const fpType* /*x*/, fpType* /*y*/,
-    const std::vector<sycl::event>& /*dependencies*/) {
-    throw unimplemented("SPARSE_BLAS", "trsv");
+    sycl::queue& queue, uplo uplo_val, transpose transpose_val, diag diag_val,
+    detail::matrix_handle* A_handle, const fpType* x, fpType* y,
+    const std::vector<sycl::event>& dependencies) {
+    // TODO: Remove this if condition once Intel oneMKL adds support for trans/conjtrans to trsv
+    if (transpose_val != transpose::nontrans) {
+        throw mkl::unimplemented("sparse_blas/backends/mkl", __FUNCTION__,
+                                 "Transposed or conjugate trsv is not supported");
+    }
+    // TODO: Remove const_cast in future oneMKL release
+    return oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,
+                                     detail::get_handle(A_handle), const_cast<fpType*>(x), y,
+                                     dependencies);
 }
 
 template <typename fpType>
