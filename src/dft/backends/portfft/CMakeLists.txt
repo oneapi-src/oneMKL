@@ -17,9 +17,38 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
+
+check_cxx_compiler_flag("-fsycl" IS_DPCPP)
+
+set(FOUND_TARGETS 0)
+
+if (NOT (CMAKE_CXX_FLAGS STREQUAL ""))
+  string(FIND ${CMAKE_CXX_FLAGS} "fsycl-targets" TARGETS_IDX)
+  if (TARGETS_IDX GREATER_EQUAL 0)
+    set(FOUND_TARGETS 1)
+    message(STATUS "fsycl-targets flag found, not setting targets")
+  endif()
+endif()
+
+if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
+  message(WARNING "fsycl-targets flag not found, enabling all backends")
+  set(TARGETS_COMPILE_OPTIONS -fsycl-unnamed-lambda)
+  set(TARGETS_LINK_OPTIONS -fsycl-unnamed-lambda)
+  list(APPEND TARGETS_COMPILE_OPTIONS -fsycl-targets=nvptx64-nvidia-cuda)
+  list(APPEND TARGETS_LINK_OPTIONS -fsycl-targets=nvptx64-nvidia-cuda)
+  if (NOT (HIP_TARGETS STREQUAL ""))
+    list(APPEND TARGETS_COMPILE_OPTIONS -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+    list(APPEND TARGETS_LINK_OPTIONS -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+  else()
+    message(WARNING "Can't enable hip backend, HIP_TARGETS has not been set.")
+  endif()
+
+  target_compile_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGET_COMPILE_OPTIONS})
+  target_link_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGET_LINK_OPTIONS})
+endif()
+
 set(LIB_NAME onemkl_dft_portfft)
 set(LIB_OBJ ${LIB_NAME}_obj)
-
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
