@@ -34,14 +34,20 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
   message(WARNING "fsycl-targets flag not found, enabling all backends")
   set(TARGETS_COMPILE_OPTIONS -fsycl-unnamed-lambda)
   set(TARGETS_LINK_OPTIONS -fsycl-unnamed-lambda)
-  list(APPEND TARGETS_COMPILE_OPTIONS -fsycl-targets=nvptx64-nvidia-cuda)
-  list(APPEND TARGETS_LINK_OPTIONS -fsycl-targets=nvptx64-nvidia-cuda)
+
+  # spir64 must be last in the list due to a bug in dpcpp 2024.0.0
+  set(TARGETS_TRIPLES "nvptx64-nvidia-cuda,spir64")
+
   if (NOT (HIP_TARGETS STREQUAL ""))
-    list(APPEND TARGETS_COMPILE_OPTIONS -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
-    list(APPEND TARGETS_LINK_OPTIONS -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+    set(TARGETS_TRIPLES amdgcn-amd-amdhsa,${TARGET_TRIPLES})
+    list(APPEND TARGETS_COMPILE_OPTIONS -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+    list(APPEND TARGETS_LINK_OPTIONS -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
   else()
     message(WARNING "Can't enable hip backend, HIP_TARGETS has not been set.")
   endif()
+
+  list(APPEND TARGETS_COMPILE_OPTIONS -fsycl-targets=${TARGETS_TRIPLES})
+  list(APPEND TARGETS_LINK_OPTIONS -fsycl-targets=${TARGETS_TRIPLES})
 
   target_compile_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGETS_COMPILE_OPTIONS})
   target_link_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGETS_LINK_OPTIONS})
