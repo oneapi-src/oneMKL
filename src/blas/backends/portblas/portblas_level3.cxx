@@ -42,37 +42,25 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
     sycl::buffer<sycl_complex_real_t, 1> b_pb{ sycl::range<1>(b.size()) };
     sycl::buffer<sycl_complex_real_t, 1> c_pb{ sycl::range<1>(c.size()) };
 
-    queue.submit([&](sycl::handler &cgh) {
-        auto src = a.get_access<sycl::access::mode::read>(cgh, a.size());
-        auto dest = a_pb.get_access<sycl::access::mode::write>(cgh, a.size());
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::read> a_acc(a);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::write> a_pb_acc(a_pb);
+    queue.copy(a_acc, a_pb_acc);
 
-        cgh.copy(src, dest);
-    });
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::read> b_acc(b);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::write> b_pb_acc(b_pb);
+    queue.copy(b_acc, b_pb_acc);
 
-    queue.submit([&](sycl::handler &cgh) {
-        auto src = b.get_access<sycl::access::mode::read>(cgh, b.size());
-        auto dest = b_pb.get_access<sycl::access::mode::write>(cgh, b.size());
-
-        cgh.copy(src, dest);
-    });
-
-    queue.submit([&](sycl::handler &cgh) {
-        auto src = c.get_access<sycl::access::mode::read>(cgh, c.size());
-        auto dest = c_pb.get_access<sycl::access::mode::write>(cgh, c.size());
-
-        cgh.copy(src, dest);
-    });
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::read> c_acc(c);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::write> c_pb_acc(c_pb);
+    queue.copy(c_acc, c_pb_acc);
 
     CALL_PORTBLAS_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a_pb, lda, b_pb, ldb,
                      beta, c_pb, ldc);
 
     // Copy c_pb back to c
-    queue.submit([&](sycl::handler &cgh) {
-        auto src = c_pb.get_access<sycl::access::mode::read>(cgh, c.size());
-        auto dest = c.get_access<sycl::access::mode::write>(cgh, c.size());
-
-        cgh.copy(src, dest);
-    });
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::write> out_acc(c);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::read> out_pb_acc(c_pb);
+    queue.copy(out_pb_acc, out_acc);
 }
 
 void symm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
