@@ -26,6 +26,8 @@
 
 #include "oneapi/mkl.hpp"
 
+#include "test_common.hpp"
+
 template <typename T>
 inline T conjugate(T) {
     static_assert(false, "Unsupported type");
@@ -147,6 +149,38 @@ auto dense_transpose_if_needed(const fpType *x, std::size_t outer_size, std::siz
     return opx;
 }
 
+/// Return the dense matrix A in row major layout.
+/// Diagonal values are overwritten with 1s if diag_val is unit.
+template <typename fpType, typename intType>
+std::vector<fpType> sparse_to_dense(const intType *ia, const intType *ja, const fpType *a,
+                                    std::size_t a_nrows, std::size_t a_ncols, intType a_ind,
+                                    oneapi::mkl::transpose transpose_val,
+                                    oneapi::mkl::diag diag_val) {
+    std::vector<fpType> dense_a(a_nrows * a_ncols, fpType(0));
+    for (std::size_t row = 0; row < a_nrows; row++) {
+        for (intType i = ia[row] - a_ind; i < ia[row + 1] - a_ind; i++) {
+            std::size_t iu = static_cast<std::size_t>(i);
+            std::size_t col = static_cast<std::size_t>(ja[iu] - a_ind);
+            std::size_t dense_a_idx = transpose_val != oneapi::mkl::transpose::nontrans
+                                          ? col * a_nrows + row
+                                          : row * a_ncols + col;
+            fpType val = a[iu];
+            if constexpr (complex_info<fpType>::is_complex) {
+                if (transpose_val == oneapi::mkl::transpose::conjtrans) {
+                    val = std::conj(val);
+                }
+            }
+            dense_a[dense_a_idx] = val;
+        }
+    }
+    if (diag_val == oneapi::mkl::diag::unit) {
+        for (std::size_t i = 0; i < a_nrows; ++i) {
+            dense_a[i * a_ncols + i] = set_fp_value<fpType>()(1.f, 0.f);
+        }
+    }
+    return dense_a;
+}
+
 template <typename fpType, typename intType>
 void prepare_reference_gemv_data(const intType *ia, const intType *ja, const fpType *a,
                                  intType a_nrows, intType a_ncols, intType a_nnz, intType a_ind,
@@ -229,6 +263,34 @@ void prepare_reference_gemm_data(const intType *ia, const intType *ja, const fpT
                 c = alpha * tmp + beta * c;
             }
         }
+    }
+}
+
+template <typename fpType, typename intType>
+void prepare_reference_trsv_data(const intType *ia, const intType *ja, const fpType *a, intType m,
+                                 intType a_ind, oneapi::mkl::uplo uplo_val,
+                                 oneapi::mkl::transpose opA, oneapi::mkl::diag diag_val,
+                                 const fpType *x, fpType *y_ref) {
+    std::size_t mu = static_cast<std::size_t>(m);
+    auto dense_a = sparse_to_dense(ia, ja, a, mu, mu, a_ind, opA, diag_val);
+
+    //
+    // do TRSV operation
+    //
+    //  y_ref <- op(A)^-1 * x
+    //
+    // Compute each element of the reference one after the other starting from 0 (resp. the end) for a lower (resp. upper) triangular matrix.
+    // A matrix is considered lowered if it is lower and not transposed or upper and transposed.
+    const bool is_lower =
+        (uplo_val == oneapi::mkl::uplo::lower) == (opA == oneapi::mkl::transpose::nontrans);
+    for (std::size_t row = 0; row < mu; row++) {
+        std::size_t uplo_row = is_lower ? row : (mu - 1 - row);
+        fpType rhs = x[uplo_row];
+        for (std::size_t col = 0; col < row; col++) {
+            std::size_t uplo_col = is_lower ? col : (mu - 1 - col);
+            rhs -= dense_a[uplo_row * mu + uplo_col] * y_ref[uplo_col];
+        }
+        y_ref[uplo_row] = rhs / dense_a[uplo_row * mu + uplo_row];
     }
 }
 

@@ -22,6 +22,8 @@ set(SPBLAS_SOURCES
   "sparse_gemm_usm.cpp"
   "sparse_gemv_buffer.cpp"
   "sparse_gemv_usm.cpp"
+  "sparse_trsv_buffer.cpp"
+  "sparse_trsv_usm.cpp"
 )
 
 include(WarningsUtils)
