@@ -43,8 +43,8 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
     message(WARNING "Can't enable hip backend, HIP_TARGETS has not been set.")
   endif()
 
-  target_compile_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGET_COMPILE_OPTIONS})
-  target_link_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGET_LINK_OPTIONS})
+  target_compile_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGETS_COMPILE_OPTIONS})
+  target_link_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGETS_LINK_OPTIONS})
 endif()
 
 set(LIB_NAME onemkl_dft_portfft)
