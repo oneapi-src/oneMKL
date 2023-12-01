@@ -39,7 +39,7 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
   set(TARGETS_TRIPLES "nvptx64-nvidia-cuda,spir64")
 
   if (NOT (HIP_TARGETS STREQUAL ""))
-    set(TARGETS_TRIPLES amdgcn-amd-amdhsa,${TARGET_TRIPLES})
+    set(TARGETS_TRIPLES amdgcn-amd-amdhsa,${TARGETS_TRIPLES})
     list(APPEND TARGETS_COMPILE_OPTIONS -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
     list(APPEND TARGETS_LINK_OPTIONS -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
   else()
