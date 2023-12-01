@@ -34,6 +34,7 @@ target_include_directories(${LIB_OBJ}
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
+          ${ONEMKL_GENERATED_INCLUDE_PATH}
 )
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})

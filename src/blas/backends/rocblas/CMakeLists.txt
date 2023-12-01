@@ -37,6 +37,7 @@ target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_BINARY_DIR}/bin
+          ${ONEMKL_GENERATED_INCLUDE_PATH}
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
