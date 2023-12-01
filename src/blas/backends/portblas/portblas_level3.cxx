@@ -158,6 +158,20 @@ void omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t 
     throw unimplemented("blas", "omatcopy", "");
 }
 
+void omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, real_t alpha,
+               sycl::buffer<real_t, 1> &a, std::int64_t lda, std::int64_t stridea,
+               sycl::buffer<real_t, 1> &b, std::int64_t ldb, std::int64_t strideb) {
+    CALL_PORTBLAS_FN(::blas::_omatcopy2, queue, trans, m, n, alpha, a, lda, stridea, b, ldb,
+                     strideb);
+}
+
+void omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+               std::complex<real_t> alpha, sycl::buffer<std::complex<real_t>, 1> &a,
+               std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<real_t>, 1> &b,
+               std::int64_t ldb, std::int64_t strideb) {
+    throw unimplemented("blas", "omatcopy2", "");
+}
+
 void imatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n, real_t alpha,
               sycl::buffer<real_t, 1> &ab, std::int64_t lda, std::int64_t ldb) {
     throw unimplemented("blas", "imatcopy", "");
@@ -329,7 +343,22 @@ sycl::event omatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::i
                      std::complex<real_t> alpha, const std::complex<real_t> *a, std::int64_t lda,
                      std::complex<real_t> *b, std::int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "omatcopy", "");
+    throw unimplemented("blas", "omatcopy", "for USM");
+}
+
+sycl::event omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                      real_t alpha, const real_t *a, std::int64_t lda, std::int64_t stridea,
+                      real_t *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    CALL_PORTBLAS_USM_FN(::blas::_omatcopy2, queue, trans, m, n, alpha, a, lda, stridea, b, ldb,
+                         strideb, dependencies);
+}
+
+sycl::event omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                      std::complex<real_t> alpha, const std::complex<real_t> *a, std::int64_t lda,
+                      std::int64_t stridea, std::complex<real_t> *b, std::int64_t ldb,
+                      std::int64_t strideb, const std::vector<sycl::event> &dependencies) {
+    throw unimplemented("blas", "omatcopy2", "for USM");
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
