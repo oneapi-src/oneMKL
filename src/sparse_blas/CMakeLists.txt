@@ -27,6 +27,7 @@ if(BUILD_SHARED_LIBS)
             ${PROJECT_SOURCE_DIR}/src
             ${PROJECT_SOURCE_DIR}/src/include
             ${CMAKE_BINARY_DIR}/bin
+            ${ONEMKL_GENERATED_INCLUDE_PATH}
             $<TARGET_FILE_DIR:onemkl>
   )
 

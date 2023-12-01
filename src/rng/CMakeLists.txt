@@ -29,6 +29,7 @@ target_include_directories(onemkl_rng
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
+          ${ONEMKL_GENERATED_INCLUDE_PATH}
           $<TARGET_FILE_DIR:onemkl>
 )
 
