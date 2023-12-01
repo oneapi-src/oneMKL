@@ -1585,6 +1585,38 @@ void omatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, s
     function_tables[libkey].column_major_zomatcopy_sycl(queue, trans, m, n, alpha, a, lda, b, ldb);
 }
 
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+               std::int64_t stridea, sycl::buffer<float, 1> &b, std::int64_t ldb,
+               std::int64_t strideb) {
+    function_tables[libkey].column_major_somatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea,
+                                                         b, ldb, strideb);
+}
+
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+               std::int64_t stridea, sycl::buffer<double, 1> &b, std::int64_t ldb,
+               std::int64_t strideb) {
+    function_tables[libkey].column_major_domatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea,
+                                                         b, ldb, strideb);
+}
+
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+               std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<float>, 1> &b,
+               std::int64_t ldb, std::int64_t strideb) {
+    function_tables[libkey].column_major_comatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea,
+                                                         b, ldb, strideb);
+}
+
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+               std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<double>, 1> &b,
+               std::int64_t ldb, std::int64_t strideb) {
+    function_tables[libkey].column_major_zomatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea,
+                                                         b, ldb, strideb);
+}
+
 void imatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
               std::int64_t n, float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda,
               std::int64_t ldb) {
@@ -3662,6 +3694,40 @@ sycl::event omatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose t
                                                                    lda, b, ldb, dependencies);
 }
 
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                      std::int64_t stridea, float *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_somatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+}
+
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, double alpha, const double *a,
+                      std::int64_t lda, std::int64_t stridea, double *b, std::int64_t ldb,
+                      std::int64_t strideb, const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_domatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+}
+
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                      const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
+                      std::complex<float> *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_comatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+}
+
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                      const std::complex<double> *a, std::int64_t lda, std::int64_t stridea,
+                      std::complex<double> *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].column_major_zomatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+}
+
 sycl::event imatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
                      std::int64_t m, std::int64_t n, float alpha, float *ab, std::int64_t lda,
                      std::int64_t ldb, const std::vector<sycl::event> &dependencies) {
@@ -5352,6 +5418,38 @@ void omatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, s
               std::int64_t n, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
               std::int64_t lda, sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb) {
     function_tables[libkey].row_major_zomatcopy_sycl(queue, trans, m, n, alpha, a, lda, b, ldb);
+}
+
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+               std::int64_t stridea, sycl::buffer<float, 1> &b, std::int64_t ldb,
+               std::int64_t strideb) {
+    function_tables[libkey].row_major_somatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea, b,
+                                                      ldb, strideb);
+}
+
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+               std::int64_t stridea, sycl::buffer<double, 1> &b, std::int64_t ldb,
+               std::int64_t strideb) {
+    function_tables[libkey].row_major_domatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea, b,
+                                                      ldb, strideb);
+}
+
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+               std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<float>, 1> &b,
+               std::int64_t ldb, std::int64_t strideb) {
+    function_tables[libkey].row_major_comatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea, b,
+                                                      ldb, strideb);
+}
+
+void omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
+               std::int64_t n, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+               std::int64_t lda, std::int64_t stridea, sycl::buffer<std::complex<double>, 1> &b,
+               std::int64_t ldb, std::int64_t strideb) {
+    function_tables[libkey].row_major_zomatcopy2_sycl(queue, trans, m, n, alpha, a, lda, stridea, b,
+                                                      ldb, strideb);
 }
 
 void imatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans, std::int64_t m,
@@ -7425,6 +7523,40 @@ sycl::event omatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose t
                      std::int64_t ldb, const std::vector<sycl::event> &dependencies) {
     return function_tables[libkey].row_major_zomatcopy_usm_sycl(queue, trans, m, n, alpha, a, lda,
                                                                 b, ldb, dependencies);
+}
+
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                      std::int64_t stridea, float *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_somatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+}
+
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, double alpha, const double *a,
+                      std::int64_t lda, std::int64_t stridea, double *b, std::int64_t ldb,
+                      std::int64_t strideb, const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_domatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+}
+
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, std::complex<float> alpha,
+                      const std::complex<float> *a, std::int64_t lda, std::int64_t stridea,
+                      std::complex<float> *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_comatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
+}
+
+sycl::event omatcopy2(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,
+                      std::int64_t m, std::int64_t n, std::complex<double> alpha,
+                      const std::complex<double> *a, std::int64_t lda, std::int64_t stridea,
+                      std::complex<double> *b, std::int64_t ldb, std::int64_t strideb,
+                      const std::vector<sycl::event> &dependencies) {
+    return function_tables[libkey].row_major_zomatcopy2_usm_sycl(
+        queue, trans, m, n, alpha, a, lda, stridea, b, ldb, strideb, dependencies);
 }
 
 sycl::event imatcopy(oneapi::mkl::device libkey, sycl::queue &queue, transpose trans,

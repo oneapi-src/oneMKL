@@ -1614,6 +1614,40 @@ static inline void omatcopy(sycl::queue &queue, transpose trans, std::int64_t m,
     detail::omatcopy(get_device_id(queue), queue, trans, m, n, alpha, a, lda, b, ldb);
 }
 
+static inline void omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                             float alpha, sycl::buffer<float, 1> &a, std::int64_t lda,
+                             std::int64_t stridea, sycl::buffer<float, 1> &b, std::int64_t ldb,
+                             std::int64_t strideb) {
+    detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, b, ldb,
+                      strideb);
+}
+
+static inline void omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                             double alpha, sycl::buffer<double, 1> &a, std::int64_t lda,
+                             std::int64_t stridea, sycl::buffer<double, 1> &b, std::int64_t ldb,
+                             std::int64_t strideb) {
+    detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, b, ldb,
+                      strideb);
+}
+
+static inline void omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                             std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
+                             std::int64_t lda, std::int64_t stridea,
+                             sycl::buffer<std::complex<float>, 1> &b, std::int64_t ldb,
+                             std::int64_t strideb) {
+    detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, b, ldb,
+                      strideb);
+}
+
+static inline void omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
+                             std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
+                             std::int64_t lda, std::int64_t stridea,
+                             sycl::buffer<std::complex<double>, 1> &b, std::int64_t ldb,
+                             std::int64_t strideb) {
+    detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea, b, ldb,
+                      strideb);
+}
+
 static inline void imatcopy(sycl::queue &queue, transpose trans, std::int64_t m, std::int64_t n,
                             float alpha, sycl::buffer<float, 1> &ab, std::int64_t lda,
                             std::int64_t ldb) {
@@ -4053,6 +4087,48 @@ static inline sycl::event omatcopy(sycl::queue &queue, transpose trans, std::int
                                    const std::vector<sycl::event> &dependencies = {}) {
     auto done = detail::omatcopy(get_device_id(queue), queue, trans, m, n, alpha, a, lda, b, ldb,
                                  dependencies);
+    return done;
+}
+
+static inline sycl::event omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m,
+                                    std::int64_t n, float alpha, const float *a, std::int64_t lda,
+                                    std::int64_t stridea, float *b, std::int64_t ldb,
+                                    std::int64_t strideb,
+                                    const std::vector<sycl::event> &dependencies = {}) {
+    auto done = detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea,
+                                  b, ldb, strideb, dependencies);
+    return done;
+}
+
+static inline sycl::event omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m,
+                                    std::int64_t n, double alpha, const double *a, std::int64_t lda,
+                                    std::int64_t stridea, double *b, std::int64_t ldb,
+                                    std::int64_t strideb,
+                                    const std::vector<sycl::event> &dependencies = {}) {
+    auto done = detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea,
+                                  b, ldb, strideb, dependencies);
+    return done;
+}
+
+static inline sycl::event omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m,
+                                    std::int64_t n, std::complex<float> alpha,
+                                    const std::complex<float> *a, std::int64_t lda,
+                                    std::int64_t stridea, std::complex<float> *b, std::int64_t ldb,
+                                    std::int64_t strideb,
+                                    const std::vector<sycl::event> &dependencies = {}) {
+    auto done = detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea,
+                                  b, ldb, strideb, dependencies);
+    return done;
+}
+
+static inline sycl::event omatcopy2(sycl::queue &queue, transpose trans, std::int64_t m,
+                                    std::int64_t n, std::complex<double> alpha,
+                                    const std::complex<double> *a, std::int64_t lda,
+                                    std::int64_t stridea, std::complex<double> *b, std::int64_t ldb,
+                                    std::int64_t strideb,
+                                    const std::vector<sycl::event> &dependencies = {}) {
+    auto done = detail::omatcopy2(get_device_id(queue), queue, trans, m, n, alpha, a, lda, stridea,
+                                  b, ldb, strideb, dependencies);
     return done;
 }
 
