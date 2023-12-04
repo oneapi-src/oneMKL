@@ -26,7 +26,7 @@ else()
   if("2023.2.0" MATCHES "^([0-9]+)\\.")
     set(CVF_VERSION_MAJOR "${CMAKE_MATCH_1}")
   else()
-    set(CVF_VERSION_MAJOR "2023.2.0")
+    set(CVF_VERSION_MAJOR "2024.0.0")
   endif()
 
   if(PACKAGE_FIND_VERSION_MAJOR STREQUAL CVF_VERSION_MAJOR)
