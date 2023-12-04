@@ -1,20 +1,25 @@
 #===============================================================================
-# Copyright 2021-2023 Intel Corporation.
+# Copyright 2023 Intel Corporation
 #
-# This software and the related documents are Intel copyrighted  materials,  and
-# your use of  them is  governed by the  express license  under which  they were
-# provided to you (License).  Unless the License provides otherwise, you may not
-# use, modify, copy, publish, distribute,  disclose or transmit this software or
-# the related documents without Intel's prior written permission.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# This software and the related documents  are provided as  is,  with no express
-# or implied  warranties,  other  than those  that are  expressly stated  in the
-# License.
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
+# SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
 #===================================================================
 # CMake Config file for Intel(R) oneAPI Math Kernel Library (oneMKL)
-#===================================================================
+#===============================================================================
 
 #===============================================================================
 # Input parameters
@@ -852,15 +857,39 @@ endforeach()
 # Threading selection
 if(MKL_THREADING STREQUAL "tbb_thread" OR MKL_SYCL_THREADING STREQUAL "tbb_thread")
   find_package(TBB REQUIRED CONFIG COMPONENTS tbb)
-  if(MKL_THREADING STREQUAL "tbb_thread")
-    set(MKL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
-    set(MKL_SDL_THREAD_ENV "TBB")
+  if(TARGET TBB::tbb)
+    if(MKL_THREADING STREQUAL "tbb_thread")
+      set(MKL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
+      set(MKL_SDL_THREAD_ENV "TBB")
+    endif()
+    if(MKL_SYCL_THREADING STREQUAL "tbb_thread")
+      set(MKL_SYCL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
+    endif()
+    get_property(TBB_LIB TARGET TBB::tbb PROPERTY IMPORTED_LOCATION_RELEASE)
+    get_filename_component(TBB_LIB_DIR ${TBB_LIB} DIRECTORY)
+  else()
+    if(UNIX)
+      set(TBB_LIBNAME libtbb.so)
+    else()
+      set(TBB_LIBNAME tbb.lib)
+    endif()
+    find_path(TBB_LIB_DIR ${TBB_LIBNAME}
+        HINTS $ENV{TBBROOT} $ENV{MKLROOT} ${MKL_ROOT} ${TBB_ROOT}
+        PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
+                 "../../tbb/latest/lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/vc14" "lib/intel64/vc14"
+    )
+    find_library(TBB_LIBRARIES NAMES tbb
+        HINTS $ENV{TBBROOT} $ENV{MKLROOT} ${MKL_ROOT} ${TBB_ROOT}
+        PATH_SUFFIXES "lib" "lib/intel64/gcc4.4" "lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/gcc4.4" "../tbb/lib/intel64/gcc4.8"
+                 "../../tbb/latest/lib/intel64/gcc4.8"
+                 "../tbb/lib/intel64/vc14" "lib/intel64/vc14"
+    )
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(MKL REQUIRED_VARS TBB_LIBRARIES)
   endif()
-  if(MKL_SYCL_THREADING STREQUAL "tbb_thread")
-    set(MKL_SYCL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
-  endif()
-  get_property(TBB_LIB TARGET TBB::tbb PROPERTY IMPORTED_LOCATION_RELEASE)
-  get_filename_component(TBB_LIB_DIR ${TBB_LIB} DIRECTORY)
   if(UNIX)
     if(CMAKE_SKIP_BUILD_RPATH)
       set(TBB_LINK "-L${TBB_LIB_DIR} -ltbb")
