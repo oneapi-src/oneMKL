@@ -36,9 +36,6 @@ target_include_directories(${LIB_OBJ}
 )
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
-if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
-  add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
-endif()
 
 if(TARGET MKL::MKL_SYCL::SPARSE)
   target_link_libraries(${LIB_OBJ}
