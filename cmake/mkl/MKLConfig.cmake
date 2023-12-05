@@ -856,7 +856,7 @@ endforeach()
 
 # Threading selection
 if(MKL_THREADING STREQUAL "tbb_thread" OR MKL_SYCL_THREADING STREQUAL "tbb_thread")
-  find_package(TBB REQUIRED CONFIG COMPONENTS tbb)
+  find_package(TBB CONFIG COMPONENTS tbb)
   if(TARGET TBB::tbb)
     if(MKL_THREADING STREQUAL "tbb_thread")
       set(MKL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
