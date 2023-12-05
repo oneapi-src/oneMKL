@@ -23,7 +23,7 @@ include(CMakeFindDependencyMacro)
 #find_dependency(MKL REQUIRED)
 # try to search for SYCLConfig first to find compiler. If it's not present, use local FindCompiler.cmake
 find_package(SYCL QUIET)
-if(NOT SYCL_FOUND)
+if(NOT ${SYCL_FOUND})
   find_package(Compiler REQUIRED)
 endif()
 
