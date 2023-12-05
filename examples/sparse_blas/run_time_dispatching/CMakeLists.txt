@@ -30,6 +30,9 @@ set(DEVICE_FILTERS "")
 if(ENABLE_MKLCPU_BACKEND)
   list(APPEND DEVICE_FILTERS "cpu")
 endif()
+if(ENABLE_MKLGPU_BACKEND)
+  list(APPEND DEVICE_FILTERS "gpu")
+endif()
 
 message(STATUS "SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
 

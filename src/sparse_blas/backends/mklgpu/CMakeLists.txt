@@ -17,16 +17,16 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(LIB_NAME onemkl_sparse_blas_mklcpu)
+set(LIB_NAME onemkl_sparse_blas_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 include(WarningsUtils)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
-  mklcpu_basic.cpp
-  mklcpu_operations.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>
+  mklgpu_basic.cpp
+  mklgpu_operations.cpp
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: mklgpu_wrappers.cpp>
 )
 
 target_include_directories(${LIB_OBJ}

@@ -4,6 +4,7 @@ oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the followin
 - rng: uniform_usm  
 - lapack: getrs_usm
 - dft: complex_fwd_buffer, real_fwd_usm
+- sparse_blas: sparse_gemv_usm
 
 Each routine has one run-time dispatching example and one compile-time dispatching example (which uses both mklcpu and cuda backends), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
 
@@ -16,7 +17,7 @@ The example executable naming convention follows `example_<$domain>_<$routine>_<
   or `example_<$domain>_<$routine>` for run-time dispatching examples. 
   E.g. `example_blas_gemm_usm_mklcpu_cublas `  `example_blas_gemm_usm`
 
-## Example outputs (blas, rng, lapack, dft)
+## Example outputs (blas, rng, lapack, dft, sparse_blas)
   
 ## blas
 
@@ -455,4 +456,118 @@ Device name is: AMD Radeon PRO W6800
 Running with single precision real data type:
 DFT example run_time dispatch
 DFT example ran OK
+```
+
+## sparse_blas
+
+Run-time dispatching examples with mklcpu backend
+```
+$ export SYCL_DEVICE_FILTER=cpu
+$ ./bin/example_sparse_blas_gemv_usm
+
+########################################################################
+# Sparse Matrix-Vector Multiply Example: 
+# 
+# y = alpha * op(A) * x + beta * y
+# 
+# where A is a sparse matrix in CSR format, x and y are dense vectors
+# and alpha, beta are floating point type precision scalars.
+# 
+# Using apis:
+#   sparse::gemv
+# 
+# Using single precision (float) data type
+# 
+# Device will be selected during runtime.
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+# 
+########################################################################
+
+Running Sparse BLAS GEMV USM example on CPU device.
+Device name is: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+Running with single precision real data type:
+
+		sparse::gemv parameters:
+			transA = nontrans
+			nrows = 64
+			alpha = 1, beta = 0
+
+		 sparse::gemv example passed
+	Finished
+Sparse BLAS GEMV USM example ran OK.
+```
+
+Run-time dispatching examples with mklgpu backend
+```
+$ export SYCL_DEVICE_FILTER=gpu
+$ ./bin/example_sparse_blas_gemv_usm
+
+########################################################################
+# Sparse Matrix-Vector Multiply Example: 
+# 
+# y = alpha * op(A) * x + beta * y
+# 
+# where A is a sparse matrix in CSR format, x and y are dense vectors
+# and alpha, beta are floating point type precision scalars.
+# 
+# Using apis:
+#   sparse::gemv
+# 
+# Using single precision (float) data type
+# 
+# Device will be selected during runtime.
+# The environment variable SYCL_DEVICE_FILTER can be used to specify
+# SYCL device
+# 
+########################################################################
+
+Running Sparse BLAS GEMV USM example on GPU device.
+Device name is: Intel(R) HD Graphics 530 [0x1912]
+Running with single precision real data type:
+
+		sparse::gemv parameters:
+			transA = nontrans
+			nrows = 64
+			alpha = 1, beta = 0
+
+		 sparse::gemv example passed
+	Finished
+Sparse BLAS GEMV USM example ran OK.
+```
+
+Compile-time dispatching example with mklcpu backend
+```
+$ export SYCL_DEVICE_FILTER=cpu
+$ ./bin/example_sparse_blas_gemv_usm_mklcpu
+
+########################################################################
+# Sparse Matrix-Vector Multiply Example: 
+# 
+# y = alpha * op(A) * x + beta * y
+# 
+# where A is a sparse matrix in CSR format, x and y are dense vectors
+# and alpha, beta are floating point type precision scalars.
+# 
+# Using apis:
+#   sparse::gemv
+# 
+# Using single precision (float) data type
+# 
+# Running on Intel CPU device
+# 
+########################################################################
+
+Running Sparse BLAS GEMV USM example on CPU device.
+Device name is: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+Running with single precision real data type:
+
+		sparse::gemv parameters:
+			transA = nontrans
+			nrows = 64
+			alpha = 1, beta = 0
+
+		 sparse::gemv example passed
+	Finished
+Sparse BLAS GEMV USM example ran OK.
 ```
