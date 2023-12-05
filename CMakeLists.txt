@@ -105,7 +105,8 @@ if(ENABLE_MKLGPU_BACKEND
 	OR ENABLE_ROCFFT_BACKEND)
   list(APPEND DOMAINS_LIST "dft")
 endif()
-if(ENABLE_MKLCPU_BACKEND)
+if(ENABLE_MKLCPU_BACKEND
+        OR ENABLE_MKLGPU_BACKEND)
   list(APPEND DOMAINS_LIST "sparse_blas")
 endif()
 
@@ -207,8 +208,6 @@ endif()
 if(NOT TARGET_DOMAINS OR TARGET_DOMAINS STREQUAL "None")
   # Set to all by default
   set(TARGET_DOMAINS ${DOMAINS_LIST})
-  # Remove sparse_blas from the default until it is supported by MKLCPU and MKLGPU backends
-  list(REMOVE_ITEM TARGET_DOMAINS "sparse_blas")
 else()
   # Make sure the input was converted to list
   string(REPLACE " " ";" TARGET_DOMAINS ${TARGET_DOMAINS})
