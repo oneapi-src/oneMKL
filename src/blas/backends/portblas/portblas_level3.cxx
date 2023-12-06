@@ -32,7 +32,35 @@ void gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transp
           sycl::buffer<std::complex<real_t>, 1> &a, std::int64_t lda,
           sycl::buffer<std::complex<real_t>, 1> &b, std::int64_t ldb, std::complex<real_t> beta,
           sycl::buffer<std::complex<real_t>, 1> &c, std::int64_t ldc) {
-    throw unimplemented("blas", "gemm", " for complex");
+    using sycl_complex_real_t = sycl::ext::oneapi::experimental::complex<real_t>;
+    if (transa == oneapi::mkl::transpose::conjtrans ||
+        transb == oneapi::mkl::transpose::conjtrans) {
+        throw unimplemented("blas", "gemm", "Conjugate Transpose unsupported yet on portBLAS");
+    }
+    // Intermediate buffers for conversion purposes as portBLAS expects sycl::complex instead of std::complex
+    sycl::buffer<sycl_complex_real_t, 1> a_pb{ sycl::range<1>(a.size()) };
+    sycl::buffer<sycl_complex_real_t, 1> b_pb{ sycl::range<1>(b.size()) };
+    sycl::buffer<sycl_complex_real_t, 1> c_pb{ sycl::range<1>(c.size()) };
+
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::read> a_acc(a);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::write> a_pb_acc(a_pb);
+    queue.copy(a_acc, a_pb_acc);
+
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::read> b_acc(b);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::write> b_pb_acc(b_pb);
+    queue.copy(b_acc, b_pb_acc);
+
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::read> c_acc(c);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::write> c_pb_acc(c_pb);
+    queue.copy(c_acc, c_pb_acc);
+
+    CALL_PORTBLAS_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a_pb, lda, b_pb, ldb,
+                     beta, c_pb, ldc);
+
+    // Copy c_pb back to c
+    sycl::accessor<std::complex<real_t>, 1, sycl::access::mode::write> out_acc(c);
+    sycl::accessor<sycl_complex_real_t, 1, sycl::access::mode::read> out_pb_acc(c_pb);
+    queue.copy(out_pb_acc, out_acc);
 }
 
 void symm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
@@ -213,7 +241,12 @@ sycl::event gemm(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl:
                  const std::complex<real_t> *a, std::int64_t lda, const std::complex<real_t> *b,
                  std::int64_t ldb, std::complex<real_t> beta, std::complex<real_t> *c,
                  std::int64_t ldc, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm", " for USM");
+    if (transa == oneapi::mkl::transpose::conjtrans ||
+        transb == oneapi::mkl::transpose::conjtrans) {
+        throw unimplemented("blas", "gemm", "Conjugate Transpose unsupported yet on portBLAS");
+    }
+    CALL_PORTBLAS_USM_FN(::blas::_gemm, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta,
+                         c, ldc, dependencies);
 }
 
 sycl::event symm(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
@@ -377,8 +410,8 @@ sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, std:
                     std::int64_t n, real_t alpha, const real_t *a, std::int64_t lda, real_t beta,
                     const real_t *b, std::int64_t ldb, real_t *c, std::int64_t ldc,
                     const std::vector<sycl::event> &dependencies) {
-    CALL_PORTBLAS_USM_FN(::blas::_omatadd, queue, transa, transb, m, n, alpha, a, lda, beta, b, ldb, c,
-                     ldc, dependencies);
+    CALL_PORTBLAS_USM_FN(::blas::_omatadd, queue, transa, transb, m, n, alpha, a, lda, beta, b, ldb,
+                         c, ldc, dependencies);
 }
 
 sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, std::int64_t m,
