@@ -72,7 +72,7 @@ if (NOT portfft_FOUND)
 	FetchContent_Declare(
 		portfft
 		GIT_REPOSITORY https://github.com/codeplaysoftware/portFFT.git
-		GIT_TAG        49f667dca32921747100ec0d79b21940d516a4eb
+		GIT_TAG        e4251e8ef89a8ac4d851a4cc08a0577a28f953e0
 	)
 	FetchContent_MakeAvailable(portfft)
 	message(STATUS "portFFT - downloaded")
