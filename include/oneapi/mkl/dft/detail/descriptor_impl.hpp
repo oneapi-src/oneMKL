@@ -84,6 +84,10 @@ public:
     void commit(backend_selector<backend::rocfft> selector);
 #endif
 
+#ifdef ENABLE_PORTFFT_BACKEND
+    void commit(backend_selector<backend::portfft> selector);
+#endif
+
     const dft_values<prec, dom>& get_values() const noexcept {
         return values_;
     };

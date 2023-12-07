@@ -91,23 +91,35 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_MKLCPU_BACKEND
               LIB_NAME("dft_mklcpu")
 #endif
+#ifdef ENABLE_PORTFFT_BACKEND
+                  LIB_NAME("dft_portfft")
+#endif
           } },
         { device::intelgpu,
           {
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("dft_mklgpu")
 #endif
+#ifdef ENABLE_PORTFFT_BACKEND
+                  LIB_NAME("dft_portfft")
+#endif
           } },
         { device::amdgpu,
           {
 #ifdef ENABLE_ROCFFT_BACKEND
-              LIB_NAME("dft_rocfft"),
+              LIB_NAME("dft_rocfft")
+#endif
+#ifdef ENABLE_PORTFFT_BACKEND
+                  LIB_NAME("dft_portfft")
 #endif
           } },
         { device::nvidiagpu,
           {
 #ifdef ENABLE_CUFFT_BACKEND
               LIB_NAME("dft_cufft")
+#endif
+#ifdef ENABLE_PORTFFT_BACKEND
+                  LIB_NAME("dft_portfft")
 #endif
           } } } },
 
