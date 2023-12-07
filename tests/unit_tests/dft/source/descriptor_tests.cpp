@@ -602,6 +602,17 @@ int test_commit(sycl::device* dev) {
         }
     }
 
+    // test that descriptor is supported
+    try {
+        oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+        commit_descriptor(descriptor, sycl_queue);
+    }
+    catch (oneapi::mkl::unimplemented& e) {
+        std::cout << "Skipping because simple commit not supported. Reason: \"" << e.what()
+                  << "\"\n";
+        return test_skipped;
+    }
+
     get_commited<precision, domain>(sycl_queue);
     recommit_values<precision, domain>(sycl_queue);
     change_queue_causes_wait<precision, domain>(sycl_queue);

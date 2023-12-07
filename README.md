@@ -18,8 +18,8 @@ oneMKL is part of [oneAPI](https://oneapi.io).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=12 align="center">oneMKL interface</td>
-            <td rowspan=12 align="center">oneMKL selector</td>
+            <td rowspan=13 align="center">oneMKL interface</td>
+            <td rowspan=13 align="center">oneMKL selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
             <td align="center">x86 CPU</td>
         </tr>
@@ -65,6 +65,10 @@ oneMKL is part of [oneAPI](https://oneapi.io).
         </tr>
         <tr>
             <td align="center"><a href="https://github.com/codeplaysoftware/portBLAS"> portBLAS </a></td>
+            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
+        </tr>
+        <tr>
+            <td align="center"><a href="https://github.com/codeplaysoftware/portFFT"> portFFT </a></td>
             <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
         </tr>
     </tbody>
@@ -250,7 +254,7 @@ Supported domains: BLAS, LAPACK, RNG, DFT, SPARSE_BLAS
             <td align="center">LLVM*, hipSYCL</td>
         </tr>
         <tr>
-            <td rowspan=4 align="center">DFT</td>
+            <td rowspan=5 align="center">DFT</td>
             <td align="center">Intel GPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
@@ -270,6 +274,12 @@ Supported domains: BLAS, LAPACK, RNG, DFT, SPARSE_BLAS
         <tr>
             <td align="center">AMD GPU</td>
             <td align="center">AMD rocFFT</td>
+            <td align="center">Dynamic, Static</td>
+            <td align="center">DPC++</td>
+        </tr>
+        <tr>
+            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
+            <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++</td>
         </tr>
@@ -498,6 +508,8 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | Yes | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
 [Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | Yes | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
 [portBLAS](https://github.com/codeplaysoftware/portBLAS) | 0.1 | No | *N/A* | *Installed by user* | [Apache License v2.0](https://github.com/codeplaysoftware/portBLAS/blob/master/LICENSE)
+[portFFT](https://github.com/codeplaysoftware/portFFT) | 0.1 | No | *N/A* | *Installed by user or automatically by cmake* | [Apache License v2.0](https://github.com/codeplaysoftware/portFFT/blob/master/LICENSE)
+
 
 *conan-center: https://api.bintray.com/conan/conan/conan-center*
 

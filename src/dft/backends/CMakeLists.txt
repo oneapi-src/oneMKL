@@ -32,3 +32,7 @@ endif()
 if(ENABLE_ROCFFT_BACKEND)
   add_subdirectory(rocfft)
 endif()
+
+if(ENABLE_PORTFFT_BACKEND)
+  add_subdirectory(portfft)
+endif()
