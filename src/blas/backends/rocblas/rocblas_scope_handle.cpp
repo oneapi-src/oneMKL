@@ -58,10 +58,11 @@ RocblasScopedContextHandler::RocblasScopedContextHandler(sycl::queue queue,
         : interop_h(ih),
           needToRecover_(false) {
     placedContext_ = new sycl::context(queue.get_context());
-    auto device = queue.get_device();
-    auto desired = sycl::get_native<sycl::backend::ext_oneapi_hip>(*placedContext_);
+    auto hipDevice = ih.get_native_device<sycl::backend::ext_oneapi_hip>();
     hipError_t err;
+    hipCtx_t desired;
     HIP_ERROR_FUNC(hipCtxGetCurrent, err, &original_);
+    HIP_ERROR_FUNC(hipDevicePrimaryCtxRetain, err, &desired, hipDevice);
     if (original_ != desired) {
         // Sets the desired context as the active one for the thread
         HIP_ERROR_FUNC(hipCtxSetCurrent, err, desired);
@@ -103,8 +104,11 @@ void ContextCallback(void *userData) {
 }
 
 rocblas_handle RocblasScopedContextHandler::get_handle(const sycl::queue &queue) {
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(
-        sycl::get_native<sycl::backend::ext_oneapi_hip>(*placedContext_));
+    auto hipDevice = interop_h.get_native_device<sycl::backend::ext_oneapi_hip>();
+    hipError_t hipErr;
+    hipCtx_t desired;
+    HIP_ERROR_FUNC(hipDevicePrimaryCtxRetain, hipErr, &desired, hipDevice);
+    auto piPlacedContext_ = reinterpret_cast<pi_context>(desired);
     hipStream_t streamId = get_stream(queue);
     rocblas_status err;
     auto it = handle_helper.rocblas_handle_container_mapper_.find(piPlacedContext_);

@@ -42,10 +42,11 @@ CublasScopedContextHandler::CublasScopedContextHandler(sycl::queue queue, sycl::
         : ih(ih),
           needToRecover_(false) {
     placedContext_ = new sycl::context(queue.get_context());
-    auto device = queue.get_device();
-    auto desired = sycl::get_native<sycl::backend::ext_oneapi_cuda>(*placedContext_);
+    auto cudaDevice = ih.get_native_device<sycl::backend::ext_oneapi_cuda>();
     CUresult err;
+    CUcontext desired;
     CUDA_ERROR_FUNC(cuCtxGetCurrent, err, &original_);
+    CUDA_ERROR_FUNC(cuDevicePrimaryCtxRetain, err, &desired, cudaDevice);
     if (original_ != desired) {
         // Sets the desired context as the active one for the thread
         CUDA_ERROR_FUNC(cuCtxSetCurrent, err, desired);
@@ -87,8 +88,11 @@ void ContextCallback(void *userData) {
 }
 
 cublasHandle_t CublasScopedContextHandler::get_handle(const sycl::queue &queue) {
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(
-        sycl::get_native<sycl::backend::ext_oneapi_cuda>(*placedContext_));
+    auto cudaDevice = ih.get_native_device<sycl::backend::ext_oneapi_cuda>();
+    CUresult cuErr;
+    CUcontext desired;
+    CUDA_ERROR_FUNC(cuDevicePrimaryCtxRetain, cuErr, &desired, cudaDevice);
+    auto piPlacedContext_ = reinterpret_cast<pi_context>(desired);
     CUstream streamId = get_stream(queue);
     cublasStatus_t err;
     auto it = handle_helper.cublas_handle_mapper_.find(piPlacedContext_);
