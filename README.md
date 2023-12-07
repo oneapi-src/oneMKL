@@ -279,7 +279,7 @@ Supported domains: BLAS, LAPACK, RNG, DFT, SPARSE_BLAS
         </tr>
         <tr>
             <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
-            <td align="center">portFFT</td>
+            <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
             <td align="center">Dynamic, Static</td>
             <td align="center">DPC++</td>
         </tr>
