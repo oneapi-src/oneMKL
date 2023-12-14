@@ -29,36 +29,31 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         return test_skipped;
     }
 
-    auto strides_fwd = this->strides_fwd;
-    auto strides_bwd = this->strides_bwd;
+    auto modified_strides_fwd = this->strides_fwd;
+    auto modified_strides_bwd = this->strides_bwd;
     if (domain == oneapi::mkl::dft::domain::REAL) {
         // both input and output strides must be set
-        if (strides_fwd.size() == 0) {
-            auto strides_tmp = get_conjugate_even_complex_strides(sizes);
-            strides_fwd = { strides_tmp[0] };
-            //to be able to calculate in place each row must fit backward data
-            for (size_t i = 0; i < sizes.size() - 1; i++) {
-                strides_fwd.push_back(strides_tmp[i + 1] * 2);
-            }
-            strides_fwd.push_back(1);
+        auto default_conjuate_strides = get_conjugate_even_complex_strides(sizes);
+        std::ptrdiff_t rank = static_cast<std::ptrdiff_t>(sizes.size());
+
+        if (modified_strides_fwd.size() == 0) {
+            modified_strides_fwd = std::vector<std::int64_t>(
+                default_conjuate_strides.begin(), default_conjuate_strides.begin() + rank + 1);
+            std::transform(modified_strides_fwd.begin() + 1, modified_strides_fwd.begin() + rank,
+                           modified_strides_fwd.begin() + 1, [](std::int64_t& s) { return 2 * s; });
         }
-        if (strides_bwd.size() == 0) {
-            auto strides_tmp = get_conjugate_even_complex_strides(sizes);
-            strides_bwd = { strides_tmp[0] };
-            //to be able to calculate in place each row must fit backward data
-            for (size_t i = 0; i < sizes.size() - 1; i++) {
-                strides_bwd.push_back(strides_tmp[i + 1]);
-            }
-            strides_bwd.push_back(1);
+        if (modified_strides_bwd.size() == 0) {
+            modified_strides_bwd = std::vector<std::int64_t>(
+                default_conjuate_strides.begin(), default_conjuate_strides.begin() + rank + 1);
         }
     }
     else {
-        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
-        strides_fwd = strides_bwd;
+        // General consistency requirements for in-place complex domain transforms require that strides are the same forward and backward.
+        modified_strides_fwd = modified_strides_bwd;
     }
 
     auto [forward_distance, backward_distance] =
-        get_default_distances<domain, true>(sizes, strides_fwd, strides_bwd);
+        get_default_distances<domain, true>(sizes, modified_strides_fwd, modified_strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
 
     descriptor_t descriptor{ sizes };
@@ -73,20 +68,22 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    if (strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_fwd.data());
+    if (modified_strides_fwd.size()) {
+        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                             modified_strides_fwd.data());
     }
-    if (strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_bwd.data());
+    if (modified_strides_bwd.size()) {
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                             modified_strides_bwd.data());
     }
     commit_descriptor(descriptor, sycl_queue);
 
     std::vector<FwdInputType> inout_host(
-        strided_copy(input, sizes, strides_fwd, batches, forward_distance));
+        strided_copy(input, sizes, modified_strides_fwd, batches, forward_distance));
     int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
     inout_host.resize(
         cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches +
-                      get_default(strides_bwd, 0, 0L) * real_multiplier));
+                      get_default(modified_strides_bwd, 0, 0L) * real_multiplier));
 
     {
         sycl::buffer<FwdInputType, 1> inout_buf{ inout_host };
@@ -99,12 +96,13 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             for (std::int64_t i = 0; i < batches; i++) {
                 EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(
                     ptr_host + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
-                    strides_bwd, abs_error_margin, rel_error_margin, std::cout));
+                    modified_strides_bwd, abs_error_margin, rel_error_margin, std::cout));
             }
         }
 
-        if (strides_bwd.size()) {
-            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_bwd.data());
+        if (modified_strides_bwd.size()) {
+            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                                 modified_strides_bwd.data());
         }
         else {
             //for real case strides are always set at the top of the test
@@ -112,9 +110,9 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
             descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                                  input_strides.data());
         }
-        if (strides_fwd.size()) {
+        if (modified_strides_fwd.size()) {
             descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 strides_fwd.data());
+                                 modified_strides_fwd.data());
         }
         else {
             auto output_strides = get_default_strides(sizes);
@@ -135,7 +133,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     for (std::int64_t i = 0; i < batches; i++) {
         EXPECT_TRUE(check_equal_strided<false>(
             inout_host.data() + forward_distance * i, fwd_data_ref.data() + ref_distance * i, sizes,
-            strides_fwd, abs_error_margin, rel_error_margin, std::cout));
+            modified_strides_fwd, abs_error_margin, rel_error_margin, std::cout));
     }
 
     return !::testing::Test::HasFailure();
@@ -147,36 +145,31 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
         return test_skipped;
     }
 
-    auto strides_fwd = this->strides_fwd;
-    auto strides_bwd = this->strides_bwd;
+    auto modified_strides_fwd = this->strides_fwd;
+    auto modified_strides_bwd = this->strides_bwd;
     if (domain == oneapi::mkl::dft::domain::REAL) {
         // both input and output strides must be set
-        if (strides_fwd.size() == 0) {
-            auto strides_tmp = get_conjugate_even_complex_strides(sizes);
-            strides_fwd = { strides_tmp[0] };
-            //to be able to calculate in place each row must fit backward data
-            for (size_t i = 0; i < sizes.size() - 1; i++) {
-                strides_fwd.push_back(strides_tmp[i + 1] * 2);
-            }
-            strides_fwd.push_back(1);
+        auto default_conjuate_strides = get_conjugate_even_complex_strides(sizes);
+        std::ptrdiff_t rank = static_cast<std::ptrdiff_t>(sizes.size());
+
+        if (modified_strides_fwd.size() == 0) {
+            modified_strides_fwd = std::vector<std::int64_t>(
+                default_conjuate_strides.begin(), default_conjuate_strides.begin() + rank + 1);
+            std::transform(modified_strides_fwd.begin() + 1, modified_strides_fwd.begin() + rank,
+                           modified_strides_fwd.begin() + 1, [](std::int64_t& s) { return 2 * s; });
         }
-        if (strides_bwd.size() == 0) {
-            auto strides_tmp = get_conjugate_even_complex_strides(sizes);
-            strides_bwd = { strides_tmp[0] };
-            //to be able to calculate in place each row must fit backward data
-            for (size_t i = 0; i < sizes.size() - 1; i++) {
-                strides_bwd.push_back(strides_tmp[i + 1]);
-            }
-            strides_bwd.push_back(1);
+        if (modified_strides_bwd.size() == 0) {
+            modified_strides_bwd = std::vector<std::int64_t>(
+                default_conjuate_strides.begin(), default_conjuate_strides.begin() + rank + 1);
         }
     }
     else {
-        // spec says strides_bwd is ignored and strides_fwd is reused for backward domain for in-place complex
-        strides_fwd = strides_bwd;
+        // General consistency requirements for in-place complex domain transforms require that strides are the same forward and backward.
+        modified_strides_fwd = modified_strides_bwd;
     }
 
     auto [forward_distance, backward_distance] =
-        get_default_distances<domain, true>(sizes, strides_fwd, strides_bwd);
+        get_default_distances<domain, true>(sizes, modified_strides_fwd, modified_strides_bwd);
     auto ref_distance = std::accumulate(sizes.begin(), sizes.end(), 1, std::multiplies<>());
 
     descriptor_t descriptor = { sizes };
@@ -191,21 +184,24 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     descriptor.set_value(oneapi::mkl::dft::config_param::NUMBER_OF_TRANSFORMS, batches);
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
-    if (strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_fwd.data());
+    if (modified_strides_fwd.size()) {
+        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                             modified_strides_fwd.data());
     }
-    if (strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_bwd.data());
+    if (modified_strides_bwd.size()) {
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                             modified_strides_bwd.data());
     }
     commit_descriptor(descriptor, sycl_queue);
 
     auto ua_input = usm_allocator_t<FwdInputType>(cxt, *dev);
     std::vector<FwdInputType, decltype(ua_input)> inout(
-        strided_copy(input, sizes, strides_fwd, batches, forward_distance, ua_input), ua_input);
+        strided_copy(input, sizes, modified_strides_fwd, batches, forward_distance, ua_input),
+        ua_input);
     int real_multiplier = (domain == oneapi::mkl::dft::domain::REAL ? 2 : 1);
     inout.resize(
         cast_unsigned(std::max(forward_distance, real_multiplier * backward_distance) * batches +
-                      real_multiplier * get_default(strides_bwd, 0, 0L)));
+                      real_multiplier * get_default(modified_strides_bwd, 0, 0L)));
 
     std::vector<sycl::event> no_dependencies;
     oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout.data(),
@@ -215,20 +211,22 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     for (std::int64_t i = 0; i < batches; i++) {
         EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(
             reinterpret_cast<FwdOutputType*>(inout.data()) + backward_distance * i,
-            out_host_ref.data() + ref_distance * i, sizes, strides_bwd, abs_error_margin,
+            out_host_ref.data() + ref_distance * i, sizes, modified_strides_bwd, abs_error_margin,
             rel_error_margin, std::cout));
     }
 
-    if (strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_bwd.data());
+    if (modified_strides_bwd.size()) {
+        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                             modified_strides_bwd.data());
     }
     else {
         //for real case strides are always set at the top of the test
         auto input_strides = get_default_strides(sizes);
         descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, input_strides.data());
     }
-    if (strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_fwd.data());
+    if (modified_strides_fwd.size()) {
+        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                             modified_strides_fwd.data());
     }
     else {
         auto output_strides = get_default_strides(sizes);
@@ -245,9 +243,9 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
                   [this](auto& x) { x *= static_cast<PrecisionType>(forward_elements); });
 
     for (std::int64_t i = 0; i < batches; i++) {
-        EXPECT_TRUE(check_equal_strided<false>(inout.data() + forward_distance * i,
-                                               input.data() + ref_distance * i, sizes, strides_fwd,
-                                               abs_error_margin, rel_error_margin, std::cout));
+        EXPECT_TRUE(check_equal_strided<false>(
+            inout.data() + forward_distance * i, input.data() + ref_distance * i, sizes,
+            modified_strides_fwd, abs_error_margin, rel_error_margin, std::cout));
     }
 
     return !::testing::Test::HasFailure();

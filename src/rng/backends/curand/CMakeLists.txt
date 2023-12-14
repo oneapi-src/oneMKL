@@ -72,6 +72,7 @@ target_include_directories(${LIB_OBJ}
           ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
           ${MKL_INCLUDE}
+          ${ONEMKL_GENERATED_INCLUDE_PATH}
 )
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::cuRAND::cuRAND)

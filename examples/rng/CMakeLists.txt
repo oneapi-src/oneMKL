@@ -20,6 +20,7 @@
 # Note: compile-time example uses both MKLCPU and CURAND backends, therefore
 # cmake in the sub-directory will only build it if CURAND backend is enabled
 add_subdirectory(compile_time_dispatching)
+add_subdirectory(device)
 
 # runtime compilation is only possible with dynamic libraries
 if (BUILD_SHARED_LIBS)

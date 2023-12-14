@@ -44,6 +44,9 @@
 #define test_passed  1
 #define test_skipped 2
 
+// Note GTEST_SKIP may not print the associated message when using ctest.
+// However, running a test binary with the flag `--terse-output` will print them.
+
 #define EXPECT_TRUEORSKIP(a)             \
     do {                                 \
         int res = a;                     \
@@ -51,6 +54,19 @@
             GTEST_SKIP();                \
         else                             \
             EXPECT_EQ(res, test_passed); \
+    } while (0);
+
+// GTEST_SKIP stops the execution of the program.
+// This macro lets a test use multiple EXPECT_TRUE_OR_FUTURE_SKIP and mark a test as skipped only once at the end.
+#define EXPECT_TRUE_OR_FUTURE_SKIP(a, num_passed, num_skipped) \
+    do {                                                       \
+        int res = a;                                           \
+        if (res == test_skipped)                               \
+            ++num_skipped;                                     \
+        else {                                                 \
+            ++num_passed;                                      \
+            EXPECT_EQ(res, test_passed);                       \
+        }                                                      \
     } while (0);
 
 #define CHECK_DOUBLE_ON_DEVICE(d)                                        \
@@ -150,6 +166,16 @@
 #define TEST_RUN_AMDGPU_ROCFFT_SELECT(q, func, ...)
 #endif
 
+#ifdef ENABLE_PORTFFT_BACKEND
+#define TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::portfft>{ q })
+#define TEST_RUN_PORTFFT_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::portfft>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func)
+#define TEST_RUN_PORTFFT_SELECT(q, func, ...)
+#endif
+
 #ifndef __HIPSYCL__
 #define CHECK_HOST_OR_CPU(q) q.get_device().is_cpu()
 #else
@@ -174,6 +200,7 @@
                 TEST_RUN_AMDGPU_ROCFFT_SELECT_NO_ARGS(q, func);            \
             }                                                              \
         }                                                                  \
+        TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func);                          \
     } while (0);
 
 #define TEST_RUN_CT_SELECT(q, func, ...)                                   \
@@ -198,6 +225,7 @@
             }                                                              \
         }                                                                  \
         TEST_RUN_PORTBLAS_SELECT(q, func, __VA_ARGS__);                    \
+        TEST_RUN_PORTFFT_SELECT(q, func, __VA_ARGS__);                     \
     } while (0);
 
 void print_error_code(sycl::exception const &e);
@@ -220,9 +248,8 @@ class LayoutDeviceNamePrint {
 public:
     std::string operator()(
         testing::TestParamInfo<std::tuple<sycl::device *, oneapi::mkl::layout>> dev) const {
-        std::string layout_name = std::get<1>(dev.param) == oneapi::mkl::layout::column_major
-                                      ? "Column_Major"
-                                      : "Row_Major";
+        std::string layout_name =
+            std::get<1>(dev.param) == oneapi::mkl::layout::col_major ? "Column_Major" : "Row_Major";
         std::string dev_name = std::get<0>(dev.param)->get_info<sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))

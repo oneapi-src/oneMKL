@@ -89,7 +89,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer,
                                                        y1, param_buffer);
                 break;
@@ -101,7 +101,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::rotmg, d1_buffer,
                                    d2_buffer, x1_buffer, y1, param_buffer);
                 break;
@@ -201,7 +201,7 @@ TEST_P(RotmgTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(RotmgTestSuite, RotmgTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

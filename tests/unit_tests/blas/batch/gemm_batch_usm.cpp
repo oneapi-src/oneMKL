@@ -136,7 +136,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     idx = 0;
     for (i = 0; i < group_count; i++) {
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 size_a = lda[i] * ((transa[i] == oneapi::mkl::transpose::nontrans) ? k[i] : m[i]);
                 size_b = ldb[i] * ((transb[i] == oneapi::mkl::transpose::nontrans) ? n[i] : k[i]);
                 size_c = ldc[i] * n[i];
@@ -228,7 +228,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::gemm_batch(
                     main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
                     (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
@@ -245,7 +245,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_batch,
                                    &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
                                    (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0],
@@ -361,7 +361,7 @@ TEST_P(GemmBatchUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchUsmTestSuite, GemmBatchUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

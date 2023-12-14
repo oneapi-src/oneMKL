@@ -40,7 +40,7 @@ foreach(dfti_backend ${DFTI_CT_BACKENDS})
   )
 
   add_dependencies(${EXAMPLE_NAME} onemkl_dft_${dfti_backend})
-  target_link_libraries(${EXAMPLE_NAME} PRIVATE ONEMKL::SYCL::SYCL onemkl_dft_${dfti_backend})
+  target_link_libraries(${EXAMPLE_NAME} PRIVATE ONEMKL::SYCL::SYCL onemkl_dft_${dfti_backend} onemkl_warnings)
 
   # Register example as ctest
   add_test(NAME dft/EXAMPLE/CT/complex_fwd_buffer_${dfti_backend} COMMAND ${EXAMPLE_NAME})
