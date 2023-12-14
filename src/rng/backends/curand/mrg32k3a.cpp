@@ -110,107 +110,93 @@ public:
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, sycl::buffer<float, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
-        range_transform_fp<float>(queue_, distr.a(), distr.b(), n, r);
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
+            });
+        });
+        range_transform_fp(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, sycl::buffer<double, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniformDouble, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
-        range_transform_fp<double>(queue_, distr.a(), distr.b(), n, r);
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniformDouble, status, engine_, r_ptr, n);
+            });
+        });
+        range_transform_fp(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::uniform<
                               std::int32_t, oneapi::mkl::rng::uniform_method::standard>& distr,
                           std::int64_t n, sycl::buffer<std::int32_t, 1>& r) override {
         sycl::buffer<std::uint32_t, 1> ib(n);
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = ib.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerate, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
-        range_transform_int<std::int32_t>(queue_, distr.a(), distr.b(), n, ib, r);
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = ib.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerate, status, engine_, r_ptr, n);
+            });
+        });
+        range_transform_int(queue_, distr.a(), distr.b(), n, ib, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, sycl::buffer<float, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniform, status, engine_, r_ptr, n);
+            });
+        });
         range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, sycl::buffer<double, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniformDouble, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniformDouble, status, engine_, r_ptr, n);
+            });
+        });
         range_transform_fp_accurate<double>(queue_, distr.a(), distr.b(), n, r);
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               float, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
                           std::int64_t n, sycl::buffer<float, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateNormal, status, engine_, r_ptr, n, distr.mean(),
-                                distr.stddev());
-                });
-            })
-            .wait_and_throw();
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateNormal, status, engine_, r_ptr, n, distr.mean(),
+                            distr.stddev());
+            });
+        });
     }
 
     virtual void generate(const oneapi::mkl::rng::gaussian<
                               double, oneapi::mkl::rng::gaussian_method::box_muller2>& distr,
                           std::int64_t n, sycl::buffer<double, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateNormalDouble, status, engine_, r_ptr, n, distr.mean(),
-                                distr.stddev());
-                });
-            })
-            .wait_and_throw();
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateNormalDouble, status, engine_, r_ptr, n, distr.mean(),
+                            distr.stddev());
+            });
+        });
     }
 
     virtual void generate(
@@ -232,31 +218,27 @@ public:
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               float, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
                           std::int64_t n, sycl::buffer<float, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateLogNormal, status, engine_, r_ptr, n, distr.m(),
-                                distr.s());
-                });
-            })
-            .wait_and_throw();
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateLogNormal, status, engine_, r_ptr, n, distr.m(),
+                            distr.s());
+            });
+        });
     }
 
     virtual void generate(const oneapi::mkl::rng::lognormal<
                               double, oneapi::mkl::rng::lognormal_method::box_muller2>& distr,
                           std::int64_t n, sycl::buffer<double, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateLogNormalDouble, status, engine_, r_ptr, n, distr.m(),
-                                distr.s());
-                });
-            })
-            .wait_and_throw();
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateLogNormalDouble, status, engine_, r_ptr, n, distr.m(),
+                            distr.s());
+            });
+        });
     }
 
     virtual void generate(
@@ -305,15 +287,13 @@ public:
 
     virtual void generate(const bits<std::uint32_t>& distr, std::int64_t n,
                           sycl::buffer<std::uint32_t, 1>& r) override {
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                auto acc = r.template get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_curand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerate, status, engine_, r_ptr, n);
-                });
-            })
-            .wait_and_throw();
+        queue_.submit([&](sycl::handler& cgh) {
+            auto acc = r.template get_access<sycl::access::mode::read_write>(cgh);
+            onemkl_curand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerate, status, engine_, r_ptr, n);
+            });
+        });
     }
 
     // USM APIs
@@ -322,77 +302,76 @@ public:
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
-                });
-            })
-            .wait_and_throw();
-        return range_transform_fp<float>(queue_, distr.a(), distr.b(), n, r);
+        sycl::event generate_event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
+            });
+        });
+        return range_transform_fp(queue_, distr.a(), distr.b(), n, r, generate_event);
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>& distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
-                });
-            })
-            .wait_and_throw();
-        return range_transform_fp<double>(queue_, distr.a(), distr.b(), n, r);
+        sycl::event generate_event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
+            });
+        });
+        return range_transform_fp(queue_, distr.a(), distr.b(), n, r, generate_event);
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<std::int32_t, oneapi::mkl::rng::uniform_method::standard>&
             distr,
         std::int64_t n, std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
-        std::uint32_t* ib = (std::uint32_t*)malloc_device(
-            n * sizeof(std::uint32_t), queue_.get_device(), queue_.get_context());
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerate, status, engine_, ib, n);
-                });
-            })
+        auto usm_deleter = [this](std::uint32_t* ptr) {
+            sycl::free(ptr, this->queue_);
+        };
+        std::unique_ptr<std::uint32_t, decltype(usm_deleter)> usm_ib(
+            sycl::malloc_device<std::uint32_t>(n, queue_), usm_deleter);
+        std::uint32_t* ib = usm_ib.get();
+        sycl::event::wait_and_throw(dependencies);
+
+        sycl::event generate_event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerate, status, engine_, ib, n);
+            });
+        });
+        range_transform_int(queue_, distr.a(), distr.b(), n, ib, r, generate_event)
             .wait_and_throw();
-        return range_transform_int(queue_, distr.a(), distr.b(), n, ib, r);
+        return sycl::event{};
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<float, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
-                });
-            })
-            .wait_and_throw();
-        return range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r);
+        sycl::event generate_event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniform, status, engine_, r, n);
+            });
+        });
+        return range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r,
+                                                  generate_event);
     }
 
     virtual sycl::event generate(
         const oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>& distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
-        queue_
-            .submit([&](sycl::handler& cgh) {
-                onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
-                    curandStatus_t status;
-                    CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
-                });
-            })
-            .wait_and_throw();
-        return range_transform_fp_accurate<double>(queue_, distr.a(), distr.b(), n, r);
+        sycl::event generate_event = queue_.submit([&](sycl::handler& cgh) {
+            onemkl_curand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                curandStatus_t status;
+                CURAND_CALL(curandGenerateUniformDouble, status, engine_, r, n);
+            });
+        });
+        return range_transform_fp_accurate(queue_, distr.a(), distr.b(), n, r, generate_event);
     }
 
     virtual sycl::event generate(
