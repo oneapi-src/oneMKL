@@ -44,13 +44,20 @@ int test_workspace_external_usm_impl(std::size_t dft_size, sycl::device* dev) {
 
     sycl::queue sycl_queue(*dev);
     if (prec == precision::DOUBLE && !sycl_queue.get_device().has(sycl::aspect::fp64)) {
+        std::cout << "Device does not support double precision." << std::endl;
         return test_skipped;
     }
     descriptor<prec, dom> desc(static_cast<std::int64_t>(dft_size));
 
     desc.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
     desc.set_value(config_param::PLACEMENT, config_value::NOT_INPLACE);
-    commit_descriptor(desc, sycl_queue);
+    try {
+        commit_descriptor(desc, sycl_queue);
+    }
+    catch (oneapi::mkl::unimplemented&) {
+        std::cout << "Test configuration not implemented." << std::endl;
+        return test_skipped;
+    }
     std::int64_t workspace_bytes = -1;
     desc.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
     if (workspace_bytes < 0) {
@@ -108,13 +115,20 @@ int test_workspace_external_buffer_impl(std::size_t dft_size, sycl::device* dev)
 
     sycl::queue sycl_queue(*dev);
     if (prec == precision::DOUBLE && !sycl_queue.get_device().has(sycl::aspect::fp64)) {
+        std::cout << "Device does not support double precision." << std::endl;
         return test_skipped;
     }
     descriptor<prec, dom> desc(static_cast<std::int64_t>(dft_size));
 
     desc.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
     desc.set_value(config_param::PLACEMENT, config_value::NOT_INPLACE);
-    commit_descriptor(desc, sycl_queue);
+    try {
+        commit_descriptor(desc, sycl_queue);
+    }
+    catch (oneapi::mkl::unimplemented&) {
+        std::cout << "Test configuration not implemented." << std::endl;
+        return test_skipped;
+    }
     std::int64_t workspace_bytes = -1;
     desc.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
     if (workspace_bytes < 0) {
@@ -204,9 +218,20 @@ TEST_P(WorkspaceExternalTests, SetWorkspaceOnWorkspaceAutomatic) {
     float* fft_data_usm = sycl::malloc_device<float>(dft_len * 2, sycl_queue);
     sycl::buffer<float> fft_data_buf(dft_len * 2);
     descriptor<precision::SINGLE, domain::COMPLEX> desc_usm(dft_len), desc_buf(dft_len);
-    // WORKSPACE_EXTERNAL is NOT set.
-    commit_descriptor(desc_usm, sycl_queue);
-    commit_descriptor(desc_buf, sycl_queue);
+    try {
+        // WORKSPACE_EXTERNAL is NOT set.
+        commit_descriptor(desc_usm, sycl_queue);
+        commit_descriptor(desc_buf, sycl_queue);
+    }
+    catch (oneapi::mkl::unimplemented&) {
+        // The DFT size may not be supported. Use a size that is likely to be supported, even if
+        // that means no external workspace is actually used.
+        descriptor<precision::SINGLE, domain::COMPLEX> desc_usm2(2), desc_buf2(2);
+        desc_usm = std::move(desc_usm2);
+        desc_buf = std::move(desc_buf2);
+        commit_descriptor(desc_usm, sycl_queue);
+        commit_descriptor(desc_buf, sycl_queue);
+    }
     std::int64_t workspace_bytes = 0;
     desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
 
@@ -260,15 +285,27 @@ TEST_P(WorkspaceExternalTests, ThrowOnBadCalls) {
     descriptor<precision::SINGLE, domain::COMPLEX> desc_usm(dft_len), desc_buf(dft_len);
     desc_usm.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
     desc_buf.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
-
     // We expect the following to throw because the decriptor has not been committed.
     std::int64_t workspace_bytes = -10;
     float* usm_workspace = nullptr;
     EXPECT_THROW(desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes),
                  oneapi::mkl::invalid_argument);
     EXPECT_THROW(desc_usm.set_workspace(usm_workspace), oneapi::mkl::uninitialized);
-    commit_descriptor(desc_usm, sycl_queue);
-    commit_descriptor(desc_buf, sycl_queue);
+    try {
+        commit_descriptor(desc_usm, sycl_queue);
+        commit_descriptor(desc_buf, sycl_queue);
+    }
+    catch (oneapi::mkl::unimplemented&) {
+        // DFT size may not be supported. Use a DFT size that probably will be, even if it
+        // won't actually use an external workspace internally.
+        descriptor<precision::SINGLE, domain::COMPLEX> desc_usm2(2), desc_buf2(2);
+        desc_usm = std::move(desc_usm2);
+        desc_buf = std::move(desc_buf2);
+        desc_usm.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
+        desc_buf.set_value(config_param::WORKSPACE_PLACEMENT, config_value::WORKSPACE_EXTERNAL);
+        commit_descriptor(desc_usm, sycl_queue);
+        commit_descriptor(desc_buf, sycl_queue);
+    }
 
     desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
     EXPECT_GE(workspace_bytes, 0);
@@ -321,8 +358,16 @@ TEST_P(WorkspaceExternalTests, RecommitBehaviour) {
     const int dft_len = 1024 * 3 * 5 * 7 * 16; // A size likely to require an external workspace.
     float* fft_data_usm = sycl::malloc_device<float>(dft_len * 2, sycl_queue);
     descriptor<precision::SINGLE, domain::COMPLEX> desc_usm(dft_len);
-    // WORKSPACE_EXTERNAL is NOT set.
-    commit_descriptor(desc_usm, sycl_queue);
+    try {
+        // WORKSPACE_EXTERNAL is NOT set.
+        commit_descriptor(desc_usm, sycl_queue);
+    }
+    catch (oneapi::mkl::unimplemented&) {
+        // Admit defeat, and just test that the API does as expected.
+        descriptor<precision::SINGLE, domain::COMPLEX> desc_usm2(2);
+        desc_usm = std::move(desc_usm2);
+        commit_descriptor(desc_usm, sycl_queue);
+    }
     std::int64_t workspace_bytes = 0;
     desc_usm.get_value(config_param::WORKSPACE_EXTERNAL_BYTES, &workspace_bytes);
     float* usm_workspace = sycl::malloc_device<float>(
