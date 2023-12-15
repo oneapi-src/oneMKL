@@ -72,9 +72,9 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, int64_t stride_a,
             queue, n, lda, stride_a, stride_ipiv, batch_size);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue,
-                           scratchpad_size = oneapi::mkl::lapack::getri_batch_scratchpad_size<fp>,
-                           n, lda, stride_a, stride_ipiv, batch_size);
+        TEST_RUN_LAPACK_CT_SELECT(
+            queue, scratchpad_size = oneapi::mkl::lapack::getri_batch_scratchpad_size<fp>, n, lda,
+            stride_a, stride_ipiv, batch_size);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -86,8 +86,9 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, int64_t stride_a,
         oneapi::mkl::lapack::getri_batch(queue, n, A_dev, lda, stride_a, ipiv_dev, stride_ipiv,
                                          batch_size, scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::getri_batch, n, A_dev, lda, stride_a,
-                           ipiv_dev, stride_ipiv, batch_size, scratchpad_dev, scratchpad_size);
+        TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::mkl::lapack::getri_batch, n, A_dev, lda, stride_a,
+                                  ipiv_dev, stride_ipiv, batch_size, scratchpad_dev,
+                                  scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -151,9 +152,9 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, int64_t str
             queue, n, lda, stride_a, stride_ipiv, batch_size);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue,
-                           scratchpad_size = oneapi::mkl::lapack::getri_batch_scratchpad_size<fp>,
-                           n, lda, stride_a, stride_ipiv, batch_size);
+        TEST_RUN_LAPACK_CT_SELECT(
+            queue, scratchpad_size = oneapi::mkl::lapack::getri_batch_scratchpad_size<fp>, n, lda,
+            stride_a, stride_ipiv, batch_size);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -169,9 +170,9 @@ bool usm_dependency(const sycl::device& dev, int64_t n, int64_t lda, int64_t str
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::getri_batch, n, A_dev, lda,
-                           stride_a, ipiv_dev, stride_ipiv, batch_size, scratchpad_dev,
-                           scratchpad_size, std::vector<sycl::event>{ in_event });
+        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::mkl::lapack::getri_batch, n, A_dev,
+                                  lda, stride_a, ipiv_dev, stride_ipiv, batch_size, scratchpad_dev,
+                                  scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 
