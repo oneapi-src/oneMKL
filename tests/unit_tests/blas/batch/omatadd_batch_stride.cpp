@@ -147,14 +147,16 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::col_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd_batch,
-                                   transa, transb, m, n, alpha, A_buffer, lda, stride_a, beta,
-                                   B_buffer, ldb, stride_b, C_buffer, ldc, stride_c, batch_size);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatadd_batch,
+                                        transa, transb, m, n, alpha, A_buffer, lda, stride_a, beta,
+                                        B_buffer, ldb, stride_b, C_buffer, ldc, stride_c,
+                                        batch_size);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd_batch, transa,
-                                   transb, m, n, alpha, A_buffer, lda, stride_a, beta, B_buffer,
-                                   ldb, stride_b, C_buffer, ldc, stride_c, batch_size);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatadd_batch,
+                                        transa, transb, m, n, alpha, A_buffer, lda, stride_a, beta,
+                                        B_buffer, ldb, stride_b, C_buffer, ldc, stride_c,
+                                        batch_size);
                 break;
             default: break;
         }
