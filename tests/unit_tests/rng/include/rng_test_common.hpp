@@ -112,7 +112,7 @@ public:
 #ifdef CALL_RT_API
         test_(queue, args...);
 #else
-        TEST_RUN_CT_SELECT(queue, test_, args...);
+        TEST_RUN_RNG_CT_SELECT(queue, test_, args...);
 #endif
 
         return test_.status;
