@@ -363,7 +363,8 @@ TEST_P(WorkspaceExternalTests, RecommitBehaviour) {
         commit_descriptor(desc_usm, sycl_queue);
     }
     catch (oneapi::mkl::unimplemented&) {
-        // Admit defeat, and just test that the API does as expected.
+        // DFT size may not be supported. Use a DFT size that probably will be, even if it
+        // won't actually use an external workspace internally.
         descriptor<precision::SINGLE, domain::COMPLEX> desc_usm2(2);
         desc_usm = std::move(desc_usm2);
         commit_descriptor(desc_usm, sycl_queue);
