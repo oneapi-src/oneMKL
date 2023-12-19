@@ -236,16 +236,18 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 #else
         switch (layout) {
             case oneapi::mkl::layout::col_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::trsm_batch,
-                                   &left_right[0], &upper_lower[0], &trans[0], &unit_nonunit[0],
-                                   &m[0], &n[0], &alpha[0], (const fp **)&a_array[0], &lda[0],
-                                   &b_array[0], &ldb[0], group_count, &group_size[0], dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::trsm_batch,
+                                        &left_right[0], &upper_lower[0], &trans[0],
+                                        &unit_nonunit[0], &m[0], &n[0], &alpha[0],
+                                        (const fp **)&a_array[0], &lda[0], &b_array[0], &ldb[0],
+                                        group_count, &group_size[0], dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::trsm_batch,
-                                   &left_right[0], &upper_lower[0], &trans[0], &unit_nonunit[0],
-                                   &m[0], &n[0], &alpha[0], (const fp **)&a_array[0], &lda[0],
-                                   &b_array[0], &ldb[0], group_count, &group_size[0], dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::trsm_batch,
+                                        &left_right[0], &upper_lower[0], &trans[0],
+                                        &unit_nonunit[0], &m[0], &n[0], &alpha[0],
+                                        (const fp **)&a_array[0], &lda[0], &b_array[0], &ldb[0],
+                                        group_count, &group_size[0], dependencies);
                 break;
             default: break;
         }

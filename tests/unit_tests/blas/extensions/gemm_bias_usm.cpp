@@ -131,14 +131,16 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
 #else
         switch (layout) {
             case oneapi::mkl::layout::col_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_bias, transa,
-                                   transb, offsetc, m, n, k, alpha, A.data(), lda, ao, B.data(),
-                                   ldb, bo, beta, C.data(), ldc, co.data(), dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_bias,
+                                        transa, transb, offsetc, m, n, k, alpha, A.data(), lda, ao,
+                                        B.data(), ldb, bo, beta, C.data(), ldc, co.data(),
+                                        dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemm_bias, transa,
-                                   transb, offsetc, m, n, k, alpha, A.data(), lda, ao, B.data(),
-                                   ldb, bo, beta, C.data(), ldc, co.data(), dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemm_bias, transa,
+                                        transb, offsetc, m, n, k, alpha, A.data(), lda, ao,
+                                        B.data(), ldb, bo, beta, C.data(), ldc, co.data(),
+                                        dependencies);
                 break;
             default: break;
         }
