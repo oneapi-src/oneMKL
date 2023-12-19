@@ -69,8 +69,8 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
             oneapi::mkl::lapack::ungtr_scratchpad_size<fp>(queue, uplo, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ungtr_scratchpad_size<fp>,
-                           uplo, n, lda);
+        TEST_RUN_LAPACK_CT_SELECT(
+            queue, scratchpad_size = oneapi::mkl::lapack::ungtr_scratchpad_size<fp>, uplo, n, lda);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -82,8 +82,8 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
         oneapi::mkl::lapack::ungtr(queue, uplo, n, A_dev, lda, tau_dev, scratchpad_dev,
                                    scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::ungtr, uplo, n, A_dev, lda, tau_dev,
-                           scratchpad_dev, scratchpad_size);
+        TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::mkl::lapack::ungtr, uplo, n, A_dev, lda, tau_dev,
+                                  scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -133,8 +133,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
             oneapi::mkl::lapack::ungtr_scratchpad_size<fp>(queue, uplo, n, lda);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ungtr_scratchpad_size<fp>,
-                           uplo, n, lda);
+        TEST_RUN_LAPACK_CT_SELECT(
+            queue, scratchpad_size = oneapi::mkl::lapack::ungtr_scratchpad_size<fp>, uplo, n, lda);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -150,9 +150,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, 
                                        scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::ungtr, uplo, n, A_dev, lda,
-                           tau_dev, scratchpad_dev, scratchpad_size,
-                           std::vector<sycl::event>{ in_event });
+        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::mkl::lapack::ungtr, uplo, n, A_dev,
+                                  lda, tau_dev, scratchpad_dev, scratchpad_size,
+                                  std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
         queue.wait_and_throw();
