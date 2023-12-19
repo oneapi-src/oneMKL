@@ -74,23 +74,17 @@ GEMM_LAUNCHER(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER
 
-void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, int64_t k,
-          float alpha, sycl::buffer<bfloat16, 1> &a, int64_t lda, sycl::buffer<bfloat16, 1> &b,
-          int64_t ldb, float beta, sycl::buffer<float, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "column_major gemm",
-                        "rocblas_bfloat16 unsupported by the rocBLAS API");
-}
-
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
+inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, COMPUTETYPE CT,
                     sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    int64_t k, T_C alpha, sycl::buffer<T_A, 1> &a, int64_t lda,
-                    sycl::buffer<T_B, 1> &b, int64_t ldb, T_C beta, sycl::buffer<T_C, 1> &c,
+                    int64_t k, T_S alpha, sycl::buffer<T_A, 1> &a, int64_t lda,
+                    sycl::buffer<T_B, 1> &b, int64_t ldb, T_S beta, sycl::buffer<T_C, 1> &c,
                     int64_t ldc) {
     using rocDataType_A = typename RocEquivalentType<T_A>::Type;
     using rocDataType_B = typename RocEquivalentType<T_B>::Type;
     using rocDataType_C = typename RocEquivalentType<T_C>::Type;
+    using rocDataType_S = typename RocEquivalentType<T_S>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
 
     queue.submit([&](sycl::handler &cgh) {
@@ -105,27 +99,33 @@ inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C
             auto c_ = sc.get_mem<rocDataType_C *>(c_acc);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
-                                    get_rocblas_operation(transb), m, n, k, (rocDataType_C *)&alpha,
-                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_C *)&beta, c_, DT_C,
-                                    ldc, c_, DT_C, ldc, DT_C, rocblas_gemm_algo_standard, 0, 0);
+                                    get_rocblas_operation(transb), m, n, k, (rocDataType_S *)&alpha,
+                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_S *)&beta, c_, DT_C,
+                                    ldc, c_, DT_C, ldc, CT, rocblas_gemm_algo_standard, 0, 0);
         });
     });
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, \
-                         ROCMDATATYPE_C)                                                          \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,         \
+                         ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                         \
     void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
-              int64_t k, TYPE_C alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
-              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta, sycl::buffer<TYPE_C, 1> &c,   \
+              int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
+              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_S beta, sycl::buffer<TYPE_C, 1> &c,   \
               int64_t ldc) {                                                                      \
-        gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, queue, transa,   \
-                transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                            \
+        gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE, \
+                queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);             \
     }
 
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                 rocblas_datatype_f16_r, rocblas_datatype_f32_r)
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                 rocblas_datatype_f16_r, rocblas_datatype_f16_r)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                 rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
 
 #undef GEMM_EX_LAUNCHER
 
@@ -487,16 +487,17 @@ GEMM_LAUNCHER_USM(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
 inline sycl::event gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                           sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                           int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda, const T_B *b,
-                           int64_t ldb, T_C beta, T_C *c, int64_t ldc,
+                           COMPUTETYPE CT, sycl::queue &queue, transpose transa, transpose transb,
+                           int64_t m, int64_t n, int64_t k, T_S alpha, const T_A *a, int64_t lda,
+                           const T_B *b, int64_t ldb, T_S beta, T_C *c, int64_t ldc,
                            const std::vector<sycl::event> &dependencies) {
     using rocDataType_A = typename RocEquivalentType<T_A>::Type;
     using rocDataType_B = typename RocEquivalentType<T_B>::Type;
     using rocDataType_C = typename RocEquivalentType<T_C>::Type;
+    using rocDataType_S = typename RocEquivalentType<T_S>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
 
     auto done = queue.submit([&](sycl::handler &cgh) {
@@ -509,40 +510,38 @@ inline sycl::event gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE
             auto c_ = reinterpret_cast<rocDataType_C *>(c);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
-                                    get_rocblas_operation(transb), m, n, k, (rocDataType_C *)&alpha,
-                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_C *)&beta, c_, DT_C,
-                                    ldc, c_, DT_C, ldc, DT_C, rocblas_gemm_algo_standard, 0, 0);
+                                    get_rocblas_operation(transb), m, n, k, (rocDataType_S *)&alpha,
+                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_S *)&beta, c_, DT_C,
+                                    ldc, c_, DT_C, ldc, CT, rocblas_gemm_algo_standard, 0, 0);
         });
     });
 
     return done;
 }
 
-#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A,              \
-                             ROCMDATATYPE_B, ROCMDATATYPE_C)                                       \
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,      \
+                             ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                      \
     sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
-                     int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
-                     int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,                             \
+                     int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
+                     int64_t ldb, TYPE_S beta, TYPE_C *c, int64_t ldc,                             \
                      const std::vector<sycl::event> &dependencies) {                               \
-        return gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, queue,     \
-                       transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,               \
-                       dependencies);                                                              \
+        return gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C,            \
+                       ROCMCOMPUTETYPE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,     \
+                       beta, c, ldc, dependencies);                                                \
     }
 
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                     rocblas_datatype_f16_r, rocblas_datatype_f32_r)
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                     rocblas_datatype_f16_r, rocblas_datatype_f16_r)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                     rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
 
 #undef GEMM_EX_LAUNCHER_USM
-
-sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, float alpha, const bfloat16 *a, int64_t lda, const bfloat16 *b,
-                 int64_t ldb, float beta, float *c, int64_t ldc,
-                 const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemm",
-                        "rocblas_bfloat16 unsupported by the rocBLAS API");
-}
 
 template <typename Func, typename T>
 inline sycl::event symm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
@@ -905,43 +904,42 @@ GEMM_LAUNCHER(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
+inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, COMPUTETYPE CT,
                     sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                    int64_t k, T_C alpha, sycl::buffer<T_A, 1> &a, int64_t lda,
-                    sycl::buffer<T_B, 1> &b, int64_t ldb, T_C beta, sycl::buffer<T_C, 1> &c,
+                    int64_t k, T_S alpha, sycl::buffer<T_A, 1> &a, int64_t lda,
+                    sycl::buffer<T_B, 1> &b, int64_t ldb, T_S beta, sycl::buffer<T_C, 1> &c,
                     int64_t ldc) {
     auto new_transa = transb;
     auto new_transb = transa;
 
-    column_major::gemm_ex(func, DT_A, DT_B, DT_C, queue, new_transa, new_transb, n, m, k, alpha, b,
-                          ldb, a, lda, beta, c, ldc);
+    column_major::gemm_ex(func, DT_A, DT_B, DT_C, CT, queue, new_transa, new_transb, n, m, k, alpha,
+                          b, ldb, a, lda, beta, c, ldc);
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, \
-                         ROCMDATATYPE_C)                                                          \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,         \
+                         ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                         \
     void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
-              int64_t k, TYPE_C alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
-              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta, sycl::buffer<TYPE_C, 1> &c,   \
+              int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
+              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_S beta, sycl::buffer<TYPE_C, 1> &c,   \
               int64_t ldc) {                                                                      \
-        gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, queue, transa,   \
-                transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                            \
+        gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE, \
+                queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);             \
     }
 
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                 rocblas_datatype_f16_r, rocblas_datatype_f32_r)
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                 rocblas_datatype_f16_r, rocblas_datatype_f16_r)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                 rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
 
 #undef GEMM_EX_LAUNCHER
-
-void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, int64_t k,
-          float alpha, sycl::buffer<bfloat16, 1> &a, int64_t lda, sycl::buffer<bfloat16, 1> &b,
-          int64_t ldb, float beta, sycl::buffer<float, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "row_major gemm",
-                        "rocblas_bfloat16 unsupported by the rocBLAS API");
-}
 
 template <typename Func, typename T>
 inline void symm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
@@ -1192,45 +1190,43 @@ GEMM_LAUNCHER_USM(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER_USM
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
 inline sycl::event gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                           sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                           int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda, const T_B *b,
-                           int64_t ldb, T_C beta, T_C *c, int64_t ldc,
+                           COMPUTETYPE CT, sycl::queue &queue, transpose transa, transpose transb,
+                           int64_t m, int64_t n, int64_t k, T_S alpha, const T_A *a, int64_t lda,
+                           const T_B *b, int64_t ldb, T_S beta, T_C *c, int64_t ldc,
                            const std::vector<sycl::event> &dependencies) {
     auto new_transa = transb;
     auto new_transb = transa;
 
-    return column_major::gemm_ex(func, DT_A, DT_B, DT_C, queue, new_transa, new_transb, n, m, k,
+    return column_major::gemm_ex(func, DT_A, DT_B, DT_C, CT, queue, new_transa, new_transb, n, m, k,
                                  alpha, b, ldb, a, lda, beta, c, ldc, dependencies);
 }
 
-#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A,              \
-                             ROCMDATATYPE_B, ROCMDATATYPE_C)                                       \
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,      \
+                             ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                      \
     sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
-                     int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
-                     int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,                             \
+                     int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
+                     int64_t ldb, TYPE_S beta, TYPE_C *c, int64_t ldc,                             \
                      const std::vector<sycl::event> &dependencies) {                               \
-        return gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, queue,     \
-                       transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,               \
-                       dependencies);                                                              \
+        return gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C,            \
+                       ROCMCOMPUTETYPE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,     \
+                       beta, c, ldc, dependencies);                                                \
     }
 
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                     rocblas_datatype_f16_r, rocblas_datatype_f32_r)
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                     rocblas_datatype_f16_r, rocblas_datatype_f16_r)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                     rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
 
 #undef GEMM_EX_LAUNCHER_USM
-
-sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, float alpha, const bfloat16 *a, int64_t lda, const bfloat16 *b,
-                 int64_t ldb, float beta, float *c, int64_t ldc,
-                 const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemm",
-                        "rocblas_bfloat16 unsupported by the rocBLAS API");
-}
 
 template <typename Func, typename T>
 inline sycl::event symm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
