@@ -430,7 +430,8 @@ sycl::event tpmv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl:
 sycl::event tpsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
                  oneapi::mkl::diag unit_diag, std::int64_t n, const real_t *a, real_t *x,
                  std::int64_t incx, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "tpsv", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_tpsv, queue, upper_lower, trans, unit_diag, n, a, x, incx,
+                         dependencies);
 }
 
 sycl::event tpsv(sycl::queue &queue, oneapi::mkl::uplo upper_lower, oneapi::mkl::transpose trans,
