@@ -33,7 +33,7 @@ void dotu(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>,
 
 void iamax(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
            sycl::buffer<std::int64_t, 1> &result) {
-    throw unimplemented("blas", "iamax", "");
+    CALL_PORTBLAS_FN(::blas::_iamax, queue, n, x, incx, result);
 }
 
 void iamax(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>, 1> &x,
@@ -43,7 +43,7 @@ void iamax(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>
 
 void iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::int64_t incx,
            sycl::buffer<std::int64_t, 1> &result) {
-    throw unimplemented("blas", "iamin", "");
+    CALL_PORTBLAS_FN(::blas::_iamin, queue, n, x, incx, result);
 }
 
 void iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<real_t>, 1> &x,
@@ -219,7 +219,7 @@ sycl::event dotu(sycl::queue &queue, std::int64_t n, const std::complex<real_t> 
 
 sycl::event iamax(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64_t incx,
                   std::int64_t *result, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "iamax", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_iamax, queue, n, x, incx, result, dependencies);
 }
 
 sycl::event iamax(sycl::queue &queue, std::int64_t n, const std::complex<real_t> *x,
@@ -230,7 +230,7 @@ sycl::event iamax(sycl::queue &queue, std::int64_t n, const std::complex<real_t>
 
 sycl::event iamin(sycl::queue &queue, std::int64_t n, const real_t *x, std::int64_t incx,
                   std::int64_t *result, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "iamin", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_iamin, queue, n, x, incx, result, dependencies);
 }
 
 sycl::event iamin(sycl::queue &queue, std::int64_t n, const std::complex<real_t> *x,
