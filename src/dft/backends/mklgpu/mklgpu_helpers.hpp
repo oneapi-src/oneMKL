@@ -74,6 +74,8 @@ inline constexpr dft::config_param to_mklgpu(dft::detail::config_param param) {
         case iparam::ORDERING: return oparam::ORDERING;
         case iparam::TRANSPOSE: return oparam::TRANSPOSE;
         case iparam::PACKED_FORMAT: return oparam::PACKED_FORMAT;
+        case iparam::WORKSPACE_PLACEMENT: return oparam::WORKSPACE; // Same as WORKSPACE
+        case iparam::WORKSPACE_EXTERNAL_BYTES: return oparam::WORKSPACE_BYTES;
         case iparam::COMMIT_STATUS: return oparam::COMMIT_STATUS;
         default:
             throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
@@ -141,6 +143,31 @@ inline constexpr int to_mklgpu<dft::detail::config_param::PACKED_FORMAT>(
         throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
                                     "Invalid config value for packed format.");
         return 0;
+    }
+}
+
+/** Convert a config_value to the backend's native value. Throw on invalid input.
+ * @tparam Param The config param the value is for.
+ * @param value The config value to convert.
+**/
+template <dft::detail::config_param Param>
+inline constexpr dft::config_value to_mklgpu_config_value(dft::detail::config_value value);
+
+template <>
+inline constexpr dft::config_value
+to_mklgpu_config_value<dft::detail::config_param::WORKSPACE_PLACEMENT>(
+    dft::detail::config_value value) {
+    if (value == dft::detail::config_value::WORKSPACE_AUTOMATIC) {
+        // NB: dft::config_value != dft::detail::config_value
+        return dft::config_value::WORKSPACE_INTERNAL;
+    }
+    else if (value == dft::detail::config_value::WORKSPACE_EXTERNAL) {
+        return dft::config_value::WORKSPACE_EXTERNAL;
+    }
+    else {
+        throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
+                                    "Invalid config value for workspace placement.");
+        return dft::config_value::WORKSPACE_INTERNAL;
     }
 }
 } // namespace detail
