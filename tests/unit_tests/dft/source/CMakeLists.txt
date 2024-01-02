@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(DFT_SOURCES "compute_tests.cpp" "descriptor_tests.cpp")
+set(DFT_SOURCES "compute_tests.cpp" "descriptor_tests.cpp" "workspace_external_tests.cpp")
 
 include(WarningsUtils)
 
