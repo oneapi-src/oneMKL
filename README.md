@@ -367,8 +367,9 @@ Supported domains: BLAS, LAPACK, RNG, DFT, SPARSE_BLAS
     - Intel(R) Core(TM) Processor Family
     - Intel(R) Xeon(R) Processor Family
 - Accelerators
-    - Intel(R) Processor Graphics GEN9
-    - NVIDIA(R) TITAN RTX(TM) (Linux* only. cuRAND backend tested also with Quadro and A100 GPUs. Not tested with other NVIDIA GPU families and products.)
+    - Intel(R) Arc(TM) A-Series Graphics
+    - Intel(R) Data Center GPU Max Series
+    - NVIDIA(R) A100 (Linux* only)
     - AMD(R) GPUs see [here](https://github.com/RadeonOpenCompute/ROCm#hardware-and-software-support) tested on AMD Vega 20 (gfx906)
     
 ---
@@ -497,8 +498,8 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | Yes | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | No | *N/A* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
 [hipSYCL](https://github.com/illuhad/hipSYCL/) | later than [2cfa530](https://github.com/illuhad/hipSYCL/commit/2cfa5303fd88b8f84e539b5bb6ed41e49c6d6118) | No | *N/A* | *Installed by user* | [BSD-2-Clause License ](https://github.com/illuhad/hipSYCL/blob/develop/LICENSE)
-[Intel project for LLVM* technology binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds before [dfe6e4e](https://github.com/intel/llvm/commit/dfe6e4e542ab363a7e77df7ccc069688daa5a51b), tested with [20230416](https://github.com/intel/llvm/releases/tag/sycl-nightly%2F20230416) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
-[Intel project for LLVM* technology source for NVIDIA and AMD GPUs](https://github.com/intel/llvm) | Daily source releases, tested with [20230416](https://github.com/intel/llvm/tree/sycl-nightly/20230416) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel project for LLVM* technology binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel project for LLVM* technology source for NVIDIA and AMD GPUs](https://github.com/intel/llvm) | Daily source releases | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | Yes | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
 [NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | No | *N/A* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
 [AMD rocBLAS](https://rocblas.readthedocs.io/en/rocm-4.5.2/) | 4.5 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocBLAS/blob/develop/LICENSE.md)
