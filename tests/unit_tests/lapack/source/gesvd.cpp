@@ -75,8 +75,9 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
             queue, jobu, jobvt, m, n, lda, ldu, ldvt);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::gesvd_scratchpad_size<fp>,
-                           jobu, jobvt, m, n, lda, ldu, ldvt);
+        TEST_RUN_LAPACK_CT_SELECT(queue,
+                                  scratchpad_size = oneapi::mkl::lapack::gesvd_scratchpad_size<fp>,
+                                  jobu, jobvt, m, n, lda, ldu, ldvt);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -87,8 +88,8 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::mkl::jo
         oneapi::mkl::lapack::gesvd(queue, jobu, jobvt, m, n, A_dev, lda, s_dev, U_dev, ldu, Vt_dev,
                                    ldvt, scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::gesvd, jobu, jobvt, m, n, A_dev, lda, s_dev,
-                           U_dev, ldu, Vt_dev, ldvt, scratchpad_dev, scratchpad_size);
+        TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::mkl::lapack::gesvd, jobu, jobvt, m, n, A_dev, lda,
+                                  s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -196,8 +197,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::m
             queue, jobu, jobvt, m, n, lda, ldu, ldvt);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::gesvd_scratchpad_size<fp>,
-                           jobu, jobvt, m, n, lda, ldu, ldvt);
+        TEST_RUN_LAPACK_CT_SELECT(queue,
+                                  scratchpad_size = oneapi::mkl::lapack::gesvd_scratchpad_size<fp>,
+                                  jobu, jobvt, m, n, lda, ldu, ldvt);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -212,9 +214,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::jobsvd jobu, oneapi::m
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::gesvd, jobu, jobvt, m, n, A_dev,
-                           lda, s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev, scratchpad_size,
-                           std::vector<sycl::event>{ in_event });
+        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::mkl::lapack::gesvd, jobu, jobvt, m, n,
+                                  A_dev, lda, s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev,
+                                  scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

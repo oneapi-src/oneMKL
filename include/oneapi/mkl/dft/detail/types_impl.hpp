@@ -137,6 +137,8 @@ enum class config_param {
     BWD_DISTANCE,
 
     WORKSPACE,
+    WORKSPACE_PLACEMENT,
+    WORKSPACE_EXTERNAL_BYTES,
     ORDERING,
     TRANSPOSE,
     PACKED_FORMAT,
@@ -169,7 +171,11 @@ enum class config_value {
     NONE,
 
     // for config_param::PACKED_FORMAT for storing conjugate-even finite sequence in real containers
-    CCE_FORMAT
+    CCE_FORMAT,
+
+    // For config_param::WORKSPACE_PLACEMENT
+    WORKSPACE_AUTOMATIC,
+    WORKSPACE_EXTERNAL
 };
 
 template <precision prec, domain dom>
@@ -190,6 +196,7 @@ public:
     config_value real_storage;
     config_value conj_even_storage;
     config_value workspace;
+    config_value workspace_placement;
     config_value ordering;
     bool transpose;
     config_value packed_format;

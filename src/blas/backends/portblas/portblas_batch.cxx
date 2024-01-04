@@ -118,13 +118,15 @@ void dgmm_batch(sycl::queue &queue, oneapi::mkl::side left_right, std::int64_t m
 void axpy_batch(sycl::queue &queue, std::int64_t n, float alpha, sycl::buffer<float, 1> &x,
                 std::int64_t incx, std::int64_t stridex, sycl::buffer<float, 1> &y,
                 std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
-    throw unimplemented("blas", "axpy_batch", "");
+    CALL_PORTBLAS_FN(::blas::_axpy_batch, queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                     batch_size);
 }
 
 void axpy_batch(sycl::queue &queue, std::int64_t n, double alpha, sycl::buffer<double, 1> &x,
                 std::int64_t incx, std::int64_t stridex, sycl::buffer<double, 1> &y,
                 std::int64_t incy, std::int64_t stridey, std::int64_t batch_size) {
-    throw unimplemented("blas", "axpy_batch", "");
+    CALL_PORTBLAS_FN(::blas::_axpy_batch, queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                     batch_size);
 }
 
 void axpy_batch(sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
@@ -573,14 +575,16 @@ sycl::event axpy_batch(sycl::queue &queue, std::int64_t n, float alpha, const fl
                        std::int64_t incx, std::int64_t stridex, float *y, std::int64_t incy,
                        std::int64_t stridey, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "axpy_batch", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_axpy_batch, queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                         batch_size, dependencies);
 }
 
 sycl::event axpy_batch(sycl::queue &queue, std::int64_t n, double alpha, const double *x,
                        std::int64_t incx, std::int64_t stridex, double *y, std::int64_t incy,
                        std::int64_t stridey, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "axpy_batch", " for USM");
+    CALL_PORTBLAS_USM_FN(::blas::_axpy_batch, queue, n, alpha, x, incx, stridex, y, incy, stridey,
+                         batch_size, dependencies);
 }
 
 sycl::event axpy_batch(sycl::queue &queue, std::int64_t n, std::complex<float> alpha,
