@@ -96,7 +96,9 @@ foreach(domain ${TARGET_DOMAINS})
   if(BUILD_SHARED_LIBS)
     add_executable(test_main_${domain}_rt main_test.cpp)
     target_include_directories(test_main_${domain}_rt PUBLIC ${GTEST_INCLUDE_DIR})
-    target_compile_options(test_main_${domain}_rt PRIVATE -fsycl)
+    if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+      target_compile_options(test_main_${domain}_rt PRIVATE -fsycl)
+    endif()
     target_link_libraries(test_main_${domain}_rt PUBLIC
       gtest
       gtest_main
@@ -186,7 +188,10 @@ foreach(domain ${TARGET_DOMAINS})
       ${${domain}_TEST_LIST_CT}
       ${${domain}_DEVICE_TEST_LIST_CT}
   )
-  target_link_options(test_main_${domain}_ct PUBLIC -fsycl-device-code-split=per_kernel)
+  
+  if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+    target_link_options(test_main_${domain}_ct PUBLIC -fsycl-device-code-split=per_kernel)
+  endif()
 
   string(TOUPPER ${domain} DOMAIN_PREFIX)
 

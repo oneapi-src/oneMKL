@@ -20,6 +20,10 @@
 #ifndef _ONEMKL_TYPES_HPP_
 #define _ONEMKL_TYPES_HPP_
 
+#ifdef __HIPSYCL__
+#include "oneapi/mkl/bfloat16.hpp"
+#endif
+
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
@@ -29,7 +33,9 @@
 namespace oneapi {
 namespace mkl {
 
+#ifndef __HIPSYCL__
 using bfloat16 = sycl::ext::oneapi::bfloat16;
+#endif
 
 // BLAS flag types.
 enum class transpose : char { nontrans = 0, trans = 1, conjtrans = 3, N = 0, T = 1, C = 3 };
