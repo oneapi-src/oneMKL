@@ -1338,42 +1338,34 @@ inline void gemv_batch(Func func, sycl::queue &queue, transpose trans, int64_t m
         alpha = std::conj(alpha);
         beta = std::conj(beta);
 
-        auto tmp_x = incx;
-        auto tmp_y = incy;
-        auto tmp_stridex = stridex;
-        auto tmp_stridey = stridey;
-
-        incx = std::abs(incx);
-        incy = std::abs(incy);
-        stridex = std::abs(stridex);
-        stridey = std::abs(stridey);
-
         if (m > 0) {
             queue.submit([&](sycl::handler &cgh) {
+                const auto abs_incx = std::abs(incx);
+                const auto abs_stridex = std::abs(stridex);
+
                 auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)m },
-                                 [=](sycl::item<2> it) {
-                                     auto index = it.get_id(0) * stridex + it.get_id(1) * incx;
-                                     acc[index] = std::conj(acc[index]);
-                                 });
+                cgh.parallel_for(
+                    sycl::range{ (std::size_t)batch_size, (std::size_t)m }, [=](sycl::item<2> it) {
+                        const auto index = it.get_id(0) * abs_stridex + it.get_id(1) * abs_incx;
+                        acc[index] = std::conj(acc[index]);
+                    });
             });
 
             if (n > 0) {
                 queue.submit([&](sycl::handler &cgh) {
+                    const auto abs_incy = std::abs(incy);
+                    const auto abs_stridey = std::abs(stridey);
+
                     auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
                     cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
                                      [=](sycl::item<2> it) {
-                                         auto index = it.get_id(0) * stridey + it.get_id(1) * incy;
+                                         const auto index =
+                                             it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
                                          acc[index] = std::conj(acc[index]);
                                      });
                 });
             }
         }
-
-        incx = tmp_x;
-        incy = tmp_y;
-        stridex = tmp_stridex;
-        stridey = tmp_stridey;
     }
 
     column_major::gemv_batch(func, queue, new_trans, n, m, alpha, a, lda, stridea, x, incx, stridex,
@@ -1381,18 +1373,16 @@ inline void gemv_batch(Func func, sycl::queue &queue, transpose trans, int64_t m
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            incx = std::abs(incx);
-            incy = std::abs(incy);
-            stridex = std::abs(stridex);
-            stridey = std::abs(stridey);
-
             queue.submit([&](sycl::handler &cgh) {
+                const auto abs_incy = std::abs(incy);
+                const auto abs_stridey = std::abs(stridey);
+
                 auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
-                                 [=](sycl::item<2> it) {
-                                     auto index = it.get_id(0) * stridey + it.get_id(1) * incy;
-                                     acc[index] = std::conj(acc[index]);
-                                 });
+                cgh.parallel_for(
+                    sycl::range{ (std::size_t)batch_size, (std::size_t)n }, [=](sycl::item<2> it) {
+                        const auto index = it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
+                        acc[index] = std::conj(acc[index]);
+                    });
             });
         }
     }
@@ -1732,42 +1722,33 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose trans, in
         alpha = std::conj(alpha);
         beta = std::conj(beta);
 
-        auto tmp_x = incx;
-        auto tmp_y = incy;
-        auto tmp_stridex = stridex;
-        auto tmp_stridey = stridey;
-
-        incx = std::abs(incx);
-        incy = std::abs(incy);
-        stridex = std::abs(stridex);
-        stridey = std::abs(stridey);
-
         if (m > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
+                const auto abs_incx = std::abs(incx);
+                const auto abs_stridex = std::abs(stridex);
+
                 auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)m },
-                                 [=](sycl::item<2> it) {
-                                     auto index = it.get_id(0) * stridex + it.get_id(1) * incx;
-                                     acc[index] = std::conj(acc[index]);
-                                 });
+                cgh.parallel_for(
+                    sycl::range{ (std::size_t)batch_size, (std::size_t)m }, [=](sycl::item<2> it) {
+                        const auto index = it.get_id(0) * abs_stridex + it.get_id(1) * abs_incx;
+                        acc[index] = std::conj(acc[index]);
+                    });
             });
 
             if (n > 0) {
                 done = queue.submit([&](sycl::handler &cgh) {
-                    cgh.depends_on(done);
+                    const auto abs_incy = std::abs(incy);
+                    const auto abs_stridey = std::abs(stridey);
+
                     cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
                                      [=](sycl::item<2> it) {
-                                         auto index = it.get_id(0) * stridey + it.get_id(1) * incy;
+                                         const auto index =
+                                             it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
                                          y[index] = std::conj(y[index]);
                                      });
                 });
             }
         }
-
-        incx = tmp_x;
-        incy = tmp_y;
-        stridex = tmp_stridex;
-        stridey = tmp_stridey;
     }
 
     done.wait_and_throw();
@@ -1777,18 +1758,16 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose trans, in
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            incx = std::abs(incx);
-            incy = std::abs(incy);
-            stridex = std::abs(stridex);
-            stridey = std::abs(stridey);
-
             done = queue.submit([&](sycl::handler &cgh) {
+                const auto abs_incy = std::abs(incy);
+                const auto abs_stridey = std::abs(stridey);
+
                 cgh.depends_on(done);
-                cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
-                                 [=](sycl::item<2> it) {
-                                     auto index = it.get_id(0) * stridey + it.get_id(1) * incy;
-                                     y[index] = std::conj(y[index]);
-                                 });
+                cgh.parallel_for(
+                    sycl::range{ (std::size_t)batch_size, (std::size_t)n }, [=](sycl::item<2> it) {
+                        const auto index = it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
+                        y[index] = std::conj(y[index]);
+                    });
             });
         }
     }
@@ -1876,9 +1855,9 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
 
     auto tmp_trans = std::vector<transpose>{ (std::size_t)group_count };
     for (int64_t i = 0; i < group_count; i++) {
-        auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
-                             ? oneapi::mkl::transpose::trans
-                             : oneapi::mkl::transpose::nontrans;
+        const auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
+                                   ? oneapi::mkl::transpose::trans
+                                   : oneapi::mkl::transpose::nontrans;
         tmp_trans[i] = trans[i];
         trans[i] = new_trans;
     }
@@ -1919,9 +1898,9 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
     auto tmp_trans = std::vector<transpose>{ static_cast<std::size_t>(group_count) };
 
     for (int64_t i = 0; i < group_count; i++) {
-        auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
-                             ? oneapi::mkl::transpose::trans
-                             : oneapi::mkl::transpose::nontrans;
+        const auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
+                                   ? oneapi::mkl::transpose::trans
+                                   : oneapi::mkl::transpose::nontrans;
         tmp_trans[i] = trans[i];
         trans[i] = new_trans;
     }
@@ -1985,8 +1964,8 @@ inline sycl::event dgmm_batch(Func func, sycl::queue &queue, side *left_right, i
                               T **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
                               const std::vector<sycl::event> &dependencies) {
     for (int64_t i = 0; i < group_count; i++) {
-        auto new_side = left_right[i] == oneapi::mkl::side::left ? oneapi::mkl::side::right
-                                                                 : oneapi::mkl::side::left;
+        const auto new_side = left_right[i] == oneapi::mkl::side::left ? oneapi::mkl::side::right
+                                                                       : oneapi::mkl::side::left;
         left_right[i] = new_side;
     }
 
@@ -2111,12 +2090,12 @@ inline sycl::event trsm_batch(Func func, sycl::queue &queue, side *left_right, u
                               const T **a, int64_t *lda, T **b, int64_t *ldb, int64_t group_count,
                               int64_t *group_size, const std::vector<sycl::event> &dependencies) {
     for (int64_t i = 0; i < group_count; i++) {
-        auto new_side = left_right[i] == oneapi::mkl::side::left ? oneapi::mkl::side::right
-                                                                 : oneapi::mkl::side::left;
+        const auto new_side = left_right[i] == oneapi::mkl::side::left ? oneapi::mkl::side::right
+                                                                       : oneapi::mkl::side::left;
         left_right[i] = new_side;
 
-        auto new_uplo = upper_lower[i] == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                                   : oneapi::mkl::uplo::lower;
+        const auto new_uplo = upper_lower[i] == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                                         : oneapi::mkl::uplo::lower;
         upper_lower[i] = new_uplo;
     }
 
@@ -2147,13 +2126,13 @@ inline sycl::event syrk_batch(Func func, sycl::queue &queue, uplo *upper_lower, 
                               T **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
                               const std::vector<sycl::event> &dependencies) {
     for (int64_t i = 0; i < group_count; i++) {
-        auto new_uplo = upper_lower[i] == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                                   : oneapi::mkl::uplo::lower;
+        const auto new_uplo = upper_lower[i] == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                                         : oneapi::mkl::uplo::lower;
         upper_lower[i] = new_uplo;
 
-        auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
-                             ? oneapi::mkl::transpose::trans
-                             : oneapi::mkl::transpose::nontrans;
+        const auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
+                                   ? oneapi::mkl::transpose::trans
+                                   : oneapi::mkl::transpose::nontrans;
         trans[i] = new_trans;
     }
 
