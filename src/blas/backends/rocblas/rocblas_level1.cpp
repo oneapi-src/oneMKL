@@ -146,24 +146,24 @@ AXPY_LAUNCHER(std::complex<double>, rocblas_zaxpy)
 
 void axpby(sycl::queue &queue, int64_t n, float alpha, sycl::buffer<float, 1> &x, int64_t incx,
            float beta, sycl::buffer<float, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "column_major axpby", "unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 
 void axpby(sycl::queue &queue, int64_t n, double alpha, sycl::buffer<double, 1> &x, int64_t incx,
            double beta, sycl::buffer<double, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "column_major axpby", "unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 
 void axpby(sycl::queue &queue, int64_t n, std::complex<float> alpha,
            sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
            sycl::buffer<std::complex<float>, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "column_major axpby", "unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 
 void axpby(sycl::queue &queue, int64_t n, std::complex<double> alpha,
            sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
            sycl::buffer<std::complex<double>, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "column_major axpby", "unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 
 template <typename Func, typename T1, typename T2>
@@ -337,8 +337,7 @@ DOT_LAUNCHER(c, std::complex<double>, rocblas_zdotc)
 
 void dot(sycl::queue &queue, int64_t n, sycl::buffer<float, 1> &x, int64_t incx,
          sycl::buffer<float, 1> &y, int64_t incy, sycl::buffer<double, 1> &result) {
-    throw unimplemented("blas", "column_major dot(float, float, double)",
-                        "unsupported by the rocBLAS API");
+    throw unimplemented("blas", "dot", "for column_major layout");
 }
 
 template <typename Func, typename T1, typename T2, typename T3>
@@ -777,24 +776,24 @@ AXPY_LAUNCHER_USM(std::complex<double>, rocblas_zaxpy)
 sycl::event axpby(sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
                   float beta, float *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 sycl::event axpby(sycl::queue &queue, int64_t n, double alpha, const double *x, int64_t incx,
                   double beta, double *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 sycl::event axpby(sycl::queue &queue, int64_t n, std::complex<float> alpha,
                   const std::complex<float> *x, int64_t incx, std::complex<float> beta,
                   std::complex<float> *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 sycl::event axpby(sycl::queue &queue, int64_t n, std::complex<double> alpha,
                   const std::complex<double> *x, int64_t incx, std::complex<double> beta,
                   std::complex<double> *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for column_major layout");
 }
 
 template <typename Func, typename T1, typename T2>
@@ -941,8 +940,7 @@ DOT_LAUNCHER_USM(c, std::complex<double>, rocblas_zdotc)
 
 sycl::event dot(sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                 int64_t incy, double *result, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major dot(float, float, double)",
-                        "dot unsupported by the rocBLAS API");
+    throw unimplemented("blas", "dot", "for column_major layout");
 }
 
 template <typename Func, typename T1, typename T2, typename T3>
@@ -1273,24 +1271,24 @@ AXPY_LAUNCHER(std::complex<double>, rocblas_zaxpy)
 
 void axpby(sycl::queue &queue, int64_t n, float alpha, sycl::buffer<float, 1> &x, int64_t incx,
            float beta, sycl::buffer<float, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 
 void axpby(sycl::queue &queue, int64_t n, double alpha, sycl::buffer<double, 1> &x, int64_t incx,
            double beta, sycl::buffer<double, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 
 void axpby(sycl::queue &queue, int64_t n, std::complex<float> alpha,
            sycl::buffer<std::complex<float>, 1> &x, int64_t incx, std::complex<float> beta,
            sycl::buffer<std::complex<float>, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 
 void axpby(sycl::queue &queue, int64_t n, std::complex<double> alpha,
            sycl::buffer<std::complex<double>, 1> &x, int64_t incx, std::complex<double> beta,
            sycl::buffer<std::complex<double>, 1> &y, int64_t incy) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 
 template <typename Func, typename T1, typename T2>
@@ -1371,8 +1369,7 @@ DOT_LAUNCHER(c, std::complex<double>, rocblas_zdotc)
 
 void dot(sycl::queue &queue, int64_t n, sycl::buffer<float, 1> &x, int64_t incx,
          sycl::buffer<float, 1> &y, int64_t incy, sycl::buffer<double, 1> &result) {
-    throw unimplemented("blas", "row_major dot(float, float, double)",
-                        "dot unsupported by the rocBLAS API");
+    throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 template <typename Func, typename T1, typename T2, typename T3>
@@ -1556,24 +1553,24 @@ AXPY_LAUNCHER_USM(std::complex<double>, rocblas_zaxpy)
 sycl::event axpby(sycl::queue &queue, int64_t n, float alpha, const float *x, int64_t incx,
                   float beta, float *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 sycl::event axpby(sycl::queue &queue, int64_t n, double alpha, const double *x, int64_t incx,
                   double beta, double *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 sycl::event axpby(sycl::queue &queue, int64_t n, std::complex<float> alpha,
                   const std::complex<float> *x, int64_t incx, std::complex<float> beta,
                   std::complex<float> *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 sycl::event axpby(sycl::queue &queue, int64_t n, std::complex<double> alpha,
                   const std::complex<double> *x, int64_t incx, std::complex<double> beta,
                   std::complex<double> *y, int64_t incy,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major axpby", "axpby unsupported by the rocBLAS API");
+    throw unimplemented("blas", "axpby", "for row_major layout");
 }
 
 template <typename Func, typename T1, typename T2>
@@ -1656,8 +1653,7 @@ DOT_LAUNCHER_USM(c, std::complex<double>, rocblas_zdotc)
 
 sycl::event dot(sycl::queue &queue, int64_t n, const float *x, int64_t incx, const float *y,
                 int64_t incy, double *result, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major dot(float, float, double)",
-                        "dot unsupported by the rocBLAS API");
+    throw unimplemented("blas", "dot", "for row_major layout");
 }
 
 template <typename Func, typename T1, typename T2, typename T3>

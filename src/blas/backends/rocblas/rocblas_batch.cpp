@@ -363,29 +363,25 @@ OMATCOPY_STRIDED_BATCH_LAUNCHER(std::complex<double>, rocblas_zgeam_strided_batc
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                     sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
                     int64_t batch_size) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                     sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
                     int64_t batch_size) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                     std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
                     int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                     std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
                     int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -1118,31 +1114,27 @@ OMATCOPY_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zgeam_strided_
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                            float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                            double *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                            std::complex<float> alpha, std::complex<float> *ab, int64_t lda,
                            int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                            std::complex<double> alpha, std::complex<double> *ab, int64_t lda,
                            int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -1248,32 +1240,28 @@ sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int
                            float *alpha, float **ab, int64_t *lda, int64_t *ldb,
                            int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,
                            double *alpha, double **ab, int64_t *lda, int64_t *ldb,
                            int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,
                            std::complex<float> *alpha, std::complex<float> **ab, int64_t *lda,
                            int64_t *ldb, int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,
                            std::complex<double> *alpha, std::complex<double> **ab, int64_t *lda,
                            int64_t *ldb, int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for column_major layout");
 }
 
 } // namespace column_major
@@ -1557,29 +1545,25 @@ OMATCOPY_STRIDED_BATCH_LAUNCHER(std::complex<double>, rocblas_zgeam_strided_batc
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                     sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
                     int64_t batch_size) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                     sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb, int64_t stride,
                     int64_t batch_size) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                     std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &ab,
                     int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 void imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                     std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &ab,
                     int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 template <typename Func, typename T>
@@ -2207,31 +2191,27 @@ OMATCOPY_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zgeam_strided_
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                            float *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                            double *ab, int64_t lda, int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                            std::complex<float> alpha, std::complex<float> *ab, int64_t lda,
                            int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                            std::complex<double> alpha, std::complex<double> *ab, int64_t lda,
                            int64_t ldb, int64_t stride, int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 template <typename Func, typename T>
@@ -2291,32 +2271,28 @@ sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int
                            float *alpha, float **ab, int64_t *lda, int64_t *ldb,
                            int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,
                            double *alpha, double **ab, int64_t *lda, int64_t *ldb,
                            int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,
                            std::complex<float> *alpha, std::complex<float> **ab, int64_t *lda,
                            int64_t *ldb, int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,
                            std::complex<double> *alpha, std::complex<double> **ab, int64_t *lda,
                            int64_t *ldb, int64_t group_count, int64_t *group_size,
                            const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy_batch",
-                        "imatcopy_batch unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy_batch", "for row_major layout");
 }
 
 } // namespace row_major

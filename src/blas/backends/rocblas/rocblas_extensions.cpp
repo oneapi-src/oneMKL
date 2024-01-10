@@ -37,60 +37,56 @@ void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset of
                int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a, int64_t lda,
                int8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
                int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a, int64_t lda,
                int8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
                int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a, int64_t lda,
                uint8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
                int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a, int64_t lda,
                uint8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, float alpha, sycl::buffer<float, 1> &a, int64_t lda,
            sycl::buffer<float, 1> &b, int64_t ldb, float beta, sycl::buffer<float, 1> &c,
            int64_t ldc) {
-    throw unimplemented("blas", "column_major gemmt", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, double alpha, sycl::buffer<double, 1> &a, int64_t lda,
            sycl::buffer<double, 1> &b, int64_t ldb, double beta, sycl::buffer<double, 1> &c,
            int64_t ldc) {
-    throw unimplemented("blas", "column_major gemmt", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
            int64_t lda, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
            std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "column_major gemmt", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
            int64_t lda, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
            std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "column_major gemmt", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -158,22 +154,22 @@ OMATCOPY2_LAUNCHER(std::complex<double>, "unimplemented")
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
               sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
               sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
               sycl::buffer<std::complex<float>, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
               sycl::buffer<std::complex<double>, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -223,8 +219,7 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       int8_t ao, const int8_t *b, int64_t ldb, int8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -232,8 +227,7 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       int8_t ao, const uint8_t *b, int64_t ldb, uint8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -241,8 +235,7 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       uint8_t ao, const int8_t *b, int64_t ldb, int8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -250,22 +243,21 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       uint8_t ao, const uint8_t *b, int64_t ldb, uint8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemm_bias",
-                        "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for column_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                   int64_t n, int64_t k, float alpha, const float *a, int64_t lda, const float *b,
                   int64_t ldb, float beta, float *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                   int64_t n, int64_t k, double alpha, const double *a, int64_t lda, const double *b,
                   int64_t ldb, double beta, double *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -273,7 +265,7 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
                   int64_t lda, const std::complex<float> *b, int64_t ldb, std::complex<float> beta,
                   std::complex<float> *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -281,7 +273,7 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
                   int64_t lda, const std::complex<double> *b, int64_t ldb,
                   std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -352,25 +344,25 @@ OMATCOPY2_LAUNCHER_USM(std::complex<double>, "unimplemented")
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      float *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                      double *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                      std::complex<float> alpha, std::complex<float> *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                      std::complex<double> alpha, std::complex<double> *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "column_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for column_major layout");
 }
 
 template <typename Func, typename T>
@@ -425,56 +417,56 @@ void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset of
                int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a, int64_t lda,
                int8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
                int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a, int64_t lda,
                int8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
                int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a, int64_t lda,
                uint8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
                int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a, int64_t lda,
                uint8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
                sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, float alpha, sycl::buffer<float, 1> &a, int64_t lda,
            sycl::buffer<float, 1> &b, int64_t ldb, float beta, sycl::buffer<float, 1> &c,
            int64_t ldc) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, double alpha, sycl::buffer<double, 1> &a, int64_t lda,
            sycl::buffer<double, 1> &b, int64_t ldb, double beta, sycl::buffer<double, 1> &c,
            int64_t ldc) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, std::complex<float> alpha, sycl::buffer<std::complex<float>, 1> &a,
            int64_t lda, sycl::buffer<std::complex<float>, 1> &b, int64_t ldb,
            std::complex<float> beta, sycl::buffer<std::complex<float>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 void gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb, int64_t n,
            int64_t k, std::complex<double> alpha, sycl::buffer<std::complex<double>, 1> &a,
            int64_t lda, sycl::buffer<std::complex<double>, 1> &b, int64_t ldb,
            std::complex<double> beta, sycl::buffer<std::complex<double>, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 template <typename Func, typename T>
@@ -521,22 +513,22 @@ OMATCOPY2_LAUNCHER(std::complex<double>, "unimplemented")
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
               sycl::buffer<float, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
               sycl::buffer<double, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<float> alpha,
               sycl::buffer<std::complex<float>, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 void imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, std::complex<double> alpha,
               sycl::buffer<std::complex<double>, 1> &ab, int64_t lda, int64_t ldb) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 template <typename Func, typename T>
@@ -568,7 +560,7 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       int8_t ao, const int8_t *b, int64_t ldb, int8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -576,7 +568,7 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       int8_t ao, const uint8_t *b, int64_t ldb, uint8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -584,7 +576,7 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       uint8_t ao, const int8_t *b, int64_t ldb, int8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
@@ -592,21 +584,21 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, of
                       uint8_t ao, const uint8_t *b, int64_t ldb, uint8_t bo, float beta, int32_t *c,
                       int64_t ldc, const int32_t *co,
                       const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemm_bias", "gemm_bias unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemm_bias", "for row_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                   int64_t n, int64_t k, float alpha, const float *a, int64_t lda, const float *b,
                   int64_t ldb, float beta, float *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                   int64_t n, int64_t k, double alpha, const double *a, int64_t lda, const double *b,
                   int64_t ldb, double beta, double *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -614,7 +606,7 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
                   int64_t lda, const std::complex<float> *b, int64_t ldb, std::complex<float> beta,
                   std::complex<float> *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
@@ -622,7 +614,7 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
                   int64_t lda, const std::complex<double> *b, int64_t ldb,
                   std::complex<double> beta, std::complex<double> *c, int64_t ldc,
                   const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major gemmt", "gemmt unsupported by the rocBLAS API");
+    throw unimplemented("blas", "gemmt", "for row_major layout");
 }
 
 template <typename Func, typename T>
@@ -671,25 +663,25 @@ OMATCOPY2_LAUNCHER_USM(std::complex<double>, "unimplemented")
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, float alpha,
                      float *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n, double alpha,
                      double *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                      std::complex<float> alpha, std::complex<float> *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 sycl::event imatcopy(sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                      std::complex<double> alpha, std::complex<double> *ab, int64_t lda, int64_t ldb,
                      const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "row_major imatcopy", "imatcopy unsupported by the rocBLAS API");
+    throw unimplemented("blas", "imatcopy", "for row_major layout");
 }
 
 template <typename Func, typename T>
