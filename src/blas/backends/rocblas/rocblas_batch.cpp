@@ -1833,7 +1833,82 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
                               std::complex<T> *beta, std::complex<T> **y, int64_t *incy,
                               int64_t group_count, int64_t *group_size,
                               const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemv_batch", "for row_major layout");
+    sycl::event done;
+
+    int64_t stride = 0;
+    for (int64_t i = 0; i < group_count; i++) {
+        if (trans[i] == oneapi::mkl::transpose::conjtrans) {
+            alpha[i] = std::conj(alpha[i]);
+            beta[i] = std::conj(beta[i]);
+
+            if (m[i] > 0) {
+                done = queue.submit([&](sycl::handler &cgh) {
+                    const auto abs_incx = std::abs(incx[i]);
+
+                    auto acc = (std::complex<T> **)x;
+                    cgh.parallel_for(sycl::range{ (std::size_t)group_size[i], (std::size_t)m[i] },
+                                     [=](sycl::item<2> it) {
+                                         const auto col = it.get_id(0) + stride;
+                                         const auto row = it.get_id(1) * abs_incx;
+                                         acc[col][row] = std::conj(acc[col][row]);
+                                     });
+                });
+
+                if (n[i] > 0) {
+                    done = queue.submit([&](sycl::handler &cgh) {
+                        const auto abs_incy = std::abs(incy[i]);
+
+                        cgh.parallel_for(
+                            sycl::range{ (std::size_t)group_size[i], (std::size_t)n[i] },
+                            [=](sycl::item<2> it) {
+                                const auto col = it.get_id(0) + stride;
+                                const auto row = it.get_id(1) * abs_incy;
+                                y[col][row] = std::conj(y[col][row]);
+                            });
+                    });
+                }
+            }
+        }
+        stride += group_size[i];
+    }
+
+    done.wait_and_throw();
+
+    auto tmp_trans = std::vector<transpose>{ (std::size_t)group_count };
+    for (int64_t i = 0; i < group_count; i++) {
+        auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
+                             ? oneapi::mkl::transpose::trans
+                             : oneapi::mkl::transpose::nontrans;
+        tmp_trans[i] = trans[i];
+        trans[i] = new_trans;
+    }
+    done = column_major::gemv_batch(func, queue, trans, n, m, alpha, a, lda, x, incx, beta, y, incy,
+                                    group_count, group_size, dependencies);
+    done.wait_and_throw();
+    for (int64_t i = 0; i < group_count; i++) {
+        trans[i] = tmp_trans[i];
+    }
+
+    stride = 0;
+    for (int64_t i = 0; i < group_count; i++) {
+        if (trans[i] == oneapi::mkl::transpose::conjtrans) {
+            if (n[i] > 0) {
+                done = queue.submit([&](sycl::handler &cgh) {
+                    const auto abs_incy = std::abs(incy[i]);
+
+                    cgh.parallel_for(sycl::range{ (std::size_t)group_size[i], (std::size_t)n[i] },
+                                     [=](sycl::item<2> it) {
+                                         const auto col = it.get_id(0) + stride;
+                                         const auto row = it.get_id(1) * abs_incy;
+                                         y[col][row] = std::conj(y[col][row]);
+                                     });
+                });
+            }
+        }
+        stride += group_size[i];
+    }
+
+    return done;
 }
 
 template <typename Func, typename T>
@@ -1841,7 +1916,23 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
                               int64_t *n, T *alpha, const T **a, int64_t *lda, const T **x,
                               int64_t *incx, T *beta, T **y, int64_t *incy, int64_t group_count,
                               int64_t *group_size, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemv_batch", "for row_major layout");
+    auto tmp_trans = std::vector<transpose>{ static_cast<std::size_t>(group_count) };
+
+    for (int64_t i = 0; i < group_count; i++) {
+        auto new_trans = trans[i] == oneapi::mkl::transpose::nontrans
+                             ? oneapi::mkl::transpose::trans
+                             : oneapi::mkl::transpose::nontrans;
+        tmp_trans[i] = trans[i];
+        trans[i] = new_trans;
+    }
+    auto done = column_major::gemv_batch(func, queue, trans, n, m, alpha, a, lda, x, incx, beta, y,
+                                         incy, group_count, group_size, dependencies);
+    done.wait_and_throw();
+    for (int64_t i = 0; i < group_count; i++) {
+        trans[i] = tmp_trans[i];
+    }
+
+    return done;
 }
 
 #define GEMV_BATCH_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                             \
