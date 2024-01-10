@@ -1342,7 +1342,6 @@ inline void gemv_batch(Func func, sycl::queue &queue, transpose trans, int64_t m
             queue.submit([&](sycl::handler &cgh) {
                 const auto abs_incx = std::abs(incx);
                 const auto abs_stridex = std::abs(stridex);
-
                 auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
                 cgh.parallel_for(
                     sycl::range{ (std::size_t)batch_size, (std::size_t)m }, [=](sycl::item<2> it) {
@@ -1355,7 +1354,6 @@ inline void gemv_batch(Func func, sycl::queue &queue, transpose trans, int64_t m
                 queue.submit([&](sycl::handler &cgh) {
                     const auto abs_incy = std::abs(incy);
                     const auto abs_stridey = std::abs(stridey);
-
                     auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
                     cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
                                      [=](sycl::item<2> it) {
@@ -1376,7 +1374,6 @@ inline void gemv_batch(Func func, sycl::queue &queue, transpose trans, int64_t m
             queue.submit([&](sycl::handler &cgh) {
                 const auto abs_incy = std::abs(incy);
                 const auto abs_stridey = std::abs(stridey);
-
                 auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
                 cgh.parallel_for(
                     sycl::range{ (std::size_t)batch_size, (std::size_t)n }, [=](sycl::item<2> it) {
@@ -1726,7 +1723,6 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose trans, in
             done = queue.submit([&](sycl::handler &cgh) {
                 const auto abs_incx = std::abs(incx);
                 const auto abs_stridex = std::abs(stridex);
-
                 auto acc = (std::complex<T> *)x;
                 cgh.parallel_for(
                     sycl::range{ (std::size_t)batch_size, (std::size_t)m }, [=](sycl::item<2> it) {
@@ -1739,7 +1735,6 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose trans, in
                 done = queue.submit([&](sycl::handler &cgh) {
                     const auto abs_incy = std::abs(incy);
                     const auto abs_stridey = std::abs(stridey);
-
                     cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
                                      [=](sycl::item<2> it) {
                                          const auto index =
@@ -1761,7 +1756,6 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose trans, in
             done = queue.submit([&](sycl::handler &cgh) {
                 const auto abs_incy = std::abs(incy);
                 const auto abs_stridey = std::abs(stridey);
-
                 cgh.depends_on(done);
                 cgh.parallel_for(
                     sycl::range{ (std::size_t)batch_size, (std::size_t)n }, [=](sycl::item<2> it) {
@@ -1823,7 +1817,6 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
             if (m[i] > 0) {
                 done = queue.submit([&](sycl::handler &cgh) {
                     const auto abs_incx = std::abs(incx[i]);
-
                     auto acc = (std::complex<T> **)x;
                     cgh.parallel_for(sycl::range{ (std::size_t)group_size[i], (std::size_t)m[i] },
                                      [=](sycl::item<2> it) {
@@ -1836,7 +1829,6 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
                 if (n[i] > 0) {
                     done = queue.submit([&](sycl::handler &cgh) {
                         const auto abs_incy = std::abs(incy[i]);
-
                         cgh.parallel_for(
                             sycl::range{ (std::size_t)group_size[i], (std::size_t)n[i] },
                             [=](sycl::item<2> it) {
@@ -1874,7 +1866,6 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
             if (n[i] > 0) {
                 done = queue.submit([&](sycl::handler &cgh) {
                     const auto abs_incy = std::abs(incy[i]);
-
                     cgh.parallel_for(sycl::range{ (std::size_t)group_size[i], (std::size_t)n[i] },
                                      [=](sycl::item<2> it) {
                                          const auto col = it.get_id(0) + stride;
