@@ -20,7 +20,9 @@
 set(LIB_NAME onemkl_blas_portblas)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
-option(PORTBLAS_TUNING_TARGET "Set a TUNING_TARGET for portBLAS" "")
+if(NOT DEFINED PORTBLAS_TUNING_TARGET)
+  option(PORTBLAS_TUNING_TARGET "Set a TUNING_TARGET for portBLAS" "")
+endif()
 
 # Parse compiler flags and return a list of SYCL targets
 # The list is empty if no targets are set
@@ -45,19 +47,27 @@ if(NUM_TARGETS EQUAL 0)
 endif()
 
 if(PORTBLAS_TUNING_TARGET)
-  # Allow the user to manually enable a specific device type without relying on the sycl target.
+  # Allow the user to manually enable a specific device type 
+  # for tuned portBLAS configurations and sets sycl-target.
   if(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_CPU")
-    # Allow the user to enable only the INTEL_CPU backend even though portBLAS cannot be tuned for INTEL_CPU.
     set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
-    set(PORTBLAS_TUNING_TARGET "")
+    set(PORTBLAS_TUNING_TARGET "DEFAULT_CPU")
+    target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=spir64_x86_64 -fsycl-unnamed-lambda)
+    target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=spir64_x86_64)
   elseif(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_GPU")
     set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
+    target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=spir64 -fsycl-unnamed-lambda)
+    target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=spir64)
   elseif(PORTBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
     set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
     if (is_dpcpp)
       target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda
-      -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+        -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
       target_link_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
     else()
@@ -80,12 +90,11 @@ if(PORTBLAS_TUNING_TARGET)
   else()
     message(FATAL_ERROR "Unsupported PORTBLAS_TUNING_TARGET: '${PORTBLAS_TUNING_TARGET}'")
   endif()
-elseif(NUM_TARGETS EQUAL 0)
-  # Enable portBLAS backend for all devices types
-  set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
-  set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
-  set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
-  set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
+  elseif(NUM_TARGETS EQUAL 0)
+    # Enable portBLAS backend for CPU devices as it is the default Tuning
+    # and build target in portBLAS
+    set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
+    set(PORTBLAS_TUNING_TARGET "DEFAULT_CPU" CACHE INTERNAL "")
 else()
   # Try to automatically detect the PORTBLAS_TUNING_TARGET
   foreach(SYCL_TARGET IN LISTS SYCL_TARGETS)
@@ -119,7 +128,7 @@ elseif(PORTBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
 elseif(PORTBLAS_TUNING_TARGET STREQUAL "NVIDIA_GPU")
   message(STATUS "Tuning portBLAS for Nvidia GPU devices")
 else()
-  message(STATUS "portBLAS is not tuned for any device which can impact performance")
+  message(STATUS "portBLAS is tuned for intel CPU devices (by default)")
 endif()
 
 # If find_package doesn't work, download portBLAS from Github. This is
