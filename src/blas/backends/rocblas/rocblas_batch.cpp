@@ -25,6 +25,44 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/rocblas/onemkl_blas_rocblas.hpp"
 
+// Helper Functions
+
+template <typename T>
+static inline void conj_vector(sycl::handler &cgh, sycl::buffer<T> &buf, const int64_t len,
+                               const int64_t inc, const int64_t stride, const int64_t batch_size) {
+    const auto abs_inc = std::abs(inc);
+    const auto abs_stride = std::abs(stride);
+    auto acc = buf.template get_access<sycl::access::mode::read_write>(cgh);
+    cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)len },
+                     [=](sycl::item<2> it) {
+                         const auto index = it.get_id(0) * abs_stride + it.get_id(1) * abs_inc;
+                         acc[index] = std::conj(acc[index]);
+                     });
+}
+template <typename T>
+static inline void conj_vector(sycl::handler &cgh, T *ptr, const int64_t len, const int64_t inc,
+                               const int64_t stride, const int64_t batch_size) {
+    const auto abs_inc = std::abs(inc);
+    const auto abs_stride = std::abs(stride);
+    cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)len },
+                     [=](sycl::item<2> it) {
+                         const auto index = it.get_id(0) * abs_stride + it.get_id(1) * abs_inc;
+                         ptr[index] = std::conj(ptr[index]);
+                     });
+}
+
+template <typename T>
+static inline void conj_vector(sycl::handler &cgh, T **ptr, const int64_t len, const int64_t inc,
+                               const int64_t stride, const int64_t group_size) {
+    const auto abs_inc = std::abs(inc);
+    cgh.parallel_for(sycl::range{ (std::size_t)group_size, (std::size_t)len },
+                     [=](sycl::item<2> it) {
+                         const auto col = it.get_id(0) + stride;
+                         const auto row = it.get_id(1) * abs_inc;
+                         ptr[col][row] = std::conj(ptr[col][row]);
+                     });
+}
+
 namespace oneapi {
 namespace mkl {
 namespace blas {
@@ -1327,29 +1365,12 @@ inline void gemv_batch(Func func, sycl::queue &queue, transpose trans, int64_t m
         beta = std::conj(beta);
 
         if (m > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                const auto abs_stridex = std::abs(stridex);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(
-                    sycl::range{ (std::size_t)batch_size, (std::size_t)m }, [=](sycl::item<2> it) {
-                        const auto index = it.get_id(0) * abs_stridex + it.get_id(1) * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
-            });
+            queue.submit(
+                [&](sycl::handler &cgh) { conj_vector(cgh, x, m, incx, stridex, batch_size); });
 
             if (n > 0) {
-                queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incy = std::abs(incy);
-                    const auto abs_stridey = std::abs(stridey);
-                    auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-                    cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
-                                     [=](sycl::item<2> it) {
-                                         const auto index =
-                                             it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
-                                         acc[index] = std::conj(acc[index]);
-                                     });
-                });
+                queue.submit(
+                    [&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy, stridey, batch_size); });
             }
         }
     }
@@ -1359,16 +1380,8 @@ inline void gemv_batch(Func func, sycl::queue &queue, transpose trans, int64_t m
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incy = std::abs(incy);
-                const auto abs_stridey = std::abs(stridey);
-                auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(
-                    sycl::range{ (std::size_t)batch_size, (std::size_t)n }, [=](sycl::item<2> it) {
-                        const auto index = it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
-                        acc[index] = std::conj(acc[index]);
-                    });
-            });
+            queue.submit(
+                [&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy, stridey, batch_size); });
         }
     }
 }
@@ -1705,27 +1718,12 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose trans, in
 
         if (m > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                const auto abs_stridex = std::abs(stridex);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(
-                    sycl::range{ (std::size_t)batch_size, (std::size_t)m }, [=](sycl::item<2> it) {
-                        const auto index = it.get_id(0) * abs_stridex + it.get_id(1) * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
+                conj_vector(cgh, (std::complex<T> *)x, m, incx, stridex, batch_size);
             });
 
             if (n > 0) {
-                done = queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incy = std::abs(incy);
-                    const auto abs_stridey = std::abs(stridey);
-                    cgh.parallel_for(sycl::range{ (std::size_t)batch_size, (std::size_t)n },
-                                     [=](sycl::item<2> it) {
-                                         const auto index =
-                                             it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
-                                         y[index] = std::conj(y[index]);
-                                     });
-                });
+                done = queue.submit(
+                    [&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy, stridey, batch_size); });
             }
         }
     }
@@ -1738,14 +1736,8 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose trans, in
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incy = std::abs(incy);
-                const auto abs_stridey = std::abs(stridey);
                 cgh.depends_on(done);
-                cgh.parallel_for(
-                    sycl::range{ (std::size_t)batch_size, (std::size_t)n }, [=](sycl::item<2> it) {
-                        const auto index = it.get_id(0) * abs_stridey + it.get_id(1) * abs_incy;
-                        y[index] = std::conj(y[index]);
-                    });
+                conj_vector(cgh, y, n, incy, stridey, batch_size);
             });
         }
     }
@@ -1800,26 +1792,12 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
 
             if (m[i] > 0) {
                 done = queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incx = std::abs(incx[i]);
-                    auto acc = (std::complex<T> **)x;
-                    cgh.parallel_for(sycl::range{ (std::size_t)group_size[i], (std::size_t)m[i] },
-                                     [=](sycl::item<2> it) {
-                                         const auto col = it.get_id(0) + stride;
-                                         const auto row = it.get_id(1) * abs_incx;
-                                         acc[col][row] = std::conj(acc[col][row]);
-                                     });
+                    conj_vector(cgh, (std::complex<T> **)x, m[i], incx[i], stride, group_size[i]);
                 });
 
                 if (n[i] > 0) {
                     done = queue.submit([&](sycl::handler &cgh) {
-                        const auto abs_incy = std::abs(incy[i]);
-                        cgh.parallel_for(
-                            sycl::range{ (std::size_t)group_size[i], (std::size_t)n[i] },
-                            [=](sycl::item<2> it) {
-                                const auto col = it.get_id(0) + stride;
-                                const auto row = it.get_id(1) * abs_incy;
-                                y[col][row] = std::conj(y[col][row]);
-                            });
+                        conj_vector(cgh, y, n[i], incy[i], stride, group_size[i]);
                     });
                 }
             }
@@ -1849,13 +1827,7 @@ inline sycl::event gemv_batch(Func func, sycl::queue &queue, transpose *trans, i
         if (trans[i] == oneapi::mkl::transpose::conjtrans) {
             if (n[i] > 0) {
                 done = queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incy = std::abs(incy[i]);
-                    cgh.parallel_for(sycl::range{ (std::size_t)group_size[i], (std::size_t)n[i] },
-                                     [=](sycl::item<2> it) {
-                                         const auto col = it.get_id(0) + stride;
-                                         const auto row = it.get_id(1) * abs_incy;
-                                         y[col][row] = std::conj(y[col][row]);
-                                     });
+                    conj_vector(cgh, y, n[i], incy[i], stride, group_size[i]);
                 });
             }
         }

@@ -25,6 +25,54 @@
 #include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/blas/detail/rocblas/onemkl_blas_rocblas.hpp"
 
+// Helper Functions
+
+template <typename T>
+static inline void conj_vector(sycl::handler &cgh, sycl::buffer<T> &buf, const int64_t len,
+                               const int64_t inc) {
+    const auto abs_inc = std::abs(inc);
+    auto acc = buf.template get_access<sycl::access::mode::read_write>(cgh);
+    cgh.parallel_for(sycl::range{ (std::size_t)len }, [=](sycl::id<1> id) {
+        const auto index = id * abs_inc;
+        acc[index] = std::conj(acc[index]);
+    });
+}
+template <typename T>
+static inline void conj_vector(sycl::handler &cgh, T *ptr, const int64_t len, const int64_t inc) {
+    const auto abs_inc = std::abs(inc);
+    cgh.parallel_for(sycl::range{ (std::size_t)len }, [=](sycl::id<1> id) {
+        const auto index = id * abs_inc;
+        ptr[index] = std::conj(ptr[index]);
+    });
+}
+
+template <typename T>
+static inline void conj_vector(sycl::handler &cgh, sycl::buffer<T> &buf_a, sycl::buffer<T> &buf_b,
+                               const int64_t len, const int64_t inc_a, const int64_t inc_b) {
+    const auto abs_inc_a = std::abs(inc_a);
+    const auto abs_inc_b = std::abs(inc_b);
+    auto acc_a = buf_a.template get_access<sycl::access::mode::read_write>(cgh);
+    auto acc_b = buf_b.template get_access<sycl::access::mode::read_write>(cgh);
+    cgh.parallel_for(sycl::range{ (std::size_t)len }, [=](sycl::id<1> id) {
+        const auto index_a = id * abs_inc_a;
+        const auto index_b = id * abs_inc_b;
+        acc_a[index_a] = std::conj(acc_a[index_a]);
+        acc_b[index_b] = std::conj(acc_b[index_b]);
+    });
+}
+template <typename T>
+static inline void conj_vector(sycl::handler &cgh, T *ptr_a, T *ptr_b, const int64_t len,
+                               const int64_t inc_a, const int64_t inc_b) {
+    const auto abs_inc_a = std::abs(inc_a);
+    const auto abs_inc_b = std::abs(inc_b);
+    cgh.parallel_for(sycl::range{ (std::size_t)len }, [=](sycl::id<1> id) {
+        const auto index_a = id * abs_inc_a;
+        const auto index_b = id * abs_inc_b;
+        ptr_a[index_a] = std::conj(ptr_a[index_a]);
+        ptr_b[index_b] = std::conj(ptr_b[index_b]);
+    });
+}
+
 namespace oneapi {
 namespace mkl {
 namespace blas {
@@ -1770,24 +1818,10 @@ inline void gemv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
         beta = std::conj(beta);
 
         if (m > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)m }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, m, incx); });
 
             if (n > 0) {
-                queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incy = std::abs(incy);
-                    auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incy;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                });
+                queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
             }
         }
     }
@@ -1796,14 +1830,7 @@ inline void gemv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incy = std::abs(incy);
-                auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incy;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
         }
     }
 }
@@ -1845,24 +1872,10 @@ inline void gbmv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
         beta = std::conj(beta);
 
         if (m > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)m }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, m, incx); });
 
             if (n > 0) {
-                queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incy = std::abs(incy);
-                    auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incy;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                });
+                queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
             }
         }
     }
@@ -1871,14 +1884,7 @@ inline void gbmv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incy = std::abs(incy);
-                auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incy;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
         }
     }
 }
@@ -1913,14 +1919,7 @@ inline void gerc(Func func, sycl::queue &queue, int64_t m, int64_t n, std::compl
                  sycl::buffer<std::complex<T>, 1> &y, int64_t incy,
                  sycl::buffer<std::complex<T>, 1> &a, int64_t lda) {
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incy = std::abs(incy);
-            auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                auto index = id * abs_incy;
-                acc[index] = std::conj(acc[index]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
     }
 
     column_major::ger(func, queue, n, m, alpha, y, incy, x, incx, a, lda);
@@ -1967,31 +1966,13 @@ inline void hbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, int
     auto new_beta = std::conj(beta);
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incx = std::abs(incx);
-            const auto abs_incy = std::abs(incy);
-            auto acc_x = x.template get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_y = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index_x = id * abs_incx;
-                const auto index_y = id * abs_incy;
-                acc_x[index_x] = std::conj(acc_x[index_x]);
-                acc_y[index_y] = std::conj(acc_y[index_y]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, y, n, incx, incy); });
     }
 
     column_major::hbmv(func, queue, new_uplo, n, k, new_alpha, a, lda, x, incx, new_beta, y, incy);
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incy = std::abs(incy);
-            auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index = id * abs_incy;
-                acc[index] = std::conj(acc[index]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
     }
 }
 
@@ -2017,31 +1998,13 @@ inline void hemv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
     auto new_beta = std::conj(beta);
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incx = std::abs(incx);
-            const auto abs_incy = std::abs(incy);
-            auto acc_x = x.template get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_y = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index_x = id * abs_incx;
-                const auto index_y = id * abs_incy;
-                acc_x[index_x] = std::conj(acc_x[index_x]);
-                acc_y[index_y] = std::conj(acc_y[index_y]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, y, n, incx, incy); });
     }
 
     column_major::hemv(func, queue, new_uplo, n, new_alpha, a, lda, x, incx, new_beta, y, incy);
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incy = std::abs(incy);
-            auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index = id * abs_incy;
-                acc[index] = std::conj(acc[index]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
     }
 }
 
@@ -2065,14 +2028,7 @@ inline void her(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, Scal
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incx = std::abs(incx);
-            auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index = id * abs_incx;
-                acc[index] = std::conj(acc[index]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
     }
 
     column_major::her(func, queue, new_uplo, n, alpha, x, incx, a, lda);
@@ -2098,18 +2054,7 @@ inline void her2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incx = std::abs(incx);
-            const auto abs_incy = std::abs(incy);
-            auto acc_x = x.template get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_y = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index_x = id * abs_incx;
-                const auto index_y = id * abs_incy;
-                acc_x[index_x] = std::conj(acc_x[index_x]);
-                acc_y[index_y] = std::conj(acc_y[index_y]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, y, n, incx, incy); });
     }
 
     column_major::her2(func, queue, new_uplo, n, alpha, y, incy, x, incx, a, lda);
@@ -2137,31 +2082,13 @@ inline void hpmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
     auto new_beta = std::conj(beta);
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incx = std::abs(incx);
-            const auto abs_incy = std::abs(incy);
-            auto acc_x = x.template get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_y = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index_x = id * abs_incx;
-                const auto index_y = id * abs_incy;
-                acc_x[index_x] = std::conj(acc_x[index_x]);
-                acc_y[index_y] = std::conj(acc_y[index_y]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, y, n, incx, incy); });
     }
 
     column_major::hpmv(func, queue, new_uplo, n, new_alpha, a, x, incx, new_beta, y, incy);
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incy = std::abs(incy);
-            auto acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                auto index = id * abs_incy;
-                acc[index] = std::conj(acc[index]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
     }
 }
 
@@ -2184,14 +2111,7 @@ inline void hpr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, Scal
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incx = std::abs(incx);
-            auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index = id * abs_incx;
-                acc[index] = std::conj(acc[index]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
     }
 
     column_major::hpr(func, queue, new_uplo, n, alpha, x, incx, a);
@@ -2216,18 +2136,7 @@ inline void hpr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incx = std::abs(incx);
-            const auto abs_incy = std::abs(incy);
-            auto acc_x = x.template get_access<sycl::access::mode::read_write>(cgh);
-            auto acc_y = y.template get_access<sycl::access::mode::read_write>(cgh);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index_x = id * abs_incx;
-                const auto index_y = id * abs_incy;
-                acc_x[index_x] = std::conj(acc_x[index_x]);
-                acc_y[index_y] = std::conj(acc_y[index_y]);
-            });
-        });
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, y, n, incx, incy); });
     }
 
     column_major::hpr2(func, queue, new_uplo, n, alpha, y, incy, x, incx, a);
@@ -2412,14 +2321,7 @@ inline void tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 
@@ -2427,14 +2329,7 @@ inline void tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 }
@@ -2476,14 +2371,7 @@ inline void tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 
@@ -2491,14 +2379,7 @@ inline void tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 }
@@ -2540,14 +2421,7 @@ inline void tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 
@@ -2555,14 +2429,7 @@ inline void tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 }
@@ -2602,14 +2469,7 @@ inline void tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 
@@ -2617,14 +2477,7 @@ inline void tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 }
@@ -2664,14 +2517,7 @@ inline void trmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 
@@ -2679,14 +2525,7 @@ inline void trmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 }
@@ -2727,14 +2566,7 @@ inline void trsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 
@@ -2742,14 +2574,7 @@ inline void trsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
     }
 }
@@ -2797,23 +2622,11 @@ inline sycl::event gemv(Func func, sycl::queue &queue, transpose trans, int64_t 
         beta = std::conj(beta);
 
         if (m > 0) {
-            done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)m }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            done = queue.submit(
+                [&](sycl::handler &cgh) { conj_vector(cgh, (std::complex<T> *)x, m, incx); });
 
             if (n > 0) {
-                done = queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incy = std::abs(incy);
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incy;
-                        y[index] = std::conj(y[index]);
-                    });
-                });
+                done = queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
             }
         }
     }
@@ -2826,12 +2639,8 @@ inline sycl::event gemv(Func func, sycl::queue &queue, transpose trans, int64_t 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incy = std::abs(incy);
                 cgh.depends_on(done);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incy;
-                    y[index] = std::conj(y[index]);
-                });
+                conj_vector(cgh, y, n, incy);
             });
         }
     }
@@ -2881,23 +2690,11 @@ inline sycl::event gbmv(Func func, sycl::queue &queue, transpose trans, int64_t 
         beta = std::conj(beta);
 
         if (m > 0) {
-            done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)m }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            });
+            done = queue.submit(
+                [&](sycl::handler &cgh) { conj_vector(cgh, (std::complex<T> *)x, m, incx); });
 
             if (n > 0) {
-                done = queue.submit([&](sycl::handler &cgh) {
-                    const auto abs_incy = std::abs(incy);
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incy;
-                        y[index] = std::conj(y[index]);
-                    });
-                });
+                done = queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
             }
         }
     }
@@ -2910,12 +2707,8 @@ inline sycl::event gbmv(Func func, sycl::queue &queue, transpose trans, int64_t 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incy = std::abs(incy);
                 cgh.depends_on(done);
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incy;
-                    y[index] = std::conj(y[index]);
-                });
+                conj_vector(cgh, y, n, incy);
             });
         }
     }
@@ -2957,15 +2750,7 @@ inline sycl::event gerc(Func func, sycl::queue &queue, int64_t m, int64_t n, std
                         int64_t incy, std::complex<T> *a, int64_t lda,
                         const std::vector<sycl::event> &dependencies) {
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incy = std::abs(incy);
-                auto acc = (std::complex<T> *)y;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incy;
-                    acc[index] = std::conj(acc[index]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (std::complex<T> *)y, n, incy); })
             .wait_and_throw();
     }
 
@@ -3016,18 +2801,7 @@ inline sycl::event hbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
     auto new_beta = std::conj(beta);
 
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                const auto abs_incy = std::abs(incy);
-                auto acc_x = (T *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index_x = id * abs_incx;
-                    const auto index_y = id * abs_incy;
-                    acc_x[index_x] = std::conj(acc_x[index_x]);
-                    y[index_y] = std::conj(y[index_y]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (T *)x, y, n, incx, incy); })
             .wait_and_throw();
     }
 
@@ -3036,12 +2810,8 @@ inline sycl::event hbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
 
     if (n > 0) {
         done = queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incy = std::abs(incy);
             cgh.depends_on(done);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index = id * abs_incy;
-                y[index] = std::conj(y[index]);
-            });
+            conj_vector(cgh, y, n, incy);
         });
     }
 
@@ -3073,18 +2843,7 @@ inline sycl::event hemv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
     auto new_beta = std::conj(beta);
 
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                const auto abs_incy = std::abs(incy);
-                auto acc_x = (T *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index_x = id * abs_incx;
-                    const auto index_y = id * abs_incy;
-                    acc_x[index_x] = std::conj(acc_x[index_x]);
-                    y[index_y] = std::conj(y[index_y]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (T *)x, y, n, incx, incy); })
             .wait_and_throw();
     }
 
@@ -3093,12 +2852,8 @@ inline sycl::event hemv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
 
     if (n > 0) {
         done = queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incy = std::abs(incy);
             cgh.depends_on(done);
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index = id * abs_incy;
-                y[index] = std::conj(y[index]);
-            });
+            conj_vector(cgh, y, n, incy);
         });
     }
 
@@ -3126,15 +2881,7 @@ inline sycl::event her(Func func, sycl::queue &queue, uplo upper_lower, int64_t 
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = (DataType *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (DataType *)x, n, incx); })
             .wait_and_throw();
     }
 
@@ -3161,19 +2908,7 @@ inline sycl::event her2(Func func, sycl::queue &queue, uplo upper_lower, int64_t
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                const auto abs_incy = std::abs(incy);
-                auto acc_x = (T *)x;
-                auto acc_y = (T *)y;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index_x = id * abs_incx;
-                    const auto index_y = id * abs_incy;
-                    acc_x[index_x] = std::conj(acc_x[index_x]);
-                    acc_y[index_y] = std::conj(acc_y[index_y]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (T *)x, (T *)y, n, incx, incy); })
             .wait_and_throw();
     }
 
@@ -3206,19 +2941,7 @@ inline sycl::event hpmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
     auto new_beta = std::conj(beta);
 
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                const auto abs_incy = std::abs(incy);
-                auto acc_x = (T *)x;
-                auto acc_y = (T *)y;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index_x = id * abs_incx;
-                    const auto index_y = id * abs_incy;
-                    acc_x[index_x] = std::conj(acc_x[index_x]);
-                    acc_y[index_y] = std::conj(acc_y[index_y]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (T *)x, y, n, incx, incy); })
             .wait_and_throw();
     }
 
@@ -3227,13 +2950,8 @@ inline sycl::event hpmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
 
     if (n > 0) {
         done = queue.submit([&](sycl::handler &cgh) {
-            const auto abs_incy = std::abs(incy);
             cgh.depends_on(done);
-            auto acc = (T *)y;
-            cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                const auto index = id * abs_incy;
-                acc[index] = std::conj(acc[index]);
-            });
+            conj_vector(cgh, y, n, incy);
         });
     }
 
@@ -3261,15 +2979,7 @@ inline sycl::event hpr(Func func, sycl::queue &queue, uplo upper_lower, int64_t 
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                auto acc = (DataType *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (DataType *)x, n, incx); })
             .wait_and_throw();
     }
 
@@ -3296,19 +3006,7 @@ inline sycl::event hpr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t
                                                             : oneapi::mkl::uplo::lower;
 
     if (n > 0) {
-        queue
-            .submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
-                const auto abs_incy = std::abs(incy);
-                auto acc_x = (T *)x;
-                auto acc_y = (T *)y;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index_x = id * abs_incx;
-                    const auto index_y = id * abs_incy;
-                    acc_x[index_x] = std::conj(acc_x[index_x]);
-                    acc_y[index_y] = std::conj(acc_y[index_y]);
-                });
-            })
+        queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (T *)x, (T *)y, n, incx, incy); })
             .wait_and_throw();
     }
 
@@ -3510,15 +3208,7 @@ inline sycl::event tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue
-                .submit([&](sycl::handler &cgh) {
-                    const auto abs_incx = std::abs(incx);
-                    auto acc = (std::complex<T> *)x;
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                })
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
         }
     }
@@ -3529,13 +3219,8 @@ inline sycl::event tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
                 cgh.depends_on(done);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
+                conj_vector(cgh, x, n, incx);
             });
         }
     }
@@ -3585,15 +3270,7 @@ inline sycl::event tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue
-                .submit([&](sycl::handler &cgh) {
-                    const auto abs_incx = std::abs(incx);
-                    auto acc = (std::complex<T> *)x;
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                })
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
         }
     }
@@ -3604,13 +3281,8 @@ inline sycl::event tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
                 cgh.depends_on(done);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
+                conj_vector(cgh, x, n, incx);
             });
         }
     }
@@ -3659,15 +3331,7 @@ inline sycl::event tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue
-                .submit([&](sycl::handler &cgh) {
-                    const auto abs_incx = std::abs(incx);
-                    auto acc = (std::complex<T> *)x;
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                })
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
         }
     }
@@ -3680,13 +3344,8 @@ inline sycl::event tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             incx = std::abs(incx);
 
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
                 cgh.depends_on(done);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
+                conj_vector(cgh, x, n, incx);
             });
         }
     }
@@ -3735,15 +3394,7 @@ inline sycl::event tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue
-                .submit([&](sycl::handler &cgh) {
-                    const auto abs_incx = std::abs(incx);
-                    auto acc = (std::complex<T> *)x;
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                })
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
         }
     }
@@ -3756,13 +3407,8 @@ inline sycl::event tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             incx = std::abs(incx);
 
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
                 cgh.depends_on(done);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
+                conj_vector(cgh, x, n, incx);
             });
         }
     }
@@ -3812,15 +3458,7 @@ inline sycl::event trmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue
-                .submit([&](sycl::handler &cgh) {
-                    const auto abs_incx = std::abs(incx);
-                    auto acc = (std::complex<T> *)x;
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                })
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
         }
     }
@@ -3831,13 +3469,8 @@ inline sycl::event trmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
                 cgh.depends_on(done);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
+                conj_vector(cgh, x, n, incx);
             });
         }
     }
@@ -3887,15 +3520,7 @@ inline sycl::event trsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
-            queue
-                .submit([&](sycl::handler &cgh) {
-                    const auto abs_incx = std::abs(incx);
-                    auto acc = (std::complex<T> *)x;
-                    cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                        const auto index = id * abs_incx;
-                        acc[index] = std::conj(acc[index]);
-                    });
-                })
+            queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
         }
     }
@@ -3906,13 +3531,8 @@ inline sycl::event trsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     if (trans == oneapi::mkl::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
-                const auto abs_incx = std::abs(incx);
                 cgh.depends_on(done);
-                auto acc = (std::complex<T> *)x;
-                cgh.parallel_for(sycl::range{ (std::size_t)n }, [=](sycl::id<1> id) {
-                    const auto index = id * abs_incx;
-                    acc[index] = std::conj(acc[index]);
-                });
+                conj_vector(cgh, x, n, incx);
             });
         }
     }
