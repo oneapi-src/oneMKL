@@ -91,13 +91,13 @@ if(PORTBLAS_TUNING_TARGET)
     message(FATAL_ERROR "Unsupported PORTBLAS_TUNING_TARGET: '${PORTBLAS_TUNING_TARGET}'")
   endif()
 elseif(NUM_TARGETS EQUAL 0)
-  # Enable portBLAS backend for CPU devices as it is the default Tuning
+  # Enable portBLAS backend for all devices types
   set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
   set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
   set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
   set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
 else()
-  # Enable portBLAS backend for all devices types
+  # Try to automatically detect the PORTBLAS_TUNING_TARGET
   foreach(SYCL_TARGET IN LISTS SYCL_TARGETS)
     if(SYCL_TARGETS MATCHES "^intel_gpu" OR SYCL_TARGETS MATCHES "^spir64_gen")
       set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
