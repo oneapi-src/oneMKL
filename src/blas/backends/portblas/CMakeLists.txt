@@ -90,13 +90,14 @@ if(PORTBLAS_TUNING_TARGET)
   else()
     message(FATAL_ERROR "Unsupported PORTBLAS_TUNING_TARGET: '${PORTBLAS_TUNING_TARGET}'")
   endif()
-  elseif(NUM_TARGETS EQUAL 0)
-    # Enable portBLAS backend for CPU devices as it is the default Tuning
-    # and build target in portBLAS
-    set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
-    set(PORTBLAS_TUNING_TARGET "DEFAULT_CPU" CACHE INTERNAL "")
+elseif(NUM_TARGETS EQUAL 0)
+  # Enable portBLAS backend for CPU devices as it is the default Tuning
+  set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
+  set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
+  set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
+  set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU "ON" CACHE INTERNAL "")
 else()
-  # Try to automatically detect the PORTBLAS_TUNING_TARGET
+  # Enable portBLAS backend for all devices types
   foreach(SYCL_TARGET IN LISTS SYCL_TARGETS)
     if(SYCL_TARGETS MATCHES "^intel_gpu" OR SYCL_TARGETS MATCHES "^spir64_gen")
       set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
@@ -128,7 +129,7 @@ elseif(PORTBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
 elseif(PORTBLAS_TUNING_TARGET STREQUAL "NVIDIA_GPU")
   message(STATUS "Tuning portBLAS for Nvidia GPU devices")
 else()
-  message(STATUS "portBLAS is tuned for intel CPU devices (by default)")
+  message(STATUS "portBLAS is not tuned for any device which can impact performance")
 endif()
 
 # If find_package doesn't work, download portBLAS from Github. This is
