@@ -20,7 +20,7 @@
 **************************************************************************/
 #ifndef _ROCBLAS_TASK_HPP_
 #define _ROCBLAS_TASK_HPP_
-#include <rocblas.h>
+#include <rocblas/rocblas.h>
 #include <complex>
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
