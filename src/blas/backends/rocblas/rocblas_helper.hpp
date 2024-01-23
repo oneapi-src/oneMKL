@@ -27,7 +27,7 @@
 
 #define _ROCBLAS_HELPER_HPP_
 
-#include <rocblas.h>
+#include <rocblas/rocblas.h>
 #include <complex>
 #include "oneapi/mkl/types.hpp"
 #include <hip/hip_runtime.h>

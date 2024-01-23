@@ -18,6 +18,7 @@
 *  limitations under the License.
 *
 **************************************************************************/
+
 #include "rocblas_helper.hpp"
 #include "rocblas_task.hpp"
 
@@ -38,12 +39,14 @@ inline void gemm(Func func, sycl::queue &queue, transpose transa, transpose tran
                  sycl::buffer<T, 1> &b, int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
+
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
             auto b_ = sc.get_mem<rocDataType *>(b_acc);
             auto c_ = sc.get_mem<rocDataType *>(c_acc);
@@ -71,22 +74,19 @@ GEMM_LAUNCHER(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER
 
-void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, int64_t k,
-          float alpha, sycl::buffer<bfloat16, 1> &a, int64_t lda, sycl::buffer<bfloat16, 1> &b,
-          int64_t ldb, float beta, sycl::buffer<float, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "gemm", "for column_major layout");
-}
-
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, sycl::queue &queue,
-                 transpose transa, transpose transb, int64_t m, int64_t n, int64_t k, T_C alpha,
-                 sycl::buffer<T_A, 1> &a, int64_t lda, sycl::buffer<T_B, 1> &b, int64_t ldb,
-                 T_C beta, sycl::buffer<T_C, 1> &c, int64_t ldc) {
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
+inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, COMPUTETYPE CT,
+                    sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    int64_t k, T_S alpha, sycl::buffer<T_A, 1> &a, int64_t lda,
+                    sycl::buffer<T_B, 1> &b, int64_t ldb, T_S beta, sycl::buffer<T_C, 1> &c,
+                    int64_t ldc) {
     using rocDataType_A = typename RocEquivalentType<T_A>::Type;
     using rocDataType_B = typename RocEquivalentType<T_B>::Type;
     using rocDataType_C = typename RocEquivalentType<T_C>::Type;
+    using rocDataType_S = typename RocEquivalentType<T_S>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
@@ -99,25 +99,33 @@ inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, s
             auto c_ = sc.get_mem<rocDataType_C *>(c_acc);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
-                                    get_rocblas_operation(transb), m, n, k, (rocDataType_C *)&alpha,
-                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_C *)&beta, c_, DT_C,
-                                    ldc, DT_C, rocblas_gemm_algo_standard);
+                                    get_rocblas_operation(transb), m, n, k, (rocDataType_S *)&alpha,
+                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_S *)&beta, c_, DT_C,
+                                    ldc, c_, DT_C, ldc, CT, rocblas_gemm_algo_standard, 0, 0);
         });
     });
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, \
-                         ROCMDATATYPE_C)                                                          \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,         \
+                         ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                         \
     void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
-              int64_t k, TYPE_C alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
-              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta, sycl::buffer<TYPE_C, 1> &c,   \
+              int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
+              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_S beta, sycl::buffer<TYPE_C, 1> &c,   \
               int64_t ldc) {                                                                      \
-        throw unimplemented("blas", "gemm", "half is disabled");                                  \
+        gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE, \
+                queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);             \
     }
 
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, rocblas_gemm_ex, HIP_R_16F, HIP_R_16F, HIP_R_32F)
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, HIP_R_16F, HIP_R_16F,
-                 HIP_R_16F)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                 rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
 
 #undef GEMM_EX_LAUNCHER
 
@@ -127,6 +135,7 @@ inline void symm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
@@ -166,6 +175,7 @@ inline void hemm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
@@ -191,6 +201,7 @@ inline void hemm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         hemm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, \
              c, ldc);                                                                            \
     }
+
 HEMM_LAUNCHER(std::complex<float>, rocblas_chemm)
 HEMM_LAUNCHER(std::complex<double>, rocblas_zhemm)
 
@@ -202,6 +213,7 @@ inline void syrk(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
                  sycl::buffer<T, 1> &c, int64_t ldc) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
@@ -239,6 +251,7 @@ inline void herk(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
     using rocDataType = typename RocEquivalentType<DataType>::Type;
     using rocScalarType = typename RocEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
@@ -273,6 +286,7 @@ inline void syr2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
                   int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldb, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
@@ -298,6 +312,7 @@ inline void syr2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
         syr2k(ROCBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, \
               ldc);                                                                             \
     }
+
 SYR2K_LAUNCHER(float, rocblas_ssyr2k)
 SYR2K_LAUNCHER(double, rocblas_dsyr2k)
 SYR2K_LAUNCHER(std::complex<float>, rocblas_csyr2k)
@@ -313,6 +328,7 @@ inline void her2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
     using rocDataType = typename RocEquivalentType<DataType>::Type;
     using rocScalarType = typename RocEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldb, ldc);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
@@ -355,6 +371,7 @@ inline void trmm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  sycl::buffer<T, 1> &b, int64_t ldb) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
@@ -379,6 +396,7 @@ inline void trmm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         trmm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, \
              lda, b, ldb);                                                                      \
     }
+
 TRMM_LAUNCHER(float, rocblas_strmm)
 TRMM_LAUNCHER(double, rocblas_dtrmm)
 TRMM_LAUNCHER(std::complex<float>, rocblas_ctrmm)
@@ -392,6 +410,7 @@ inline void trsm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  sycl::buffer<T, 1> &b, int64_t ldb) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
+
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
@@ -416,6 +435,7 @@ inline void trsm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         trsm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, \
              lda, b, ldb);                                                                      \
     }
+
 TRSM_LAUNCHER(float, rocblas_strsm)
 TRSM_LAUNCHER(double, rocblas_dtrsm)
 TRSM_LAUNCHER(std::complex<float>, rocblas_ctrsm)
@@ -432,11 +452,9 @@ inline sycl::event gemm(Func func, sycl::queue &queue, transpose transa, transpo
                         const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -449,6 +467,7 @@ inline sycl::event gemm(Func func, sycl::queue &queue, transpose transa, transpo
                                     a_, lda, b_, ldb, (rocDataType *)&beta, c_, ldc);
         });
     });
+
     return done;
 }
 
@@ -467,71 +486,72 @@ GEMM_LAUNCHER_USM(std::complex<float>, rocblas_cgemm)
 GEMM_LAUNCHER_USM(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER_USM
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                        sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                        int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda, const T_B *b,
-                        int64_t ldb, T_C beta, T_C *c, int64_t ldc,
-                        const std::vector<sycl::event> &dependencies) {
+
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
+inline sycl::event gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                           COMPUTETYPE CT, sycl::queue &queue, transpose transa, transpose transb,
+                           int64_t m, int64_t n, int64_t k, T_S alpha, const T_A *a, int64_t lda,
+                           const T_B *b, int64_t ldb, T_S beta, T_C *c, int64_t ldc,
+                           const std::vector<sycl::event> &dependencies) {
     using rocDataType_A = typename RocEquivalentType<T_A>::Type;
     using rocDataType_B = typename RocEquivalentType<T_B>::Type;
     using rocDataType_C = typename RocEquivalentType<T_C>::Type;
+    using rocDataType_S = typename RocEquivalentType<T_S>::Type;
     overflow_check(m, n, k, lda, ldb, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
+
             auto a_ = reinterpret_cast<const rocDataType_A *>(a);
             auto b_ = reinterpret_cast<const rocDataType_B *>(b);
             auto c_ = reinterpret_cast<rocDataType_C *>(c);
             rocblas_status err;
             ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
-                                    get_rocblas_operation(transb), m, n, k, (rocDataType_C *)&alpha,
-                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_C *)&beta, c_, DT_C,
-                                    ldc, c_, DT_C, ldc, DT_C, rocblas_gemm_algo_standard, 0, 0);
+                                    get_rocblas_operation(transb), m, n, k, (rocDataType_S *)&alpha,
+                                    a_, DT_A, lda, b_, DT_B, ldb, (rocDataType_S *)&beta, c_, DT_C,
+                                    ldc, c_, DT_C, ldc, CT, rocblas_gemm_algo_standard, 0, 0);
         });
     });
+
     return done;
 }
 
-#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A,              \
-                             ROCMDATATYPE_B, ROCMDATATYPE_C)                                       \
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,      \
+                             ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                      \
     sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
-                     int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
-                     int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,                             \
+                     int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
+                     int64_t ldb, TYPE_S beta, TYPE_C *c, int64_t ldc,                             \
                      const std::vector<sycl::event> &dependencies) {                               \
-        return gemm(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, queue,        \
-                    transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);   \
+        return gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C,            \
+                       ROCMCOMPUTETYPE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,     \
+                       beta, c, ldc, dependencies);                                                \
     }
 
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                     rocblas_datatype_f16_r, rocblas_datatype_f32_r)
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, rocblas_datatype_f16_r,
-                     rocblas_datatype_f16_r, rocblas_datatype_f16_r)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                     rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
 
 #undef GEMM_EX_LAUNCHER_USM
 
-sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, float alpha, const bfloat16 *a, int64_t lda, const bfloat16 *b,
-                 int64_t ldb, float beta, float *c, int64_t ldc,
-                 const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm", "for column_major layout");
-}
 template <typename Func, typename T>
 inline sycl::event symm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                         int64_t n, T alpha, const T *a, int64_t lda, const T *b, int64_t ldb,
                         T beta, T *c, int64_t ldc, const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -544,6 +564,7 @@ inline sycl::event symm(Func func, sycl::queue &queue, side left_right, uplo upp
                                     a_, lda, b_, ldb, (rocDataType *)&beta, c_, ldc);
         });
     });
+
     return done;
 }
 
@@ -569,11 +590,9 @@ inline sycl::event hemm(Func func, sycl::queue &queue, side left_right, uplo upp
                         T beta, T *c, int64_t ldc, const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -586,6 +605,7 @@ inline sycl::event hemm(Func func, sycl::queue &queue, side left_right, uplo upp
                                     a_, lda, b_, ldb, (rocDataType *)&beta, c_, ldc);
         });
     });
+
     return done;
 }
 
@@ -597,6 +617,7 @@ inline sycl::event hemm(Func func, sycl::queue &queue, side left_right, uplo upp
         return hemm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                  \
     }
+
 HEMM_LAUNCHER_USM(std::complex<float>, rocblas_chemm)
 HEMM_LAUNCHER_USM(std::complex<double>, rocblas_zhemm)
 
@@ -608,11 +629,9 @@ inline sycl::event syrk(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -624,6 +643,7 @@ inline sycl::event syrk(Func func, sycl::queue &queue, uplo upper_lower, transpo
                                     lda, (rocDataType *)&beta, c_, ldc);
         });
     });
+
     return done;
 }
 
@@ -650,11 +670,9 @@ inline sycl::event herk(Func func, sycl::queue &queue, uplo upper_lower, transpo
     using rocDataType = typename RocEquivalentType<DataType>::Type;
     using rocScalarType = typename RocEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -666,6 +684,7 @@ inline sycl::event herk(Func func, sycl::queue &queue, uplo upper_lower, transpo
                                     lda, (rocScalarType *)&beta, c_, ldc);
         });
     });
+
     return done;
 }
 
@@ -690,11 +709,9 @@ inline sycl::event syr2k(Func func, sycl::queue &queue, uplo upper_lower, transp
                          const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(n, k, lda, ldb, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -707,6 +724,7 @@ inline sycl::event syr2k(Func func, sycl::queue &queue, uplo upper_lower, transp
                                     lda, b_, ldb, (rocDataType *)&beta, c_, ldc);
         });
     });
+
     return done;
 }
 
@@ -718,6 +736,7 @@ inline sycl::event syr2k(Func func, sycl::queue &queue, uplo upper_lower, transp
         return syr2k(ROCBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,      \
                      beta, c, ldc, dependencies);                                                  \
     }
+
 SYR2K_LAUNCHER_USM(float, rocblas_ssyr2k)
 SYR2K_LAUNCHER_USM(double, rocblas_dsyr2k)
 SYR2K_LAUNCHER_USM(std::complex<float>, rocblas_csyr2k)
@@ -733,11 +752,9 @@ inline sycl::event her2k(Func func, sycl::queue &queue, uplo upper_lower, transp
     using rocDataType = typename RocEquivalentType<DataType>::Type;
     using rocScalarType = typename RocEquivalentType<ScalarType>::Type;
     overflow_check(n, k, lda, ldb, ldc);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -750,6 +767,7 @@ inline sycl::event her2k(Func func, sycl::queue &queue, uplo upper_lower, transp
                                     lda, b_, ldb, (rocScalarType *)&beta, c_, ldc);
         });
     });
+
     return done;
 }
 
@@ -778,11 +796,9 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
                         const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -795,6 +811,7 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
                                     m, n, (rocDataType *)&alpha, a_, lda, b_, ldb);
         });
     });
+
     return done;
 }
 
@@ -805,6 +822,7 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
         return trmm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n,       \
                     alpha, a, lda, b, ldb, dependencies);                                          \
     }
+
 TRMM_LAUNCHER_USM(float, rocblas_strmm)
 TRMM_LAUNCHER_USM(double, rocblas_dtrmm)
 TRMM_LAUNCHER_USM(std::complex<float>, rocblas_ctrmm)
@@ -819,11 +837,9 @@ inline sycl::event trsm(Func func, sycl::queue &queue, side left_right, uplo upp
                         const std::vector<sycl::event> &dependencies) {
     using rocDataType = typename RocEquivalentType<T>::Type;
     overflow_check(m, n, lda, ldb);
+
     auto done = queue.submit([&](sycl::handler &cgh) {
-        int64_t num_events = dependencies.size();
-        for (int64_t i = 0; i < num_events; i++) {
-            cgh.depends_on(dependencies[i]);
-        }
+        cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
@@ -836,6 +852,7 @@ inline sycl::event trsm(Func func, sycl::queue &queue, side left_right, uplo upp
                                     m, n, (rocDataType *)&alpha, a_, lda, b_, ldb);
         });
     });
+
     return done;
 }
 
@@ -846,6 +863,7 @@ inline sycl::event trsm(Func func, sycl::queue &queue, side left_right, uplo upp
         return trsm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n,       \
                     alpha, a, lda, b, ldb, dependencies);                                          \
     }
+
 TRSM_LAUNCHER_USM(float, rocblas_strsm)
 TRSM_LAUNCHER_USM(double, rocblas_dtrsm)
 TRSM_LAUNCHER_USM(std::complex<float>, rocblas_ctrsm)
@@ -854,6 +872,7 @@ TRSM_LAUNCHER_USM(std::complex<double>, rocblas_ztrsm)
 #undef TRSM_LAUNCHER_USM
 
 } // namespace column_major
+
 namespace row_major {
 
 // Buffer APIs
@@ -862,7 +881,11 @@ template <typename Func, typename T>
 inline void gemm(Func func, sycl::queue &queue, transpose transa, transpose transb, int64_t m,
                  int64_t n, int64_t k, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
                  sycl::buffer<T, 1> &b, int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "gemm", "for row_major layout");
+    auto new_transa = transb;
+    auto new_transb = transa;
+
+    column_major::gemm(func, queue, new_transa, new_transb, n, m, k, alpha, b, ldb, a, lda, beta, c,
+                       ldc);
 }
 
 #define GEMM_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                  \
@@ -881,40 +904,53 @@ GEMM_LAUNCHER(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER
 
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline void gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, sycl::queue &queue,
-                 transpose transa, transpose transb, int64_t m, int64_t n, int64_t k, T_C alpha,
-                 sycl::buffer<T_A, 1> &a, int64_t lda, sycl::buffer<T_B, 1> &b, int64_t ldb,
-                 T_C beta, sycl::buffer<T_C, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "gemm", "for row_major layout");
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
+inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, COMPUTETYPE CT,
+                    sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                    int64_t k, T_S alpha, sycl::buffer<T_A, 1> &a, int64_t lda,
+                    sycl::buffer<T_B, 1> &b, int64_t ldb, T_S beta, sycl::buffer<T_C, 1> &c,
+                    int64_t ldc) {
+    auto new_transa = transb;
+    auto new_transb = transa;
+
+    column_major::gemm_ex(func, DT_A, DT_B, DT_C, CT, queue, new_transa, new_transb, n, m, k, alpha,
+                          b, ldb, a, lda, beta, c, ldc);
 }
 
-#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, \
-                         ROCMDATATYPE_C)                                                          \
+#define GEMM_EX_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,         \
+                         ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                         \
     void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,       \
-              int64_t k, TYPE_C alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
-              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_C beta, sycl::buffer<TYPE_C, 1> &c,   \
+              int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                   \
+              sycl::buffer<TYPE_B, 1> &b, int64_t ldb, TYPE_S beta, sycl::buffer<TYPE_C, 1> &c,   \
               int64_t ldc) {                                                                      \
-        gemm(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, queue, transa,      \
-             transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);                               \
+        gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE, \
+                queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);             \
     }
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, rocblas_gemm_ex, HIP_R_16F, HIP_R_16F, HIP_R_32F)
-GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, HIP_R_16F, HIP_R_16F,
-                 HIP_R_16F)
-#undef GEMM_EX_LAUNCHER
 
-void gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, int64_t k,
-          float alpha, sycl::buffer<bfloat16, 1> &a, int64_t lda, sycl::buffer<bfloat16, 1> &b,
-          int64_t ldb, float beta, sycl::buffer<float, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "gemm", "for row_major layout");
-}
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                 rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                 rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                 rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
+
+#undef GEMM_EX_LAUNCHER
 
 template <typename Func, typename T>
 inline void symm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                  int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
                  int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "symm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    column_major::symm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
 #define SYMM_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                     \
@@ -936,7 +972,12 @@ template <typename Func, typename T>
 inline void hemm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                  int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
                  int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "hemm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    column_major::hemm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c, ldc);
 }
 
 #define HEMM_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                     \
@@ -946,6 +987,7 @@ inline void hemm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         hemm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, beta, \
              c, ldc);                                                                            \
     }
+
 HEMM_LAUNCHER(std::complex<float>, rocblas_chemm)
 HEMM_LAUNCHER(std::complex<double>, rocblas_zhemm)
 
@@ -955,7 +997,12 @@ template <typename Func, typename T>
 inline void syrk(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                  int64_t k, T alpha, sycl::buffer<T, 1> &a, int64_t lda, T beta,
                  sycl::buffer<T, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "syrk", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
+                                                               : oneapi::mkl::transpose::nontrans;
+
+    column_major::syrk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
 #define SYRK_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                 \
@@ -976,7 +1023,12 @@ template <typename Func, typename DataType, typename ScalarType>
 inline void herk(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                  int64_t k, ScalarType alpha, sycl::buffer<DataType, 1> &a, int64_t lda,
                  ScalarType beta, sycl::buffer<DataType, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "herk", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
+                                                               : oneapi::mkl::transpose::nontrans;
+
+    column_major::herk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc);
 }
 
 #define HERK_LAUNCHER(DATA_TYPE, SCALAR_TYPE, ROCBLAS_ROUTINE)                                 \
@@ -995,7 +1047,13 @@ template <typename Func, typename T>
 inline void syr2k(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                   int64_t k, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
                   int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "syr2k", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
+                                                               : oneapi::mkl::transpose::nontrans;
+
+    column_major::syr2k(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, b, ldb, beta, c,
+                        ldc);
 }
 
 #define SYR2K_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                   \
@@ -1005,6 +1063,7 @@ inline void syr2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
         syr2k(ROCBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb, beta, c, \
               ldc);                                                                             \
     }
+
 SYR2K_LAUNCHER(float, rocblas_ssyr2k)
 SYR2K_LAUNCHER(double, rocblas_dsyr2k)
 SYR2K_LAUNCHER(std::complex<float>, rocblas_csyr2k)
@@ -1017,7 +1076,14 @@ inline void her2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
                   int64_t k, DataType alpha, sycl::buffer<DataType, 1> &a, int64_t lda,
                   sycl::buffer<DataType, 1> &b, int64_t ldb, ScalarType beta,
                   sycl::buffer<DataType, 1> &c, int64_t ldc) {
-    throw unimplemented("blas", "her2k", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
+                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_alpha = std::conj(alpha);
+
+    column_major::her2k(func, queue, new_uplo, new_trans, n, k, new_alpha, a, lda, b, ldb, beta, c,
+                        ldc);
 }
 
 #define HER2K_LAUNCHER(DATA_TYPE, SCALAR_TYPE, ROCBLAS_ROUTINE)                                 \
@@ -1042,7 +1108,13 @@ template <typename Func, typename T>
 inline void trmm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t m, int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
                  sycl::buffer<T, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "trmm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    column_major::trmm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a, lda, b,
+                       ldb);
 }
 
 #define TRMM_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                    \
@@ -1052,6 +1124,7 @@ inline void trmm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         trmm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, \
              lda, b, ldb);                                                                      \
     }
+
 TRMM_LAUNCHER(float, rocblas_strmm)
 TRMM_LAUNCHER(double, rocblas_dtrmm)
 TRMM_LAUNCHER(std::complex<float>, rocblas_ctrmm)
@@ -1063,7 +1136,13 @@ template <typename Func, typename T>
 inline void trsm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                  diag unit_diag, int64_t m, int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
                  sycl::buffer<T, 1> &b, int64_t ldb) {
-    throw unimplemented("blas", "trsm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    column_major::trsm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a, lda, b,
+                       ldb);
 }
 
 #define TRSM_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                                    \
@@ -1073,6 +1152,7 @@ inline void trsm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         trsm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n, alpha, a, \
              lda, b, ldb);                                                                      \
     }
+
 TRSM_LAUNCHER(float, rocblas_strsm)
 TRSM_LAUNCHER(double, rocblas_dtrsm)
 TRSM_LAUNCHER(std::complex<float>, rocblas_ctrsm)
@@ -1087,7 +1167,11 @@ inline sycl::event gemm(Func func, sycl::queue &queue, transpose transa, transpo
                         int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
                         const T *b, int64_t ldb, T beta, T *c, int64_t ldc,
                         const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm", "for row_major layout");
+    auto new_transa = transb;
+    auto new_transb = transa;
+
+    return column_major::gemm(func, queue, new_transa, new_transb, n, m, k, alpha, b, ldb, a, lda,
+                              beta, c, ldc, dependencies);
 }
 
 #define GEMM_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                                   \
@@ -1105,44 +1189,56 @@ GEMM_LAUNCHER_USM(std::complex<float>, rocblas_cgemm)
 GEMM_LAUNCHER_USM(std::complex<double>, rocblas_zgemm)
 
 #undef GEMM_LAUNCHER_USM
-template <typename Func, typename T_A, typename T_B, typename T_C, typename DATATYPE_A,
-          typename DATATYPE_B, typename DATATYPE_C>
-inline sycl::event gemm(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
-                        sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                        int64_t n, int64_t k, T_C alpha, const T_A *a, int64_t lda, const T_B *b,
-                        int64_t ldb, T_C beta, T_C *c, int64_t ldc,
-                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm", "for row_major layout");
+
+template <typename Func, typename T_A, typename T_B, typename T_C, typename T_S,
+          typename DATATYPE_A, typename DATATYPE_B, typename DATATYPE_C, typename COMPUTETYPE>
+inline sycl::event gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C,
+                           COMPUTETYPE CT, sycl::queue &queue, transpose transa, transpose transb,
+                           int64_t m, int64_t n, int64_t k, T_S alpha, const T_A *a, int64_t lda,
+                           const T_B *b, int64_t ldb, T_S beta, T_C *c, int64_t ldc,
+                           const std::vector<sycl::event> &dependencies) {
+    auto new_transa = transb;
+    auto new_transb = transa;
+
+    return column_major::gemm_ex(func, DT_A, DT_B, DT_C, CT, queue, new_transa, new_transb, n, m, k,
+                                 alpha, b, ldb, a, lda, beta, c, ldc, dependencies);
 }
 
-#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, ROCBLAS_ROUTINE, ROCMDATATYPE_A,              \
-                             ROCMDATATYPE_B, ROCMDATATYPE_C)                                       \
+#define GEMM_EX_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S, ROCBLAS_ROUTINE, ROCMDATATYPE_A,      \
+                             ROCMDATATYPE_B, ROCMDATATYPE_C, ROCMCOMPUTETYPE)                      \
     sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
-                     int64_t k, TYPE_C alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
-                     int64_t ldb, TYPE_C beta, TYPE_C *c, int64_t ldc,                             \
+                     int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda, const TYPE_B *b,       \
+                     int64_t ldb, TYPE_S beta, TYPE_C *c, int64_t ldc,                             \
                      const std::vector<sycl::event> &dependencies) {                               \
-        return gemm(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C, queue,        \
-                    transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, dependencies);   \
+        return gemm_ex(ROCBLAS_ROUTINE, ROCMDATATYPE_A, ROCMDATATYPE_B, ROCMDATATYPE_C,            \
+                       ROCMCOMPUTETYPE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb,     \
+                       beta, c, ldc, dependencies);                                                \
     }
 
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, rocblas_gemm_ex, HIP_R_16F, HIP_R_16F,
-                     HIP_R_32F)
-GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, rocblas_gemm_ex, HIP_R_16F, HIP_R_16F,
-                     HIP_R_16F)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, float, float, rocblas_gemm_ex, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half, rocblas_gemm_ex,
+                     rocblas_datatype_f16_r, rocblas_datatype_f16_r, rocblas_datatype_f16_r,
+                     rocblas_datatype_f16_r)
+
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, float, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_f32_r, rocblas_datatype_f32_r)
+GEMM_EX_LAUNCHER_USM(bfloat16, bfloat16, bfloat16, float, rocblas_gemm_ex, rocblas_datatype_bf16_r,
+                     rocblas_datatype_bf16_r, rocblas_datatype_bf16_r, rocblas_datatype_f32_r)
 
 #undef GEMM_EX_LAUNCHER_USM
 
-sycl::event gemm(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                 int64_t k, float alpha, const bfloat16 *a, int64_t lda, const bfloat16 *b,
-                 int64_t ldb, float beta, float *c, int64_t ldc,
-                 const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm", "for row_major layout");
-}
 template <typename Func, typename T>
 inline sycl::event symm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                         int64_t n, T alpha, const T *a, int64_t lda, const T *b, int64_t ldb,
                         T beta, T *c, int64_t ldc, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "symm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    return column_major::symm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c,
+                              ldc, dependencies);
 }
 
 #define SYMM_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                                  \
@@ -1165,7 +1261,13 @@ template <typename Func, typename T>
 inline sycl::event hemm(Func func, sycl::queue &queue, side left_right, uplo upper_lower, int64_t m,
                         int64_t n, T alpha, const T *a, int64_t lda, const T *b, int64_t ldb,
                         T beta, T *c, int64_t ldc, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "hemm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    return column_major::hemm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c,
+                              ldc, dependencies);
 }
 
 #define HEMM_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                                  \
@@ -1176,6 +1278,7 @@ inline sycl::event hemm(Func func, sycl::queue &queue, side left_right, uplo upp
         return hemm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, m, n, alpha, a, lda, b, ldb, \
                     beta, c, ldc, dependencies);                                                  \
     }
+
 HEMM_LAUNCHER_USM(std::complex<float>, rocblas_chemm)
 HEMM_LAUNCHER_USM(std::complex<double>, rocblas_zhemm)
 
@@ -1185,7 +1288,13 @@ template <typename Func, typename T>
 inline sycl::event syrk(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                         int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c, int64_t ldc,
                         const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "syrk", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
+                                                               : oneapi::mkl::transpose::nontrans;
+
+    return column_major::syrk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc,
+                              dependencies);
 }
 
 #define SYRK_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                                   \
@@ -1208,7 +1317,13 @@ inline sycl::event herk(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         int64_t k, const ScalarType alpha, const DataType *a, int64_t lda,
                         const ScalarType beta, DataType *c, int64_t ldc,
                         const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "herk", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
+                                                               : oneapi::mkl::transpose::nontrans;
+
+    return column_major::herk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc,
+                              dependencies);
 }
 
 #define HERK_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, ROCBLAS_ROUTINE)                                 \
@@ -1230,7 +1345,13 @@ inline sycl::event syr2k(Func func, sycl::queue &queue, uplo upper_lower, transp
                          int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                          int64_t ldb, T beta, T *c, int64_t ldc,
                          const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "syr2k", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
+                                                               : oneapi::mkl::transpose::nontrans;
+
+    return column_major::syr2k(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, b, ldb, beta,
+                               c, ldc, dependencies);
 }
 
 #define SYR2K_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                                  \
@@ -1241,6 +1362,7 @@ inline sycl::event syr2k(Func func, sycl::queue &queue, uplo upper_lower, transp
         return syr2k(ROCBLAS_ROUTINE, queue, upper_lower, trans, n, k, alpha, a, lda, b, ldb,      \
                      beta, c, ldc, dependencies);                                                  \
     }
+
 SYR2K_LAUNCHER_USM(float, rocblas_ssyr2k)
 SYR2K_LAUNCHER_USM(double, rocblas_dsyr2k)
 SYR2K_LAUNCHER_USM(std::complex<float>, rocblas_csyr2k)
@@ -1253,7 +1375,14 @@ inline sycl::event her2k(Func func, sycl::queue &queue, uplo upper_lower, transp
                          int64_t n, int64_t k, const DataType alpha, const DataType *a, int64_t lda,
                          const DataType *b, int64_t ldb, const ScalarType beta, DataType *c,
                          int64_t ldc, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "her2k", "for row_major layout");
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
+                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_alpha = std::conj(alpha);
+
+    return column_major::her2k(func, queue, new_uplo, new_trans, n, k, new_alpha, a, lda, b, ldb,
+                               beta, c, ldc, dependencies);
 }
 
 #define HER2K_LAUNCHER_USM(DATA_TYPE, SCALAR_TYPE, ROCBLAS_ROUTINE)                                \
@@ -1279,7 +1408,13 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
                         transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha, const T *a,
                         int64_t lda, T *b, int64_t ldb,
                         const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "trmm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    return column_major::trmm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a,
+                              lda, b, ldb, dependencies);
 }
 
 #define TRMM_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                                   \
@@ -1289,6 +1424,7 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
         return trmm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n,       \
                     alpha, a, lda, b, ldb, dependencies);                                          \
     }
+
 TRMM_LAUNCHER_USM(float, rocblas_strmm)
 TRMM_LAUNCHER_USM(double, rocblas_dtrmm)
 TRMM_LAUNCHER_USM(std::complex<float>, rocblas_ctrmm)
@@ -1301,7 +1437,13 @@ inline sycl::event trsm(Func func, sycl::queue &queue, side left_right, uplo upp
                         transpose trans, diag unit_diag, int64_t m, int64_t n, T alpha, const T *a,
                         int64_t lda, T *b, int64_t ldb,
                         const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "trsm", "for row_major layout");
+    auto new_side =
+        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
+    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
+                                                            : oneapi::mkl::uplo::lower;
+
+    return column_major::trsm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a,
+                              lda, b, ldb, dependencies);
 }
 
 #define TRSM_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                                   \
@@ -1311,6 +1453,7 @@ inline sycl::event trsm(Func func, sycl::queue &queue, side left_right, uplo upp
         return trsm(ROCBLAS_ROUTINE, queue, left_right, upper_lower, trans, unit_diag, m, n,       \
                     alpha, a, lda, b, ldb, dependencies);                                          \
     }
+
 TRSM_LAUNCHER_USM(float, rocblas_strsm)
 TRSM_LAUNCHER_USM(double, rocblas_dtrsm)
 TRSM_LAUNCHER_USM(std::complex<float>, rocblas_ctrsm)
