@@ -112,7 +112,7 @@ public:
 #ifdef CALL_RT_API
         test_(queue, args...);
 #else
-        TEST_RUN_CT_SELECT(queue, test_, args...);
+        TEST_RUN_RNG_CT_SELECT(queue, test_, args...);
 #endif
 
         return test_.status;
@@ -121,5 +121,11 @@ public:
 protected:
     Test test_;
 };
+
+#ifdef CALL_RT_API
+#define QUEUE_WAIT(q) q.wait()
+#else
+#define QUEUE_WAIT(q) q.get_queue().wait()
+#endif
 
 #endif // _RNG_TEST_COMMON_HPP__

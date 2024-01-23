@@ -126,7 +126,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right, 
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::dgmm_batch(
                     main_queue, left_right, m, n, &A[0], lda, stride_a, &x[0], incx, stride_x,
                     &C[0], ldc, stride_c, batch_size, dependencies);
@@ -141,15 +141,15 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right, 
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::dgmm_batch,
-                                   left_right, m, n, &A[0], lda, stride_a, &x[0], incx, stride_x,
-                                   &C[0], ldc, stride_c, batch_size, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::dgmm_batch,
+                                        left_right, m, n, &A[0], lda, stride_a, &x[0], incx,
+                                        stride_x, &C[0], ldc, stride_c, batch_size, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::dgmm_batch, left_right,
-                                   m, n, &A[0], lda, stride_a, &x[0], incx, stride_x, &C[0], ldc,
-                                   stride_c, batch_size, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::dgmm_batch,
+                                        left_right, m, n, &A[0], lda, stride_a, &x[0], incx,
+                                        stride_x, &C[0], ldc, stride_c, batch_size, dependencies);
                 break;
             default: break;
         }
@@ -200,6 +200,8 @@ TEST_P(DgmmBatchStrideUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::side::right, 2, 5));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -230,6 +232,8 @@ TEST_P(DgmmBatchStrideUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(DgmmBatchStrideUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  oneapi::mkl::side::right, 2, 5));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -246,7 +250,7 @@ TEST_P(DgmmBatchStrideUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(DgmmBatchStrideUsmTestSuite, DgmmBatchStrideUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

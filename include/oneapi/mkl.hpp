@@ -26,5 +26,6 @@
 #include "oneapi/mkl/dft.hpp"
 #include "oneapi/mkl/lapack.hpp"
 #include "oneapi/mkl/rng.hpp"
+#include "oneapi/mkl/sparse_blas.hpp"
 
 #endif //_ONEMKL_HPP_

@@ -90,7 +90,7 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::ger(main_queue, m, n, alpha, x_buffer, incx,
                                                      y_buffer, incy, A_buffer, lda);
                 break;
@@ -102,13 +102,13 @@ int test(device *dev, oneapi::mkl::layout layout, int m, int n, fp alpha, int in
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::ger, m, n, alpha,
-                                   x_buffer, incx, y_buffer, incy, A_buffer, lda);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::ger, m, n,
+                                        alpha, x_buffer, incx, y_buffer, incy, A_buffer, lda);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::ger, m, n, alpha,
-                                   x_buffer, incx, y_buffer, incy, A_buffer, lda);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::ger, m, n, alpha,
+                                        x_buffer, incx, y_buffer, incy, A_buffer, lda);
                 break;
             default: break;
         }
@@ -148,6 +148,8 @@ TEST_P(GerTests, RealSinglePrecision) {
         test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 1, 1, 42));
 }
 TEST_P(GerTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(
         test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 25, 30, alpha, 2, 3, 42));
@@ -159,7 +161,7 @@ TEST_P(GerTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GerTestSuite, GerTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

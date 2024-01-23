@@ -87,7 +87,7 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::axpby(main_queue, N, alpha, x.data(), incx,
                                                               beta, y.data(), incy, dependencies);
                 break;
@@ -100,13 +100,13 @@ int test(device *dev, oneapi::mkl::layout layout, int N, int incx, int incy, fp 
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::axpby, N, alpha,
-                                   x.data(), incx, beta, y.data(), incy, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::axpby, N,
+                                        alpha, x.data(), incx, beta, y.data(), incy, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::axpby, N, alpha,
-                                   x.data(), incx, beta, y.data(), incy, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::axpby, N, alpha,
+                                        x.data(), incx, beta, y.data(), incy, dependencies);
                 break;
             default: break;
         }
@@ -147,6 +147,8 @@ TEST_P(AxpbyUsmTests, RealSinglePrecision) {
         test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, -2, alpha, beta));
 }
 TEST_P(AxpbyUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(
@@ -167,6 +169,8 @@ TEST_P(AxpbyUsmTests, ComplexSinglePrecision) {
                                                 1357, -3, -2, alpha, beta));
 }
 TEST_P(AxpbyUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -179,7 +183,7 @@ TEST_P(AxpbyUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(AxpbyUsmTestSuite, AxpbyUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

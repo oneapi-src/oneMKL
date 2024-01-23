@@ -85,7 +85,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
 
     int64_t size_a, size_b, size;
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             size_a = lda * n;
             size_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             break;
@@ -103,10 +103,10 @@ int test(device *dev, oneapi::mkl::layout layout) {
     AB.resize(size);
     AB_ref.resize(size);
 
-    rand_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size, 1,
+    rand_matrix(AB, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size, 1,
                 size);
-    copy_matrix(AB, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, size, 1,
-                size, AB_ref);
+    copy_matrix(AB, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, size, 1, size,
+                AB_ref);
 
     // Call reference IMATCOPY.
     int m_ref = (int)m;
@@ -119,7 +119,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::imatcopy(main_queue, trans, m, n, alpha,
                                                                  &AB[0], lda, ldb, dependencies);
                 break;
@@ -132,13 +132,13 @@ int test(device *dev, oneapi::mkl::layout layout) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy, trans, m,
-                                   n, alpha, &AB[0], lda, ldb, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::imatcopy,
+                                        trans, m, n, alpha, &AB[0], lda, ldb, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy, trans, m, n,
-                                   alpha, &AB[0], lda, ldb, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::imatcopy, trans,
+                                        m, n, alpha, &AB[0], lda, ldb, dependencies);
                 break;
             default: break;
         }
@@ -160,7 +160,7 @@ int test(device *dev, oneapi::mkl::layout layout) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good = check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::column_major, size, 1, size, 10,
+    bool good = check_equal_matrix(AB, AB_ref, oneapi::mkl::layout::col_major, size, 1, size, 10,
                                    std::cout);
 
     return (int)good;
@@ -174,6 +174,8 @@ TEST_P(ImatcopyUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(ImatcopyUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
@@ -182,12 +184,14 @@ TEST_P(ImatcopyUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(ImatcopyUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(ImatcopyUsmTestSuite, ImatcopyUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

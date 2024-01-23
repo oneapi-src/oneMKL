@@ -19,7 +19,7 @@
 
 #===================================================================
 # CMake Config file for Intel(R) oneAPI Math Kernel Library (oneMKL)
-#===================================================================
+#===============================================================================
 
 #===============================================================================
 # Input parameters
@@ -92,16 +92,20 @@
 #
 # MKL::MKL
 #     Link line for C and Fortran API
-# MKL::MKL_DPCPP
+# MKL::MKL_SYCL
 #     Link line for DPC++ API
 #
 # Note: For Device API, library linking is not required.
-#       Compile options can be added from the INTERFACE_COMPILE_OPTIONS property on MKL::MKL_DPCPP
-#       Include directories can be added from the INTERFACE_INCLUDE_DIRECTORIES property on MKL::MKL_DPCPP
+#       Compile options can be added from the INTERFACE_COMPILE_OPTIONS property on MKL::MKL_SYCL
+#       Include directories can be added from the INTERFACE_INCLUDE_DIRECTORIES property on MKL::MKL_SYCL
 #
 # Note: Output parameters' and targets' availability can change
 # based on Input parameters and application project languages.
 #===============================================================================
+
+include_guard()
+
+if(NOT MKL_LIBRARIES)
 
 function(mkl_message MSG_MODE MSG_TEXT)
   if(MSG_MODE STREQUAL "FATAL_ERROR")
@@ -113,17 +117,9 @@ function(mkl_message MSG_MODE MSG_TEXT)
   endif()
 endfunction()
 
-if(${CMAKE_VERSION} VERSION_LESS "3.13")
-  mkl_message(FATAL_ERROR "The minimum supported CMake version is 3.13. You are running version ${CMAKE_VERSION}")
+if(CMAKE_VERSION VERSION_LESS "3.13")
+  mkl_message(FATAL_ERROR "The minimum supported CMake version is 3.13. You are running version ${CMAKE_VERSION}.")
 endif()
-if(CMAKE_VERSION VERSION_LESS "3.25.2")
-  mkl_message(STATUS "Upgrade to CMake version 3.25.2 or later for native Intel(R) oneAPI DPC++/C++ Compiler support. You are running version ${CMAKE_VERSION}.")
-endif()
-
-include_guard()
-include(FindPackageHandleStandardArgs)
-
-if(NOT MKL_LIBRARIES)
 
 # Set CMake policies for well-defined behavior across CMake versions
 cmake_policy(SET CMP0011 NEW)
@@ -187,6 +183,16 @@ function(define_param TARGET_PARAM DEFAULT_PARAM SUPPORTED_LIST)
   endif()
 endfunction()
 
+macro(check_required_vars)
+  foreach(var IN ITEMS ${ARGV})
+    if(NOT ${var})
+      set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "The required variable ${var} has an invalid value \"${${var}}\".")
+      set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+      return()
+    endif()
+  endforeach()
+endmacro()
+
 #================
 # Compiler checks
 #================
@@ -204,7 +210,7 @@ endif()
 # Determine Compiler Family
 if(CXX_COMPILER_NAME STREQUAL "dpcpp" OR CXX_COMPILER_NAME STREQUAL "dpcpp.exe"
     OR CXX_COMPILER_NAME STREQUAL "icpx" OR CXX_COMPILER_NAME STREQUAL "icx.exe")
-  set(DPCPP_COMPILER ON)
+  set(SYCL_COMPILER ON)
 endif()
 if(C_COMPILER_NAME MATCHES "^clang" OR CXX_COMPILER_NAME MATCHES "^clang")
   set(CLANG_COMPILER ON)
@@ -231,6 +237,22 @@ if(NOT INTEL_COMPILER)
       OR CXX_COMPILER_NAME STREQUAL "icpx" OR CXX_COMPILER_NAME STREQUAL "icx.exe"
       OR Fortran_COMPILER_NAME STREQUAL "ifx" OR Fortran_COMPILER_NAME STREQUAL "ifx.exe")
     set(INTEL_COMPILER ON)
+  endif()
+endif()
+# CMake supports IntelLLVM compilers only after 3.25.2
+if(CMAKE_VERSION VERSION_LESS "3.25.2")
+  if(C_COMPILER_NAME STREQUAL "icx" OR C_COMPILER_NAME STREQUAL "icx.exe" OR CXX_COMPILER_NAME STREQUAL "icx.exe")
+    list(APPEND INTEL_LLVM_COMPILERS_IN_USE "icx")
+  endif()
+  if(CXX_COMPILER_NAME STREQUAL "icpx")
+    list(APPEND INTEL_LLVM_COMPILERS_IN_USE "icpx")
+  endif()
+  if(Fortran_COMPILER_NAME STREQUAL "ifx" OR Fortran_COMPILER_NAME STREQUAL "ifx.exe")
+    list(APPEND INTEL_LLVM_COMPILERS_IN_USE "ifx")
+  endif()
+  if(INTEL_LLVM_COMPILERS_IN_USE)
+    list(JOIN INTEL_LLVM_COMPILERS_IN_USE ", " INTEL_LLVM_COMPILERS_IN_USE_COMMA)
+    mkl_message(STATUS "Upgrade to CMake version 3.25.2 or later for native support of Intel compiler(s) ${INTEL_LLVM_COMPILERS_IN_USE_COMMA}. You are running version ${CMAKE_VERSION}.")
   endif()
 endif()
 
@@ -262,27 +284,6 @@ else()
   set(LINK_SUFFIX ".lib")
 endif()
 
-# Set target system architecture
-if(DPCPP_COMPILER)
-  set(DEFAULT_MKL_DPCPP_ARCH intel64)
-  set(MKL_DPCPP_ARCH_LIST intel64)
-  if(NOT DEFINED MKL_DPCPP_ARCH)
-    set(MKL_DPCPP_ARCH ${MKL_ARCH})
-  endif()
-  define_param(MKL_DPCPP_ARCH DEFAULT_MKL_DPCPP_ARCH MKL_DPCPP_ARCH_LIST STATUS)
-  if(NOT MKL_DPCPP_ARCH)
-    set(DPCPP_COMPILER OFF)
-    mkl_message(STATUS "MKL::MKL_DPCPP target will not be available.")
-  endif()
-endif()
-set(DEFAULT_MKL_ARCH intel64)
-if(PGI_COMPILER OR ENABLE_OMP_OFFLOAD OR USE_MPI)
-  set(MKL_ARCH_LIST intel64)
-else()
-  set(MKL_ARCH_LIST ia32 intel64)
-endif()
-define_param(MKL_ARCH DEFAULT_MKL_ARCH MKL_ARCH_LIST)
-
 #================
 
 #=============
@@ -293,25 +294,71 @@ define_param(MKL_ARCH DEFAULT_MKL_ARCH MKL_ARCH_LIST)
 if(NOT DEFINED MKL_ROOT)
   if(DEFINED ENV{MKLROOT})
     set(MKL_ROOT $ENV{MKLROOT})
+    # Verify that the version in MKL_ROOT is the same as MKL_VERSION
+    find_file(MKL_VERSION_H mkl_version.h
+      HINTS ${MKL_ROOT}
+      PATH_SUFFIXES include
+      NO_DEFAULT_PATH)
+    check_required_vars(MKL_VERSION_H)
+    file(READ ${MKL_VERSION_H} MKL_VERSION_H_CONTENT)
+    string(REGEX MATCH "__INTEL_MKL__ +([0-9]+)" MKL_VERSION_INFO ${MKL_VERSION_H_CONTENT})
+    set(MKL_ROOT_MAJOR_VERSION ${CMAKE_MATCH_1})
+    string(REGEX MATCH "__INTEL_MKL_UPDATE__ +([0-9]+)" MKL_VERSION_INFO ${MKL_VERSION_H_CONTENT})
+    set(MKL_ROOT_UPDATE_VERSION ${CMAKE_MATCH_1})
+    set(MKL_ROOT_VERSION ${MKL_ROOT_MAJOR_VERSION}.${MKL_ROOT_UPDATE_VERSION})
+    if(NOT MKL_ROOT_VERSION VERSION_EQUAL ${CMAKE_FIND_PACKAGE_NAME}_VERSION)
+      mkl_message(FATAL_ERROR "oneMKL ${MKL_ROOT_VERSION} specified by the environment variable MKLROOT \
+                               mismatches the found version ${${CMAKE_FIND_PACKAGE_NAME}_VERSION} \
+                               indicated by ${CMAKE_CURRENT_LIST_DIR}/MKLConfigVersion.cmake")
+    endif()
   else()
     get_filename_component(MKL_CMAKE_PATH "${CMAKE_CURRENT_LIST_DIR}" REALPATH)
     get_filename_component(MKL_ROOT "${MKL_CMAKE_PATH}/../../../" ABSOLUTE)
-    mkl_message(STATUS "MKL_ROOT ${MKL_ROOT}")
   endif()
 endif()
 string(REPLACE "\\" "/" MKL_ROOT ${MKL_ROOT})
+check_required_vars(MKL_ROOT)
+mkl_message(STATUS "${CMAKE_FIND_PACKAGE_NAME}_VERSION: ${${CMAKE_FIND_PACKAGE_NAME}_VERSION}")
+mkl_message(STATUS "MKL_ROOT: ${MKL_ROOT}")
+
+# Set target system architecture
+if(SYCL_COMPILER)
+  set(DEFAULT_MKL_SYCL_ARCH intel64)
+  set(MKL_SYCL_ARCH_LIST intel64)
+  if(NOT DEFINED MKL_SYCL_ARCH)
+    set(MKL_SYCL_ARCH ${MKL_ARCH})
+  endif()
+  define_param(MKL_SYCL_ARCH DEFAULT_MKL_SYCL_ARCH MKL_SYCL_ARCH_LIST STATUS)
+  if(NOT MKL_SYCL_ARCH)
+    set(SYCL_COMPILER OFF)
+    mkl_message(STATUS "MKL::MKL_SYCL target will not be available.")
+  endif()
+endif()
+set(DEFAULT_MKL_ARCH intel64)
+if(PGI_COMPILER OR ENABLE_OMP_OFFLOAD OR USE_MPI)
+  set(MKL_ARCH_LIST intel64)
+else()
+  set(MKL_ARCH_LIST ia32 intel64)
+endif()
+define_param(MKL_ARCH DEFAULT_MKL_ARCH MKL_ARCH_LIST)
+check_required_vars(MKL_ARCH)
+if(MKL_ARCH STREQUAL "ia32")
+  set(MKL_ARCH_DIR "32")
+else()
+  set(MKL_ARCH_DIR "")
+endif()
 
 # Define MKL_LINK
-if(DPCPP_COMPILER)
-  set(DEFAULT_MKL_DPCPP_LINK dynamic)
-  set(MKL_DPCPP_LINK_LIST static dynamic)
-  if(NOT DEFINED MKL_DPCPP_LINK)
-    set(MKL_DPCPP_LINK ${MKL_LINK})
+if(SYCL_COMPILER)
+  set(DEFAULT_MKL_SYCL_LINK dynamic)
+  set(MKL_SYCL_LINK_LIST static dynamic)
+  if(NOT DEFINED MKL_SYCL_LINK)
+    set(MKL_SYCL_LINK ${MKL_LINK})
   endif()
-  define_param(MKL_DPCPP_LINK DEFAULT_MKL_DPCPP_LINK MKL_DPCPP_LINK_LIST STATUS)
-  if(NOT MKL_DPCPP_LINK)
-    set(DPCPP_COMPILER OFF)
-    mkl_message(STATUS "MKL::MKL_DPCPP target will not be available.")
+  define_param(MKL_SYCL_LINK DEFAULT_MKL_SYCL_LINK MKL_SYCL_LINK_LIST STATUS)
+  if(NOT MKL_SYCL_LINK)
+    set(SYCL_COMPILER OFF)
+    mkl_message(STATUS "MKL::MKL_SYCL target will not be available.")
   endif()
 endif()
 set(DEFAULT_MKL_LINK dynamic)
@@ -321,18 +368,19 @@ else()
   set(MKL_LINK_LIST static dynamic sdl)
 endif()
 define_param(MKL_LINK DEFAULT_MKL_LINK MKL_LINK_LIST)
+check_required_vars(MKL_LINK)
 
 # Define MKL_INTERFACE
-if(DPCPP_COMPILER)
-  if(MKL_INTERFACE AND NOT DEFINED MKL_DPCPP_INTERFACE_FULL)
-    set(MKL_DPCPP_INTERFACE_FULL intel_${MKL_INTERFACE})
+if(SYCL_COMPILER)
+  if(MKL_INTERFACE AND NOT DEFINED MKL_SYCL_INTERFACE_FULL)
+    set(MKL_SYCL_INTERFACE_FULL intel_${MKL_INTERFACE})
   endif()
-  set(DEFAULT_MKL_DPCPP_INTERFACE intel_ilp64)
-  set(MKL_DPCPP_INTERFACE_LIST intel_ilp64)
-  define_param(MKL_DPCPP_INTERFACE_FULL DEFAULT_MKL_DPCPP_INTERFACE MKL_DPCPP_INTERFACE_LIST STATUS)
-  if(NOT MKL_DPCPP_INTERFACE_FULL)
-    set(DPCPP_COMPILER OFF)
-    mkl_message(STATUS "MKL::MKL_DPCPP target will not be available.")
+  set(DEFAULT_MKL_SYCL_INTERFACE intel_ilp64)
+  set(MKL_SYCL_INTERFACE_LIST intel_ilp64)
+  define_param(MKL_SYCL_INTERFACE_FULL DEFAULT_MKL_SYCL_INTERFACE MKL_SYCL_INTERFACE_LIST STATUS)
+  if(NOT MKL_SYCL_INTERFACE_FULL)
+    set(SYCL_COMPILER OFF)
+    mkl_message(STATUS "MKL::MKL_SYCL target will not be available.")
   endif()
 endif()
 if(MKL_ARCH STREQUAL "intel64")
@@ -364,35 +412,43 @@ if(MKL_INTERFACE_FULL MATCHES "ilp64")
 else()
   set(MKL_INTERFACE "lp64")
 endif()
+check_required_vars(MKL_INTERFACE_FULL)
 
 # Define oneMKL headers
-find_path(MKL_H mkl.h
+find_path(MKL_INCLUDE mkl.h
   HINTS ${MKL_ROOT}
-  PATH_SUFFIXES include)
-list(APPEND MKL_INCLUDE ${MKL_H})
+  PATH_SUFFIXES include
+  NO_DEFAULT_PATH)
+check_required_vars(MKL_INCLUDE)
 
 # Add pre-built F95 Interface Modules
 if(INTEL_COMPILER AND (ENABLE_BLAS95 OR ENABLE_LAPACK95))
   if(MKL_ARCH STREQUAL "intel64")
-    list(APPEND MKL_INCLUDE "${MKL_ROOT}/include/${MKL_ARCH}/${MKL_INTERFACE}")
+    list(APPEND MKL_INCLUDE "${MKL_ROOT}/include/mkl/${MKL_ARCH}/${MKL_INTERFACE}")
   else()
-    list(APPEND MKL_INCLUDE "${MKL_ROOT}/include/${MKL_ARCH}")
+    list(APPEND MKL_INCLUDE "${MKL_ROOT}/include/mkl/${MKL_ARCH}")
   endif()
 endif()
 
 # Define MKL_THREADING
 # All APIs support sequential threading
-# DPC++ API supports oneTBB threading, but not OpenMP threading
-if(DPCPP_COMPILER)
-  set(MKL_DPCPP_THREADING_LIST "sequential" "tbb_thread")
-  set(DEFAULT_MKL_DPCPP_THREADING tbb_thread)
-  if(NOT DEFINED MKL_DPCPP_THREADING)
-    set(MKL_DPCPP_THREADING ${MKL_THREADING})
+# SYCL API supports oneTBB and OpenMP threadings, but OpenMP threading might have composability problem on CPU device with other SYCL kernels
+if(SYCL_COMPILER)
+  set(MKL_SYCL_THREADING_LIST "sequential" "intel_thread" "tbb_thread")
+  set(DEFAULT_MKL_SYCL_THREADING tbb_thread)
+  if(NOT DEFINED MKL_SYCL_THREADING)
+    set(MKL_SYCL_THREADING ${MKL_THREADING})
   endif()
-  define_param(MKL_DPCPP_THREADING DEFAULT_MKL_DPCPP_THREADING MKL_DPCPP_THREADING_LIST STATUS)
-  if(NOT MKL_DPCPP_THREADING)
-    set(DPCPP_COMPILER OFF)
-    mkl_message(STATUS "MKL::MKL_DPCPP target will not be available.")
+  define_param(MKL_SYCL_THREADING DEFAULT_MKL_SYCL_THREADING MKL_SYCL_THREADING_LIST STATUS)
+  if(NOT MKL_SYCL_THREADING)
+    set(SYCL_COMPILER OFF)
+    mkl_message(STATUS "MKL::MKL_SYCL target will not be available.")
+  endif()
+  if(MKL_SYCL_THREADING STREQUAL "intel_thread")
+    mkl_message(STATUS "Using MKL::MKL_SYCL* targets with intel_thread may have potential composability problems on CPU device with other SYCL kernels.")
+    add_custom_target(MKL_SYCL_MESSAGE
+                      COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --red
+                      "Warning: Using MKL::MKL_SYCL* targets with intel_thread may have potential composability problems on CPU device with other SYCL kernels.")
   endif()
 endif()
 # C, Fortran API
@@ -415,6 +471,7 @@ else()
   # Nothing to do, only for completeness
 endif()
 define_param(MKL_THREADING DEFAULT_MKL_THREADING MKL_THREADING_LIST)
+check_required_vars(MKL_THREADING)
 
 # Define MKL_MPI
 if(USE_MPI)
@@ -436,11 +493,8 @@ if(USE_MPI)
   if(MKL_MPI STREQUAL "mshpc")
     set(MKL_MPI msmpi)
   endif()
-  find_package_handle_standard_args(MKL REQUIRED_VARS MKL_MPI)
+  check_required_vars(MKL_MPI)
 endif()
-
-# Checkpoint - Verify if required options are defined
-find_package_handle_standard_args(MKL REQUIRED_VARS MKL_ROOT MKL_ARCH MKL_INCLUDE MKL_LINK MKL_THREADING MKL_INTERFACE_FULL)
 
 # Provides a list of IMPORTED targets for the project
 if(NOT DEFINED MKL_IMPORTED_TARGETS)
@@ -452,15 +506,15 @@ set(MKL_C_COPT "")
 set(MKL_F_COPT "")
 set(MKL_SDL_COPT "")
 set(MKL_CXX_COPT "")
-set(MKL_DPCPP_COPT "")
-set(MKL_DPCPP_LOPT "")
+set(MKL_SYCL_COPT "")
+set(MKL_SYCL_LOPT "")
 set(MKL_OFFLOAD_COPT "")
 set(MKL_OFFLOAD_LOPT "")
 
 set(MKL_SUPP_LINK "")        # Other link options. Usually at the end of the link-line.
-set(MKL_DPCPP_SUPP_LINK "")
+set(MKL_SYCL_SUPP_LINK "")
 set(MKL_LINK_LINE "")
-set(MKL_DPCPP_LINK_LINE "")
+set(MKL_SYCL_LINK_LINE "")
 set(MKL_ENV_PATH "")         # Temporary variable to work with PATH
 set(MKL_ENV "")              # Exported environment variables
 
@@ -482,11 +536,11 @@ if(GNU_C_COMPILER OR GNU_Fortran_COMPILER)
 endif()
 
 # Additonal compiler & linker options
-if(DPCPP_COMPILER)
-  list(APPEND MKL_DPCPP_COPT "-fsycl")
-  list(APPEND MKL_DPCPP_LOPT "-fsycl")
-  if(MKL_DPCPP_LINK STREQUAL "static")
-    list(APPEND MKL_DPCPP_LOPT "-fsycl-device-code-split=per_kernel")
+if(SYCL_COMPILER)
+  list(APPEND MKL_SYCL_COPT "-fsycl")
+  list(APPEND MKL_SYCL_LOPT "-fsycl")
+  if(MKL_SYCL_LINK STREQUAL "static")
+    list(APPEND MKL_SYCL_LOPT "-fsycl-device-code-split=per_kernel")
   endif()
 endif()
 if(ENABLE_OMP_OFFLOAD)
@@ -535,8 +589,8 @@ if(ENABLE_OMP_OFFLOAD)
 endif()
 
 # For selected Interface
-if(DPCPP_COMPILER)
-  list(INSERT MKL_DPCPP_COPT 0 "-DMKL_ILP64")
+if(SYCL_COMPILER)
+  list(INSERT MKL_SYCL_COPT 0 "-DMKL_ILP64")
 endif()
 
 if(MKL_INTERFACE_FULL)
@@ -578,19 +632,39 @@ if(MKL_INTERFACE_FULL)
 endif() # MKL_INTERFACE_FULL
 
 # All oneMKL Libraries
-if(DPCPP_COMPILER)
-  set(MKL_DPCPP_IFACE_LIB mkl_${MKL_DPCPP_INTERFACE_FULL})
-  if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo" AND MKL_DPCPP_THREADING STREQUAL "tbb_thread")
-    set(MKL_DPCPP_THREAD mkl_tbb_threadd)
+if(SYCL_COMPILER)
+  set(MKL_SYCL_IFACE_LIB mkl_${MKL_SYCL_INTERFACE_FULL})
+  if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo" AND MKL_SYCL_THREADING STREQUAL "tbb_thread")
+    set(MKL_SYCL_THREAD mkl_tbb_threadd)
   else()
-    set(MKL_DPCPP_THREAD mkl_${MKL_DPCPP_THREADING})
+    set(MKL_SYCL_THREAD mkl_${MKL_SYCL_THREADING})
   endif()
 endif()
-if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo")
-  set(MKL_SYCL          mkl_sycld)
+set(MKL_SYCL)
+set(MKL_SYCL_LIBS)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_blas)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_lapack)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_dft)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_sparse)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_data_fitting)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_rng)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_stats)
+list(APPEND MKL_SYCL_LIBS mkl_sycl_vm)
+if(NOT MKL_LINK STREQUAL "static")
+  if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo")
+    list(TRANSFORM MKL_SYCL_LIBS APPEND "d")
+  endif()
+  list(APPEND MKL_SYCL ${MKL_SYCL_LIBS})
+  # List for tracking incomplete onemKL package
+  set(MISSED_MKL_SYCL_LIBS)
 else()
-  set(MKL_SYCL          mkl_sycl)
+  if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo")
+    set(MKL_SYCL         mkl_sycld)
+  else()
+    set(MKL_SYCL         mkl_sycl)
+  endif()
 endif()
+
 set(MKL_IFACE_LIB     mkl_${MKL_INTERFACE_FULL})
 set(MKL_CORE          mkl_core)
 if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo" AND MKL_THREADING STREQUAL "tbb_thread")
@@ -634,11 +708,11 @@ set(MKL_SCALAPACK mkl_scalapack_${MKL_INTERFACE})
 
 
 if(UNIX AND NOT APPLE)
-  if(MKL_LINK STREQUAL "static" OR MKL_DPCPP_LINK STREQUAL "static")
+  if(MKL_LINK STREQUAL "static" OR MKL_SYCL_LINK STREQUAL "static")
     set(START_GROUP "-Wl,--start-group")
     set(END_GROUP "-Wl,--end-group")
-    if(DPCPP_COMPILER)
-      set(DPCPP_EXPORT_DYNAMIC "-Wl,-export-dynamic")
+    if(SYCL_COMPILER)
+      set(SYCL_EXPORT_DYNAMIC "-Wl,-export-dynamic")
     endif()
     if(ENABLE_OMP_OFFLOAD)
       set(EXPORT_DYNAMIC "-Wl,-export-dynamic")
@@ -650,8 +724,8 @@ if(UNIX AND NOT APPLE)
       set(NO_AS_NEEDED -Wl,--no-as-needed)
     endif()
   endif()
-  if(MKL_DPCPP_LINK STREQUAL "dynamic")
-    set(MKL_DPCPP_RPATH "-Wl,-rpath=$<TARGET_FILE_DIR:MKL::${MKL_CORE}>")
+  if(MKL_SYCL_LINK STREQUAL "dynamic")
+    set(MKL_SYCL_RPATH "-Wl,-rpath=$<TARGET_FILE_DIR:MKL::${MKL_CORE}>")
   endif()
   if(MKL_LINK STREQUAL "sdl")
     set(MKL_RPATH "-Wl,-rpath=$<TARGET_FILE_DIR:MKL::${MKL_SDL}>")
@@ -660,10 +734,11 @@ endif()
 
 # Create a list of requested libraries, based on input options (MKL_LIBRARIES)
 # Create full link-line in MKL_LINK_LINE
-if(DPCPP_COMPILER)
-  list(APPEND MKL_DPCPP_LIBRARIES ${MKL_SYCL} ${MKL_DPCPP_IFACE_LIB} ${MKL_DPCPP_THREAD} ${MKL_CORE})
-  list(APPEND MKL_DPCPP_LINK_LINE ${MKL_DPCPP_LOPT} ${DPCPP_EXPORT_DYNAMIC} ${NO_AS_NEEDED} ${MKL_DPCPP_RPATH}
-       MKL::${MKL_SYCL} ${START_GROUP} MKL::${MKL_DPCPP_IFACE_LIB} MKL::${MKL_DPCPP_THREAD} MKL::${MKL_CORE} ${END_GROUP})
+if(SYCL_COMPILER)
+  list(APPEND MKL_SYCL_LIBRARIES ${MKL_SYCL} ${MKL_SYCL_IFACE_LIB} ${MKL_SYCL_THREAD} ${MKL_CORE})
+  list(TRANSFORM MKL_SYCL PREPEND MKL:: OUTPUT_VARIABLE MKL_SYCL_T)
+  list(APPEND MKL_SYCL_LINK_LINE ${MKL_SYCL_LOPT} ${SYCL_EXPORT_DYNAMIC} ${NO_AS_NEEDED} ${MKL_SYCL_RPATH}
+       ${MKL_SYCL_T} ${START_GROUP} MKL::${MKL_SYCL_IFACE_LIB} MKL::${MKL_SYCL_THREAD} MKL::${MKL_CORE} ${END_GROUP})
 endif()
 list(APPEND MKL_LINK_LINE $<IF:$<BOOL:${ENABLE_OMP_OFFLOAD}>,${MKL_OFFLOAD_LOPT},>
      ${EXPORT_DYNAMIC} ${NO_AS_NEEDED} ${MKL_RPATH})
@@ -681,7 +756,8 @@ if(ENABLE_SCALAPACK)
 endif()
 if(ENABLE_OMP_OFFLOAD AND NOT MKL_LINK STREQUAL "sdl")
   list(APPEND MKL_LIBRARIES ${MKL_SYCL})
-  list(APPEND MKL_LINK_LINE MKL::${MKL_SYCL})
+  list(TRANSFORM MKL_SYCL PREPEND MKL:: OUTPUT_VARIABLE MKL_SYCL_T)
+  list(APPEND MKL_LINK_LINE ${MKL_SYCL_T})
 endif()
 list(APPEND MKL_LINK_LINE ${START_GROUP})
 if(ENABLE_CDFT)
@@ -703,11 +779,11 @@ list(APPEND MKL_LINK_LINE ${END_GROUP})
 
 # Find all requested libraries
 list(APPEND MKL_REQUESTED_LIBRARIES ${MKL_LIBRARIES})
-if(DPCPP_COMPILER)
-  # If DPCPP_COMPILER is still ON, MKL_DPCPP_ARCH, MKL_DPCPP_LINK, and MKL_DPCPP_IFACE_LIB are the same as MKL_ARCH, MKL_LINK, and MKL_IFACE_LIB.
+if(SYCL_COMPILER)
+  # If SYCL_COMPILER is still ON, MKL_SYCL_ARCH, MKL_SYCL_LINK, and MKL_SYCL_IFACE_LIB are the same as MKL_ARCH, MKL_LINK, and MKL_IFACE_LIB.
   # Hence we can combine the libraries and find them in the following for loop.
-  # Note that MKL_DPCPP_THREADING and MKL_THREADING could be different because of the default value.
-  list(APPEND MKL_REQUESTED_LIBRARIES ${MKL_DPCPP_LIBRARIES})
+  # Note that MKL_SYCL_THREADING and MKL_THREADING could be different because of the default value.
+  list(APPEND MKL_REQUESTED_LIBRARIES ${MKL_SYCL_LIBRARIES})
   list(REMOVE_DUPLICATES MKL_REQUESTED_LIBRARIES)
 endif()
 foreach(lib ${MKL_REQUESTED_LIBRARIES})
@@ -715,15 +791,29 @@ foreach(lib ${MKL_REQUESTED_LIBRARIES})
   if(MKL_LINK STREQUAL "static" AND NOT ${lib} STREQUAL ${MKL_SDL})
     find_library(${lib}_file ${LIB_PREFIX}${lib}${LIB_EXT}
                   PATHS ${MKL_ROOT}
-                  PATH_SUFFIXES "lib" "lib/${MKL_ARCH}")
+                  PATH_SUFFIXES "lib${MKL_ARCH_DIR}"
+                  NO_DEFAULT_PATH)
     add_library(MKL::${lib} STATIC IMPORTED)
   else()
     find_library(${lib}_file NAMES ${LIB_PREFIX}${lib}${DLL_EXT} ${lib}
                   PATHS ${MKL_ROOT}
-                  PATH_SUFFIXES "lib" "lib/${MKL_ARCH}")
+                  PATH_SUFFIXES "lib${MKL_ARCH_DIR}"
+                  NO_DEFAULT_PATH)
     add_library(MKL::${lib} SHARED IMPORTED)
   endif()
-  find_package_handle_standard_args(MKL REQUIRED_VARS ${lib}_file)
+  if(NOT MKL_LINK STREQUAL "static" AND ${lib} MATCHES "mkl_sycl" AND ${${lib}_file} STREQUAL "${lib}_file-NOTFOUND")
+    list(APPEND MISSED_MKL_SYCL_LIBS ${lib})
+    set(MKL_SYCL_DOMAIN "")
+    string(REGEX REPLACE "mkl_sycl_" "" MKL_SYCL_DOMAIN ${lib})
+    if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo")
+      string(REGEX REPLACE "d$" "" MKL_SYCL_DOMAIN ${MKL_SYCL_DOMAIN})
+    endif()
+    string(TOUPPER ${MKL_SYCL_DOMAIN} MKL_SYCL_DOMAIN)
+    mkl_message(WARNING "Could NOT find MKL ${lib} for target MKL::MKL_SYCL::${MKL_SYCL_DOMAIN}")
+  else()
+    check_required_vars(${lib}_file)
+    mkl_message(STATUS "Found ${${lib}_file}")
+  endif()
   # CMP0111, implemented in CMake 3.20+ requires a shared library target on Windows
   # to be defined with IMPLIB and LOCATION property.
   # It also requires a static library target to be defined with LOCATION property.
@@ -732,10 +822,13 @@ foreach(lib ${MKL_REQUESTED_LIBRARIES})
     set_target_properties(MKL::${lib} PROPERTIES IMPORTED_IMPLIB "${${lib}_file}")
     # Find corresponding DLL
     set(MKL_DLL_GLOB ${lib}.*.dll)
-    file(GLOB MKL_DLL_FILE "${MKL_ROOT}/redist/${MKL_ARCH}/${MKL_DLL_GLOB}"
+    file(GLOB MKL_DLL_FILE "${MKL_ROOT}/bin${MKL_ARCH_DIR}/${MKL_DLL_GLOB}"
+        # Legacy oneAPI layout support below
+        "${MKL_ROOT}/redist/${MKL_ARCH}/${MKL_DLL_GLOB}"
         "${MKL_ROOT}/../redist/${MKL_ARCH}/${MKL_DLL_GLOB}"
         "${MKL_ROOT}/../redist/${MKL_ARCH}/mkl/${MKL_DLL_GLOB}"
-        "${MKL_ROOT}/bin/${MKL_DLL_GLOB}"  # Support for Conda directory layout
+        # Support for Conda directory layout
+        "${MKL_ROOT}/bin/${MKL_DLL_GLOB}"
     )
     if(NOT ${lib} STREQUAL ${MKL_IFACE_LIB} AND NOT ${lib} STREQUAL ${MKL_BLAS95} AND NOT ${lib} STREQUAL ${MKL_LAPACK95})  # Windows IFACE libs are static only
       list(LENGTH MKL_DLL_FILE MKL_DLL_FILE_LEN)
@@ -748,7 +841,11 @@ foreach(lib ${MKL_REQUESTED_LIBRARIES})
         mkl_message(STATUS "Found DLL: ${MKL_DLL_FILE}")
         set_target_properties(MKL::${lib} PROPERTIES IMPORTED_LOCATION "${MKL_DLL_FILE}")
       else()
-        mkl_message(FATAL_ERROR "${MKL_DLL_GLOB} not found")
+        if(${lib} MATCHES "mkl_sycl" AND ${${lib}_file} STREQUAL "${lib}_file-NOTFOUND")
+          mkl_message(WARNING "Could NOT find ${MKL_DLL_GLOB} for target MKL::MKL_SYCL::${MKL_SYCL_DOMAIN}")
+        else()
+          mkl_message(FATAL_ERROR "${MKL_DLL_GLOB} not found")
+        endif()
       endif()
     endif()
   else()
@@ -758,15 +855,15 @@ foreach(lib ${MKL_REQUESTED_LIBRARIES})
 endforeach()
 
 # Threading selection
-if(MKL_THREADING STREQUAL "tbb_thread" OR MKL_DPCPP_THREADING STREQUAL "tbb_thread")
-  find_package(TBB CONFIG COMPONENTS tbb )
+if(MKL_THREADING STREQUAL "tbb_thread" OR MKL_SYCL_THREADING STREQUAL "tbb_thread")
+  find_package(TBB CONFIG COMPONENTS tbb)
   if(TARGET TBB::tbb)
     if(MKL_THREADING STREQUAL "tbb_thread")
       set(MKL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
       set(MKL_SDL_THREAD_ENV "TBB")
     endif()
-    if(MKL_DPCPP_THREADING STREQUAL "tbb_thread")
-      set(MKL_DPCPP_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
+    if(MKL_SYCL_THREADING STREQUAL "tbb_thread")
+      set(MKL_SYCL_THREAD_LIB $<TARGET_LINKER_FILE:TBB::tbb>)
     endif()
     get_property(TBB_LIB TARGET TBB::tbb PROPERTY IMPORTED_LOCATION_RELEASE)
     get_filename_component(TBB_LIB_DIR ${TBB_LIB} DIRECTORY)
@@ -807,8 +904,8 @@ if(MKL_THREADING STREQUAL "tbb_thread" OR MKL_DPCPP_THREADING STREQUAL "tbb_thre
         list(APPEND MKL_SUPP_LINK -lstdc++)
       endif()
     endif()
-    if(MKL_DPCPP_THREADING STREQUAL "tbb_thread")
-      list(APPEND MKL_DPCPP_SUPP_LINK ${TBB_LINK})
+    if(MKL_SYCL_THREADING STREQUAL "tbb_thread")
+      list(APPEND MKL_SYCL_SUPP_LINK ${TBB_LINK})
     endif()
   endif()
   if(WIN32 OR APPLE)
@@ -850,20 +947,23 @@ if(NOT MKL_THREADING STREQUAL "tbb_thread" AND MKL_THREADING MATCHES "_thread")
              "../../compiler/latest/linux/compiler/lib/${MKL_ARCH}_lin"
              "../../compiler/latest/windows/compiler/lib/${MKL_ARCH}"
              "../../compiler/latest/windows/compiler/lib/${MKL_ARCH}_win"
-             "../../compiler/latest/mac/compiler/lib")
+             "../../compiler/latest/mac/compiler/lib"
+      NO_DEFAULT_PATH)
     if(WIN32)
       set(OMP_DLLNAME ${LIB_PREFIX}${MKL_OMP_LIB}.dll)
       find_path(OMP_DLL_DIR ${OMP_DLLNAME}
         HINTS $ENV{LIB} $ENV{LIBRARY_PATH} $ENV{MKLROOT} ${MKL_ROOT} $ENV{CMPLR_ROOT}
-        PATH_SUFFIXES "redist/${MKL_ARCH}"
-             "redist/${MKL_ARCH}_win" "redist/${MKL_ARCH}_win/compiler"
-             "../redist/${MKL_ARCH}/compiler" "../compiler/lib"
-             "../../compiler/latest/windows/redist/${MKL_ARCH}_win"
-             "../../compiler/latest/windows/redist/${MKL_ARCH}_win/compiler"
-             "../../compiler/latest/windows/compiler/redist/${MKL_ARCH}_win"
-             "../../compiler/latest/windows/compiler/redist/${MKL_ARCH}_win/compiler"
-             "bin) # Support for Conda directory layout, libiomp5md.dll
-      find_package_handle_standard_args(MKL REQUIRED_VARS OMP_DLL_DIR)
+        PATH_SUFFIXES "bin"
+              # Legacy layout support for oneMKL
+              "redist/${MKL_ARCH}"
+              "redist/${MKL_ARCH}_win" "redist/${MKL_ARCH}_win/compiler"
+              "../redist/${MKL_ARCH}/compiler" "../compiler/lib"
+              "../../compiler/latest/windows/redist/${MKL_ARCH}_win"
+              "../../compiler/latest/windows/redist/${MKL_ARCH}_win/compiler"
+              "../../compiler/latest/windows/compiler/redist/${MKL_ARCH}_win"
+              "../../compiler/latest/windows/compiler/redist/${MKL_ARCH}_win/compiler"
+        NO_DEFAULT_PATH)
+      check_required_vars(OMP_DLL_DIR)
       set(MKL_ENV_PATH "${OMP_DLL_DIR}")
     endif()
 
@@ -877,7 +977,11 @@ if(NOT MKL_THREADING STREQUAL "tbb_thread" AND MKL_THREADING MATCHES "_thread")
         list(APPEND MKL_SUPP_LINK -nomp)
       endif()
     endif()
-    find_package_handle_standard_args(MKL REQUIRED_VARS OMP_LIBRARY OMP_LINK)
+    check_required_vars(OMP_LIBRARY OMP_LINK)
+    mkl_message(STATUS "Found ${OMP_LIBRARY}")
+    if(MKL_SYCL_THREADING STREQUAL "intel_thread")
+      set(MKL_SYCL_THREAD_LIB ${OMP_LINK})
+    endif()
     set(MKL_THREAD_LIB ${OMP_LINK})
   endif()
 elseif(MKL_THREADING STREQUAL "sequential")
@@ -886,25 +990,25 @@ elseif(MKL_THREADING STREQUAL "sequential")
 endif() # MKL_THREADING
 
 if(UNIX)
-  if(DPCPP_COMPILER)
-    list(APPEND MKL_DPCPP_SUPP_LINK -lm -ldl -lpthread)
+  if(SYCL_COMPILER)
+    list(APPEND MKL_SYCL_SUPP_LINK -lm -ldl -lpthread)
   endif()
   list(APPEND MKL_SUPP_LINK -lm -ldl -lpthread)
 endif()
 
-if(DPCPP_COMPILER OR ENABLE_OMP_OFFLOAD)
+if(SYCL_COMPILER OR ENABLE_OMP_OFFLOAD)
   if(WIN32)
     # Detect sycl library version
     if(NOT DEFINED SYCL_LIB_VER_CACHE)
       set(SYCL_LIB_VER "")
       find_library(SYCL_LIB_DIR ${LIB_PREFIX}sycl${LIB_EXT}
         HINTS $ENV{LIB} $ENV{CMPLR_ROOT}
-        PATH_SUFFIXES "windows/lib")
+        PATH_SUFFIXES "windows/lib" "../lib${MKL_ARCH_DIR}")
       if(NOT SYCL_LIB_DIR)
         foreach(ver RANGE 6 99)
           find_library(SYCL_LIB_DIR ${LIB_PREFIX}sycl${ver}${LIB_EXT}
             HINTS $ENV{LIB} $ENV{CMPLR_ROOT}
-            PATH_SUFFIXES "windows/lib")
+            PATH_SUFFIXES "windows/lib" "../lib${MKL_ARCH_DIR}")
           if(SYCL_LIB_DIR)
             set(SYCL_LIB_VER ${ver})
             break()
@@ -914,11 +1018,11 @@ if(DPCPP_COMPILER OR ENABLE_OMP_OFFLOAD)
       set(SYCL_LIB_VER_CACHE ${SYCL_LIB_VER} CACHE STRING "")
     endif()
 
-    if(DPCPP_COMPILER)
+    if(SYCL_COMPILER)
       if(CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo")
-        list(APPEND MKL_DPCPP_SUPP_LINK ${LINK_PREFIX}sycl${SYCL_LIB_VER_CACHE}d${LINK_SUFFIX})
+        list(APPEND MKL_SYCL_SUPP_LINK ${LINK_PREFIX}sycl${SYCL_LIB_VER_CACHE}d${LINK_SUFFIX})
       else()
-        list(APPEND MKL_DPCPP_SUPP_LINK ${LINK_PREFIX}sycl${SYCL_LIB_VER_CACHE}${LINK_SUFFIX})
+        list(APPEND MKL_SYCL_SUPP_LINK ${LINK_PREFIX}sycl${SYCL_LIB_VER_CACHE}${LINK_SUFFIX})
       endif()
     endif()
     if(ENABLE_OMP_OFFLOAD)
@@ -929,15 +1033,15 @@ if(DPCPP_COMPILER OR ENABLE_OMP_OFFLOAD)
       endif()
     endif()
   else()
-    if(DPCPP_COMPILER)
-      list(APPEND MKL_DPCPP_SUPP_LINK ${LINK_PREFIX}sycl${LINK_SUFFIX})
+    if(SYCL_COMPILER)
+      list(APPEND MKL_SYCL_SUPP_LINK ${LINK_PREFIX}sycl${LINK_SUFFIX})
     endif()
     if(ENABLE_OMP_OFFLOAD)
       list(APPEND MKL_SUPP_LINK ${LINK_PREFIX}sycl${LINK_SUFFIX})
     endif()
   endif()
-  if(DPCPP_COMPILER)
-    list(APPEND MKL_DPCPP_SUPP_LINK ${LINK_PREFIX}OpenCL${LINK_SUFFIX})
+  if(SYCL_COMPILER)
+    list(APPEND MKL_SYCL_SUPP_LINK ${LINK_PREFIX}OpenCL${LINK_SUFFIX})
   endif()
   if(ENABLE_OMP_OFFLOAD)
     list(APPEND MKL_SUPP_LINK ${LINK_PREFIX}OpenCL${LINK_SUFFIX})
@@ -947,13 +1051,47 @@ endif()
 # Setup link types based on input options
 set(LINK_TYPES "")
 
-if(DPCPP_COMPILER)
-  if(NOT TARGET MKL::MKL_DPCPP)
-    add_library(MKL::MKL_DPCPP INTERFACE IMPORTED GLOBAL)
+if(SYCL_COMPILER OR ENABLE_OMP_OFFLOAD)
+# Remove missed mkl_sycl libraries in case of incomplete oneMKL package
+  if(MISSED_MKL_SYCL_LIBS)
+    list(REMOVE_ITEM MKL_SYCL_LIBS ${MISSED_MKL_SYCL_LIBS})
+    list(TRANSFORM MISSED_MKL_SYCL_LIBS PREPEND MKL:: OUTPUT_VARIABLE MISSED_MKL_SYCL_TARGETS)
+    list(REMOVE_ITEM MKL_SYCL_LINK_LINE ${MISSED_MKL_SYCL_TARGETS})
+    list(REMOVE_ITEM MKL_LINK_LINE ${MISSED_MKL_SYCL_TARGETS})
   endif()
-  target_compile_options(MKL::MKL_DPCPP INTERFACE $<$<COMPILE_LANGUAGE:CXX>:${MKL_DPCPP_COPT}>)
-  target_link_libraries(MKL::MKL_DPCPP INTERFACE ${MKL_DPCPP_LINK_LINE} ${MKL_DPCPP_THREAD_LIB} ${MKL_DPCPP_SUPP_LINK})
-  list(APPEND LINK_TYPES MKL::MKL_DPCPP)
+endif()
+
+if(SYCL_COMPILER)
+  if(NOT TARGET MKL::MKL_SYCL)
+    add_library(MKL::MKL_SYCL INTERFACE IMPORTED GLOBAL)
+    add_library(MKL::MKL_DPCPP ALIAS MKL::MKL_SYCL)
+    add_dependencies(MKL::MKL_SYCL MKL_SYCL_MESSAGE)
+  endif()
+  target_compile_options(MKL::MKL_SYCL INTERFACE $<$<COMPILE_LANGUAGE:CXX>:${MKL_SYCL_COPT}>)
+  target_link_libraries(MKL::MKL_SYCL INTERFACE ${MKL_SYCL_LINK_LINE} ${MKL_SYCL_THREAD_LIB} ${MKL_SYCL_SUPP_LINK})
+  list(APPEND LINK_TYPES MKL::MKL_SYCL)
+  foreach(lib ${MKL_SYCL_LIBS})
+    set(MKL_SYCL_DOMAIN "")
+    string(REGEX REPLACE "mkl_sycl_" "" MKL_SYCL_DOMAIN ${lib})
+    if(WIN32 AND CMAKE_BUILD_TYPE MATCHES "Debug|DebInfo")
+      string(REGEX REPLACE "d$" "" MKL_SYCL_DOMAIN ${MKL_SYCL_DOMAIN})
+    endif()
+    string(TOUPPER ${MKL_SYCL_DOMAIN} MKL_SYCL_DOMAIN)
+    add_library(MKL::MKL_SYCL::${MKL_SYCL_DOMAIN} INTERFACE IMPORTED GLOBAL)
+    add_dependencies(MKL::MKL_SYCL::${MKL_SYCL_DOMAIN} MKL_SYCL_MESSAGE)
+    # Only dynamic link has domain specific libraries
+    # Domain specific targets still use mkl_sycl for static
+    # STREQUAL "${lib}_file-NOTFOUND"
+    if(MKL_LINK STREQUAL "static")
+      target_link_libraries(MKL::MKL_SYCL::${MKL_SYCL_DOMAIN} INTERFACE ${MKL_SYCL_LINK_LINE} ${MKL_SYCL_THREAD_LIB} ${MKL_SYCL_SUPP_LINK})
+    else()
+      list(TRANSFORM MKL_SYCL_LINK_LINE REPLACE ".*mkl_sycl.*" "TBD")
+      list(REMOVE_DUPLICATES MKL_SYCL_LINK_LINE)
+      list(TRANSFORM MKL_SYCL_LINK_LINE REPLACE "TBD" "MKL::${lib}")
+      target_link_libraries(MKL::MKL_SYCL::${MKL_SYCL_DOMAIN} INTERFACE ${MKL_SYCL_LINK_LINE} ${MKL_SYCL_THREAD_LIB} ${MKL_SYCL_SUPP_LINK})
+    endif()
+    list(APPEND LINK_TYPES MKL::MKL_SYCL::${MKL_SYCL_DOMAIN})
+  endforeach(lib) # MKL_SYCL_LIBS
 endif()
 # Single target for all C, Fortran link-lines
 if(NOT TARGET MKL::MKL)
@@ -972,6 +1110,14 @@ foreach(link ${LINK_TYPES})
   target_include_directories(${link} BEFORE INTERFACE "${MKL_INCLUDE}")
   list(APPEND MKL_IMPORTED_TARGETS ${link})
 endforeach(link) # LINK_TYPES
+# oneMKL could be added to implicit directories when it's defined in CPATH
+# In order to avoid dependency on CPATH, remove oneMKL from implicit directories
+if(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
+  list(REMOVE_ITEM CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "${MKL_INCLUDE}")
+endif()
+if(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES)
+  list(REMOVE_ITEM CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "${MKL_INCLUDE}")
+endif()
 
 if(MKL_LINK STREQUAL "sdl")
   list(APPEND MKL_ENV "MKL_INTERFACE_LAYER=${MKL_SDL_IFACE_ENV}" "MKL_THREADING_LAYER=${MKL_SDL_THREAD_ENV}")

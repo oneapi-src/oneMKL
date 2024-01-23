@@ -43,6 +43,8 @@ TEST_P(UniformStdTests, RealSinglePrecision) {
 }
 
 TEST_P(UniformStdTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_test<statistics_test<
         oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::standard>,
         oneapi::mkl::rng::philox4x32x10>>
@@ -82,6 +84,8 @@ TEST_P(UniformAccurateTests, RealSinglePrecision) {
 }
 
 TEST_P(UniformAccurateTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_test<statistics_test<
         oneapi::mkl::rng::uniform<double, oneapi::mkl::rng::uniform_method::accurate>,
         oneapi::mkl::rng::philox4x32x10>>

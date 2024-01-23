@@ -63,6 +63,7 @@ public:
             oneapi::mkl::rng::generate(distr, engine2, N_GEN, r2_buffer);
             oneapi::mkl::rng::generate(distr, engine3, N_GEN, r3_buffer);
             oneapi::mkl::rng::generate(distr, engine4, N_GEN, r4_buffer);
+            QUEUE_WAIT(queue);
         }
         catch (const oneapi::mkl::unimplemented& e) {
             status = test_skipped;
@@ -118,6 +119,7 @@ public:
                 oneapi::mkl::rng::generate(distr, engine3, N_GEN, r2_buffer);
                 oneapi::mkl::rng::generate(distr, engine4, N_GEN, r3_buffer);
             }
+            QUEUE_WAIT(queue);
         }
         catch (const oneapi::mkl::unimplemented& e) {
             status = test_skipped;

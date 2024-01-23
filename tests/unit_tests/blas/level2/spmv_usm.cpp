@@ -90,7 +90,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::spmv(main_queue, upper_lower, n, alpha,
                                                              A.data(), x.data(), incx, beta,
                                                              y.data(), incy, dependencies);
@@ -105,15 +105,15 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::spmv, upper_lower,
-                                   n, alpha, A.data(), x.data(), incx, beta, y.data(), incy,
-                                   dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::spmv,
+                                        upper_lower, n, alpha, A.data(), x.data(), incx, beta,
+                                        y.data(), incy, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::spmv, upper_lower, n,
-                                   alpha, A.data(), x.data(), incx, beta, y.data(), incy,
-                                   dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::spmv, upper_lower,
+                                        n, alpha, A.data(), x.data(), incx, beta, y.data(), incy,
+                                        dependencies);
                 break;
             default: break;
         }
@@ -160,6 +160,8 @@ TEST_P(SpmvUsmTests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
 }
 TEST_P(SpmvUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -178,7 +180,7 @@ TEST_P(SpmvUsmTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(SpmvUsmTestSuite, SpmvUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

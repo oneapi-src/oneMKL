@@ -76,6 +76,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
 
     queue.submit([&](sycl::handler &cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
+        commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
@@ -110,6 +111,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     queue.submit([&](sycl::handler &cgh) {
         auto inout_re_acc = inout_re.template get_access<sycl::access::mode::read_write>(cgh);
         auto inout_im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
+        commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
@@ -144,6 +146,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     queue.submit([&](sycl::handler &cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
+        commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, in, out)";
@@ -179,6 +182,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto in_im_acc = in_im.template get_access<sycl::access::mode::read_write>(cgh);
         auto out_re_acc = out_re.template get_access<sycl::access::mode::read_write>(cgh);
         auto out_im_acc = out_im.template get_access<sycl::access::mode::read_write>(cgh);
+        commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, in_re, in_im, out_re, out_im)";
@@ -231,8 +235,9 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
     }
     inout += offsets[0];
 
-    return queue.submit([&](sycl::handler &cgh) {
+    sycl::event sycl_event = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
+        commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
@@ -242,6 +247,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
             detail::sync_checked(func_name, stream);
         });
     });
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
+    return sycl_event;
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
@@ -262,8 +269,9 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
 
-    return queue.submit([&](sycl::handler &cgh) {
+    sycl::event sycl_event = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
+        commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
@@ -273,6 +281,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
             detail::sync_checked(func_name, stream);
         });
     });
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
+    return sycl_event;
 }
 
 //Out-of-place transform
@@ -291,8 +301,9 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
     in += offsets[0];
     out += offsets[1];
 
-    return queue.submit([&](sycl::handler &cgh) {
+    sycl::event sycl_event = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
+        commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, in, out, deps)";
@@ -304,6 +315,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
             detail::sync_checked(func_name, stream);
         });
     });
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
+    return sycl_event;
 }
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
@@ -319,8 +332,9 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
     auto info = detail::get_bwd_info(commit);
     auto offsets = detail::get_offsets(commit);
 
-    return queue.submit([&](sycl::handler &cgh) {
+    sycl::event sycl_event = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);
+        commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
         cgh.host_task([=](sycl::interop_handle ih) {
             const std::string func_name =
@@ -333,6 +347,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
             detail::sync_checked(func_name, stream);
         });
     });
+    commit->set_last_usm_workspace_event_if_rqd(sycl_event);
+    return sycl_event;
 }
 
 // Template function instantiations

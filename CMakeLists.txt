@@ -51,6 +51,7 @@ endif()
 option(ENABLE_CUBLAS_BACKEND "Enable the cuBLAS backend for the BLAS interface" OFF)
 option(ENABLE_ROCBLAS_BACKEND "Enable the rocBLAS backend for the BLAS interface" OFF)
 option(ENABLE_NETLIB_BACKEND "Enable the Netlib backend for the BLAS interface" OFF)
+option(ENABLE_PORTBLAS_BACKEND "Enable the portBLAS backend for the BLAS interface. Cannot be used with other BLAS backends." OFF)
 
 # rand
 option(ENABLE_CURAND_BACKEND "Enable the cuRAND backend for the RNG interface" OFF)
@@ -63,7 +64,7 @@ option(ENABLE_ROCSOLVER_BACKEND "Enable the rocSOLVER backend for the LAPACK int
 # dft
 option(ENABLE_CUFFT_BACKEND "Enable the cuFFT backend for the DFT interface" OFF)
 option(ENABLE_ROCFFT_BACKEND "Enable the rocFFT backend for the DFT interface" OFF)
-
+option(ENABLE_PORTFFT_BACKEND "Enable the portFFT DFT backend for the DFT interface. Cannot be used with other DFT backends." OFF)
 
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 set(HIP_TARGETS "" CACHE STRING "Target HIP architectures")
@@ -102,17 +103,30 @@ endif()
 if(ENABLE_MKLGPU_BACKEND
         OR ENABLE_MKLCPU_BACKEND
         OR ENABLE_CUFFT_BACKEND
-	OR ENABLE_ROCFFT_BACKEND)
+        OR ENABLE_ROCFFT_BACKEND
+        OR ENABLE_PORTFFT_BACKEND)
   list(APPEND DOMAINS_LIST "dft")
 endif()
+if(ENABLE_MKLCPU_BACKEND
+        OR ENABLE_MKLGPU_BACKEND)
+  list(APPEND DOMAINS_LIST "sparse_blas")
+endif()
 
-if(ENABLE_PORTBLAS_BACKEND AND
-    (ENABLE_MKLCPU_BACKEND OR
-     ENABLE_MKLGPU_BACKEND OR
-     ENABLE_CUBLAS_BACKEND OR
-     ENABLE_ROCBLAS_BACKEND OR
-     ENABLE_NETLIB_BACKEND))
-  message(FATAL_ERROR "portBLAS backend cannot be enabled with other backends")
+if(ENABLE_PORTBLAS_BACKEND
+	AND (ENABLE_MKLCPU_BACKEND
+		OR ENABLE_MKLGPU_BACKEND
+		OR ENABLE_CUBLAS_BACKEND
+		OR ENABLE_ROCBLAS_BACKEND
+		OR ENABLE_NETLIB_BACKEND))
+	message(FATAL_ERROR "ENABLE_PORTBLAS_BACKEND cannot be enabled at the same time as other BLAS backends.")
+endif()
+
+if (ENABLE_PORTFFT_BACKEND
+	AND (ENABLE_MKLCPU_BACKEND
+		OR ENABLE_MKLGPU_BACKEND
+		OR ENABLE_ROCFFT_BACKEND
+		OR ENABLE_CUFFT_BACKEND))
+	message(FATAL_ERROR "ENABLE_PORTFFT_BACKEND cannot be enabled at the same time as other DFT backends.")
 endif()
 
 # Define required CXX compilers before project
@@ -196,7 +210,7 @@ if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")
 endif()
 
 # Temporary disable sycl 2020 deprecations warnings for cuSOLVER and rocSOLVER
-if(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++" AND (ENABLE_CUSOLVER_BACKEND OR ENABLE_ROCSOLVER_BACKEND))
+if(ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++" AND (ENABLE_ROCSOLVER_BACKEND))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSYCL2020_DISABLE_DEPRECATION_WARNINGS")
 endif()
 
@@ -237,11 +251,13 @@ if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
   endif()
   # Enable SYCL API
   set(DPCPP_COMPILER ON)
+  set(SYCL_COMPILER ON)
   # In case Intel oneMKL package doesn't include MKLConfig,
   # use MKLConfig from the repo
   find_package(MKL REQUIRED
           HINTS ${MKL_ROOT}/lib/cmake
                 ${MKL_ROOT}/lib/cmake/mkl
+                $ENV{MKLROOT}
                 ${PROJECT_SOURCE_DIR}/cmake/mkl)
 endif()
 

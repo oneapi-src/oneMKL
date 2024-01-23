@@ -344,6 +344,23 @@ static void set_and_get_values() {
         descriptor.get_value(oneapi::mkl::dft::config_param::PACKED_FORMAT, &value);
         EXPECT_EQ(oneapi::mkl::dft::config_value::CCE_FORMAT, value);
     }
+
+    {
+        oneapi::mkl::dft::config_value value{
+            oneapi::mkl::dft::config_value::COMMITTED
+        }; // Initialize with invalid value
+        descriptor.get_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT, &value);
+        EXPECT_EQ(oneapi::mkl::dft::config_value::WORKSPACE_AUTOMATIC, value);
+
+        descriptor.set_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT,
+                             oneapi::mkl::dft::config_value::WORKSPACE_EXTERNAL);
+
+        value = oneapi::mkl::dft::config_value::COMMITTED; // Initialize with invalid value
+        descriptor.get_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT, &value);
+        EXPECT_EQ(oneapi::mkl::dft::config_value::WORKSPACE_EXTERNAL, value);
+        descriptor.set_value(oneapi::mkl::dft::config_param::WORKSPACE_PLACEMENT,
+                             oneapi::mkl::dft::config_value::WORKSPACE_AUTOMATIC);
+    }
 }
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
@@ -600,6 +617,17 @@ int test_commit(sycl::device* dev) {
             std::cout << "Device does not support double precision." << std::endl;
             return test_skipped;
         }
+    }
+
+    // test that descriptor is supported
+    try {
+        oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_1d_lengths };
+        commit_descriptor(descriptor, sycl_queue);
+    }
+    catch (oneapi::mkl::unimplemented& e) {
+        std::cout << "Skipping because simple commit not supported. Reason: \"" << e.what()
+                  << "\"\n";
+        return test_skipped;
     }
 
     get_commited<precision, domain>(sycl_queue);

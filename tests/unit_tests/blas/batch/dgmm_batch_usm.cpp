@@ -112,10 +112,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 
     idx = 0;
     for (i = 0; i < group_count; i++) {
-        size_a = (layout == oneapi::mkl::layout::column_major) ? lda[i] * n[i] : lda[i] * m[i];
+        size_a = (layout == oneapi::mkl::layout::col_major) ? lda[i] * n[i] : lda[i] * m[i];
         x_len = (left_right[i] == oneapi::mkl::side::R) ? n[i] : m[i];
         size_x = 1 + (x_len - 1) * std::abs(incx[i]);
-        size_c = (layout == oneapi::mkl::layout::column_major) ? ldc[i] * n[i] : ldc[i] * m[i];
+        size_c = (layout == oneapi::mkl::layout::col_major) ? ldc[i] * n[i] : ldc[i] * m[i];
         for (j = 0; j < group_size[i]; j++) {
             a_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_a, *dev, cxt);
             x_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_x, *dev, cxt);
@@ -187,7 +187,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::dgmm_batch(
                     main_queue, &left_right[0], &m[0], &n[0], (const fp **)&a_array[0], &lda[0],
                     (const fp **)&x_array[0], &incx[0], &c_array[0], &ldc[0], group_count,
@@ -204,17 +204,17 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::dgmm_batch,
-                                   &left_right[0], &m[0], &n[0], (const fp **)&a_array[0], &lda[0],
-                                   (const fp **)&x_array[0], &incx[0], &c_array[0], &ldc[0],
-                                   group_count, &group_size[0], dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::dgmm_batch,
+                                        &left_right[0], &m[0], &n[0], (const fp **)&a_array[0],
+                                        &lda[0], (const fp **)&x_array[0], &incx[0], &c_array[0],
+                                        &ldc[0], group_count, &group_size[0], dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::dgmm_batch,
-                                   &left_right[0], &m[0], &n[0], (const fp **)&a_array[0], &lda[0],
-                                   (const fp **)&x_array[0], &incx[0], &c_array[0], &ldc[0],
-                                   group_count, &group_size[0], dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::dgmm_batch,
+                                        &left_right[0], &m[0], &n[0], (const fp **)&a_array[0],
+                                        &lda[0], (const fp **)&x_array[0], &incx[0], &c_array[0],
+                                        &ldc[0], group_count, &group_size[0], dependencies);
                 break;
             default: break;
         }
@@ -292,6 +292,8 @@ TEST_P(DgmmBatchUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(DgmmBatchUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -301,13 +303,15 @@ TEST_P(DgmmBatchUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(DgmmBatchUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(DgmmBatchUsmTestSuite, DgmmBatchUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

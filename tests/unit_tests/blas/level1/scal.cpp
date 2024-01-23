@@ -84,7 +84,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alp
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::scal(main_queue, N, alpha, x_buffer, incx);
                 break;
             case oneapi::mkl::layout::row_major:
@@ -94,13 +94,13 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alp
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::scal, N, alpha,
-                                   x_buffer, incx);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::scal, N, alpha,
+                                        x_buffer, incx);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::scal, N, alpha,
-                                   x_buffer, incx);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::scal, N, alpha,
+                                        x_buffer, incx);
                 break;
             default: break;
         }
@@ -137,6 +137,8 @@ TEST_P(ScalTests, RealSinglePrecision) {
         (test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(
         (test<double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
@@ -151,6 +153,8 @@ TEST_P(ScalTests, ComplexSinglePrecision) {
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     EXPECT_TRUEORSKIP((test<std::complex<double>, std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
@@ -165,6 +169,8 @@ TEST_P(ScalTests, ComplexRealSinglePrecision) {
                                                         std::get<1>(GetParam()), 1357, -3, alpha)));
 }
 TEST_P(ScalTests, ComplexRealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, alpha)));
@@ -174,7 +180,7 @@ TEST_P(ScalTests, ComplexRealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(ScalTestSuite, ScalTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

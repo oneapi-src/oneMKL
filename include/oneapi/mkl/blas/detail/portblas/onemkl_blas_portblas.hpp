@@ -26,6 +26,8 @@
 #include <CL/sycl.hpp>
 #endif
 
+#include <complex>
+
 #include "oneapi/mkl/types.hpp"
 
 #include "oneapi/mkl/detail/export.hpp"

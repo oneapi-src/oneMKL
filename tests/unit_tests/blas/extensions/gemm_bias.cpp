@@ -63,14 +63,11 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
     rand_matrix(B, layout, transb, k, n, ldb);
     rand_matrix(C, layout, oneapi::mkl::transpose::nontrans, m, n, ldc);
     if (offsetc == oneapi::mkl::offset::fix)
-        rand_matrix(co, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, 1, 1,
-                    1);
+        rand_matrix(co, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, 1, 1, 1);
     if (offsetc == oneapi::mkl::offset::column)
-        rand_matrix(co, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, m, 1,
-                    m);
+        rand_matrix(co, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, m, 1, m);
     if (offsetc == oneapi::mkl::offset::row)
-        rand_matrix(co, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans, n, 1,
-                    n);
+        rand_matrix(co, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans, n, 1, n);
 
     C_ref = C;
 
@@ -115,7 +112,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::gemm_bias(main_queue, transa, transb, offsetc, m,
                                                            n, k, alpha, A_buffer, lda, ao, B_buffer,
                                                            ldb, bo, beta, C_buffer, ldc, CO_buffer);
@@ -129,15 +126,15 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::transpose transa,
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_bias, transa,
-                                   transb, offsetc, m, n, k, alpha, A_buffer, lda, ao, B_buffer,
-                                   ldb, bo, beta, C_buffer, ldc, CO_buffer);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_bias,
+                                        transa, transb, offsetc, m, n, k, alpha, A_buffer, lda, ao,
+                                        B_buffer, ldb, bo, beta, C_buffer, ldc, CO_buffer);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemm_bias, transa,
-                                   transb, offsetc, m, n, k, alpha, A_buffer, lda, ao, B_buffer,
-                                   ldb, bo, beta, C_buffer, ldc, CO_buffer);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemm_bias, transa,
+                                        transb, offsetc, m, n, k, alpha, A_buffer, lda, ao,
+                                        B_buffer, ldb, bo, beta, C_buffer, ldc, CO_buffer);
                 break;
             default: break;
         }
@@ -381,7 +378,7 @@ TEST_P(GemmBiasTests, Uint8Uint8Int32Precision) {
 
 INSTANTIATE_TEST_SUITE_P(GemmBiasTestSuite, GemmBiasTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

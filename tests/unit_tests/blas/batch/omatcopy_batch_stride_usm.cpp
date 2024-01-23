@@ -87,7 +87,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t stride_a, stride_b;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             stride_a = lda * n;
             stride_b = (trans == oneapi::mkl::transpose::nontrans) ? ldb * n : ldb * m;
             break;
@@ -123,11 +123,11 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         b_ref_array[i] = &B_ref[i * stride_b];
     }
 
-    rand_matrix(A, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    rand_matrix(A, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride_a * batch_size, 1, stride_a * batch_size);
-    rand_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    rand_matrix(B, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride_b * batch_size, 1, stride_b * batch_size);
-    copy_matrix(B, oneapi::mkl::layout::column_major, oneapi::mkl::transpose::nontrans,
+    copy_matrix(B, oneapi::mkl::layout::col_major, oneapi::mkl::transpose::nontrans,
                 stride_b * batch_size, 1, stride_b * batch_size, B_ref);
 
     // Call reference OMATCOPY_BATCH_STRIDE.
@@ -145,7 +145,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::omatcopy_batch(
                     main_queue, trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b,
                     batch_size, dependencies);
@@ -160,15 +160,15 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy_batch,
-                                   trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b,
-                                   batch_size, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::omatcopy_batch,
+                                        trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb,
+                                        stride_b, batch_size, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy_batch, trans,
-                                   m, n, alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b,
-                                   batch_size, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::omatcopy_batch,
+                                        trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb,
+                                        stride_b, batch_size, dependencies);
                 break;
             default: break;
         }
@@ -194,8 +194,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    bool good = check_equal_matrix(B, B_ref, oneapi::mkl::layout::column_major,
-                                   stride_b * batch_size, 1, stride_b * batch_size, 10, std::cout);
+    bool good = check_equal_matrix(B, B_ref, oneapi::mkl::layout::col_major, stride_b * batch_size,
+                                   1, stride_b * batch_size, 10, std::cout);
 
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
@@ -212,6 +212,8 @@ TEST_P(OmatcopyBatchStrideUsmTests, RealSinglePrecision) {
 }
 
 TEST_P(OmatcopyBatchStrideUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -221,13 +223,15 @@ TEST_P(OmatcopyBatchStrideUsmTests, ComplexSinglePrecision) {
 }
 
 TEST_P(OmatcopyBatchStrideUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(OmatcopyBatchStrideUsmTestSuite, OmatcopyBatchStrideUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

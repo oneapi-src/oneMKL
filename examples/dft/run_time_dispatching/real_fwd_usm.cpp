@@ -80,9 +80,8 @@ void run_example(const sycl::device& dev) {
 // Description of example setup, APIs used and supported floating point type precisions
 //
 void print_example_banner() {
-    std::cout << "\n"
-                 "########################################################################\n"
-                 "# DFTI complex in-place forward transform with USM API example:\n"
+    std::cout << "########################################################################\n"
+                 "# DFT complex in-place forward transform with USM API example:\n"
                  "#\n"
                  "# Using APIs:\n"
                  "#   USM forward complex in-place\n"
@@ -122,6 +121,11 @@ int main(int /*argc*/, char** /*argv*/) {
 
         run_example(my_dev);
         std::cout << "DFT example ran OK" << std::endl;
+    }
+    catch (oneapi::mkl::unimplemented const& e) {
+        std::cerr << "Unsupported Configuration:" << std::endl;
+        std::cerr << "\t" << e.what() << std::endl;
+        return 0;
     }
     catch (sycl::exception const& e) {
         std::cerr << "Caught synchronous SYCL exception:" << std::endl;

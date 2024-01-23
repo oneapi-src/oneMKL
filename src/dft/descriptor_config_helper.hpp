@@ -78,6 +78,8 @@ PARAM_TYPE_HELPER(config_param::OUTPUT_STRIDES, std::int64_t*)
 PARAM_TYPE_HELPER(config_param::FWD_DISTANCE, std::int64_t)
 PARAM_TYPE_HELPER(config_param::BWD_DISTANCE, std::int64_t)
 PARAM_TYPE_HELPER(config_param::WORKSPACE, config_value)
+PARAM_TYPE_HELPER(config_param::WORKSPACE_PLACEMENT, config_value)
+PARAM_TYPE_HELPER(config_param::WORKSPACE_EXTERNAL_BYTES, std::int64_t)
 PARAM_TYPE_HELPER(config_param::ORDERING, config_value)
 PARAM_TYPE_HELPER(config_param::TRANSPOSE, bool)
 PARAM_TYPE_HELPER(config_param::PACKED_FORMAT, config_value)
@@ -182,6 +184,19 @@ void set_value(dft_values<prec, dom>& vals,
         else {
             throw mkl::invalid_argument("DFT", "set_value", "Workspace must be allow or avoid.");
         }
+    }
+    else if constexpr (Param == config_param::WORKSPACE_PLACEMENT) {
+        if (set_val == config_value::WORKSPACE_AUTOMATIC ||
+            set_val == config_value::WORKSPACE_EXTERNAL) {
+            vals.workspace_placement = set_val;
+        }
+        else {
+            throw mkl::invalid_argument(
+                "DFT", "set_value", "Workspace must be WORKSPACE_AUTOMATIC or WORKSPACE_EXTERNAL.");
+        }
+    }
+    else if constexpr (Param == config_param::WORKSPACE_EXTERNAL_BYTES) {
+        throw mkl::invalid_argument("DFT", "set_value", "Read-only parameter.");
     }
     else if constexpr (Param == config_param::ORDERING) {
         if (set_val == config_value::ORDERED || set_val == config_value::BACKWARD_SCRAMBLED) {

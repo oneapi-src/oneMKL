@@ -88,7 +88,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::syr(
                     main_queue, upper_lower, n, alpha, x.data(), incx, A.data(), lda, dependencies);
                 break;
@@ -101,13 +101,14 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::syr, upper_lower, n,
-                                   alpha, x.data(), incx, A.data(), lda, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::syr,
+                                        upper_lower, n, alpha, x.data(), incx, A.data(), lda,
+                                        dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::syr, upper_lower, n,
-                                   alpha, x.data(), incx, A.data(), lda, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::syr, upper_lower,
+                                        n, alpha, x.data(), incx, A.data(), lda, dependencies);
                 break;
             default: break;
         }
@@ -153,6 +154,8 @@ TEST_P(SyrUsmTests, RealSinglePrecision) {
                                   oneapi::mkl::uplo::upper, 30, alpha, 1, 42));
 }
 TEST_P(SyrUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::mkl::uplo::lower, 30, alpha, 2, 42));
@@ -170,7 +173,7 @@ TEST_P(SyrUsmTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(SyrUsmTestSuite, SyrUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

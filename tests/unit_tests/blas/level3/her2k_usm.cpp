@@ -97,7 +97,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::her2k(main_queue, upper_lower, trans, n, k,
                                                               alpha, A.data(), lda, B.data(), ldb,
                                                               beta, C.data(), ldc, dependencies);
@@ -112,15 +112,15 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::her2k, upper_lower,
-                                   trans, n, k, alpha, A.data(), lda, B.data(), ldb, beta, C.data(),
-                                   ldc, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::her2k,
+                                        upper_lower, trans, n, k, alpha, A.data(), lda, B.data(),
+                                        ldb, beta, C.data(), ldc, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::her2k, upper_lower,
-                                   trans, n, k, alpha, A.data(), lda, B.data(), ldb, beta, C.data(),
-                                   ldc, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::her2k,
+                                        upper_lower, trans, n, k, alpha, A.data(), lda, B.data(),
+                                        ldb, beta, C.data(), ldc, dependencies);
                 break;
             default: break;
         }
@@ -167,6 +167,8 @@ TEST_P(Her2kUsmTests, ComplexSinglePrecision) {
         oneapi::mkl::transpose::conjtrans, 72, 27, 101, 102, 103, alpha, beta)));
 }
 TEST_P(Her2kUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     double beta(1.0);
     EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
@@ -185,7 +187,7 @@ TEST_P(Her2kUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(Her2kUsmTestSuite, Her2kUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

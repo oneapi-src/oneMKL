@@ -56,6 +56,10 @@ set(lapack_TEST_LINK ${LAPACKE_LINK})
 set(rng_TEST_LIST
       rng_statistics
       rng_service)
+set(rng_DEVICE_TEST_LIST
+      rng_device_moments
+      rng_device_service
+)
 
 set(rng_TEST_LINK "")
 
@@ -65,12 +69,20 @@ set(dft_TEST_LIST
 
 set(dft_TEST_LINK "")
 
+# Sparse BLAS config
+set(sparse_blas_TEST_LIST
+      spblas_source)
+
+set(sparse_blas_TEST_LINK "")
+
 foreach(domain ${TARGET_DOMAINS})
   # Generate RT and CT test lists
   set(${domain}_TEST_LIST_RT ${${domain}_TEST_LIST})
   set(${domain}_TEST_LIST_CT ${${domain}_TEST_LIST})
+  set(${domain}_DEVICE_TEST_LIST_CT ${${domain}_DEVICE_TEST_LIST})
   list(TRANSFORM ${domain}_TEST_LIST_RT APPEND _rt)
   list(TRANSFORM ${domain}_TEST_LIST_CT APPEND _ct)
+  list(TRANSFORM ${domain}_DEVICE_TEST_LIST_CT APPEND _ct)
 
   add_executable(test_main_${domain}_ct main_test.cpp)
   target_include_directories(test_main_${domain}_ct PUBLIC ${GTEST_INCLUDE_DIR})
@@ -84,7 +96,9 @@ foreach(domain ${TARGET_DOMAINS})
   if(BUILD_SHARED_LIBS)
     add_executable(test_main_${domain}_rt main_test.cpp)
     target_include_directories(test_main_${domain}_rt PUBLIC ${GTEST_INCLUDE_DIR})
-    target_compile_options(test_main_${domain}_rt PRIVATE -fsycl)
+    if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+      target_compile_options(test_main_${domain}_rt PRIVATE -fsycl)
+    endif()
     target_link_libraries(test_main_${domain}_rt PUBLIC
       gtest
       gtest_main
@@ -159,6 +173,11 @@ foreach(domain ${TARGET_DOMAINS})
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_dft_rocfft)
   endif()
 
+  if(domain STREQUAL "dft" AND ENABLE_PORTFFT_BACKEND)
+    add_dependencies(test_main_${domain}_ct onemkl_dft_portfft)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_dft_portfft)
+  endif()
+
   target_link_libraries(test_main_${domain}_ct PUBLIC
       gtest
       gtest_main
@@ -167,7 +186,12 @@ foreach(domain ${TARGET_DOMAINS})
       ${ONEMKL_LIBRARIES_${domain}}
       ONEMKL::SYCL::SYCL
       ${${domain}_TEST_LIST_CT}
+      ${${domain}_DEVICE_TEST_LIST_CT}
   )
+  
+  if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+    target_link_options(test_main_${domain}_ct PUBLIC -fsycl-device-code-split=per_kernel)
+  endif()
 
   string(TOUPPER ${domain} DOMAIN_PREFIX)
 

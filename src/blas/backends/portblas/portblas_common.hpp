@@ -40,6 +40,10 @@ using handle_t = ::blas::SB_Handle;
 template <typename ElemT>
 using buffer_iterator_t = ::blas::BufferIterator<ElemT>;
 
+// sycl complex data type (experimental)
+template <typename ElemT>
+using sycl_complex_t = sycl::ext::oneapi::experimental::complex<ElemT>;
+
 /** A trait for obtaining equivalent portBLAS API types from oneMKL API
  *  types.
  * 
@@ -64,6 +68,8 @@ DEF_PORTBLAS_TYPE(oneapi::mkl::transpose, char)
 DEF_PORTBLAS_TYPE(oneapi::mkl::uplo, char)
 DEF_PORTBLAS_TYPE(oneapi::mkl::side, char)
 DEF_PORTBLAS_TYPE(oneapi::mkl::diag, char)
+DEF_PORTBLAS_TYPE(std::complex<float>, sycl_complex_t<float>)
+DEF_PORTBLAS_TYPE(std::complex<double>, sycl_complex_t<double>)
 // Passthrough of portBLAS arg types for more complex wrapping.
 DEF_PORTBLAS_TYPE(::blas::gemm_batch_type_t, ::blas::gemm_batch_type_t)
 
@@ -72,6 +78,27 @@ DEF_PORTBLAS_TYPE(::blas::gemm_batch_type_t, ::blas::gemm_batch_type_t)
 template <typename ElemT>
 struct portblas_type<sycl::buffer<ElemT, 1>> {
     using type = buffer_iterator_t<ElemT>;
+};
+
+template <typename ElemT>
+struct portblas_type<ElemT*> {
+    using type = ElemT*;
+};
+
+// USM Complex
+template <typename ElemT>
+struct portblas_type<std::complex<ElemT>*> {
+    using type = sycl_complex_t<ElemT>*;
+};
+
+template <typename ElemT>
+struct portblas_type<const std::complex<ElemT>*> {
+    using type = const sycl_complex_t<ElemT>*;
+};
+
+template <>
+struct portblas_type<std::vector<sycl::event>> {
+    using type = std::vector<sycl::event>;
 };
 
 /** Convert a OneMKL argument to the type required for portBLAS.
@@ -175,7 +202,23 @@ struct throw_if_unsupported_by_device {
         std::apply(fn, args);                                                                   \
     }                                                                                           \
     else {                                                                                      \
-        throw unimplemented("blas", "portBLAS function", " for row-major");                     \
+        throw unimplemented("blas", "portBLAS function");                                       \
+    }
+
+#define CALL_PORTBLAS_USM_FN(portblasFunc, ...)                                   \
+    if constexpr (is_column_major()) {                                            \
+        detail::throw_if_unsupported_by_device<double, sycl::aspect::fp64>{}(     \
+            " portBLAS function requiring fp64 support", __VA_ARGS__);            \
+        detail::throw_if_unsupported_by_device<sycl::half, sycl::aspect::fp16>{}( \
+            " portBLAS function requiring fp16 support", __VA_ARGS__);            \
+        auto args = detail::convert_to_portblas_type(__VA_ARGS__);                \
+        auto fn = [](auto&&... targs) {                                           \
+            return portblasFunc(std::forward<decltype(targs)>(targs)...).back();  \
+        };                                                                        \
+        return std::apply(fn, args);                                              \
+    }                                                                             \
+    else {                                                                        \
+        throw unimplemented("blas", "portBLAS function");                         \
     }
 
 } // namespace portblas

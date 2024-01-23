@@ -91,7 +91,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::hbmv(main_queue, upper_lower, n, k, alpha,
                                                       A_buffer, lda, x_buffer, incx, beta, y_buffer,
                                                       incy);
@@ -104,14 +104,15 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::hbmv, upper_lower,
-                                   n, k, alpha, A_buffer, lda, x_buffer, incx, beta, y_buffer,
-                                   incy);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::hbmv,
+                                        upper_lower, n, k, alpha, A_buffer, lda, x_buffer, incx,
+                                        beta, y_buffer, incy);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::hbmv, upper_lower, n,
-                                   k, alpha, A_buffer, lda, x_buffer, incx, beta, y_buffer, incy);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::hbmv, upper_lower,
+                                        n, k, alpha, A_buffer, lda, x_buffer, incx, beta, y_buffer,
+                                        incy);
                 break;
             default: break;
         }
@@ -163,6 +164,8 @@ TEST_P(HbmvTests, ComplexSinglePrecision) {
                                                 42));
 }
 TEST_P(HbmvTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -187,7 +190,7 @@ TEST_P(HbmvTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(HbmvTestSuite, HbmvTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

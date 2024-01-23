@@ -79,7 +79,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int64_t stride_a, stride_c;
 
     switch (layout) {
-        case oneapi::mkl::layout::column_major:
+        case oneapi::mkl::layout::col_major:
             stride_a = (trans == oneapi::mkl::transpose::nontrans) ? lda * k : lda * n;
             stride_c = ldc * n;
             break;
@@ -140,7 +140,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::syrk_batch(main_queue, upper_lower, trans, n, k,
                                                             alpha, A_buffer, lda, stride_a, beta,
                                                             C_buffer, ldc, stride_c, batch_size);
@@ -154,15 +154,15 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::syrk_batch,
-                                   upper_lower, trans, n, k, alpha, A_buffer, lda, stride_a, beta,
-                                   C_buffer, ldc, stride_c, batch_size);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::syrk_batch,
+                                        upper_lower, trans, n, k, alpha, A_buffer, lda, stride_a,
+                                        beta, C_buffer, ldc, stride_c, batch_size);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::syrk_batch,
-                                   upper_lower, trans, n, k, alpha, A_buffer, lda, stride_a, beta,
-                                   C_buffer, ldc, stride_c, batch_size);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::syrk_batch,
+                                        upper_lower, trans, n, k, alpha, A_buffer, lda, stride_a,
+                                        beta, C_buffer, ldc, stride_c, batch_size);
                 break;
             default: break;
         }
@@ -187,8 +187,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     auto C_accessor = C_buffer.template get_host_access(read_only);
     bool good =
-        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::column_major,
-                           stride_c * batch_size, 1, stride_c * batch_size, 10 * k, std::cout);
+        check_equal_matrix(C_accessor, C_ref, oneapi::mkl::layout::col_major, stride_c * batch_size,
+                           1, stride_c * batch_size, 10 * k, std::cout);
 
     return (int)good;
 }
@@ -201,6 +201,8 @@ TEST_P(SyrkBatchStrideTests, RealSinglePrecision) {
 }
 
 TEST_P(SyrkBatchStrideTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
@@ -210,13 +212,15 @@ TEST_P(SyrkBatchStrideTests, ComplexSinglePrecision) {
 }
 
 TEST_P(SyrkBatchStrideTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
 }
 
 INSTANTIATE_TEST_SUITE_P(SyrkBatchStrideTestSuite, SyrkBatchStrideTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

@@ -94,7 +94,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 oneapi::mkl::blas::column_major::gemmt(main_queue, upper_lower, transa, transb, n,
                                                        k, alpha, A_buffer, lda, B_buffer, ldb, beta,
                                                        C_buffer, ldc);
@@ -108,15 +108,15 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemmt, upper_lower,
-                                   transa, transb, n, k, alpha, A_buffer, lda, B_buffer, ldb, beta,
-                                   C_buffer, ldc);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemmt,
+                                        upper_lower, transa, transb, n, k, alpha, A_buffer, lda,
+                                        B_buffer, ldb, beta, C_buffer, ldc);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemmt, upper_lower,
-                                   transa, transb, n, k, alpha, A_buffer, lda, B_buffer, ldb, beta,
-                                   C_buffer, ldc);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemmt,
+                                        upper_lower, transa, transb, n, k, alpha, A_buffer, lda,
+                                        B_buffer, ldb, beta, C_buffer, ldc);
                 break;
             default: break;
         }
@@ -184,6 +184,8 @@ TEST_P(GemmtTests, RealSinglePrecision) {
 }
 
 TEST_P(GemmtTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -298,6 +300,8 @@ TEST_P(GemmtTests, ComplexSinglePrecision) {
 }
 
 TEST_P(GemmtTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0);
     std::complex<double> beta(3.0);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
@@ -376,7 +380,7 @@ TEST_P(GemmtTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(GemmtTestSuite, GemmtTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

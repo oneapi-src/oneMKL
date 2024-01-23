@@ -89,8 +89,9 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
             queue, left_right, trans, m, n, k, lda, ldc);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ormrq_scratchpad_size<fp>,
-                           left_right, trans, m, n, k, lda, ldc);
+        TEST_RUN_LAPACK_CT_SELECT(queue,
+                                  scratchpad_size = oneapi::mkl::lapack::ormrq_scratchpad_size<fp>,
+                                  left_right, trans, m, n, k, lda, ldc);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -103,8 +104,8 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::side left_right, oneapi::mkl
         oneapi::mkl::lapack::ormrq(queue, left_right, trans, m, n, k, A_dev, lda, tau_dev, C_dev,
                                    ldc, scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_CT_SELECT(queue, oneapi::mkl::lapack::ormrq, left_right, trans, m, n, k, A_dev,
-                           lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size);
+        TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::mkl::lapack::ormrq, left_right, trans, m, n, k,
+                                  A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 
@@ -174,8 +175,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::side left_right,
             queue, left_right, trans, m, n, k, lda, ldc);
 #else
         int64_t scratchpad_size;
-        TEST_RUN_CT_SELECT(queue, scratchpad_size = oneapi::mkl::lapack::ormrq_scratchpad_size<fp>,
-                           left_right, trans, m, n, k, lda, ldc);
+        TEST_RUN_LAPACK_CT_SELECT(queue,
+                                  scratchpad_size = oneapi::mkl::lapack::ormrq_scratchpad_size<fp>,
+                                  left_right, trans, m, n, k, lda, ldc);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -192,9 +194,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::mkl::side left_right,
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_CT_SELECT(queue, func_event = oneapi::mkl::lapack::ormrq, left_right, trans, m, n,
-                           k, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev, scratchpad_size,
-                           std::vector<sycl::event>{ in_event });
+        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::mkl::lapack::ormrq, left_right, trans,
+                                  m, n, k, A_dev, lda, tau_dev, C_dev, ldc, scratchpad_dev,
+                                  scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

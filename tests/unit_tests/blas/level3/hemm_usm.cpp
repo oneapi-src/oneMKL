@@ -95,7 +95,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::hemm(main_queue, left_right, upper_lower, m,
                                                              n, alpha, A.data(), lda, B.data(), ldb,
                                                              beta, C.data(), ldc, dependencies);
@@ -110,15 +110,15 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::hemm, left_right,
-                                   upper_lower, m, n, alpha, A.data(), lda, B.data(), ldb, beta,
-                                   C.data(), ldc, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::hemm,
+                                        left_right, upper_lower, m, n, alpha, A.data(), lda,
+                                        B.data(), ldb, beta, C.data(), ldc, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::hemm, left_right,
-                                   upper_lower, m, n, alpha, A.data(), lda, B.data(), ldb, beta,
-                                   C.data(), ldc, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::hemm, left_right,
+                                        upper_lower, m, n, alpha, A.data(), lda, B.data(), ldb,
+                                        beta, C.data(), ldc, dependencies);
                 break;
             default: break;
         }
@@ -165,6 +165,8 @@ TEST_P(HemmUsmTests, ComplexSinglePrecision) {
                                                 72, 27, 101, 102, 103, alpha, beta));
 }
 TEST_P(HemmUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -183,7 +185,7 @@ TEST_P(HemmUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(HemmUsmTestSuite, HemmUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 

@@ -94,7 +94,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
+            case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::iamin(main_queue, N, x.data(), incx,
                                                               result_p, dependencies);
                 break;
@@ -107,13 +107,13 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::column_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::iamin, N, x.data(),
-                                   incx, result_p, dependencies);
+            case oneapi::mkl::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::iamin, N,
+                                        x.data(), incx, result_p, dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
-                TEST_RUN_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::iamin, N, x.data(),
-                                   incx, result_p, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::iamin, N,
+                                        x.data(), incx, result_p, dependencies);
                 break;
             default: break;
         }
@@ -152,6 +152,8 @@ TEST_P(IaminUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3));
 }
 TEST_P(IaminUsmTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 1));
     EXPECT_TRUEORSKIP((test<double, usm::alloc::device>(std::get<0>(GetParam()),
@@ -169,6 +171,8 @@ TEST_P(IaminUsmTests, ComplexSinglePrecision) {
         test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, -3));
 }
 TEST_P(IaminUsmTests, ComplexDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
+
     EXPECT_TRUEORSKIP(
         test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));
     EXPECT_TRUEORSKIP(
@@ -181,7 +185,7 @@ TEST_P(IaminUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(IaminUsmTestSuite, IaminUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::column_major,
+                                            testing::Values(oneapi::mkl::layout::col_major,
                                                             oneapi::mkl::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
