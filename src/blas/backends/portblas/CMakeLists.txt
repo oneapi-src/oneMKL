@@ -51,17 +51,13 @@ if(PORTBLAS_TUNING_TARGET)
   # for tuned portBLAS configurations and sets sycl-target.
   if(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_CPU")
     set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
-    set(PORTBLAS_TUNING_TARGET "DEFAULT_CPU")
+    set(PORTBLAS_TUNING_TARGET "")
     target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
       -fsycl-targets=spir64_x86_64 -fsycl-unnamed-lambda)
     target_link_options(ONEMKL::SYCL::SYCL INTERFACE
       -fsycl-targets=spir64_x86_64)
   elseif(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_GPU")
     set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
-    target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
-      -fsycl-targets=spir64 -fsycl-unnamed-lambda)
-    target_link_options(ONEMKL::SYCL::SYCL INTERFACE
-      -fsycl-targets=spir64)
   elseif(PORTBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
     set(ENABLE_PORTBLAS_BACKEND_AMD_GPU "ON" CACHE INTERNAL "")
     if (is_dpcpp)
