@@ -20,7 +20,9 @@
 set(LIB_NAME onemkl_blas_portblas)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
-option(PORTBLAS_TUNING_TARGET "Set a TUNING_TARGET for portBLAS" "")
+if(NOT DEFINED PORTBLAS_TUNING_TARGET)
+  option(PORTBLAS_TUNING_TARGET "Set a TUNING_TARGET for portBLAS" "")
+endif()
 
 # Parse compiler flags and return a list of SYCL targets
 # The list is empty if no targets are set
@@ -45,11 +47,15 @@ if(NUM_TARGETS EQUAL 0)
 endif()
 
 if(PORTBLAS_TUNING_TARGET)
-  # Allow the user to manually enable a specific device type without relying on the sycl target.
+  # Allow the user to manually enable a specific device type 
+  # for tuned portBLAS configurations and sets sycl-target.
   if(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_CPU")
-    # Allow the user to enable only the INTEL_CPU backend even though portBLAS cannot be tuned for INTEL_CPU.
     set(ENABLE_PORTBLAS_BACKEND_INTEL_CPU "ON" CACHE INTERNAL "")
     set(PORTBLAS_TUNING_TARGET "")
+    target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=spir64_x86_64 -fsycl-unnamed-lambda)
+    target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+      -fsycl-targets=spir64_x86_64)
   elseif(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_GPU")
     set(ENABLE_PORTBLAS_BACKEND_INTEL_GPU "ON" CACHE INTERNAL "")
   elseif(PORTBLAS_TUNING_TARGET STREQUAL "AMD_GPU")
@@ -57,7 +63,7 @@ if(PORTBLAS_TUNING_TARGET)
     if (is_dpcpp)
       target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda
-      -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
+        -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
       target_link_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=${HIP_TARGETS})
     else()
