@@ -28,6 +28,7 @@ add_library(${LIB_OBJ} OBJECT
   mklcpu_operations.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>
 )
+add_dependencies(onemkl_backend_libs_sparse_blas ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include

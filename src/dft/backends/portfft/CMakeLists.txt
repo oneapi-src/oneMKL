@@ -62,6 +62,7 @@ add_library(${LIB_OBJ} OBJECT
   commit.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_portfft_wrappers.cpp>
 )
+add_dependencies(onemkl_backend_libs_dft ${LIB_NAME})
 
 find_package(portfft QUIET)
 if (NOT portfft_FOUND)
