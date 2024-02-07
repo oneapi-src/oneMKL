@@ -17,6 +17,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
+add_custom_target(onemkl_backend_libs_sparse_blas)
+add_dependencies(onemkl_backend_libs onemkl_backend_libs_sparse_blas)
+
 if(ENABLE_MKLCPU_BACKEND)
   add_subdirectory(mklcpu)
 endif()

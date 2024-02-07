@@ -32,6 +32,7 @@ set(SOURCES rocblas_level1.cpp
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: rocblas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
+add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
