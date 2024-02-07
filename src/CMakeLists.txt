@@ -33,6 +33,7 @@ set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU OFF CACHE INTERNAL "")
 set(ONEMKL_GENERATED_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 # Build loader and backends for each domain
+add_custom_target(onemkl_backend_libs)
 foreach(domain ${TARGET_DOMAINS})
   add_subdirectory(${domain})
 endforeach()
@@ -51,6 +52,12 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
 # Add recipe for onemkl loader library
 if(BUILD_SHARED_LIBS)
   add_library(onemkl SHARED)
+
+  # The loader library depends on all the backend libraries as it uses
+  # dlopen to load them at runtime.
+  # Use add_dependencies to ensure that all the backend libraries are
+  # (re-)built when compiling the loader or runtime binaries.
+  add_dependencies(onemkl onemkl_backend_libs)
 
   target_include_directories(onemkl
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

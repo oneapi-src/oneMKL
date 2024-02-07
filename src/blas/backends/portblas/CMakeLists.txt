@@ -175,6 +175,7 @@ set(SOURCES
   $<$<BOOL:${BUILD_SHARED_LIBS}>: portblas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
+add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
 
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
