@@ -1007,28 +1007,32 @@ void dotu(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<double>,
           sycl::buffer<std::complex<double>, 1> &result);
 
 void iamax(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int64_t incx,
-           sycl::buffer<std::int64_t, 1> &result);
+           sycl::buffer<std::int64_t, 1> &result, index_base base=index_base::zero);
 
 void iamax(sycl::queue &queue, std::int64_t n, sycl::buffer<double, 1> &x, std::int64_t incx,
-           sycl::buffer<std::int64_t, 1> &result);
+           sycl::buffer<std::int64_t, 1> &result, index_base base=index_base::zero);
 
 void iamax(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<float>, 1> &x,
-           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result);
+           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result,
+           index_base base=index_base::zero);
 
 void iamax(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<double>, 1> &x,
-           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result);
+           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result,
+           index_base base=index_base::zero);
 
 void iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int64_t incx,
-           sycl::buffer<std::int64_t, 1> &result);
+           sycl::buffer<std::int64_t, 1> &result, index_base base=index_base::zero);
 
 void iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<double, 1> &x, std::int64_t incx,
-           sycl::buffer<std::int64_t, 1> &result);
+           sycl::buffer<std::int64_t, 1> &result, index_base base=index_base::zero);
 
 void iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<float>, 1> &x,
-           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result);
+           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result,
+           index_base base=index_base::zero);
 
 void iamin(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<double>, 1> &x,
-           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result);
+           std::int64_t incx, sycl::buffer<std::int64_t, 1> &result,
+           index_base base=index_base::zero);
 
 void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<float>, 1> &x,
           std::int64_t incx, sycl::buffer<float, 1> &result);
