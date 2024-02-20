@@ -34,6 +34,7 @@ list(APPEND CMAKE_PREFIX_PATH
 
 find_package(HIP QUIET)
 find_package(rocblas REQUIRED)
+set(ROCBLAS_VERSION ${rocblas_VERSION})
 
 # this is work around to avoid duplication half creation in both HIP and SYCL
 add_compile_definitions(HIP_NO_HALF)
@@ -47,6 +48,8 @@ find_package_handle_standard_args(rocBLAS
       HIP_LIBRARIES
       ROCBLAS_INCLUDE_DIR
       ROCBLAS_LIBRARIES
+    VERSION_VAR
+      ROCBLAS_VERSION
 )
 # OPENCL_INCLUDE_DIR
 if(NOT TARGET ONEMKL::rocBLAS::rocBLAS)
