@@ -286,7 +286,7 @@ Building for oneMKL
 
      # Inside <path to onemkl>
      mkdir build && cd build
-     cmake .. [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>/bin/dpcpp]  # required only if dpcpp is not found in environment variable PATH
+     cmake .. [-DCMAKE_CXX_COMPILER=<path_to_icpx_compiler>/bin/icpx]    # required only if icpx is not found in environment variable PATH
               [-DCMAKE_C_COMPILER=<path_to_icx_compiler>/bin/icx]        # required only if icx is not found in environment variable PATH
               [-DMKL_ROOT=<mkl_install_prefix>]                          # required only if environment variable MKLROOT is not set
               [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]          # required only for testing
@@ -301,7 +301,7 @@ Building for oneMKL
 
      # Inside <path to onemkl>
      md build && cd build
-     cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_dpcpp_compiler>\bin\dpcpp]  # required only if dpcpp is not found in environment variable PATH
+     cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_icx_compiler>\bin\icx]      # required only if icx is not found in environment variable PATH
                        [-DCMAKE_C_COMPILER=<path_to_icx_compiler>\bin\icx]        # required only if icx is not found in environment variable PATH
                        [-DMKL_ROOT=<mkl_install_prefix>]                          # required only if environment variable MKLROOT is not set
                        [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]          # required only for testing
@@ -538,13 +538,13 @@ definitions in 2 ways:
 Build Options
 ^^^^^^^^^^^^^
 
-When building oneMKL the SYCL implementation can be determined, by setting the
+When building oneMKL the SYCL implementation can be specified by setting the
 ``ONEMKL_SYCL_IMPLEMENTATION`` option. Possible values are:
 
 * ``dpc++`` (default) for the
   `Intel(R) oneAPI DPC++ Compiler <https://software.intel.com/en-us/oneapi/dpc-compiler>`_
-  and for the ``clang++`` from
-  `Intel project for LLVM* technology <https://github.com/intel/llvm/releases>`_ compilers.
+  and for the
+  `oneAPI DPC++ Compiler <https://github.com/intel/llvm>`_ compilers.
 * ``hipsycl`` for the `hipSYCL <https://github.com/illuhad/hipSYCL>`_ SYCL implementation.
 
 All options specified in the Conan section are available to CMake. You can
