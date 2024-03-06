@@ -80,7 +80,7 @@ public:
             handle.commit(this->get_queue());
         }
         catch (const std::exception& mkl_exception) {
-            // Catching the real MKL exception causes headaches with naming.
+            // Catching the real Intel oneMKL exception causes headaches with naming.
             throw mkl::exception("dft/backends/mklgpu", "commit", mkl_exception.what());
         }
     }
