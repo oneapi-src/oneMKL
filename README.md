@@ -169,136 +169,168 @@ Supported compilers include:
             <th>Domain</th>
             <th>Backend</th>
             <th>Library</th>
-            <th>Supported Link Type</th>
             <th>Supported Compiler</th>		
+            <th>Supported Link Type</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td rowspan=6 align="center">BLAS</td>
-            <td align="center">x86 CPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td rowspan=9 align="center">BLAS</td>
+            <td rowspan=3 align="center">x86 CPU</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</br>hipSYCL</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++, hipSYCL</td>
         </tr>
         <tr>
-            <td align="center">Intel GPU</td>
-            <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++</td>
-        </tr>
-        <tr>
-            <td align="center">NVIDIA GPU</td>
-            <td align="center">NVIDIA cuBLAS</td>
-            <td align="center">Dynamic, Static</td>
-            <td align="center">Open DPC++, hipSYCL</td>
-        </tr>
-        <tr>
-            <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
+            <td align="center">Intel DPC++</br>Open DPC++</br>hipSYCL</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++, hipSYCL</td>
         </tr>
-	    <tr >
-            <td align="center">AMD GPU</td>
-            <td align="center">AMD rocBLAS</td>
-            <td align="center">Dynamic, Static</td>
-            <td align="center">Open DPC++, hipSYCL</td>
-        </tr>
-	    <tr >
-            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
+        <tr>
             <td align="center">portBLAS</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">Intel GPU</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">portBLAS</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuBLAS</td>
+            <td align="center">Open DPC++</br>hipSYCL</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">portBLAS</td>
+            <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">AMD GPU</td>
+            <td align="center">AMD rocBLAS</td>
+            <td align="center">Open DPC++</br>hipSYCL</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">portBLAS</td>
+            <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=4 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
-            <td align="center">Dynamic, Static</td>
+            <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuSOLVER</td>
-            <td align="center">Dynamic, Static</td>
             <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">AMD GPU</td>
             <td align="center">AMD rocSOLVER</td>
-            <td align="center">Dynamic, Static</td>
             <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=4 align="center">RNG</td>
             <td align="center">x86 CPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</br>hipSYCL</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++, hipSYCL</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
-            <td align="center">Dynamic, Static</td>
+            <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuRAND</td>
+            <td align="center">Open DPC++</br>hipSYCL</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Open DPC++, hipSYCL</td>
         </tr>
         <tr>
             <td align="center">AMD GPU</td>
             <td align="center">AMD rocRAND</td>
+            <td align="center">Open DPC++</br>hipSYCL</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Open DPC++, hipSYCL</td>
         </tr>
         <tr>
-            <td rowspan=5 align="center">DFT</td>
-            <td align="center">Intel GPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
-            <td align="center">Dynamic, Static</td>
+            <td rowspan=8 align="center">DFT</td>
+            <td rowspan=2 align="center">x86 CPU</td>
+            <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
-        </tr>
-        <tr>
-            <td align="center">x86 CPU</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++</td>
         </tr>
         <tr>
-            <td align="center">NVIDIA GPU</td>
-            <td align="center">NVIDIA cuFFT</td>
-            <td align="center">Dynamic, Static</td>
-            <td align="center">Open DPC++</td>
-        </tr>
-        <tr>
-            <td align="center">AMD GPU</td>
-            <td align="center">AMD rocFFT</td>
-            <td align="center">Dynamic, Static</td>
-            <td align="center">Open DPC++</td>
-        </tr>
-        <tr>
-            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
             <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
+            <td align="center">Intel DPC++</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">IntelDPC++</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">Intel GPU</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
+            <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuFFT</td>
+            <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
+            <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=2 align="center">AMD GPU</td>
+            <td align="center">AMD rocFFT</td>
+            <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
+            <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">SPARSE_BLAS</td>
-            <td align="center">Intel GPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
-            <td align="center">Dynamic, Static</td>
+            <td align="center">x86 CPU</td>
+            <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td align="center">x86 CPU</td>
+            <td align="center">Intel GPU</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++</td>
         </tr>
     </tbody>
 </table>
@@ -311,52 +343,54 @@ Supported compilers include:
             <th>Domain</th>
             <th>Backend</th>
             <th>Library</th>
-            <th>Supported Link Type</th>
             <th>Supported Compiler</th>	
+            <th>Supported Link Type</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td rowspan=3 align="center">BLAS</td>
-            <td align="center">x86 CPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td rowspan=2 align="center">x86 CPU</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++</td>
+        </tr>
+        <tr>
+            <td align="center">NETLIB LAPACK</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
-            <td align="center">Dynamic, Static</td>
+            <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
-        </tr>
-        <tr>
-            <td align="center">x86 CPU</td>
-            <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
-            <td align="center">Dynamic, Static</td>
+            <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">RNG</td>
             <td align="center">x86 CPU</td>
-            <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
+            <td align="center">Intel(R) oneMKL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
-            <td align="center">Intel DPC++, Open DPC++</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
-            <td align="center">Dynamic, Static</td>
+            <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
+            <td align="center">Dynamic, Static</td>
         </tr>
     </tbody>
 </table>
