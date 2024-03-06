@@ -79,7 +79,7 @@ public:
 
     inline std::int64_t get_workspace_external_bytes() {
         return external_workspace_helper_.get_rqd_workspace_bytes(*this);
-    };
+    }
 
     // set_workspace should be overridden for any backend that enables external workspaces.
     // If these are overridden, get_workspace_external_bytes_impl must also be overridden.
@@ -89,10 +89,10 @@ public:
     // but the required workspace size will always be zero, and any given workspace will not actually be used.
     virtual void set_workspace(scalar_type *usm_workspace) {
         external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
-    };
+    }
     virtual void set_workspace(sycl::buffer<scalar_type> &buffer_workspace) {
         external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
-    };
+    }
 
     virtual void forward_ip_cc(descriptor_type &desc, sycl::buffer<fwd_type, 1> &inout) = 0;
     virtual void forward_ip_rr(descriptor_type &desc, sycl::buffer<scalar_type, 1> &inout_re,
@@ -176,7 +176,7 @@ protected:
     // This must be reimplemented for backends that support external workspaces.
     virtual std::int64_t get_workspace_external_bytes_impl() {
         return 0;
-    };
+    }
 };
 
 } // namespace oneapi::mkl::dft::detail

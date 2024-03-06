@@ -93,7 +93,7 @@ public:
 
     const dft_values<prec, dom>& get_values() const noexcept {
         return values_;
-    };
+    }
 
     void set_workspace(scalar_type* usm_workspace);
 
