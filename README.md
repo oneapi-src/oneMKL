@@ -18,49 +18,46 @@ oneMKL is part of [oneAPI](https://oneapi.io).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=13 align="center">oneMKL interface</td>
-            <td rowspan=13 align="center">oneMKL selector</td>
-            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
-            <td align="center">x86 CPU</td>
+            <td rowspan=12 align="center">oneMKL interface</td>
+            <td rowspan=12 align="center">oneMKL selector</td>
+            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library (oneMKL)</a></td>
+            <td align="center">x86 CPU, Intel GPU</td>
+        </tr>
         </tr>
         <tr>
-            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel GPU</td>
-            <td align="center">Intel GPU</td>
-        </tr>
-        <tr>
-            <td align="center"><a href="https://developer.nvidia.com/cublas"> NVIDIA cuBLAS</a> for NVIDIA GPU </td>
+            <td align="center"><a href="https://developer.nvidia.com/cublas"> NVIDIA cuBLAS</a></td>
             <td align="center">NVIDIA GPU</td>
         </tr>
 	<tr>
-            <td align="center"><a href="https://developer.nvidia.com/cusolver"> NVIDIA cuSOLVER</a> for NVIDIA GPU </td>
+            <td align="center"><a href="https://developer.nvidia.com/cusolver"> NVIDIA cuSOLVER</a></td>
             <td align="center">NVIDIA GPU</td>
 	</tr>
         <tr>
-            <td align="center"><a href="https://developer.nvidia.com/curand"> NVIDIA cuRAND</a> for NVIDIA GPU </td>
+            <td align="center"><a href="https://developer.nvidia.com/curand"> NVIDIA cuRAND</a></td>
             <td align="center">NVIDIA GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://developer.nvidia.com/cufft"> NVIDIA cuFFT</a> for NVIDIA GPU </td>
+            <td align="center"><a href="https://developer.nvidia.com/cufft"> NVIDIA cuFFT</a></td>
             <td align="center">NVIDIA GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for x86 CPU </td>
+            <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> </td>
             <td align="center">x86 CPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://rocblas.readthedocs.io/en/rocm-4.5.2/"> AMD rocBLAS</a> for AMD GPU </td>
+            <td align="center"><a href="https://rocblas.readthedocs.io/en/rocm-4.5.2/"> AMD rocBLAS</a></td>
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocSOLVER"> AMD rocSOLVER</a> for AMD GPU </td>
+            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocSOLVER"> AMD rocSOLVER</a></td>
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocRAND"> AMD rocRAND</a> for AMD GPU </td>
+            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocRAND"> AMD rocRAND</a></td>
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocFFT">AMD rocFFT</a> for AMD GPU </td>
+            <td align="center"><a href="https://github.com/ROCmSoftwarePlatform/rocFFT">AMD rocFFT</a></td>
             <td align="center">AMD GPU</td>
         </tr>
         <tr>
