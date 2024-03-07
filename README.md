@@ -91,56 +91,56 @@ There are two oneMKL selector layer implementations:
 
 - **Run-time dispatching**: The application is linked with the oneMKL library and the required backend is loaded at run-time based on device vendor (all libraries should be dynamic).
 
-Example of app.cpp with run-time dispatching:
-
-```cpp
-#include "oneapi/mkl.hpp"
-
-...
-cpu_dev = sycl::device(sycl::cpu_selector());
-gpu_dev = sycl::device(sycl::gpu_selector());
-
-sycl::queue cpu_queue(cpu_dev);
-sycl::queue gpu_queue(gpu_dev);
-
-oneapi::mkl::blas::column_major::gemm(cpu_queue, transA, transB, m, ...);
-oneapi::mkl::blas::column_major::gemm(gpu_queue, transA, transB, m, ...);
-```
-How to build an application with run-time dispatching:
-
-if OS is Linux, use icpx compiler. If OS is Windows, use icx compiler.
-Linux example:
-```cmd
-$> icpx -fsycl –I$ONEMKL/include app.cpp
-$> icpx -fsycl app.o –L$ONEMKL/lib –lonemkl
-```
+  Example of app.cpp with run-time dispatching:
+  
+  ```cpp
+  #include "oneapi/mkl.hpp"
+  
+  ...
+  cpu_dev = sycl::device(sycl::cpu_selector());
+  gpu_dev = sycl::device(sycl::gpu_selector());
+  
+  sycl::queue cpu_queue(cpu_dev);
+  sycl::queue gpu_queue(gpu_dev);
+  
+  oneapi::mkl::blas::column_major::gemm(cpu_queue, transA, transB, m, ...);
+  oneapi::mkl::blas::column_major::gemm(gpu_queue, transA, transB, m, ...);
+  ```
+  How to build an application with run-time dispatching:
+  
+  if OS is Linux, use icpx compiler. If OS is Windows, use icx compiler.
+  Linux example:
+  ```cmd
+  $> icpx -fsycl –I$ONEMKL/include app.cpp
+  $> icpx -fsycl app.o –L$ONEMKL/lib –lonemkl
+  ```
 
 - **Compile-time dispatching**: The application uses a templated backend selector API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
 
-Example of app.cpp with compile-time dispatching:
-
-```cpp
-#include "oneapi/mkl.hpp"
-
-...
-cpu_dev = sycl::device(sycl::cpu_selector());
-gpu_dev = sycl::device(sycl::gpu_selector());
-
-sycl::queue cpu_queue(cpu_dev);
-sycl::queue gpu_queue(gpu_dev);
-
-oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector(cpu_queue);
-
-oneapi::mkl::blas::column_major::gemm(cpu_selector, transA, transB, m, ...);
-oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
-```
-How to build an application with compile-time dispatching:
-
-```cmd
-$> clang++ -fsycl –I$ONEMKL/include app.cpp
-$> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_cublas
-```
-
+  Example of app.cpp with compile-time dispatching:
+  
+  ```cpp
+  #include "oneapi/mkl.hpp"
+  
+  ...
+  cpu_dev = sycl::device(sycl::cpu_selector());
+  gpu_dev = sycl::device(sycl::gpu_selector());
+  
+  sycl::queue cpu_queue(cpu_dev);
+  sycl::queue gpu_queue(gpu_dev);
+  
+  oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector(cpu_queue);
+  
+  oneapi::mkl::blas::column_major::gemm(cpu_selector, transA, transB, m, ...);
+  oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
+  ```
+  How to build an application with compile-time dispatching:
+  
+  ```cmd
+  $> clang++ -fsycl –I$ONEMKL/include app.cpp
+  $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_cublas
+  ```
+  
 *Refer to [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html) for the choice between `icpx/icx` and `clang++` compilers.*
 
 #### Device API
