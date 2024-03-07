@@ -379,6 +379,18 @@ With:
 
    -DENABLE_CURAND_BACKEND=True   \
 
+To build with the cuFFT backend instead simply replace:
+
+.. code-block:: bash
+
+   -DENABLE_CUBLAS_BACKEND=True   \
+
+With:
+
+.. code-block:: bash
+
+   -DENABLE_CUFFT_BACKEND=True   \
+
 
 Building for ROCm (with hipSYCL)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -457,6 +469,20 @@ With:
    -DENABLE_ROCRAND_BACKEND=True   \
    -DTARGET_DOMAINS=rng
 
+To build with the rocFFT backend instead simply replace:
+
+.. code-block:: bash\
+
+   -DENABLE_ROCBLAS_BACKEND=True   \
+   -DTARGET_DOMAINS=blas
+
+With:
+
+.. code-block:: bash
+
+   -DENABLE_ROCFFT_BACKEND=True   \
+   -DTARGET_DOMAINS=dft
+
 To build with the rocSOLVER backend instead simply replace:
 
 .. code-block:: bash\
@@ -481,11 +507,13 @@ A few often-used architectures are listed below:
 
    * - Architecture
      - AMD GPU name
+   * - gfx90a
+     - AMD Instinct(TM) MI210/250/250X Accellerator
+   * - gfx908
+     - AMD Instinct(TM) MI 100 Accelerator
    * - gfx906
      - | AMD Radeon Instinct(TM) MI50/60 Accelerator
        | AMD Radeon(TM) (Pro) VII Graphics Card
-   * - gfx908
-     - AMD Instinct(TM) MI 100 Accelerator
    * - gfx900
      - | Radeon Instinct(TM) MI 25 Accelerator
        | Radeon(TM) RX Vega 64/56 Graphics
@@ -534,6 +562,48 @@ definitions in 2 ways:
   `DPC++ User Manual <https://intel.github.io/llvm-docs/UsersManual.html>`_
   for more information on ``-fsycl-targets``.
 
+Building for portFFT
+^^^^^^^^^^^^^^^^^^^^^^
+
+Note the portFFT backend is experimental and currently only supports a
+subset of the operations and features.
+The portFFT backend uses the `portFFT <https://github.com/codeplaysoftware/portFFT>`_
+project as a header-only library.
+
+* On Linux*
+
+.. code-block:: bash
+
+   # Inside <path to onemkl>
+   mkdir build && cd build
+   cmake .. -DENABLE_PORTFFT_BACKEND=ON \
+            -DENABLE_MKLCPU_BACKEND=OFF  \
+            -DENABLE_MKLGPU_BACKEND=OFF  \
+            -DTARGET_DOMAINS=dft \
+            [-DPORTFFT_REGISTERS_PER_WI=128] \ # Example portFFT tuning parameter
+            [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \ # required only for testing
+            [-DPORTFFT_DIR=<path to portBLAS install directory>]
+   cmake --build .
+   ./bin/test_main_blas_ct
+   cmake --install . --prefix <path_to_install_dir>
+
+
+portFFT will be downloaded automatically if not found.
+
+By default, the portFFT backend is not tuned for any specific device. The tuning flags are
+detailed in the `portFFT <https://github.com/codeplaysoftware/portFFT>`_ repository.
+The tuning parameters can be set at configuration time,
+with the above example showing how to set the tuning parameter
+``PORTFFT_REGISTERS_PER_WI``. Note that some tuning configurations may be incompatible
+with some targets.
+
+The portFFT library is compiled using the same ``-fsycl-targets`` as specified
+by the ``CMAKE_CXX_FLAGS``. If none are found, it will compile for
+``-fsycl-targets=nvptx64-nvidia-cuda,spir64``. To enable HIP targets,
+``HIP_TARGETS`` must be specified. See
+`DPC++ User Manual <https://intel.github.io/llvm-docs/UsersManual.html>`_
+for more information on ``-fsycl-targets``.
+
 
 Build Options
 ^^^^^^^^^^^^^
@@ -581,6 +651,10 @@ CMake.
      - True, False
      - False     
    * - *Not Supported*
+     - ENABLE_CUFFT_BACKEND
+     - True, False
+     - False     
+   * - *Not Supported*
      - ENABLE_CURAND_BACKEND
      - True, False
      - False     
@@ -592,12 +666,20 @@ CMake.
      - ENABLE_ROCBLAS_BACKEND
      - True, False
      - False     
+   * - *Not Supported*
+     - ENABLE_ROCFFT_BACKEND
+     - True, False
+     - False    
    * - enable_mklcpu_thread_tbb
      - ENABLE_MKLCPU_THREAD_TBB
      - True, False
      - True      
    * - *Not Supported*
      - ENABLE_PORTBLAS_BACKEND
+     - True, False
+     - False      
+   * - *Not Supported*
+     - ENABLE_PORTFFT_BACKEND
      - True, False
      - False      
    * - build_functional_tests
