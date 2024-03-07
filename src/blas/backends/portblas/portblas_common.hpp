@@ -160,8 +160,8 @@ inline auto convert_to_portblas_type(ArgT... args) {
     return std::make_tuple(convert_to_portblas_type(args)...);
 }
 
-/** Throw an MKL unsuppored device exception if a certain argument
- *  type is found in the argument pack.
+/** Throw an unsupported_device exception if a certain argument type is found in
+ * the argument pack.
  *  
  *  @tparam CheckT is type to look for a template parameter pack.
  *  @tparam AspectVal is the device aspect required to support CheckT.
