@@ -582,9 +582,9 @@ project as a header-only library.
             -DTARGET_DOMAINS=dft \
             [-DPORTFFT_REGISTERS_PER_WI=128] \ # Example portFFT tuning parameter
             [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \ # required only for testing
-            [-DPORTFFT_DIR=<path to portBLAS install directory>]
+            [-DPORTFFT_DIR=<path to portFFT install directory>]
    cmake --build .
-   ./bin/test_main_blas_ct
+   ./bin/test_main_dft_ct
    cmake --install . --prefix <path_to_install_dir>
 
 
