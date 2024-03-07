@@ -460,41 +460,36 @@ To build with the rocRAND backend instead simply replace:
 .. code-block:: bash
 
    -DENABLE_ROCBLAS_BACKEND=True   \
-   -DTARGET_DOMAINS=blas
 
 With:
 
 .. code-block:: bash
 
    -DENABLE_ROCRAND_BACKEND=True   \
-   -DTARGET_DOMAINS=rng
 
 To build with the rocFFT backend instead simply replace:
 
 .. code-block:: bash\
 
    -DENABLE_ROCBLAS_BACKEND=True   \
-   -DTARGET_DOMAINS=blas
 
 With:
 
 .. code-block:: bash
 
    -DENABLE_ROCFFT_BACKEND=True   \
-   -DTARGET_DOMAINS=dft
 
 To build with the rocSOLVER backend instead simply replace:
 
 .. code-block:: bash\
 
    -DENABLE_ROCBLAS_BACKEND=True   \
-   -DTARGET_DOMAINS=blas
+
 With:
 
 .. code-block:: bash
 
    -DENABLE_ROCSOLVER_BACKEND=True   \
-   -DTARGET_DOMAINS=lapack
 
 **AMD GPU device architectures**  
 
