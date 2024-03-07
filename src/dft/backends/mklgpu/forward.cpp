@@ -35,9 +35,10 @@
 #include "oneapi/mkl/dfti.hpp"
 
 /**
-Note that in this file, the Intel MKL-GPU library's interface mirrors the interface
-of this OneMKL library. Consequently, the types under dft::TYPE are closed-source MKL types, 
-and types under dft::detail::TYPE are from this library.
+Note that in this file, the Intel oneMKL-GPU library's interface mirrors the
+interface of this OneMKL library. Consequently, the types under dft::TYPE are
+closed-source Intel oneMKL types, and types under dft::detail::TYPE are from
+this library.
 **/
 
 namespace oneapi::mkl::dft::mklgpu {
