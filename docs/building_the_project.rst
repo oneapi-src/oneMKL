@@ -379,13 +379,7 @@ With:
 
    -DENABLE_CURAND_BACKEND=True   \
 
-To build with the cuFFT backend instead simply replace:
-
-.. code-block:: bash
-
-   -DENABLE_CUBLAS_BACKEND=True   \
-
-With:
+The CuFFT backend can be enabled in a similar way to the CuBLAS backend, by setting the following CMake variable to `True`:
 
 .. code-block:: bash
 
@@ -467,13 +461,7 @@ With:
 
    -DENABLE_ROCRAND_BACKEND=True   \
 
-To build with the rocFFT backend instead simply replace:
-
-.. code-block:: bash\
-
-   -DENABLE_ROCBLAS_BACKEND=True   \
-
-With:
+The rocFFT backend can be enabled in a similar way to the rocBLAS backend, by setting the following CMake variable to `True`:
 
 .. code-block:: bash
 
