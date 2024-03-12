@@ -367,23 +367,13 @@ With the cuBLAS backend:
    ctest
    cmake --install . --prefix <path_to_install_dir>                        # required to have full package structure
 
-To build with the cuRAND backend instead simply replace:
+
+The CuFFT and CuRAND backends can be enabled in a similar way to the CuBLAS backend, by setting the corresponding CMake variable(s) to `True`:
 
 .. code-block:: bash
 
-   -DENABLE_CUBLAS_BACKEND=True   \
-
-With:
-
-.. code-block:: bash
-
+   -DENABLE_CUFFT_BACKEND=True    \
    -DENABLE_CURAND_BACKEND=True   \
-
-The CuFFT backend can be enabled in a similar way to the CuBLAS backend, by setting the following CMake variable to `True`:
-
-.. code-block:: bash
-
-   -DENABLE_CUFFT_BACKEND=True   \
 
 
 Building for ROCm (with hipSYCL)
@@ -449,34 +439,12 @@ With the AMD rocBLAS backend:
    ctest
    cmake --install . --prefix <path_to_install_dir>                        # required to have full package structure
 
-To build with the rocRAND backend instead simply replace:
+The rocRAND, rocFFT, and rocSOLVER backends can be enabled in a similar way to the rocBLAS backend, by setting the corresponding CMake variable(s) to `True`:
 
 .. code-block:: bash
 
-   -DENABLE_ROCBLAS_BACKEND=True   \
-
-With:
-
-.. code-block:: bash
-
-   -DENABLE_ROCRAND_BACKEND=True   \
-
-The rocFFT backend can be enabled in a similar way to the rocBLAS backend, by setting the following CMake variable to `True`:
-
-.. code-block:: bash
-
-   -DENABLE_ROCFFT_BACKEND=True   \
-
-To build with the rocSOLVER backend instead simply replace:
-
-.. code-block:: bash\
-
-   -DENABLE_ROCBLAS_BACKEND=True   \
-
-With:
-
-.. code-block:: bash
-
+   -DENABLE_ROCRAND_BACKEND=True     \
+   -DENABLE_ROCFFT_BACKEND=True      \
    -DENABLE_ROCSOLVER_BACKEND=True   \
 
 **AMD GPU device architectures**  
