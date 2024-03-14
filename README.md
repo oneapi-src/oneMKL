@@ -156,7 +156,7 @@ Supported domains include: BLAS, LAPACK, RNG, DFT, SPARSE_BLAS
 Supported compilers include:
 - [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler): Intel proprietary compiler that supports CPUs and Intel GPUs. Intel(R) oneAPI DPC++ Compiler will be referred to as "Intel DPC++" in the "Supported Compiler" column of the tables below.
 - [oneAPI DPC++ Compiler](https://github.com/intel/llvm): Open source compiler that supports CPUs and Intel, NVIDIA, and AMD GPUs. oneAPI DPC++ Compiler will be referred to as "Open DPC++" in the "Supported Compiler" column of the tables below.
-- [hipSYCL Compiler](https://github.com/illuhad/hipSYCL): Open source compiler that supports CPUs and Intel, NVIDIA, and AMD GPUs.
+- [AdaptiveCpp Compiler](https://github.com/AdaptiveCpp/AdaptiveCpp) (formerly known as hipSYCL): Open source compiler that supports CPUs and Intel, NVIDIA, and AMD GPUs.</br>**Note**: The source code and some documents in this project still use the previous name hipSYCL during this transition period.
 
 #### Linux*
 
@@ -175,12 +175,12 @@ Supported compilers include:
             <td rowspan=9 align="center">BLAS</td>
             <td rowspan=3 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</br>hipSYCL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">NETLIB LAPACK</td>
-            <td align="center">Intel DPC++</br>Open DPC++</br>hipSYCL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -202,7 +202,7 @@ Supported compilers include:
         <tr>
             <td rowspan=2 align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuBLAS</td>
-            <td align="center">Open DPC++</br>hipSYCL</td>
+            <td align="center">Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -213,7 +213,7 @@ Supported compilers include:
         <tr>
             <td rowspan=2 align="center">AMD GPU</td>
             <td align="center">AMD rocBLAS</td>
-            <td align="center">Open DPC++</br>hipSYCL</td>
+            <td align="center">Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -250,7 +250,7 @@ Supported compilers include:
             <td rowspan=4 align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</br>hipSYCL</td>
+            <td align="center">Intel DPC++</br>Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -262,13 +262,13 @@ Supported compilers include:
         <tr>
             <td align="center">NVIDIA GPU</td>
             <td align="center">NVIDIA cuRAND</td>
-            <td align="center">Open DPC++</br>hipSYCL</td>
+            <td align="center">Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">AMD GPU</td>
             <td align="center">AMD rocRAND</td>
-            <td align="center">Open DPC++</br>hipSYCL</td>
+            <td align="center">Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -501,11 +501,11 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
         </tr>
         <td rowspan=2> Linux* only </td>
         <td> NVIDIA GPU </td>
-        <td> oneAPI DPC++ Compiler <br> or <br> hipSYCL with CUDA backend and dependencies </td>
+        <td> oneAPI DPC++ Compiler <br> or <br> AdaptiveCpp with CUDA backend and dependencies </td>
         <td> No </td>
         <tr>
             <td> AMD GPU </td>
-            <td> oneAPI DPC++ Compiler <br> or <br> hipSYCL with ROCm backend and dependencies </td>
+            <td> oneAPI DPC++ Compiler <br> or <br> AdaptiveCpp with ROCm backend and dependencies </td>
             <td> No </td>
         </tr>
     </tbody>
@@ -531,7 +531,7 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [Ninja](https://ninja-build.org/) | 1.10.0 | Yes | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | Yes | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | No | *N/A* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
-[hipSYCL](https://github.com/illuhad/hipSYCL/) | later than [2cfa530](https://github.com/illuhad/hipSYCL/commit/2cfa5303fd88b8f84e539b5bb6ed41e49c6d6118) | No | *N/A* | *Installed by user* | [BSD-2-Clause License ](https://github.com/illuhad/hipSYCL/blob/develop/LICENSE)
+[AdaptiveCpp](https://github.com/AdaptiveCpp/AdaptiveCpp) | later than [2cfa530](https://github.com/AdaptiveCpp/AdaptiveCpp/commit/2cfa5303fd88b8f84e539b5bb6ed41e49c6d6118) | No | *N/A* | *Installed by user* | [BSD-2-Clause License ](https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/LICENSE)
 [oneAPI DPC++ Compiler binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [oneAPI DPC++ Compiler source for NVIDIA and AMD GPUs](https://github.com/intel/llvm) | Daily source releases | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | Yes | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
