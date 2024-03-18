@@ -869,6 +869,33 @@ typedef struct {
                                                   std::int64_t stride_b, sycl::half beta,
                                                   sycl::buffer<sycl::half, 1> &c, std::int64_t ldc,
                                                   std::int64_t stride_c, std::int64_t batch_size);
+    void (*column_major_hsgemm_batch_strided_sycl)(sycl::queue &queue, oneapi::mkl::transpose transa,
+                                                  oneapi::mkl::transpose transb, std::int64_t m,
+                                                  std::int64_t n, std::int64_t k, float alpha,
+                                                  sycl::buffer<sycl::half, 1> &a, std::int64_t lda,
+                                                  std::int64_t stride_a,
+                                                  sycl::buffer<sycl::half, 1> &b, std::int64_t ldb,
+                                                  std::int64_t stride_b, float beta,
+                                                  sycl::buffer<float, 1> &c, std::int64_t ldc,
+                                                  std::int64_t stride_c, std::int64_t batch_size);
+    void (*column_major_isgemm_batch_strided_sycl)(sycl::queue &queue, oneapi::mkl::transpose transa,
+                                                  oneapi::mkl::transpose transb, std::int64_t m,
+                                                  std::int64_t n, std::int64_t k, float alpha,
+                                                  sycl::buffer<std::int8_t, 1> &a, std::int64_t lda,
+                                                  std::int64_t stride_a,
+                                                  sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb,
+                                                  std::int64_t stride_b, float beta,
+                                                  sycl::buffer<float, 1> &c, std::int64_t ldc,
+                                                  std::int64_t stride_c, std::int64_t batch_size);
+    void (*column_major_iigemm_batch_strided_sycl)(sycl::queue &queue, oneapi::mkl::transpose transa,
+                                                  oneapi::mkl::transpose transb, std::int64_t m,
+                                                  std::int64_t n, std::int64_t k, float alpha,
+                                                  sycl::buffer<std::int8_t, 1> &a, std::int64_t lda,
+                                                  std::int64_t stride_a,
+                                                  sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb,
+                                                  std::int64_t stride_b, float beta,
+                                                  sycl::buffer<int32_t, 1> &c, std::int64_t ldc,
+                                                  std::int64_t stride_c, std::int64_t batch_size);
     void (*column_major_strsm_batch_strided_sycl)(
         sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
         oneapi::mkl::transpose trans, oneapi::mkl::diag unit_diag, std::int64_t m, std::int64_t n,

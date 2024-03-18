@@ -205,6 +205,66 @@ inline rocblas_side get_rocblas_side_mode(oneapi::mkl::side lr) {
     }
 }
 
+template <typename T>
+inline rocblas_datatype get_rocblas_datatype() {
+    static_assert(false);
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<rocblas_half>() {
+    return rocblas_datatype_f16_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<float>() {
+    return rocblas_datatype_f32_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<double>() {
+    return rocblas_datatype_f64_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<rocblas_float_complex>() {
+    return rocblas_datatype_f32_c;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<rocblas_double_complex>() {
+    return rocblas_datatype_f64_c;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<std::int8_t>() {
+    return rocblas_datatype_i8_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<std::uint8_t>() {
+    return rocblas_datatype_u8_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<std::int32_t>() {
+    return rocblas_datatype_i32_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<std::uint32_t>() {
+    return rocblas_datatype_u32_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<rocblas_bfloat16>() {
+    return rocblas_datatype_bf16_r;
+}
+
+template <>
+inline rocblas_datatype get_rocblas_datatype<std::complex<rocblas_bfloat16>>() {
+    return rocblas_datatype_bf16_c;
+}
+
 /*converting std::complex<T> to roc_<T>_complex 
              sycl::half      to rocblas_half*/
 template <typename T>
