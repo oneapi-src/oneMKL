@@ -434,11 +434,6 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
 <table>
     <thead>
         <tr align="center">
-            <th>Using Conan</th>
-            <th colspan=3> Using CMake Directly </th>
-        </tr>
-        <tr align="center">
-            <th> </th>
             <th> Functional Testing </th>
             <th> Build Only </th>
             <th>Documentation</th>
@@ -446,16 +441,13 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <tr>
-            <td colspan=4 align=center> Linux* : GNU* GCC 5.1 or higher <br> Windows* : MSVS* 2017 or MSVS* 2019 (version 16.5 or newer) </td>
+            <td colspan=3 align=center> Linux* : GNU* GCC 5.1 or higher <br> Windows* : MSVS* 2017 or MSVS* 2019 (version 16.5 or newer) </td>
         </tr>
         <tr>
-            <td rowspan=2> Python 3.6 or higher </td>
-            <td colspan=3 align=center> CMake </td>
             <tr>
                 <td colspan=3 align=center> Ninja (optional) </td>
             </tr>
             <tr>
-                <td rowspan=2> Conan C++ package manager </td>
                 <td> GNU* FORTRAN Compiler </td>
                 <td> - </td>
                 <td> Sphinx </td>
@@ -476,79 +468,34 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
             <th>Operating System</th>
             <th>Device</th>
             <th>Package</th>
-            <th>Installed by Conan</th>
         </tr>
     </thead>
     <tbody>
         <td rowspan=5> Linux*/Windows* </td>
         <td rowspan=2> x86 CPU </td>
         <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> oneAPI DPC++ Compiler </td>
-        <td> No</td>
         <tr>
             <td> Intel(R) oneAPI Math Kernel Library </td>
-            <td> Yes </td>
         </tr>
         <td rowspan=3> Intel GPU </td>
         <td> Intel(R) oneAPI DPC++ Compiler </td>
-        <td> No </td>
         <tr>
             <td> Intel GPU driver </td>
-            <td> No </td>
         </tr>
         <tr>
             <td> Intel(R) oneAPI Math Kernel Library </td>
-            <td> Yes </td>
         </tr>
         <td rowspan=2> Linux* only </td>
         <td> NVIDIA GPU </td>
         <td> oneAPI DPC++ Compiler <br> or <br> AdaptiveCpp with CUDA backend and dependencies </td>
-        <td> No </td>
         <tr>
             <td> AMD GPU </td>
             <td> oneAPI DPC++ Compiler <br> or <br> AdaptiveCpp with ROCm backend and dependencies </td>
-            <td> No </td>
         </tr>
     </tbody>
 </table>
 
-*If [Building with Conan](https://oneapi-src.github.io/oneMKL/building_the_project.html#building-with-conan), above packages marked as "No" must be installed manually.*
-
 *If [Building with CMake](https://oneapi-src.github.io/oneMKL/building_the_project.html#building-with-cmake), above packages must be installed manually.*
-
-#### Notice for Use of Conan Package Manager
-**LEGAL NOTICE: By downloading and using this container or script as applicable (the "Software Package") and the included software or software made available for download, you agree to the terms and conditions of the software license agreements for the Software Package, which may also include notices, disclaimers, or license terms for third party software (together, the "Agreements") included in this README file.**
-
-**If the Software Package is installed through a silent install, your download and use of the
-Software Package indicates your acceptance of the Agreements.**
-
-#### Product and Version Information:
-
-Product | Supported Version | Installed by Conan | Conan Package Source | Package Install Location on Linux* | License
-:--- | :--- | :--- | :--- | :--- | :---
-Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PSF](https://docs.python.org/3.6/license.html)
-[Conan C++ Package Manager](https://conan.io/downloads.html) | 1.24 or higher | No | *N/A* | *Installed by user* | [MIT](https://github.com/conan-io/conan/blob/develop/LICENSE.md)
-[CMake](https://cmake.org/download/) | 3.13 or higher | Yes<br>(3.15 or higher) | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
-[Ninja](https://ninja-build.org/) | 1.10.0 | Yes | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
-[GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | Yes | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
-[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | No | *N/A* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
-[AdaptiveCpp](https://github.com/AdaptiveCpp/AdaptiveCpp) | later than [2cfa530](https://github.com/AdaptiveCpp/AdaptiveCpp/commit/2cfa5303fd88b8f84e539b5bb6ed41e49c6d6118) | No | *N/A* | *Installed by user* | [BSD-2-Clause License ](https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/LICENSE)
-[oneAPI DPC++ Compiler binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
-[oneAPI DPC++ Compiler source for NVIDIA and AMD GPUs](https://github.com/intel/llvm) | Daily source releases | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
-[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | Yes | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
-[NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | No | *N/A* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
-[AMD rocBLAS](https://rocblas.readthedocs.io/en/rocm-4.5.2/) | 4.5 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocBLAS/blob/develop/LICENSE.md)
-[AMD rocRAND](https://github.com/ROCmSoftwarePlatform/rocRAND) | 5.1.0 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocRAND/blob/develop/LICENSE.txt)
-[AMD rocSOLVER](https://github.com/ROCmSoftwarePlatform/rocSOLVER) | 5.0.0 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocRAND/blob/develop/LICENSE.txt)
-[AMD rocFFT](https://github.com/ROCmSoftwarePlatform/rocFFT) | rocm-5.4.3 | No | *N/A* | *Installed by user* |[AMD License](https://github.com/ROCmSoftwarePlatform/rocFFT/blob/rocm-5.4.3/LICENSE.md)
-[NETLIB LAPACK](https://www.netlib.org/) | 3.7.1 | Yes | conan-community | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
-[Sphinx](https://www.sphinx-doc.org/en/master/) | 2.4.4 | Yes | pip | ~/.local/bin (or similar user local directory) | [BSD License](https://github.com/sphinx-doc/sphinx/blob/3.x/LICENSE)
-[portBLAS](https://github.com/codeplaysoftware/portBLAS) | 0.1 | No | *N/A* | *Installed by user* | [Apache License v2.0](https://github.com/codeplaysoftware/portBLAS/blob/master/LICENSE)
-[portFFT](https://github.com/codeplaysoftware/portFFT) | 0.1 | No | *N/A* | *Installed by user or automatically by cmake* | [Apache License v2.0](https://github.com/codeplaysoftware/portFFT/blob/master/LICENSE)
-
-
-*conan-center: https://api.bintray.com/conan/conan/conan-center*
-
-*conan-community: https://api.bintray.com/conan/conan-community/conan*
 
 ---
 
@@ -605,22 +552,6 @@ E.g. `cmake -Bbuild . -DCMAKE_CXX_COMPILER=icpx`.
 Having installed oneMKL Interfaces headers as `-I` instead on system includes (as `-isystem`) helps to resolve this problem. We use `INTERFACE_INCLUDE_DIRECTORIES` to add paths to installed oneMKL Interfaces headers (check `oneMKLTargets.cmake` in `lib/cmake` to find it). It's a known limitation that `INTERFACE_INCLUDE_DIRECTORIES` puts headers paths as system headers. To avoid that:
 - Option 1: Use CMake >=3.25. In this case oneMKL Interfaces will be built with `EXPORT_NO_SYSTEM` property set to `true` and you won't see the issue.
 - Option 2: If you use CMake < 3.25, set `PROPERTIES NO_SYSTEM_FROM_IMPORTED true` for your target. E.g: `set_target_properties(test PROPERTIES NO_SYSTEM_FROM_IMPORTED true)`.
-
-### Conan
-
-1. I am behind a proxy. How can Conan download dependencies from external network?
-   - `~/.conan/conan.conf` has a `[proxies]` section where you can add the list of proxies. For details refer to [Conan proxy settings](https://docs.conan.io/en/latest/reference/config_files/conan.conf.html#proxies).
-
-2. I get an error while installing packages via APT through Conan.
-    ```
-    dpkg: warning: failed to open configuration file '~/.dpkg.cfg' for reading: Permission denied
-    Setting up intel-oneapi-mkl-devel (2021.1-408.beta07) ...
-    E: Sub-process /usr/bin/dpkg returned an error code (1)
-    ```
-    - Although your user session has permissions to install packages via `sudo apt`, it does not have permissions to update debian package configuration, which throws an error code 1, causing a failure in `conan install` command.
-    - The package is most likely installed correctly and can be verified by:
-      1. Running the `conan install` command again.
-      2. Checking `/opt/intel/inteloneapi` for `mkl` and/or `tbb` directories.
 
 ---
 
