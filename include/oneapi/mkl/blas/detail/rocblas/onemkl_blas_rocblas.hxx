@@ -1869,13 +1869,13 @@ sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb,
 sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                        int64_t *n, int64_t *k, float *alpha, const sycl::half **a,
                        int64_t *lda, const sycl::half **b, int64_t *ldb, float *beta,
-                       sycl::half **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
+                       float **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
                        const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
                        int64_t *n, int64_t *k, float *alpha, const std::int8_t **a,
                        int64_t *lda, const std::int8_t **b, int64_t *ldb, float *beta,
-                       sycl::half **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
+                       float **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
                        const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,

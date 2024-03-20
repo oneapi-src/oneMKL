@@ -47,7 +47,7 @@ extern std::vector<sycl::device *> devices;
 
 namespace {
 
-template <typename fp>
+template <typename Ta, typename Tb, typename Tc, typename Ts>
 int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -76,8 +76,11 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     auto uatranspose = usm_allocator<oneapi::mkl::transpose, usm::alloc::shared, 64>(cxt, *dev);
     vector<oneapi::mkl::transpose, decltype(uatranspose)> transa(uatranspose), transb(uatranspose);
 
-    auto uafp = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
-    vector<fp, decltype(uafp)> alpha(uafp), beta(uafp);
+    auto uaTa = usm_allocator<Ta, usm::alloc::shared, 64>(cxt, *dev);
+    auto uaTb = usm_allocator<Tb, usm::alloc::shared, 64>(cxt, *dev);
+    auto uaTc = usm_allocator<Tc, usm::alloc::shared, 64>(cxt, *dev);
+    auto uaTs = usm_allocator<Ts, usm::alloc::shared, 64>(cxt, *dev);
+    vector<Ts, decltype(uaTs)> alpha(uaTs), beta(uaTs);
 
     m.resize(group_count);
     n.resize(group_count);
@@ -104,9 +107,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         lda[i] = std::max(m[i], k[i]);
         ldb[i] = std::max(n[i], k[i]);
         ldc[i] = std::max(m[i], n[i]);
-        alpha[i] = rand_scalar<fp>();
-        beta[i] = rand_scalar<fp>();
-        if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
+        alpha[i] = rand_scalar<Ts>();
+        beta[i] = rand_scalar<Ts>();
+        if ((std::is_same<Ts, float>::value) || (std::is_same<Ts, double>::value)) {
             transa[i] = (oneapi::mkl::transpose)(std::rand() % 2);
             transb[i] = (oneapi::mkl::transpose)(std::rand() % 2);
         }
@@ -125,9 +128,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         total_batch_count += group_size[i];
     }
 
-    auto uafpp = usm_allocator<fp *, usm::alloc::shared, 64>(cxt, *dev);
-    vector<fp *, decltype(uafpp)> a_array(uafpp), b_array(uafpp), c_array(uafpp),
-        c_ref_array(uafpp);
+    vector<Ta *, decltype(uaTa)> a_array(uaTa);
+    vector<Tb *, decltype(uaTb)> b_array(uaTb);
+    vector<Tc *, decltype(uaTc)> c_array(uaTc);
+    vector<Ts *, decltype(uaTs)> c_ref_array(uaTs);
     a_array.resize(total_batch_count);
     b_array.resize(total_batch_count);
     c_array.resize(total_batch_count);
@@ -149,10 +153,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             default: break;
         }
         for (j = 0; j < group_size[i]; j++) {
-            a_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_a, *dev, cxt);
-            b_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_b, *dev, cxt);
-            c_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_c, *dev, cxt);
-            c_ref_array[idx] = (fp *)oneapi::mkl::malloc_shared(64, sizeof(fp) * size_c, *dev, cxt);
+            a_array[idx] = (Ta *)oneapi::mkl::malloc_shared(64, sizeof(Ta) * size_a, *dev, cxt);
+            b_array[idx] = (Tb *)oneapi::mkl::malloc_shared(64, sizeof(Tb) * size_b, *dev, cxt);
+            c_array[idx] = (Tc *)oneapi::mkl::malloc_shared(64, sizeof(Tc) * size_c, *dev, cxt);
+            c_ref_array[idx] = (Ts *)oneapi::mkl::malloc_shared(64, sizeof(Ts) * size_c, *dev, cxt);
             rand_matrix(a_array[idx], layout, transa[i], m[i], k[i], lda[i]);
             rand_matrix(b_array[idx], layout, transb[i], k[i], n[i], ldb[i]);
             rand_matrix(c_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i]);
@@ -163,7 +167,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     }
 
     // Call reference GEMM_BATCH.
-    using fp_ref = typename ref_type_info<fp>::type;
+    using fp_ref = typename ref_type_info<Ts>::type;
     int *m_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
     int *n_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
     int *k_ref = (int *)oneapi::mkl::aligned_alloc(64, sizeof(int) * group_count);
@@ -231,13 +235,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             case oneapi::mkl::layout::col_major:
                 done = oneapi::mkl::blas::column_major::gemm_batch(
                     main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
-                    (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
+                    (const Ta **)&a_array[0], &lda[0], (const Tb **)&b_array[0], &ldb[0], &beta[0],
                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
                 done = oneapi::mkl::blas::row_major::gemm_batch(
                     main_queue, &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
-                    (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0], &ldb[0], &beta[0],
+                    (const Ta **)&a_array[0], &lda[0], (const Tb **)&b_array[0], &ldb[0], &beta[0],
                     &c_array[0], &ldc[0], group_count, &group_size[0], dependencies);
                 break;
             default: break;
@@ -248,14 +252,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             case oneapi::mkl::layout::col_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::gemm_batch,
                                         &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
-                                        (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0],
+                                        (const Ta **)&a_array[0], &lda[0], (const Tb **)&b_array[0],
                                         &ldb[0], &beta[0], &c_array[0], &ldc[0], group_count,
                                         &group_size[0], dependencies);
                 break;
             case oneapi::mkl::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::gemm_batch,
                                         &transa[0], &transb[0], &m[0], &n[0], &k[0], &alpha[0],
-                                        (const fp **)&a_array[0], &lda[0], (const fp **)&b_array[0],
+                                        (const Ta **)&a_array[0], &lda[0], (const Ta **)&b_array[0],
                                         &ldb[0], &beta[0], &c_array[0], &ldc[0], group_count,
                                         &group_size[0], dependencies);
                 break;
@@ -334,29 +338,29 @@ class GemmBatchUsmTests
         : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchUsmTests, RealHalfPrecision) {
-    EXPECT_TRUEORSKIP(test<sycl::half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, sycl::half, sycl::half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+    EXPECT_TRUEORSKIP((test<float, float, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
-    EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+    EXPECT_TRUEORSKIP((test<double, double, double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(
-        test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+        (test<std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(
-        test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));
+        (test<std::complex<double>, std::complex<double>, std::complex<double>, std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchUsmTestSuite, GemmBatchUsmTests,

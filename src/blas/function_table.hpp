@@ -4725,21 +4725,21 @@ typedef struct {
         std::int64_t stride_b, sycl::half beta, sycl::half *c, std::int64_t ldc,
         std::int64_t stride_c, std::int64_t batch_size,
         const std::vector<sycl::event> &dependencies);
-    sycl::event (*row_major_hgemm_batch_strided_usm_sycl)(
+    sycl::event (*row_major_hsgemm_batch_strided_usm_sycl)(
         sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const sycl::half *a,
         std::int64_t lda, std::int64_t stride_a, const sycl::half *b, std::int64_t ldb,
         std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
         std::int64_t stride_c, std::int64_t batch_size,
         const std::vector<sycl::event> &dependencies);
-    sycl::event (*row_major_hgemm_batch_strided_usm_sycl)(
+    sycl::event (*row_major_isgemm_batch_strided_usm_sycl)(
         sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const std::int8_t *a,
         std::int64_t lda, std::int64_t stride_a, const std::int8_t *b, std::int64_t ldb,
         std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
         std::int64_t stride_c, std::int64_t batch_size,
         const std::vector<sycl::event> &dependencies);
-    sycl::event (*row_major_hgemm_batch_strided_usm_sycl)(
+    sycl::event (*row_major_iigemm_batch_strided_usm_sycl)(
         sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
         std::int64_t m, std::int64_t n, std::int64_t k, float alpha, const std::int8_t *a,
         std::int64_t lda, std::int64_t stride_a, const std::int8_t *b, std::int64_t ldb,
