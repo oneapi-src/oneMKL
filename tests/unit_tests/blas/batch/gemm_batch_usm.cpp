@@ -131,7 +131,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     auto uaTsp = usm_allocator<Ts *, usm::alloc::shared, 64>(cxt, *dev);
     vector<Ta *, decltype(uaTap)> a_array(uaTap);
     vector<Tb *, decltype(uaTbp)> b_array(uaTbp);
-    vector<Tc *, decltype(uaTcp)> c_array(uaTcp), c_cast_ref_array(uaTsp);
+    vector<Tc *, decltype(uaTcp)> c_array(uaTcp), c_cast_ref_array(uaTcp);
     vector<Ts *, decltype(uaTsp)> a_ref_array(uaTsp), b_ref_array(uaTsp), c_ref_array(uaTsp);
     a_array.resize(total_batch_count);
     b_array.resize(total_batch_count);
@@ -167,9 +167,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             rand_matrix(a_array[idx], layout, transa[i], m[i], k[i], lda[i]);
             rand_matrix(b_array[idx], layout, transb[i], k[i], n[i], ldb[i]);
             rand_matrix(c_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i]);
-            copy_matrix(a_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], k[i], lda[i],
+            copy_matrix(a_array[idx], layout, transa[i], m[i], k[i], lda[i],
                         a_ref_array[idx]);
-            copy_matrix(b_array[idx], layout, oneapi::mkl::transpose::nontrans, k[i], n[i], ldb[i],
+            copy_matrix(b_array[idx], layout, transb[i], k[i], n[i], ldb[i],
                         b_ref_array[idx]);
             copy_matrix(c_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i],
                         c_ref_array[idx]);
