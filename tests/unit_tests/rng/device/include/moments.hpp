@@ -44,6 +44,27 @@ class moments_test {
 public:
     template <typename Queue>
     void operator()(Queue queue) {
+        // Note: the following methods of discrete distributions require double precision support
+        if ((std::is_same_v<
+                 Distribution,
+                 oneapi::mkl::rng::device::uniform<
+                     std::uint32_t, oneapi::mkl::rng::device::uniform_method::accurate>> ||
+             std::is_same_v<
+                 Distribution,
+                 oneapi::mkl::rng::device::uniform<
+                     std::int32_t, oneapi::mkl::rng::device::uniform_method::accurate>> ||
+             std::is_same_v<Distribution, oneapi::mkl::rng::device::poisson<
+                                              std::uint32_t,
+                                              oneapi::mkl::rng::device::poisson_method::devroye>> ||
+             std::is_same_v<
+                 Distribution,
+                 oneapi::mkl::rng::device::poisson<
+                     std::int32_t, oneapi::mkl::rng::device::poisson_method::devroye>>)&&!queue
+                .get_device()
+                .has(sycl::aspect::fp64)) {
+            status = test_skipped;
+            return;
+        }
         using Type = typename Distribution::result_type;
         // prepare array for random numbers
         std::vector<Type> r(N_GEN);
