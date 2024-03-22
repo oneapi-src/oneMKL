@@ -41,6 +41,10 @@ target_include_directories(${LIB_OBJ}
           ${ONEMKL_GENERATED_INCLUDE_PATH}
 )
 
+if (${ROCBLAS_VERSION} VERSION_GREATER_EQUAL "4.0")
+  target_compile_definitions(${LIB_OBJ} PRIVATE ROCBLAS_NO_LEGACY_TRMM)
+endif()
+
 if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
     target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
     target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
