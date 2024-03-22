@@ -140,11 +140,11 @@ void dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
     throw unimplemented("blas", "dgmm_batch", "for column_major layout");
 }
 
-template <typename Func, typename T>
+template <typename Func, typename Ta, typename Tb, typename Tc, typename Ts>
 inline void gemm_batch(const char *func_name, Func func, sycl::queue &queue, transpose transa,
-                       transpose transb, int64_t m, int64_t n, int64_t k, T alpha,
-                       sycl::buffer<T, 1> &a, int64_t lda, int64_t stride_a, sycl::buffer<T, 1> &b,
-                       int64_t ldb, int64_t stride_b, T beta, sycl::buffer<T, 1> &c, int64_t ldc,
+                       transpose transb, int64_t m, int64_t n, int64_t k, Ts alpha,
+                       sycl::buffer<Ta, 1> &a, int64_t lda, int64_t stride_a, sycl::buffer<Tb, 1> &b,
+                       int64_t ldb, int64_t stride_b, Ts beta, sycl::buffer<Tc, 1> &c, int64_t ldc,
                        int64_t stride_c, int64_t batch_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     overflow_check(m, n, k, lda, ldb, ldc, stride_a, stride_b, stride_c, batch_size);
@@ -170,21 +170,21 @@ inline void gemm_batch(const char *func_name, Func func, sycl::queue &queue, tra
     });
 }
 
-#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                          \
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S, CUBLAS_ROUTINE)                                          \
     void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
-                    int64_t k, TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda,                  \
-                    int64_t stride_a, sycl::buffer<TYPE, 1> &b, int64_t ldb, int64_t stride_b,     \
-                    TYPE beta, sycl::buffer<TYPE, 1> &c, int64_t ldc, int64_t stride_c,            \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,                  \
+                    int64_t stride_a, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t stride_b,     \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stride_c,            \
                     int64_t batch_size) {                                                          \
         gemm_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, \
                    stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);                \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, cublasHgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(float, cublasSgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(double, cublasDgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, cublasCgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, cublasZgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half, cublasHgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(float, float, float, float, cublasSgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(double, double, double, double, cublasDgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>, cublasCgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, std::complex<double>, std::complex<double>, std::complex<double>, cublasZgemmStridedBatched)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER
 
