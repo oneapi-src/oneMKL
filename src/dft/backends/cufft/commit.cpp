@@ -81,9 +81,10 @@ public:
         }
         if (fix_context) {
             // cufftDestroy changes the context so change it back.
-            CUcontext interopContext =
-                sycl::get_native<sycl::backend::ext_oneapi_cuda>(this->get_queue().get_context());
-            if (cuCtxSetCurrent(interopContext) != CUDA_SUCCESS) {
+            CUdevice interopDevice =
+                sycl::get_native<sycl::backend::ext_oneapi_cuda>(this->get_queue().get_device());
+            CUcontext interopContext;
+            if (cuDevicePrimaryCtxRetain(&interopContext, interopDevice) != CUDA_SUCCESS) {
                 throw mkl::exception("dft/backends/cufft", __FUNCTION__,
                                      "Failed to change cuda context.");
             }
