@@ -20,12 +20,6 @@
 
 cmake_minimum_required (VERSION 3.13)
 
-# Set flags from Conan if Conan is used
-if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" REQUIRED)
-  conan_basic_setup()
-endif()
-
 # Define build type
 set(DEFAULT_BUILD_TYPE "Release")
 

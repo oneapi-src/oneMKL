@@ -3,9 +3,8 @@
 This folder contains oneMKL documentation in reStructuredText (rST) format.
 
 The documentation build step is skipped by default.
-To enable building documentation from the main build:
-- Set `-o build_doc=True` when building with Conan. For more information see [Building with Conan](../README.md#building-with-conan)
-- Set `-DBUILD_DOC=ON` when building with CMake. For more information see [Building with CMake](../README.md#building-with-cmake)
+To enable building documentation from the main build, set `-DBUILD_DOC=ON`.
+For more information see [Building with CMake](../README.md#building-with-cmake).
 
 To build documentation only, use the following commands from the current folder:
 ```bash
