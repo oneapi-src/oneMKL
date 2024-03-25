@@ -498,8 +498,6 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </tbody>
 </table>
 
-*If [Building with CMake](https://oneapi-src.github.io/oneMKL/building_the_project.html#building-with-cmake), above packages must be installed manually.*
-
 ---
 
 ## Documentation
