@@ -441,6 +441,9 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <tr>
+            <td colspan=3 align=center> CMake (version 3.13 or newer) </td>
+        </tr>
+        <tr>
             <td colspan=3 align=center> Linux* : GNU* GCC 5.1 or higher <br> Windows* : MSVS* 2017 or MSVS* 2019 (version 16.5 or newer) </td>
         </tr>
         <tr>
