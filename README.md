@@ -411,19 +411,18 @@ Supported compilers include:
 
 #### Linux*
 
-Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU) |  NVIDIA GPU
-:--- | :--- | :--- | :---
-Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10  | 18.04.3, 20.04
-SUSE Linux Enterprise Server*     | 15             | *Not supported* | *Not supported*
-Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported* | *Not supported*
-Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
+Backend | Supported Operating System
+:--- | :---
+x86 CPU    | Red Hat Enterprise Linux* 9 (RHEL* 9)
+Intel GPU  | Ubuntu 22.04 LTS
+NVIDIA GPU | Ubuntu 22.04 LTS
 
 #### Windows*
 
-Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU)
-:--- | :--- | :---
-Microsoft Windows* | 10 (64-bit version only) | 10 (64-bit version only)
-Microsoft Windows* Server | 2016, 2019 | *Not supported*
+Backend | Supported Operating System
+:--- | :---
+x86 CPU   | Microsoft Windows* Server 2022
+Intel GPU | Microsoft Windows* 11
 ---
 
 ### Software Requirements
