@@ -162,15 +162,14 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             c_array[idx] = (Tc *)oneapi::mkl::malloc_shared(64, sizeof(Tc) * size_c, *dev, cxt);
             a_ref_array[idx] = (Ts *)oneapi::mkl::malloc_shared(64, sizeof(Ts) * size_a, *dev, cxt);
             b_ref_array[idx] = (Ts *)oneapi::mkl::malloc_shared(64, sizeof(Ts) * size_b, *dev, cxt);
-            c_cast_ref_array[idx] = (Tc *)oneapi::mkl::malloc_shared(64, sizeof(Tc) * size_c, *dev, cxt);
+            c_cast_ref_array[idx] =
+                (Tc *)oneapi::mkl::malloc_shared(64, sizeof(Tc) * size_c, *dev, cxt);
             c_ref_array[idx] = (Ts *)oneapi::mkl::malloc_shared(64, sizeof(Ts) * size_c, *dev, cxt);
             rand_matrix(a_array[idx], layout, transa[i], m[i], k[i], lda[i]);
             rand_matrix(b_array[idx], layout, transb[i], k[i], n[i], ldb[i]);
             rand_matrix(c_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i]);
-            copy_matrix(a_array[idx], layout, transa[i], m[i], k[i], lda[i],
-                        a_ref_array[idx]);
-            copy_matrix(b_array[idx], layout, transb[i], k[i], n[i], ldb[i],
-                        b_ref_array[idx]);
+            copy_matrix(a_array[idx], layout, transa[i], m[i], k[i], lda[i], a_ref_array[idx]);
+            copy_matrix(b_array[idx], layout, transb[i], k[i], n[i], ldb[i], b_ref_array[idx]);
             copy_matrix(c_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i],
                         c_ref_array[idx]);
             idx++;
@@ -235,8 +234,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
             ::gemm(convert_to_cblas_layout(layout), transa_ref[i], transb_ref[i],
                    (const int *)&m_ref[i], (const int *)&n_ref[i], (const int *)&k_ref[i],
                    (const fp_ref *)&alpha[i], (const fp_ref *)a_ref_array[idx],
-                   (const int *)&lda_ref[i], (const fp_ref *)b_ref_array[idx], (const int *)&ldb_ref[i],
-                   (const fp_ref *)&beta[i], (fp_ref *)c_ref_array[idx], (const int *)&ldc_ref[i]);
+                   (const int *)&lda_ref[i], (const fp_ref *)b_ref_array[idx],
+                   (const int *)&ldb_ref[i], (const fp_ref *)&beta[i], (fp_ref *)c_ref_array[idx],
+                   (const int *)&ldc_ref[i]);
             idx++;
         }
     }
@@ -323,10 +323,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
-            copy_matrix(c_ref_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i], ldc[i],
-                        c_cast_ref_array[idx]);
-            good = good && check_equal_matrix(c_array[idx], c_cast_ref_array[idx], layout, m[i], n[i],
-                                              ldc[i], 10 * k[i], std::cout);
+            copy_matrix(c_ref_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i],
+                        ldc[i], c_cast_ref_array[idx]);
+            good = good && check_equal_matrix(c_array[idx], c_cast_ref_array[idx], layout, m[i],
+                                              n[i], ldc[i], 10 * k[i], std::cout);
             idx++;
         }
     }
@@ -360,41 +360,49 @@ class GemmBatchUsmTests
         : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchUsmTests, RealHalfPrecision) {
-    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, sycl::half, sycl::half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, sycl::half, sycl::half>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, RealHalfRealScalarPrecision) {
-    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, float, float>(std::get<0>(GetParam()),
+                                                                  std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, RealIntRealScalarPrecision) {
-    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, float, float>(std::get<0>(GetParam()),
+                                                                    std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, RealIntRealIntPrecision) {
-    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, std::int32_t, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, std::int32_t, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP((test<float, float, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
-    EXPECT_TRUEORSKIP((test<double, double, double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((
+        test<double, double, double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+        (test<std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>>(
+            std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchUsmTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, std::complex<double>, std::complex<double>, std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+        (test<std::complex<double>, std::complex<double>, std::complex<double>,
+              std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchUsmTestSuite, GemmBatchUsmTests,

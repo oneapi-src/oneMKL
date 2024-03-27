@@ -101,8 +101,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
 
     vector<Ta, allocator_helper<Ta, 64>> A(stride_a * batch_size);
     vector<Ta, allocator_helper<Tb, 64>> B(stride_b * batch_size);
-    vector<Tc, allocator_helper<Tc, 64>> C(stride_c * batch_size), C_cast_ref(stride_c * batch_size);
-    vector<Ts, allocator_helper<Ts, 64>> A_ref(stride_a * batch_size), B_ref(stride_b * batch_size), C_ref(stride_c * batch_size);
+    vector<Tc, allocator_helper<Tc, 64>> C(stride_c * batch_size),
+        C_cast_ref(stride_c * batch_size);
+    vector<Ts, allocator_helper<Ts, 64>> A_ref(stride_a * batch_size), B_ref(stride_b * batch_size),
+        C_ref(stride_c * batch_size);
 
     for (i = 0; i < batch_size; i++) {
         rand_matrix(A.data() + stride_a * i, layout, transa, m, k, lda);
@@ -128,12 +130,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int batch_size_ref = (int)batch_size;
 
     for (i = 0; i < batch_size_ref; i++) {
-        ::gemm(
-            convert_to_cblas_layout(layout), convert_to_cblas_trans(transa),
-            convert_to_cblas_trans(transb), (const int *)&m_ref, (const int *)&n_ref,
-            (const int *)&k_ref, (const fp_ref *)&alpha, (const fp_ref *)(A_ref.data() + stride_a * i),
-            (const int *)&lda_ref, (const fp_ref *)(B_ref.data() + stride_b * i), (const int *)&ldb_ref,
-            (const fp_ref *)&beta, (fp_ref *)(C_ref.data() + stride_c * i), (const int *)&ldc_ref);
+        ::gemm(convert_to_cblas_layout(layout), convert_to_cblas_trans(transa),
+               convert_to_cblas_trans(transb), (const int *)&m_ref, (const int *)&n_ref,
+               (const int *)&k_ref, (const fp_ref *)&alpha,
+               (const fp_ref *)(A_ref.data() + stride_a * i), (const int *)&lda_ref,
+               (const fp_ref *)(B_ref.data() + stride_b * i), (const int *)&ldb_ref,
+               (const fp_ref *)&beta, (fp_ref *)(C_ref.data() + stride_c * i),
+               (const int *)&ldc_ref);
     }
 
     // Call DPC++ GEMM_BATCH_STRIDE.
@@ -213,8 +216,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         C_cast_ref[i] = C_ref[i];
     auto C_accessor = C_buffer.template get_host_access(read_only);
     bool good =
-        check_equal_matrix(C_accessor, C_cast_ref, oneapi::mkl::layout::col_major, stride_c * batch_size,
-                           1, stride_c * batch_size, 10 * k, std::cout);
+        check_equal_matrix(C_accessor, C_cast_ref, oneapi::mkl::layout::col_major,
+                           stride_c * batch_size, 1, stride_c * batch_size, 10 * k, std::cout);
 
     return (int)good;
 }
@@ -223,41 +226,49 @@ class GemmBatchStrideTests
         : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchStrideTests, RealHalfPrecision) {
-    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, sycl::half, sycl::half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, sycl::half, sycl::half>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideTests, RealHalfRealFloatPrecision) {
-    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, float, float>(std::get<0>(GetParam()),
+                                                                  std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideTests, RealInt8RealFloatPrecision) {
-    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, float, float>(std::get<0>(GetParam()),
+                                                                    std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideTests, RealIntPrecision) {
-    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, std::int32_t, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, std::int32_t, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP((test<float, float, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
-    EXPECT_TRUEORSKIP((test<double, double, double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((
+        test<double, double, double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+        (test<std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>>(
+            std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, std::complex<double>, std::complex<double>, std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+        (test<std::complex<double>, std::complex<double>, std::complex<double>,
+              std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchStrideTestSuite, GemmBatchStrideTests,

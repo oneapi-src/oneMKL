@@ -179,12 +179,13 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     int ldc_ref = (int)ldc;
     int batch_size_ref = (int)batch_size;
     for (i = 0; i < batch_size_ref; i++) {
-        ::gemm(
-            convert_to_cblas_layout(layout), convert_to_cblas_trans(transa),
-            convert_to_cblas_trans(transb), (const int *)&m_ref, (const int *)&n_ref,
-            (const int *)&k_ref, (const fp_ref *)&alpha, (const fp_ref *)(A_ref.data() + stride_a * i),
-            (const int *)&lda_ref, (const fp_ref *)(B_ref.data() + stride_b * i), (const int *)&ldb_ref,
-            (const fp_ref *)&beta, (fp_ref *)(C_ref.data() + stride_c * i), (const int *)&ldc_ref);
+        ::gemm(convert_to_cblas_layout(layout), convert_to_cblas_trans(transa),
+               convert_to_cblas_trans(transb), (const int *)&m_ref, (const int *)&n_ref,
+               (const int *)&k_ref, (const fp_ref *)&alpha,
+               (const fp_ref *)(A_ref.data() + stride_a * i), (const int *)&lda_ref,
+               (const fp_ref *)(B_ref.data() + stride_b * i), (const int *)&ldb_ref,
+               (const fp_ref *)&beta, (fp_ref *)(C_ref.data() + stride_c * i),
+               (const int *)&ldc_ref);
     }
 
     // Call DPC++ GEMM_BATCH_STRIDE.
@@ -246,8 +247,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Compare the results of reference implementation and DPC++ implementation.
     for (size_t i = 0; i < C_ref.size(); ++i)
         C_cast_ref[i] = C_ref[i];
-    bool good = check_equal_matrix(C, C_cast_ref, oneapi::mkl::layout::col_major, stride_c * batch_size,
-                                   1, stride_c * batch_size, 10 * k, std::cout);
+    bool good =
+        check_equal_matrix(C, C_cast_ref, oneapi::mkl::layout::col_major, stride_c * batch_size, 1,
+                           stride_c * batch_size, 10 * k, std::cout);
 
     oneapi::mkl::free_shared(a_array, cxt);
     oneapi::mkl::free_shared(b_array, cxt);
@@ -261,41 +263,49 @@ class GemmBatchStrideUsmTests
         : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {};
 
 TEST_P(GemmBatchStrideUsmTests, RealHalfPrecision) {
-    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, sycl::half, sycl::half>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, sycl::half, sycl::half>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideUsmTests, RealHalfRealScalarPrecision) {
-    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, float, float>(std::get<0>(GetParam()),
+                                                                  std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideUsmTests, RealIntRealScalarPrecision) {
-    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, float, float>(std::get<0>(GetParam()),
+                                                                    std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideUsmTests, RealIntRealIntPrecision) {
-    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, std::int32_t, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, std::int32_t, float>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideUsmTests, RealSinglePrecision) {
-    EXPECT_TRUEORSKIP((test<float, float, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP(
+        (test<float, float, float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideUsmTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
-    EXPECT_TRUEORSKIP((test<double, double, double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+    EXPECT_TRUEORSKIP((
+        test<double, double, double, double>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(
-        (test<std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+        (test<std::complex<float>, std::complex<float>, std::complex<float>, std::complex<float>>(
+            std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 TEST_P(GemmBatchStrideUsmTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     EXPECT_TRUEORSKIP(
-        (test<std::complex<double>, std::complex<double>, std::complex<double>, std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
+        (test<std::complex<double>, std::complex<double>, std::complex<double>,
+              std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmBatchStrideUsmTestSuite, GemmBatchStrideUsmTests,

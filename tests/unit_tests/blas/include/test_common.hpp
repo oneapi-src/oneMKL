@@ -250,8 +250,8 @@ void copy_matrix(vec_src &src, oneapi::mkl::layout layout, oneapi::mkl::transpos
 }
 
 template <typename fp_src, typename fp_dst>
-void copy_matrix(fp_src *src, oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int m, int n,
-                 int ld, fp_dst *dest) {
+void copy_matrix(fp_src *src, oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int m,
+                 int n, int ld, fp_dst *dest) {
     if (((trans == oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
