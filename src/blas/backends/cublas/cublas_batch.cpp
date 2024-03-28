@@ -201,6 +201,19 @@ GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, std::complex<double>, std::com
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER
 
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stride_a, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t stride_b,  \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stride_c,       \
+                    int64_t batch_size) {                                                         \
+        throw unimplemented("blas", "gemm_batch", "for unimplmented dtypes");                     \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, std::int32_t, float)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER
+
 void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, float alpha, sycl::buffer<float, 1> &a,
                 int64_t lda, int64_t stride_a, sycl::buffer<float, 1> &b, int64_t ldb,
@@ -618,13 +631,25 @@ inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose tra
 GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(float, float, float, float)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(double, double, double, double)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
                                 std::complex<float>)
 GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
                                 std::complex<double>)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER_USM
+
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                        \
+    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,   \
+                           int64_t stride_a, const TYPE_B *b, int64_t ldb, int64_t stride_b,   \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stride_c,              \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
+        throw unimplemented("blas", "gemm_batch", "for unimplmented dtypes");                  \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER_USM
 
@@ -692,6 +717,19 @@ GEMM_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<f
                         std::complex<float>)
 GEMM_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
                         std::complex<double>)
+
+#undef GEMM_BATCH_LAUNCHER_USM
+
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        throw unimplemented("blas", "gemm_batch", "for unimplmented dtypes");                      \
+    }
+
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_BATCH_LAUNCHER_USM
 
