@@ -1527,10 +1527,11 @@ DGMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, rocblas_zdgmm_strided_batched)
 #undef DGMM_STRIDED_BATCH_LAUNCHER
 
 template <typename Ta, typename Tb, typename Tc, typename Ts>
-inline void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
-                       int64_t k, Ts alpha, sycl::buffer<Ta, 1> &a, int64_t lda, int64_t stridea,
-                       sycl::buffer<Tb, 1> &b, int64_t ldb, int64_t strideb, Ts beta,
-                       sycl::buffer<Tc, 1> &c, int64_t ldc, int64_t stridec, int64_t batch_size) {
+inline void gemm_batch_impl(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                            int64_t n, int64_t k, Ts alpha, sycl::buffer<Ta, 1> &a, int64_t lda,
+                            int64_t stridea, sycl::buffer<Tb, 1> &b, int64_t ldb, int64_t strideb,
+                            Ts beta, sycl::buffer<Tc, 1> &c, int64_t ldc, int64_t stridec,
+                            int64_t batch_size) {
     auto new_transa = transb;
     auto new_transb = transa;
 
@@ -1545,8 +1546,8 @@ inline void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, i
                     int64_t stridea, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t strideb,    \
                     TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stridec,        \
                     int64_t batch_size) {                                                         \
-        gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stridea, b, ldb, strideb, beta, \
-                   c, ldc, stridec, batch_size);                                                  \
+        gemm_batch_impl(queue, transa, transb, m, n, k, alpha, a, lda, stridea, b, ldb, strideb,  \
+                        beta, c, ldc, stridec, batch_size);                                       \
     }
 
 GEMM_STRIDED_BATCH_LAUNCHER(float, float, float, float)
@@ -2040,11 +2041,13 @@ DGMM_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zdgmm_batched)
 #undef DGMM_BATCH_LAUNCHER
 
 template <typename Ta, typename Tb, typename Tc, typename Ts>
-inline sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                              int64_t n, int64_t k, Ts alpha, const Ta *a, int64_t lda,
-                              int64_t stridea, const Tb *b, int64_t ldb, int64_t strideb, Ts beta,
-                              Tc *c, int64_t ldc, int64_t stridec, int64_t batch_size,
-                              const std::vector<sycl::event> &dependencies) {
+inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose transa,
+                                               transpose transb, int64_t m, int64_t n, int64_t k,
+                                               Ts alpha, const Ta *a, int64_t lda, int64_t stridea,
+                                               const Tb *b, int64_t ldb, int64_t strideb, Ts beta,
+                                               Tc *c, int64_t ldc, int64_t stridec,
+                                               int64_t batch_size,
+                                               const std::vector<sycl::event> &dependencies) {
     auto new_transa = transb;
     auto new_transb = transa;
 
@@ -2059,8 +2062,9 @@ inline sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose tr
                            int64_t stridea, const TYPE_B *b, int64_t ldb, int64_t strideb,         \
                            TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stridec,                   \
                            int64_t batch_size, const std::vector<sycl::event> &dependencies) {     \
-        return gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stridea, b, ldb, strideb, \
-                          beta, c, ldc, stridec, batch_size, dependencies);                        \
+        return gemm_batch_strided_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda, stridea, \
+                                           b, ldb, strideb, beta, c, ldc, stridec, batch_size,     \
+                                           dependencies);                                          \
     }
 
 GEMM_STRIDED_BATCH_LAUNCHER_USM(float, float, float, float)
@@ -2089,11 +2093,11 @@ GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
 #undef GEMM_STRIDED_BATCH_LAUNCHER_USM
 
 template <typename Ta, typename Tb, typename Tc, typename Ts>
-inline sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
-                              int64_t *n, int64_t *k, Ts *alpha, const Ta **a, int64_t *lda,
-                              const Tb **b, int64_t *ldb, Ts *beta, Tc **c, int64_t *ldc,
-                              int64_t group_count, int64_t *group_size,
-                              const std::vector<sycl::event> &dependencies) {
+inline sycl::event gemm_batch_usm_impl(sycl::queue &queue, transpose *transa, transpose *transb,
+                                       int64_t *m, int64_t *n, int64_t *k, Ts *alpha, const Ta **a,
+                                       int64_t *lda, const Tb **b, int64_t *ldb, Ts *beta, Tc **c,
+                                       int64_t *ldc, int64_t group_count, int64_t *group_size,
+                                       const std::vector<sycl::event> &dependencies) {
     for (int64_t i = 0; i < group_count; i++) {
         std::swap(transa[i], transb[i]);
     }
@@ -2108,8 +2112,8 @@ inline sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *
                            const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
                            int64_t group_count, int64_t *group_size,                               \
                            const std::vector<sycl::event> &dependencies) {                         \
-        return gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,     \
-                          group_count, group_size, dependencies);                                  \
+        return gemm_batch_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, \
+                                   ldc, group_count, group_size, dependencies);                    \
     }
 
 GEMM_BATCH_LAUNCHER_USM(float, float, float, float)
