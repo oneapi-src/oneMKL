@@ -227,14 +227,20 @@ DGMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, rocblas_zdgmm_strided_batched)
 
 #undef DGMM_STRIDED_BATCH_LAUNCHER
 
-template <typename Func, typename T>
-inline void gemm_batch(Func func, sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                       int64_t n, int64_t k, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
-                       int64_t stridea, sycl::buffer<T, 1> &b, int64_t ldb, int64_t strideb, T beta,
-                       sycl::buffer<T, 1> &c, int64_t ldc, int64_t stridec, int64_t batch_size) {
-    using rocDataType = typename RocEquivalentType<T>::Type;
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline void gemm_batch_impl(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                            int64_t n, int64_t k, Ts alpha, sycl::buffer<Ta, 1> &a, int64_t lda,
+                            int64_t stridea, sycl::buffer<Tb, 1> &b, int64_t ldb, int64_t strideb,
+                            Ts beta, sycl::buffer<Tc, 1> &c, int64_t ldc, int64_t stridec,
+                            int64_t batch_size) {
+    using rocTypeA = typename RocEquivalentType<Ta>::Type;
+    using rocTypeB = typename RocEquivalentType<Tb>::Type;
+    using rocTypeC = typename RocEquivalentType<Tc>::Type;
+    using rocTypeS = typename RocEquivalentType<Ts>::Type;
     overflow_check(m, n, k, lda, ldb, ldc, stridea, strideb, stridec, batch_size);
 
+    int32_t solution_index = 0;
+    rocblas_gemm_flags flags = rocblas_gemm_flags_none;
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
@@ -242,32 +248,55 @@ inline void gemm_batch(Func func, sycl::queue &queue, transpose transa, transpos
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
-            auto a_ = sc.get_mem<const rocDataType *>(a_acc);
-            auto b_ = sc.get_mem<const rocDataType *>(b_acc);
-            auto c_ = sc.get_mem<rocDataType *>(c_acc);
+            auto a_ = sc.get_mem<const rocTypeA *>(a_acc);
+            auto b_ = sc.get_mem<const rocTypeB *>(b_acc);
+            auto c_ = sc.get_mem<rocTypeC *>(c_acc);
+
             rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
-                                    get_rocblas_operation(transb), m, n, k, (rocDataType *)&alpha,
-                                    a_, lda, stridea, b_, ldb, strideb, (rocDataType *)&beta, c_,
-                                    ldc, stridec, batch_size);
+            ROCBLAS_ERROR_FUNC_SYNC(rocblas_gemm_strided_batched_ex, err, handle,
+                                    get_rocblas_operation(transa), get_rocblas_operation(transb), m,
+                                    n, k, &alpha, a_, get_rocblas_datatype<rocTypeA>(), lda,
+                                    stridea, b_, get_rocblas_datatype<rocTypeB>(), ldb, strideb,
+                                    &beta, c_, get_rocblas_datatype<rocTypeC>(), ldc, stridec, c_,
+                                    get_rocblas_datatype<rocTypeC>(), ldc, stridec, batch_size,
+                                    get_rocblas_datatype<rocTypeS>(), rocblas_gemm_algo_standard,
+                                    solution_index, flags);
         });
     });
 }
 
-#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                         \
-    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
-                    int64_t k, TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, int64_t stridea, \
-                    sycl::buffer<TYPE, 1> &b, int64_t ldb, int64_t strideb, TYPE beta,             \
-                    sycl::buffer<TYPE, 1> &c, int64_t ldc, int64_t stridec, int64_t batch_size) {  \
-        gemm_batch(ROCBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, stridea, b,     \
-                   ldb, strideb, beta, c, ldc, stridec, batch_size);                               \
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stridea, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t strideb,    \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stridec,        \
+                    int64_t batch_size) {                                                         \
+        gemm_batch_impl(queue, transa, transb, m, n, k, alpha, a, lda, stridea, b, ldb, strideb,  \
+                        beta, c, ldc, stridec, batch_size);                                       \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, rocblas_hgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(float, rocblas_sgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(double, rocblas_dgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, rocblas_cgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, rocblas_zgemm_strided_batched)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, std::complex<float>, std::complex<float>,
+                            std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, std::complex<double>, std::complex<double>,
+                            std::complex<double>)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, float, float)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER
+
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stridea, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t strideb,    \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stridec,        \
+                    int64_t batch_size) {                                                         \
+        throw unimplemented("blas", "gemm_batch", "for data type combination");                   \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER
 
@@ -816,63 +845,97 @@ DGMM_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zdgmm_batched)
 
 #undef DGMM_BATCH_LAUNCHER
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose transa, transpose transb,
-                              int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
-                              int64_t stridea, const T *b, int64_t ldb, int64_t strideb, T beta,
-                              T *c, int64_t ldc, int64_t stridec, int64_t batch_size,
-                              const std::vector<sycl::event> &dependencies) {
-    using rocDataType = typename RocEquivalentType<T>::Type;
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose transa,
+                                               transpose transb, int64_t m, int64_t n, int64_t k,
+                                               Ts alpha, const Ta *a, int64_t lda, int64_t stridea,
+                                               const Tb *b, int64_t ldb, int64_t strideb, Ts beta,
+                                               Tc *c, int64_t ldc, int64_t stridec,
+                                               int64_t batch_size,
+                                               const std::vector<sycl::event> &dependencies) {
+    using rocTypeA = typename RocEquivalentType<Ta>::Type;
+    using rocTypeB = typename RocEquivalentType<Tb>::Type;
+    using rocTypeC = typename RocEquivalentType<Tc>::Type;
+    using rocTypeS = typename RocEquivalentType<Ts>::Type;
     overflow_check(m, n, k, lda, ldb, ldc, stridea, strideb, stridec, batch_size);
 
+    int32_t solution_index = 0;
+    rocblas_gemm_flags flags = rocblas_gemm_flags_none;
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
-            auto a_ = reinterpret_cast<const rocDataType *>(a);
-            auto b_ = reinterpret_cast<const rocDataType *>(b);
-            auto c_ = reinterpret_cast<rocDataType *>(c);
+            auto a_ = reinterpret_cast<const rocTypeA *>(a);
+            auto b_ = reinterpret_cast<const rocTypeB *>(b);
+            auto c_ = reinterpret_cast<rocTypeC *>(c);
             rocblas_status err;
-            ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_operation(transa),
-                                    get_rocblas_operation(transb), m, n, k, (rocDataType *)&alpha,
-                                    a_, lda, stridea, b_, ldb, strideb, (rocDataType *)&beta, c_,
-                                    ldc, stridec, batch_size);
+            ROCBLAS_ERROR_FUNC_SYNC(rocblas_gemm_strided_batched_ex, err, handle,
+                                    get_rocblas_operation(transa), get_rocblas_operation(transb), m,
+                                    n, k, &alpha, a_, get_rocblas_datatype<rocTypeA>(), lda,
+                                    stridea, b_, get_rocblas_datatype<rocTypeB>(), ldb, strideb,
+                                    &beta, c_, get_rocblas_datatype<rocTypeC>(), ldc, stridec, c_,
+                                    get_rocblas_datatype<rocTypeC>(), ldc, stridec, batch_size,
+                                    get_rocblas_datatype<rocTypeS>(), rocblas_gemm_algo_standard,
+                                    solution_index, flags);
         });
     });
 
     return done;
 }
 
-#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                     \
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                            \
     sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,      \
-                           int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,           \
-                           int64_t stridea, const TYPE *b, int64_t ldb, int64_t strideb,           \
-                           TYPE beta, TYPE *c, int64_t ldc, int64_t stridec, int64_t batch_size,   \
-                           const std::vector<sycl::event> &dependencies) {                         \
-        return gemm_batch(ROCBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, stridea, \
-                          b, ldb, strideb, beta, c, ldc, stridec, batch_size, dependencies);       \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,       \
+                           int64_t stridea, const TYPE_B *b, int64_t ldb, int64_t strideb,         \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stridec,                   \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {     \
+        return gemm_batch_strided_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda, stridea, \
+                                           b, ldb, strideb, beta, c, ldc, stridec, batch_size,     \
+                                           dependencies);                                          \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, rocblas_hgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(float, rocblas_sgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(double, rocblas_dgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, rocblas_cgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zgemm_strided_batched)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                                std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                                std::complex<double>)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER_USM
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose *transa, transpose *transb,
-                              int64_t *m, int64_t *n, int64_t *k, T *alpha, const T **a,
-                              int64_t *lda, const T **b, int64_t *ldb, T *beta, T **c, int64_t *ldc,
-                              int64_t group_count, int64_t *group_size,
-                              const std::vector<sycl::event> &dependencies) {
-    using rocDataType = typename RocEquivalentType<T>::Type;
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                        \
+    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,   \
+                           int64_t stridea, const TYPE_B *b, int64_t ldb, int64_t strideb,     \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stridec,               \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
+        throw unimplemented("blas", "gemm_batch", "for data type combination");                \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER_USM
+
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline sycl::event gemm_batch_usm_impl(sycl::queue &queue, transpose *transa, transpose *transb,
+                                       int64_t *m, int64_t *n, int64_t *k, Ts *alpha, const Ta **a,
+                                       int64_t *lda, const Tb **b, int64_t *ldb, Ts *beta, Tc **c,
+                                       int64_t *ldc, int64_t group_count, int64_t *group_size,
+                                       const std::vector<sycl::event> &dependencies) {
+    using rocTypeA = typename RocEquivalentType<Ta>::Type;
+    using rocTypeB = typename RocEquivalentType<Tb>::Type;
+    using rocTypeC = typename RocEquivalentType<Tc>::Type;
+    using rocTypeS = typename RocEquivalentType<Ts>::Type;
     for (int64_t i = 0; i < group_count; i++) {
         overflow_check(m[i], n[i], k[i], lda[i], ldb[i], ldc[i], group_size[i]);
     }
 
+    int32_t solution_index = 0;
+    rocblas_gemm_flags flags = rocblas_gemm_flags_none;
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
         onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
@@ -881,14 +944,18 @@ inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose *transa, 
             int64_t offset = 0;
             rocblas_status err;
             for (int64_t i = 0; i < group_count; i++) {
-                auto **a_ = reinterpret_cast<const rocDataType **>(a);
-                auto **b_ = reinterpret_cast<const rocDataType **>(b);
-                auto **c_ = reinterpret_cast<rocDataType **>(c);
+                auto **a_ = reinterpret_cast<const rocTypeA **>(a);
+                auto **b_ = reinterpret_cast<const rocTypeB **>(b);
+                auto **c_ = reinterpret_cast<rocTypeC **>(c);
                 ROCBLAS_ERROR_FUNC_SYNC(
-                    func, err, handle, get_rocblas_operation(transa[i]),
-                    get_rocblas_operation(transb[i]), (int)m[i], (int)n[i], (int)k[i],
-                    (rocDataType *)&alpha[i], a_ + offset, (int)lda[i], b_ + offset, (int)ldb[i],
-                    (rocDataType *)&beta[i], c_ + offset, (int)ldc[i], (int)group_size[i]);
+                    rocblas_gemm_batched_ex, err, handle, get_rocblas_operation(transa[i]),
+                    get_rocblas_operation(transb[i]), (int)m[i], (int)n[i], (int)k[i], &alpha[i],
+                    a_ + offset, get_rocblas_datatype<rocTypeA>(), (int)lda[i], b_ + offset,
+                    get_rocblas_datatype<rocTypeB>(), (int)ldb[i], &beta[i], c_ + offset,
+                    get_rocblas_datatype<rocTypeC>(), (int)ldc[i], c_ + offset,
+                    get_rocblas_datatype<rocTypeC>(), (int)ldc[i], (int)group_size[i],
+                    get_rocblas_datatype<rocTypeS>(), rocblas_gemm_algo_standard, solution_index,
+                    flags);
                 offset += group_size[i];
             }
         });
@@ -897,21 +964,38 @@ inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose *transa, 
     return done;
 }
 
-#define GEMM_BATCH_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                            \
-    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,  \
-                           int64_t *n, int64_t *k, TYPE *alpha, const TYPE **a, int64_t *lda,     \
-                           const TYPE **b, int64_t *ldb, TYPE *beta, TYPE **c, int64_t *ldc,      \
-                           int64_t group_count, int64_t *group_size,                              \
-                           const std::vector<sycl::event> &dependencies) {                        \
-        return gemm_batch(ROCBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, \
-                          beta, c, ldc, group_count, group_size, dependencies);                   \
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        return gemm_batch_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, \
+                                   ldc, group_count, group_size, dependencies);                    \
     }
 
-GEMM_BATCH_LAUNCHER_USM(sycl::half, rocblas_hgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(float, rocblas_sgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(double, rocblas_dgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<float>, rocblas_cgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zgemm_batched)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                        std::complex<float>)
+GEMM_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                        std::complex<double>)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
+
+#undef GEMM_BATCH_LAUNCHER_USM
+
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        throw unimplemented("blas", "gemm_batch", "for data type combination");                    \
+    }
+
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_BATCH_LAUNCHER_USM
 
@@ -1442,32 +1526,52 @@ DGMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, rocblas_zdgmm_strided_batched)
 
 #undef DGMM_STRIDED_BATCH_LAUNCHER
 
-template <typename Func, typename T>
-inline void gemm_batch(Func func, sycl::queue &queue, transpose transa, transpose transb, int64_t m,
-                       int64_t n, int64_t k, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
-                       int64_t stridea, sycl::buffer<T, 1> &b, int64_t ldb, int64_t strideb, T beta,
-                       sycl::buffer<T, 1> &c, int64_t ldc, int64_t stridec, int64_t batch_size) {
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline void gemm_batch_impl(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                            int64_t n, int64_t k, Ts alpha, sycl::buffer<Ta, 1> &a, int64_t lda,
+                            int64_t stridea, sycl::buffer<Tb, 1> &b, int64_t ldb, int64_t strideb,
+                            Ts beta, sycl::buffer<Tc, 1> &c, int64_t ldc, int64_t stridec,
+                            int64_t batch_size) {
     auto new_transa = transb;
     auto new_transb = transa;
 
-    column_major::gemm_batch(func, queue, new_transa, new_transb, n, m, k, alpha, b, ldb, strideb,
-                             a, lda, stridea, beta, c, ldc, stridec, batch_size);
+    column_major::gemm_batch(queue, new_transa, new_transb, n, m, k, alpha, b, ldb, strideb, a, lda,
+                             stridea, beta, c, ldc, stridec, batch_size);
 }
 
-#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE, ROCBLAS_ROUTINE)                                         \
-    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
-                    int64_t k, TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda, int64_t stridea, \
-                    sycl::buffer<TYPE, 1> &b, int64_t ldb, int64_t strideb, TYPE beta,             \
-                    sycl::buffer<TYPE, 1> &c, int64_t ldc, int64_t stridec, int64_t batch_size) {  \
-        gemm_batch(ROCBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, stridea, b,     \
-                   ldb, strideb, beta, c, ldc, stridec, batch_size);                               \
+#undef GEMM_STRIDED_BATCH_LAUNCHER
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stridea, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t strideb,    \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stridec,        \
+                    int64_t batch_size) {                                                         \
+        gemm_batch_impl(queue, transa, transb, m, n, k, alpha, a, lda, stridea, b, ldb, strideb,  \
+                        beta, c, ldc, stridec, batch_size);                                       \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, rocblas_hgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(float, rocblas_sgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(double, rocblas_dgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, rocblas_cgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, rocblas_zgemm_strided_batched)
+GEMM_STRIDED_BATCH_LAUNCHER(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, std::complex<float>, std::complex<float>,
+                            std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, std::complex<double>, std::complex<double>,
+                            std::complex<double>)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, float, float)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER
+
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stridea, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t strideb,    \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stridec,        \
+                    int64_t batch_size) {                                                         \
+        throw unimplemented("blas", "gemm_batch", "for data type combination");                   \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER
 
@@ -1936,67 +2040,104 @@ DGMM_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zdgmm_batched)
 
 #undef DGMM_BATCH_LAUNCHER
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose transa, transpose transb,
-                              int64_t m, int64_t n, int64_t k, T alpha, const T *a, int64_t lda,
-                              int64_t stridea, const T *b, int64_t ldb, int64_t strideb, T beta,
-                              T *c, int64_t ldc, int64_t stridec, int64_t batch_size,
-                              const std::vector<sycl::event> &dependencies) {
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose transa,
+                                               transpose transb, int64_t m, int64_t n, int64_t k,
+                                               Ts alpha, const Ta *a, int64_t lda, int64_t stridea,
+                                               const Tb *b, int64_t ldb, int64_t strideb, Ts beta,
+                                               Tc *c, int64_t ldc, int64_t stridec,
+                                               int64_t batch_size,
+                                               const std::vector<sycl::event> &dependencies) {
     auto new_transa = transb;
     auto new_transb = transa;
 
-    return column_major::gemm_batch(func, queue, new_transa, new_transb, n, m, k, alpha, b, ldb,
-                                    strideb, a, lda, stridea, beta, c, ldc, stridec, batch_size,
+    return column_major::gemm_batch(queue, new_transa, new_transb, n, m, k, alpha, b, ldb, strideb,
+                                    a, lda, stridea, beta, c, ldc, stridec, batch_size,
                                     dependencies);
 }
 
-#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                     \
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                            \
     sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,      \
-                           int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,           \
-                           int64_t stridea, const TYPE *b, int64_t ldb, int64_t strideb,           \
-                           TYPE beta, TYPE *c, int64_t ldc, int64_t stridec, int64_t batch_size,   \
-                           const std::vector<sycl::event> &dependencies) {                         \
-        return gemm_batch(ROCBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, stridea, \
-                          b, ldb, strideb, beta, c, ldc, stridec, batch_size, dependencies);       \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,       \
+                           int64_t stridea, const TYPE_B *b, int64_t ldb, int64_t strideb,         \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stridec,                   \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) {     \
+        return gemm_batch_strided_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda, stridea, \
+                                           b, ldb, strideb, beta, c, ldc, stridec, batch_size,     \
+                                           dependencies);                                          \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, rocblas_hgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(float, rocblas_sgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(double, rocblas_dgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, rocblas_cgemm_strided_batched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zgemm_strided_batched)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                                std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                                std::complex<double>)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER_USM
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(Func func, sycl::queue &queue, transpose *transa, transpose *transb,
-                              int64_t *m, int64_t *n, int64_t *k, T *alpha, const T **a,
-                              int64_t *lda, const T **b, int64_t *ldb, T *beta, T **c, int64_t *ldc,
-                              int64_t group_count, int64_t *group_size,
-                              const std::vector<sycl::event> &dependencies) {
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                        \
+    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,   \
+                           int64_t stridea, const TYPE_B *b, int64_t ldb, int64_t strideb,     \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stridec,               \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
+        throw unimplemented("blas", "gemm_batch", "for data type combination");                \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER_USM
+
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline sycl::event gemm_batch_usm_impl(sycl::queue &queue, transpose *transa, transpose *transb,
+                                       int64_t *m, int64_t *n, int64_t *k, Ts *alpha, const Ta **a,
+                                       int64_t *lda, const Tb **b, int64_t *ldb, Ts *beta, Tc **c,
+                                       int64_t *ldc, int64_t group_count, int64_t *group_size,
+                                       const std::vector<sycl::event> &dependencies) {
     for (int64_t i = 0; i < group_count; i++) {
         std::swap(transa[i], transb[i]);
     }
 
-    return column_major::gemm_batch(func, queue, transa, transb, n, m, k, alpha, b, ldb, a, lda,
-                                    beta, c, ldc, group_count, group_size, dependencies);
+    return column_major::gemm_batch(queue, transa, transb, n, m, k, alpha, b, ldb, a, lda, beta, c,
+                                    ldc, group_count, group_size, dependencies);
 }
 
-#define GEMM_BATCH_LAUNCHER_USM(TYPE, ROCBLAS_ROUTINE)                                            \
-    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,  \
-                           int64_t *n, int64_t *k, TYPE *alpha, const TYPE **a, int64_t *lda,     \
-                           const TYPE **b, int64_t *ldb, TYPE *beta, TYPE **c, int64_t *ldc,      \
-                           int64_t group_count, int64_t *group_size,                              \
-                           const std::vector<sycl::event> &dependencies) {                        \
-        return gemm_batch(ROCBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, \
-                          beta, c, ldc, group_count, group_size, dependencies);                   \
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        return gemm_batch_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, \
+                                   ldc, group_count, group_size, dependencies);                    \
     }
 
-GEMM_BATCH_LAUNCHER_USM(sycl::half, rocblas_hgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(float, rocblas_sgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(double, rocblas_dgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<float>, rocblas_cgemm_batched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<double>, rocblas_zgemm_batched)
+GEMM_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                        std::complex<float>)
+GEMM_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                        std::complex<double>)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
+
+#undef GEMM_BATCH_LAUNCHER_USM
+
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        throw unimplemented("blas", "gemm_batch", "for data type combination");                    \
+    }
+
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_BATCH_LAUNCHER_USM
 
