@@ -140,16 +140,21 @@ void dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
     throw unimplemented("blas", "dgmm_batch", "for column_major layout");
 }
 
-template <typename Func, typename T>
-inline void gemm_batch(const char *func_name, Func func, sycl::queue &queue, transpose transa,
-                       transpose transb, int64_t m, int64_t n, int64_t k, T alpha,
-                       sycl::buffer<T, 1> &a, int64_t lda, int64_t stride_a, sycl::buffer<T, 1> &b,
-                       int64_t ldb, int64_t stride_b, T beta, sycl::buffer<T, 1> &c, int64_t ldc,
-                       int64_t stride_c, int64_t batch_size) {
-    using cuDataType = typename CudaEquivalentType<T>::Type;
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline void gemm_batch_impl(sycl::queue &queue, transpose transa, transpose transb, int64_t m,
+                            int64_t n, int64_t k, Ts alpha, sycl::buffer<Ta, 1> &a, int64_t lda,
+                            int64_t stride_a, sycl::buffer<Tb, 1> &b, int64_t ldb, int64_t stride_b,
+                            Ts beta, sycl::buffer<Tc, 1> &c, int64_t ldc, int64_t stride_c,
+                            int64_t batch_size) {
+    using cuTypeA = typename CudaEquivalentType<Ta>::Type;
+    using cuTypeB = typename CudaEquivalentType<Tb>::Type;
+    using cuTypeC = typename CudaEquivalentType<Tc>::Type;
+    using cuTypeS = typename CudaEquivalentType<Ts>::Type;
     overflow_check(m, n, k, lda, ldb, ldc, stride_a, stride_b, stride_c, batch_size);
+
+    cublasGemmAlgo_t cublas_gemm_algo = CUBLAS_GEMM_DEFAULT;
     queue.submit([&](sycl::handler &cgh) {
-        if (!verify_support<sycl::half, T>(queue, sycl::aspect::fp16)) {
+        if (!verify_support<sycl::half, Ta, Tb, Tc, Ts>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
                 "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
         }
@@ -158,33 +163,53 @@ inline void gemm_batch(const char *func_name, Func func, sycl::queue &queue, tra
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = sc.get_mem<cuDataType *>(a_acc);
-            auto b_ = sc.get_mem<cuDataType *>(b_acc);
-            auto c_ = sc.get_mem<cuDataType *>(c_acc);
+            auto a_ = sc.get_mem<cuTypeA *>(a_acc);
+            auto b_ = sc.get_mem<cuTypeB *>(b_acc);
+            auto c_ = sc.get_mem<cuTypeC *>(c_acc);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
-                                     get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha,
-                                     a_, lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_,
-                                     ldc, stride_c, batch_size);
+            CUBLAS_ERROR_FUNC_T_SYNC(
+                "cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err, handle,
+                get_cublas_operation(transa), get_cublas_operation(transb), m, n, k, &alpha, a_,
+                get_cublas_datatype<cuTypeA>(), lda, stride_a, b_, get_cublas_datatype<cuTypeB>(),
+                ldb, stride_b, &beta, c_, get_cublas_datatype<cuTypeC>(), ldc, stride_c, batch_size,
+                get_cublas_datatype<cuTypeS>(), cublas_gemm_algo);
         });
     });
 }
 
-#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                          \
-    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
-                    int64_t k, TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda,                  \
-                    int64_t stride_a, sycl::buffer<TYPE, 1> &b, int64_t ldb, int64_t stride_b,     \
-                    TYPE beta, sycl::buffer<TYPE, 1> &c, int64_t ldc, int64_t stride_c,            \
-                    int64_t batch_size) {                                                          \
-        gemm_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, \
-                   stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);                \
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stride_a, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t stride_b,  \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stride_c,       \
+                    int64_t batch_size) {                                                         \
+        gemm_batch_impl<TYPE_A, TYPE_B, TYPE_C, TYPE_S>(queue, transa, transb, m, n, k, alpha, a, \
+                                                        lda, stride_a, b, ldb, stride_b, beta, c, \
+                                                        ldc, stride_c, batch_size);               \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, cublasHgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(float, cublasSgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(double, cublasDgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, cublasCgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, cublasZgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, std::complex<float>, std::complex<float>,
+                            std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, std::complex<double>, std::complex<double>,
+                            std::complex<double>)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER
+
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stride_a, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t stride_b,  \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stride_c,       \
+                    int64_t batch_size) {                                                         \
+        throw unimplemented("blas", "gemm_batch", "for unimplmented dtypes");                     \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER
 
@@ -553,17 +578,23 @@ sycl::event dgmm_batch(sycl::queue &queue, side *left_right, int64_t *m, int64_t
     throw unimplemented("blas", "dgmm_batch", "for column_major layout");
 }
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &queue,
-                              transpose transa, transpose transb, int64_t m, int64_t n, int64_t k,
-                              T alpha, const T *a, int64_t lda, int64_t stride_a, const T *b,
-                              int64_t ldb, int64_t stride_b, T beta, T *c, int64_t ldc,
-                              int64_t stride_c, int64_t batch_size,
-                              const std::vector<sycl::event> &dependencies) {
-    using cuDataType = typename CudaEquivalentType<T>::Type;
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose transa,
+                                               transpose transb, int64_t m, int64_t n, int64_t k,
+                                               Ts alpha, const Ta *a, int64_t lda, int64_t stride_a,
+                                               const Tb *b, int64_t ldb, int64_t stride_b, Ts beta,
+                                               Tc *c, int64_t ldc, int64_t stride_c,
+                                               int64_t batch_size,
+                                               const std::vector<sycl::event> &dependencies) {
+    using cuTypeA = typename CudaEquivalentType<Ta>::Type;
+    using cuTypeB = typename CudaEquivalentType<Tb>::Type;
+    using cuTypeC = typename CudaEquivalentType<Tc>::Type;
+    using cuTypeS = typename CudaEquivalentType<Ts>::Type;
     overflow_check(m, n, k, lda, ldb, ldc, stride_a, stride_b, stride_c, batch_size);
+
+    cublasGemmAlgo_t cublas_gemm_algo = CUBLAS_GEMM_DEFAULT;
     auto done = queue.submit([&](sycl::handler &cgh) {
-        if (!verify_support<sycl::half, T>(queue, sycl::aspect::fp16)) {
+        if (!verify_support<sycl::half, Ta, Tb, Tc, Ts>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
                 "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
         }
@@ -573,50 +604,71 @@ inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &que
         }
         onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
-            auto a_ = reinterpret_cast<const cuDataType *>(a);
-            auto b_ = reinterpret_cast<const cuDataType *>(b);
-            auto c_ = reinterpret_cast<cuDataType *>(c);
             cublasStatus_t err;
-            CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_operation(transa),
-                                     get_cublas_operation(transb), m, n, k, (cuDataType *)&alpha,
-                                     a_, lda, stride_a, b_, ldb, stride_b, (cuDataType *)&beta, c_,
-                                     ldc, stride_c, batch_size);
+            CUBLAS_ERROR_FUNC_T_SYNC(
+                "cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err, handle,
+                get_cublas_operation(transa), get_cublas_operation(transb), m, n, k, &alpha, a,
+                get_cublas_datatype<cuTypeA>(), lda, stride_a, b, get_cublas_datatype<cuTypeB>(),
+                ldb, stride_b, &beta, c, get_cublas_datatype<cuTypeC>(), ldc, stride_c, batch_size,
+                get_cublas_datatype<cuTypeS>(), cublas_gemm_algo);
         });
     });
     return done;
 }
 
-#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                     \
-    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,     \
-                           int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,          \
-                           int64_t stride_a, const TYPE *b, int64_t ldb, int64_t stride_b,        \
-                           TYPE beta, TYPE *c, int64_t ldc, int64_t stride_c, int64_t batch_size, \
-                           const std::vector<sycl::event> &dependencies) {                        \
-        return gemm_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, \
-                          a, lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, \
-                          dependencies);                                                          \
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                        \
+    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,   \
+                           int64_t stride_a, const TYPE_B *b, int64_t ldb, int64_t stride_b,   \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stride_c,              \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
+        return gemm_batch_strided_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda,      \
+                                           stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, \
+                                           batch_size, dependencies);                          \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(float, cublasSgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(double, cublasDgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, cublasZgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                                std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                                std::complex<double>)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER_USM
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &queue,
-                              transpose *transa, transpose *transb, int64_t *m, int64_t *n,
-                              int64_t *k, T *alpha, const T **a, int64_t *lda, const T **b,
-                              int64_t *ldb, T *beta, T **c, int64_t *ldc, int64_t group_count,
-                              int64_t *group_size, const std::vector<sycl::event> &dependencies) {
-    using cuDataType = typename CudaEquivalentType<T>::Type;
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                        \
+    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,   \
+                           int64_t stride_a, const TYPE_B *b, int64_t ldb, int64_t stride_b,   \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stride_c,              \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
+        throw unimplemented("blas", "gemm_batch", "for unimplmented dtypes");                  \
+    }
+
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
+
+#undef GEMM_STRIDED_BATCH_LAUNCHER_USM
+
+template <typename Ta, typename Tb, typename Tc, typename Ts>
+inline sycl::event gemm_batch_usm_impl(sycl::queue &queue, transpose *transa, transpose *transb,
+                                       int64_t *m, int64_t *n, int64_t *k, Ts *alpha, const Ta **a,
+                                       int64_t *lda, const Tb **b, int64_t *ldb, Ts *beta, Tc **c,
+                                       int64_t *ldc, int64_t group_count, int64_t *group_size,
+                                       const std::vector<sycl::event> &dependencies) {
+    using cuTypeA = typename CudaEquivalentType<Ta>::Type;
+    using cuTypeB = typename CudaEquivalentType<Tb>::Type;
+    using cuTypeC = typename CudaEquivalentType<Tc>::Type;
+    using cuTypeS = typename CudaEquivalentType<Ts>::Type;
     for (int64_t i = 0; i < group_count; i++) {
         overflow_check(m[i], n[i], k[i], lda[i], ldb[i], ldc[i], group_size[i]);
     }
+
+    cublasGemmAlgo_t cublas_gemm_algo = CUBLAS_GEMM_DEFAULT;
     auto done = queue.submit([&](sycl::handler &cgh) {
-        if (!verify_support<sycl::half, T>(queue, sycl::aspect::fp16)) {
+        if (!verify_support<sycl::half, Ta, Tb, Tc, Ts>(queue, sycl::aspect::fp16)) {
             throw oneapi::mkl::unimplemented(
                 "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
         }
@@ -629,14 +681,14 @@ inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &que
             int64_t offset = 0;
             cublasStatus_t err;
             for (int64_t i = 0; i < group_count; i++) {
-                auto **a_ = reinterpret_cast<const cuDataType **>(a);
-                auto **b_ = reinterpret_cast<const cuDataType **>(b);
-                auto **c_ = reinterpret_cast<cuDataType **>(c);
                 CUBLAS_ERROR_FUNC_T_SYNC(
-                    func_name, func, err, handle, get_cublas_operation(transa[i]),
-                    get_cublas_operation(transb[i]), (int)m[i], (int)n[i], (int)k[i],
-                    (cuDataType *)&alpha[i], a_ + offset, (int)lda[i], b_ + offset, (int)ldb[i],
-                    (cuDataType *)&beta[i], c_ + offset, (int)ldc[i], (int)group_size[i]);
+                    "cublasGemmBatchedEx", cublasGemmBatchedEx, err, handle,
+                    get_cublas_operation(transa[i]), get_cublas_operation(transb[i]), (int)m[i],
+                    (int)n[i], (int)k[i], &alpha[i], (const void *const *)(a + offset),
+                    get_cublas_datatype<cuTypeA>(), (int)lda[i], (const void *const *)(b + offset),
+                    get_cublas_datatype<cuTypeB>(), (int)ldb[i], &beta[i],
+                    (void *const *)(c + offset), get_cublas_datatype<cuTypeC>(), (int)ldc[i],
+                    (int)group_size[i], get_cublas_datatype<cuTypeS>(), cublas_gemm_algo);
                 offset += group_size[i];
             }
         });
@@ -644,21 +696,38 @@ inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &que
     return done;
 }
 
-#define GEMM_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
-    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,  \
-                           int64_t *n, int64_t *k, TYPE *alpha, const TYPE **a, int64_t *lda,     \
-                           const TYPE **b, int64_t *ldb, TYPE *beta, TYPE **c, int64_t *ldc,      \
-                           int64_t group_count, int64_t *group_size,                              \
-                           const std::vector<sycl::event> &dependencies) {                        \
-        return gemm_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, \
-                          a, lda, b, ldb, beta, c, ldc, group_count, group_size, dependencies);   \
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        return gemm_batch_usm_impl(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, \
+                                   ldc, group_count, group_size, dependencies);                    \
     }
 
-GEMM_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(float, cublasSgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(double, cublasDgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<double>, cublasZgemmBatched)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                        std::complex<float>)
+GEMM_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                        std::complex<double>)
+
+#undef GEMM_BATCH_LAUNCHER_USM
+
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        throw unimplemented("blas", "gemm_batch", "for unimplmented dtypes");                      \
+    }
+
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
 
 #undef GEMM_BATCH_LAUNCHER_USM
 
@@ -1066,30 +1135,25 @@ void dgmm_batch(sycl::queue &queue, side left_right, int64_t m, int64_t n,
     throw unimplemented("blas", "dgmm_batch", "for row_major layout");
 }
 
-template <typename Func, typename T>
-inline void gemm_batch(const char *func_name, Func func, sycl::queue &queue, transpose transa,
-                       transpose transb, int64_t m, int64_t n, int64_t k, T alpha,
-                       sycl::buffer<T, 1> &a, int64_t lda, int64_t stride_a, sycl::buffer<T, 1> &b,
-                       int64_t ldb, int64_t stride_b, T beta, sycl::buffer<T, 1> &c, int64_t ldc,
-                       int64_t stride_c, int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", "for row_major layout");
-}
-
-#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE, CUBLAS_ROUTINE)                                          \
-    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,  \
-                    int64_t k, TYPE alpha, sycl::buffer<TYPE, 1> &a, int64_t lda,                  \
-                    int64_t stride_a, sycl::buffer<TYPE, 1> &b, int64_t ldb, int64_t stride_b,     \
-                    TYPE beta, sycl::buffer<TYPE, 1> &c, int64_t ldc, int64_t stride_c,            \
-                    int64_t batch_size) {                                                          \
-        gemm_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, a, lda, \
-                   stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);                \
+#define GEMM_STRIDED_BATCH_LAUNCHER(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                               \
+    void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n, \
+                    int64_t k, TYPE_S alpha, sycl::buffer<TYPE_A, 1> &a, int64_t lda,             \
+                    int64_t stride_a, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t stride_b,  \
+                    TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stride_c,       \
+                    int64_t batch_size) {                                                         \
+        throw unimplemented("blas", "gemm_batch", "for row_major layout");                        \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, cublasHgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(float, cublasSgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(double, cublasDgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, cublasCgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, cublasZgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, std::int32_t, float)
+GEMM_STRIDED_BATCH_LAUNCHER(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<float>, std::complex<float>, std::complex<float>,
+                            std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER(std::complex<double>, std::complex<double>, std::complex<double>,
+                            std::complex<double>)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER
 
@@ -1458,59 +1522,47 @@ sycl::event dgmm_batch(sycl::queue &queue, side *left_right, int64_t *m, int64_t
     throw unimplemented("blas", "dgmm_batch", "for row_major layout");
 }
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &queue,
-                              transpose transa, transpose transb, int64_t m, int64_t n, int64_t k,
-                              T alpha, const T *a, int64_t lda, int64_t stride_a, const T *b,
-                              int64_t ldb, int64_t stride_b, T beta, T *c, int64_t ldc,
-                              int64_t stride_c, int64_t batch_size,
-                              const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", "for row_major layout");
-}
-
-#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                     \
-    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,     \
-                           int64_t n, int64_t k, TYPE alpha, const TYPE *a, int64_t lda,          \
-                           int64_t stride_a, const TYPE *b, int64_t ldb, int64_t stride_b,        \
-                           TYPE beta, TYPE *c, int64_t ldc, int64_t stride_c, int64_t batch_size, \
-                           const std::vector<sycl::event> &dependencies) {                        \
-        return gemm_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, \
-                          a, lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size, \
-                          dependencies);                                                          \
+#define GEMM_STRIDED_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                        \
+    sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m,  \
+                           int64_t n, int64_t k, TYPE_S alpha, const TYPE_A *a, int64_t lda,   \
+                           int64_t stride_a, const TYPE_B *b, int64_t ldb, int64_t stride_b,   \
+                           TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stride_c,              \
+                           int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
+        throw unimplemented("blas", "gemm_batch", "for row_major layout");                     \
     }
 
-GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(float, cublasSgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(double, cublasDgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmStridedBatched)
-GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, cublasZgemmStridedBatched)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                                std::complex<float>)
+GEMM_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                                std::complex<double>)
 
 #undef GEMM_STRIDED_BATCH_LAUNCHER_USM
 
-template <typename Func, typename T>
-inline sycl::event gemm_batch(const char *func_name, Func func, sycl::queue &queue,
-                              transpose *transa, transpose *transb, int64_t *m, int64_t *n,
-                              int64_t *k, T *alpha, const T **a, int64_t *lda, const T **b,
-                              int64_t *ldb, T *beta, T **c, int64_t *ldc, int64_t group_count,
-                              int64_t *group_size, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", "for row_major layout");
-}
-
-#define GEMM_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                             \
-    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,  \
-                           int64_t *n, int64_t *k, TYPE *alpha, const TYPE **a, int64_t *lda,     \
-                           const TYPE **b, int64_t *ldb, TYPE *beta, TYPE **c, int64_t *ldc,      \
-                           int64_t group_count, int64_t *group_size,                              \
-                           const std::vector<sycl::event> &dependencies) {                        \
-        return gemm_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, transa, transb, m, n, k, alpha, \
-                          a, lda, b, ldb, beta, c, ldc, group_count, group_size, dependencies);   \
+#define GEMM_BATCH_LAUNCHER_USM(TYPE_A, TYPE_B, TYPE_C, TYPE_S)                                    \
+    sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,   \
+                           int64_t *n, int64_t *k, TYPE_S *alpha, const TYPE_A **a, int64_t *lda,  \
+                           const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
+                           int64_t group_count, int64_t *group_size,                               \
+                           const std::vector<sycl::event> &dependencies) {                         \
+        throw unimplemented("blas", "gemm_batch", "for row_major layout");                         \
     }
 
-GEMM_BATCH_LAUNCHER_USM(sycl::half, cublasHgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(float, cublasSgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(double, cublasDgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<float>, cublasCgemmBatched)
-GEMM_BATCH_LAUNCHER_USM(std::complex<double>, cublasZgemmBatched)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, sycl::half, sycl::half)
+GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
+GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, std::int32_t, float)
+GEMM_BATCH_LAUNCHER_USM(float, float, float, float)
+GEMM_BATCH_LAUNCHER_USM(double, double, double, double)
+GEMM_BATCH_LAUNCHER_USM(std::complex<float>, std::complex<float>, std::complex<float>,
+                        std::complex<float>)
+GEMM_BATCH_LAUNCHER_USM(std::complex<double>, std::complex<double>, std::complex<double>,
+                        std::complex<double>)
 
 #undef GEMM_BATCH_LAUNCHER_USM
 

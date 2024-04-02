@@ -231,6 +231,56 @@ inline cublasSideMode_t get_cublas_side_mode(oneapi::mkl::side lr) {
     }
 }
 
+template <typename T>
+inline cudaDataType_t get_cublas_datatype() {
+    static_assert(false);
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<__half>() {
+    return CUDA_R_16F;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<float>() {
+    return CUDA_R_32F;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<double>() {
+    return CUDA_R_64F;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<cuComplex>() {
+    return CUDA_C_32F;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<cuDoubleComplex>() {
+    return CUDA_C_64F;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<std::int8_t>() {
+    return CUDA_R_8I;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<std::uint8_t>() {
+    return CUDA_R_8U;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<std::int32_t>() {
+    return CUDA_R_32I;
+}
+
+template <>
+inline cudaDataType_t get_cublas_datatype<std::uint32_t>() {
+    return CUDA_R_8U;
+}
+
 /*converting std::complex<T> to cu<T>Complex*/
 /*converting sycl::half to __half*/
 template <typename T>
