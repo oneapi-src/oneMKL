@@ -249,21 +249,21 @@ void copy_matrix(vec_src &src, oneapi::mkl::layout layout, oneapi::mkl::transpos
     }
 }
 
-template <typename fp>
-void copy_matrix(fp *src, oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int m, int n,
-                 int ld, fp *dest) {
+template <typename fp_src, typename fp_dst>
+void copy_matrix(fp_src *src, oneapi::mkl::layout layout, oneapi::mkl::transpose trans, int m,
+                 int n, int ld, fp_dst *dest) {
     if (((trans == oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::col_major)) ||
         ((trans != oneapi::mkl::transpose::nontrans) &&
          (layout == oneapi::mkl::layout::row_major))) {
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
-                dest[i + j * ld] = (fp)src[i + j * ld];
+                dest[i + j * ld] = (fp_dst)src[i + j * ld];
     }
     else {
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
-                dest[j + i * ld] = (fp)src[j + i * ld];
+                dest[j + i * ld] = (fp_dst)src[j + i * ld];
     }
 }
 
