@@ -16,4 +16,4 @@
 .git/
 
 # Build
-build/
+build*/
