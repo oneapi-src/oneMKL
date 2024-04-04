@@ -411,19 +411,18 @@ Supported compilers include:
 
 #### Linux*
 
-Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU) |  NVIDIA GPU
-:--- | :--- | :--- | :---
-Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10  | 18.04.3, 20.04
-SUSE Linux Enterprise Server*     | 15             | *Not supported* | *Not supported*
-Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported* | *Not supported*
-Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
+Backend | Supported Operating System
+:--- | :---
+x86 CPU    | Red Hat Enterprise Linux* 9 (RHEL* 9)
+Intel GPU  | Ubuntu 22.04 LTS
+NVIDIA GPU | Ubuntu 22.04 LTS
 
 #### Windows*
 
-Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU)
-:--- | :--- | :---
-Microsoft Windows* | 10 (64-bit version only) | 10 (64-bit version only)
-Microsoft Windows* Server | 2016, 2019 | *Not supported*
+Backend | Supported Operating System
+:--- | :---
+x86 CPU   | Microsoft Windows* Server 2022
+Intel GPU | Microsoft Windows* 11
 ---
 
 ### Software Requirements
@@ -497,6 +496,27 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
         </tr>
     </tbody>
 </table>
+
+#### Product and Version Information:
+
+Product | Supported Version | License
+:--- | :--- | :---
+[CMake](https://cmake.org/download/) | 3.13 or higher | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
+[Ninja](https://ninja-build.org/) | 1.10.0 | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
+[GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
+[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
+[AdaptiveCpp](https://github.com/AdaptiveCpp/AdaptiveCpp) | later than [2cfa530](https://github.com/AdaptiveCpp/AdaptiveCpp/commit/2cfa5303fd88b8f84e539b5bb6ed41e49c6d6118) | [BSD-2-Clause License ](https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/LICENSE)
+[oneAPI DPC++ Compiler binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds before [96d744f](https://github.com/intel/llvm/commit/96d744f12ad3ec4a0f866321934582ad9a2fa55a), tested with [20240221](https://github.com/intel/llvm/releases/tag/nightly-2024-02-21) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[oneAPI DPC++ Compiler source for NVIDIA and AMD GPUs](https://github.com/intel/llvm) | Daily source releases, tested with [20240221](https://github.com/intel/llvm/tree/nightly-2024-02-21) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
+[NVIDIA CUDA SDK](https://developer.nvidia.com/hpc-sdk) | 12.0 | [End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
+[AMD rocBLAS](https://github.com/ROCm/rocblas) | 4.5 | [AMD License](https://github.com/ROCm/rocBLAS/blob/develop/LICENSE.md)
+[AMD rocRAND](https://github.com/ROCm/rocRAND) | 5.1.0 | [AMD License](https://github.com/ROCm/rocRAND/blob/develop/LICENSE.txt)
+[AMD rocSOLVER](https://github.com/ROCm/rocSOLVER) | 5.0.0 | [AMD License](https://github.com/ROCm/rocSOLVER/blob/develop/LICENSE.md)
+[AMD rocFFT](https://github.com/ROCm/rocFFT) | rocm-5.4.3 | [AMD License](https://github.com/ROCm/rocFFT/blob/rocm-5.4.3/LICENSE.md)
+[NETLIB LAPACK](https://www.netlib.org/) | [5d4180c](https://github.com/Reference-LAPACK/lapack/commit/5d4180cf8288ae6ad9a771d18793d15bd0c5643c) | [BSD like license](http://www.netlib.org/lapack/LICENSE.txt)
+[portBLAS](https://github.com/codeplaysoftware/portBLAS) | 0.1 | [Apache License v2.0](https://github.com/codeplaysoftware/portBLAS/blob/master/LICENSE)
+[portFFT](https://github.com/codeplaysoftware/portFFT) | 0.1 | [Apache License v2.0](https://github.com/codeplaysoftware/portFFT/blob/master/LICENSE)
 
 ---
 
