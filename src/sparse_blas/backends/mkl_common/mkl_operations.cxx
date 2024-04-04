@@ -64,7 +64,8 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> gemv(
     sycl::queue& queue, transpose transpose_val, const fpType alpha,
     detail::matrix_handle* A_handle, sycl::buffer<fpType, 1>& x, const fpType beta,
     sycl::buffer<fpType, 1>& y) {
-    oneapi::mkl::sparse::gemv(queue, transpose_val, alpha, detail::get_handle(A_handle), x, beta, y);
+    oneapi::mkl::sparse::gemv(queue, transpose_val, alpha, detail::get_handle(A_handle), x, beta,
+                              y);
 }
 
 template <typename fpType>
@@ -72,8 +73,8 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> gemv(
     sycl::queue& queue, transpose transpose_val, const fpType alpha,
     detail::matrix_handle* A_handle, const fpType* x, const fpType beta, fpType* y,
     const std::vector<sycl::event>& dependencies) {
-    return oneapi::mkl::sparse::gemv(queue, transpose_val, alpha, detail::get_handle(A_handle), x, beta, y,
-                                     dependencies);
+    return oneapi::mkl::sparse::gemv(queue, transpose_val, alpha, detail::get_handle(A_handle), x,
+                                     beta, y, dependencies);
 }
 
 template <typename fpType>
