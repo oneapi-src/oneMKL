@@ -89,14 +89,9 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>> trsv(sycl::queue& queue, upl
                                  "Transposed or conjugate trsv is not supported");
     }
 
-#if defined(__INTEL_MKL__) && (__INTEL_MKL__ >= 2024) && (__INTEL_MKL_UPDATE__ >= 1)
-    const fpType alpha = fpType(1.0);
+    const fpType alpha = static_cast<fpType>(1);
     oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val, alpha,
                               detail::get_handle(A_handle), x, y);
-#else
-    oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,
-                              detail::get_handle(A_handle), x, y);
-#endif
 }
 
 template <typename fpType>
@@ -110,16 +105,10 @@ std::enable_if_t<detail::is_fp_supported_v<fpType>, sycl::event> trsv(
                                  "Transposed or conjugate trsv is not supported");
     }
     // TODO: Remove const_cast in future oneMKL release
-#if defined(__INTEL_MKL__) && (__INTEL_MKL__ >= 2024) && (__INTEL_MKL_UPDATE__ >= 1)
-    const fpType alpha = fpType(1.0);
+    const fpType alpha = static_cast<fpType>(1);
     return oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val, alpha,
                                      detail::get_handle(A_handle), const_cast<fpType*>(x), y,
                                      dependencies);
-#else
-    return oneapi::mkl::sparse::trsv(queue, uplo_val, transpose_val, diag_val,
-                                     detail::get_handle(A_handle), const_cast<fpType*>(x), y,
-                                     dependencies);
-#endif
 }
 
 template <typename fpType>
