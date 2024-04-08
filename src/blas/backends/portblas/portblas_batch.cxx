@@ -219,7 +219,7 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
                 sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", " for unsupporeted dtype");
+    throw unimplemented("blas", "gemm_batch", " for unsupported dtype");
 }
 
 void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -228,7 +228,7 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", " for unsupporeted dtype");
+    throw unimplemented("blas", "gemm_batch", " for unsupported dtype");
 }
 
 void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -237,7 +237,7 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", " for unsupporeted dtype");
+    throw unimplemented("blas", "gemm_batch", " for unsupported dtype");
 }
 
 void trsm_batch(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
