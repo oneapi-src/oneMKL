@@ -292,7 +292,10 @@ GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, float, float)
                     int64_t stridea, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t strideb,    \
                     TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stridec,        \
                     int64_t batch_size) {                                                         \
-        throw unimplemented("blas", "gemm_batch", "for data type combination");                   \
+        throw unimplemented("blas", "gemm_batch",                                                 \
+                            std::string("for dtype unimplemented dtype combination <") +          \
+                                dtype_string<TYPE_A>() + "," + dtype_string<TYPE_B>() + "," +     \
+                                dtype_string<TYPE_C>() + "," + dtype_string<TYPE_S>() + ">");     \
     }
 
 GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, float, float)
@@ -912,7 +915,10 @@ GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
                            int64_t stridea, const TYPE_B *b, int64_t ldb, int64_t strideb,     \
                            TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stridec,               \
                            int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
-        throw unimplemented("blas", "gemm_batch", "for data type combination");                \
+        throw unimplemented("blas", "gemm_batch",                                              \
+                            std::string("for dtype unimplemented dtype combination <") +       \
+                                dtype_string<TYPE_A>() + "," + dtype_string<TYPE_B>() + "," +  \
+                                dtype_string<TYPE_C>() + "," + dtype_string<TYPE_S>() + ">");  \
     }
 
 GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
@@ -991,7 +997,10 @@ GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
                            const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
                            int64_t group_count, int64_t *group_size,                               \
                            const std::vector<sycl::event> &dependencies) {                         \
-        throw unimplemented("blas", "gemm_batch", "for data type combination");                    \
+        throw unimplemented("blas", "gemm_batch",                                                  \
+                            std::string("for dtype unimplemented dtype combination <") +           \
+                                dtype_string<TYPE_A>() + "," + dtype_string<TYPE_B>() + "," +      \
+                                dtype_string<TYPE_C>() + "," + dtype_string<TYPE_S>() + ">");      \
     }
 
 GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
@@ -1567,7 +1576,10 @@ GEMM_STRIDED_BATCH_LAUNCHER(sycl::half, sycl::half, float, float)
                     int64_t stridea, sycl::buffer<TYPE_B, 1> &b, int64_t ldb, int64_t strideb,    \
                     TYPE_S beta, sycl::buffer<TYPE_C, 1> &c, int64_t ldc, int64_t stridec,        \
                     int64_t batch_size) {                                                         \
-        throw unimplemented("blas", "gemm_batch", "for data type combination");                   \
+        throw unimplemented("blas", "gemm_batch",                                                 \
+                            std::string("for dtype unimplemented dtype combination <") +          \
+                                dtype_string<TYPE_A>() + "," + dtype_string<TYPE_B>() + "," +     \
+                                dtype_string<TYPE_C>() + "," + dtype_string<TYPE_S>() + ">");     \
     }
 
 GEMM_STRIDED_BATCH_LAUNCHER(std::int8_t, std::int8_t, float, float)
@@ -2084,7 +2096,10 @@ GEMM_STRIDED_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
                            int64_t stridea, const TYPE_B *b, int64_t ldb, int64_t strideb,     \
                            TYPE_S beta, TYPE_C *c, int64_t ldc, int64_t stridec,               \
                            int64_t batch_size, const std::vector<sycl::event> &dependencies) { \
-        throw unimplemented("blas", "gemm_batch", "for data type combination");                \
+        throw unimplemented("blas", "gemm_batch",                                              \
+                            std::string("for dtype unimplemented dtype combination <") +       \
+                                dtype_string<TYPE_A>() + "," + dtype_string<TYPE_B>() + "," +  \
+                                dtype_string<TYPE_C>() + "," + dtype_string<TYPE_S>() + ">");  \
     }
 
 GEMM_STRIDED_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)
@@ -2133,7 +2148,10 @@ GEMM_BATCH_LAUNCHER_USM(sycl::half, sycl::half, float, float)
                            const TYPE_B **b, int64_t *ldb, TYPE_S *beta, TYPE_C **c, int64_t *ldc, \
                            int64_t group_count, int64_t *group_size,                               \
                            const std::vector<sycl::event> &dependencies) {                         \
-        throw unimplemented("blas", "gemm_batch", "for data type combination");                    \
+        throw unimplemented("blas", "gemm_batch",                                                  \
+                            std::string("for dtype unimplemented dtype combination <") +           \
+                                dtype_string<TYPE_A>() + "," + dtype_string<TYPE_B>() + "," +      \
+                                dtype_string<TYPE_C>() + "," + dtype_string<TYPE_S>() + ">");      \
     }
 
 GEMM_BATCH_LAUNCHER_USM(std::int8_t, std::int8_t, float, float)

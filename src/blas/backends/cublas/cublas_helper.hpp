@@ -35,6 +35,7 @@
 
 #include "oneapi/mkl/types.hpp"
 #include "runtime_support_helper.hpp"
+#include "error_helper.hpp"
 
 namespace oneapi {
 namespace mkl {

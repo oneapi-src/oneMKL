@@ -31,6 +31,7 @@
 #include <complex>
 #include "oneapi/mkl/types.hpp"
 #include <hip/hip_runtime.h>
+#include "error_helper.hpp"
 
 namespace oneapi {
 namespace mkl {
