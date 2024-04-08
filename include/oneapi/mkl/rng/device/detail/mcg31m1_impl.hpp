@@ -142,14 +142,10 @@ static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::mcg31m1<Vec
 
 template <std::int32_t VecSize>
 static inline void init(engine_state<oneapi::mkl::rng::device::mcg31m1<VecSize>>& state,
-                        std::uint64_t n, const std::uint32_t* seed_ptr, std::uint64_t offset) {
-    if (n == 0)
+                        std::uint32_t seed, std::uint64_t offset) {
+    state.s = custom_mod<std::uint32_t>(seed);
+    if (state.s == 0)
         state.s = 1;
-    else {
-        state.s = custom_mod<std::uint32_t>(seed_ptr[0]);
-        if (state.s == 0)
-            state.s = 1;
-    }
     skip_ahead(state, offset);
 }
 
@@ -183,11 +179,7 @@ template <std::int32_t VecSize>
 class engine_base<oneapi::mkl::rng::device::mcg31m1<VecSize>> {
 protected:
     engine_base(std::uint32_t seed, std::uint64_t offset = 0) {
-        mcg31m1_impl::init(this->state_, 1, &seed, offset);
-    }
-
-    engine_base(std::uint64_t n, const std::uint32_t* seed, std::uint64_t offset = 0) {
-        mcg31m1_impl::init(this->state_, n, seed, offset);
+        mcg31m1_impl::init(this->state_, seed, offset);
     }
 
     template <typename RealType>
