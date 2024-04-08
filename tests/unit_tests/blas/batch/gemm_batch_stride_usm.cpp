@@ -85,11 +85,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     ldc = std::max(m, n);
     alpha = rand_scalar<Ts>();
     beta = rand_scalar<Ts>();
-    if ((std::is_same<Ts, float>::value) || (std::is_same<Ts, double>::value)) {
-        transa = (oneapi::mkl::transpose)(std::rand() % 2);
-        transb = (oneapi::mkl::transpose)(std::rand() % 2);
-    }
-    else {
+    if ((std::is_same<Ts, std::complex<float>>::value) || (std::is_same<Ts, std::complex<double>>::value)) {
         tmp = std::rand() % 3;
         if (tmp == 2)
             transa = oneapi::mkl::transpose::conjtrans;
@@ -100,6 +96,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
             transb = oneapi::mkl::transpose::conjtrans;
         else
             transb = (oneapi::mkl::transpose)tmp;
+    } else {
+        transa = (oneapi::mkl::transpose)(std::rand() % 2);
+        transb = (oneapi::mkl::transpose)(std::rand() % 2);
     }
 
     int64_t stride_a, stride_b, stride_c;
@@ -247,8 +246,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     // Compare the results of reference implementation and DPC++ implementation.
     constexpr int tol_scalar = std::is_same_v<Ta, Ts> ? 10 : 40;
 
-    for (size_t i = 0; i < C_ref.size(); ++i)
+    for (size_t i = 0; i < C_ref.size(); ++i) {
         C_cast_ref[i] = C_ref[i];
+    }
     bool good =
         check_equal_matrix(C, C_cast_ref, oneapi::mkl::layout::col_major, stride_c * batch_size, 1,
                            stride_c * batch_size, tol_scalar * k, std::cout);
