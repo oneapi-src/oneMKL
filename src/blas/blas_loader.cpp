@@ -1348,7 +1348,7 @@ void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa
                 sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
                 sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    function_tables[libkey].column_major_hsgemm_batch_strided_sycl(
+    function_tables[libkey].column_major_gemm_f16f16f32_batch_strided_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size);
 }
@@ -1359,7 +1359,7 @@ void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    function_tables[libkey].column_major_isgemm_batch_strided_sycl(
+    function_tables[libkey].column_major_gemm_s8s8f32_batch_strided_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size);
 }
@@ -1370,7 +1370,7 @@ void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size) {
-    function_tables[libkey].column_major_iigemm_batch_strided_sycl(
+    function_tables[libkey].column_major_gemm_s8s8s32_batch_strided_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size);
 }
@@ -3444,7 +3444,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc,
                        std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].column_major_hsgemm_batch_group_usm_sycl(
+    return function_tables[libkey].column_major_gemm_f16f16f32_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -3455,7 +3455,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t **b, std::int64_t *ldb, float *beta, float **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].column_major_isgemm_batch_group_usm_sycl(
+    return function_tables[libkey].column_major_gemm_s8s8f32_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -3466,7 +3466,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t **b, std::int64_t *ldb, float *beta, std::int32_t **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].column_major_iigemm_batch_group_usm_sycl(
+    return function_tables[libkey].column_major_gemm_s8s8s32_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -3535,7 +3535,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const sycl::half *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                        float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].column_major_hsgemm_batch_strided_usm_sycl(
+    return function_tables[libkey].column_major_gemm_f16f16f32_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
 }
@@ -3546,7 +3546,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                        float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].column_major_isgemm_batch_strided_usm_sycl(
+    return function_tables[libkey].column_major_gemm_s8s8f32_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
 }
@@ -3557,7 +3557,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                        std::int32_t *c, std::int64_t ldc, std::int64_t stride_c,
                        std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].column_major_iigemm_batch_strided_usm_sycl(
+    return function_tables[libkey].column_major_gemm_s8s8s32_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
 }
@@ -5282,7 +5282,7 @@ void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa
                 sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
                 sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    function_tables[libkey].row_major_hsgemm_batch_strided_sycl(
+    function_tables[libkey].row_major_gemm_f16f16f32_batch_strided_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size);
 }
@@ -5293,7 +5293,7 @@ void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    function_tables[libkey].row_major_isgemm_batch_strided_sycl(
+    function_tables[libkey].row_major_gemm_s8s8f32_batch_strided_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size);
 }
@@ -5304,7 +5304,7 @@ void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size) {
-    function_tables[libkey].row_major_iigemm_batch_strided_sycl(
+    function_tables[libkey].row_major_gemm_s8s8s32_batch_strided_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size);
 }
@@ -7374,7 +7374,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc,
                        std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].row_major_hsgemm_batch_group_usm_sycl(
+    return function_tables[libkey].row_major_gemm_f16f16f32_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -7385,7 +7385,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t **b, std::int64_t *ldb, float *beta, float **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].row_major_isgemm_batch_group_usm_sycl(
+    return function_tables[libkey].row_major_gemm_s8s8f32_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -7396,7 +7396,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t **b, std::int64_t *ldb, float *beta, std::int32_t **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].row_major_iigemm_batch_group_usm_sycl(
+    return function_tables[libkey].row_major_gemm_s8s8s32_batch_group_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc, group_count,
         group_size, dependencies);
 }
@@ -7465,7 +7465,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const sycl::half *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                        float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].row_major_hsgemm_batch_strided_usm_sycl(
+    return function_tables[libkey].row_major_gemm_f16f16f32_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
 }
@@ -7476,7 +7476,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                        float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].row_major_isgemm_batch_strided_usm_sycl(
+    return function_tables[libkey].row_major_gemm_s8s8f32_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
 }
@@ -7487,7 +7487,7 @@ sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose
                        const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b, float beta,
                        std::int32_t *c, std::int64_t ldc, std::int64_t stride_c,
                        std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
-    return function_tables[libkey].row_major_iigemm_batch_strided_usm_sycl(
+    return function_tables[libkey].row_major_gemm_s8s8s32_batch_strided_usm_sycl(
         queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b, beta, c, ldc,
         stride_c, batch_size, dependencies);
 }
