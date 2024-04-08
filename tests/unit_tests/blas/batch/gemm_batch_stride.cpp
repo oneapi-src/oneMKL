@@ -66,7 +66,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     alpha = rand_scalar<Ts>();
     beta = rand_scalar<Ts>();
 
-    if ((std::is_same<Ts, std::complex<float>>::value) || (std::is_same<Ts, std::complex<double>>::value)) {
+    if ((std::is_same<Ts, std::complex<float>>::value) ||
+        (std::is_same<Ts, std::complex<double>>::value)) {
         tmp = std::rand() % 3;
         if (tmp == 2)
             transa = oneapi::mkl::transpose::conjtrans;
@@ -77,7 +78,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
             transb = oneapi::mkl::transpose::conjtrans;
         else
             transb = (oneapi::mkl::transpose)tmp;
-    } else {
+    }
+    else {
         transa = (oneapi::mkl::transpose)(std::rand() % 2);
         transb = (oneapi::mkl::transpose)(std::rand() % 2);
     }

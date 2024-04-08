@@ -106,7 +106,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         ldc[i] = std::max(m[i], n[i]);
         alpha[i] = rand_scalar<Ts>();
         beta[i] = rand_scalar<Ts>();
-        if ((std::is_same<Ts, std::complex<float>>::value) || (std::is_same<Ts, std::complex<double>>::value)) {
+        if ((std::is_same<Ts, std::complex<float>>::value) ||
+            (std::is_same<Ts, std::complex<double>>::value)) {
             tmp = std::rand() % 3;
             if (tmp == 2)
                 transa[i] = oneapi::mkl::transpose::conjtrans;
@@ -117,7 +118,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
                 transb[i] = oneapi::mkl::transpose::conjtrans;
             else
                 transb[i] = (oneapi::mkl::transpose)tmp;
-        } else {
+        }
+        else {
             transa[i] = (oneapi::mkl::transpose)(std::rand() % 2);
             transb[i] = (oneapi::mkl::transpose)(std::rand() % 2);
         }
