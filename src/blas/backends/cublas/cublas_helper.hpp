@@ -278,7 +278,7 @@ inline cudaDataType_t get_cublas_datatype<std::int32_t>() {
 
 template <>
 inline cudaDataType_t get_cublas_datatype<std::uint32_t>() {
-    return CUDA_R_8U;
+    return CUDA_R_32U;
 }
 
 /*converting std::complex<T> to cu<T>Complex*/
