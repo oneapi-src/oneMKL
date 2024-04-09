@@ -125,8 +125,8 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     auto us = usm_allocator<Ts, usm::alloc::shared, 64>(cxt, *dev);
     vector<Ta, decltype(ua)> A(ua);
     vector<Tb, decltype(ub)> B(ub);
-    vector<Tc, decltype(uc)> C(uc), C_cast_ref(us);
-    vector<Ts, decltype(us)> A_ref(ua), B_ref(ub), C_ref(us);
+    vector<Tc, decltype(uc)> C(uc), C_cast_ref(uc);
+    vector<Ts, decltype(us)> A_ref(us), B_ref(us), C_ref(us);
 
     A.resize(stride_a * batch_size);
     B.resize(stride_b * batch_size);
