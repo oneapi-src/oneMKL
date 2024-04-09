@@ -175,7 +175,7 @@ Supported compilers include:
             <td rowspan=9 align="center">BLAS</td>
             <td rowspan=3 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</br>AdaptiveCpp</td>
+            <td align="center">Intel DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -225,7 +225,7 @@ Supported compilers include:
             <td rowspan=4 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Intel DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -250,7 +250,7 @@ Supported compilers include:
             <td rowspan=4 align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</br>AdaptiveCpp</td>
+            <td align="center">Intel DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -349,7 +349,7 @@ Supported compilers include:
             <td rowspan=3 align="center">BLAS</td>
             <td rowspan=2 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Intel DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -367,7 +367,7 @@ Supported compilers include:
             <td rowspan=2 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Intel DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -380,7 +380,7 @@ Supported compilers include:
             <td rowspan=2 align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Intel DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -504,11 +504,11 @@ Product | Supported Version | License
 [CMake](https://cmake.org/download/) | 3.13 or higher | [The OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt)
 [Ninja](https://ninja-build.org/) | 1.10.0 | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
-[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
-[AdaptiveCpp](https://github.com/AdaptiveCpp/AdaptiveCpp) | later than [2cfa530](https://github.com/AdaptiveCpp/AdaptiveCpp/commit/2cfa5303fd88b8f84e539b5bb6ed41e49c6d6118) | [BSD-2-Clause License ](https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/LICENSE)
-[oneAPI DPC++ Compiler binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds before [96d744f](https://github.com/intel/llvm/commit/96d744f12ad3ec4a0f866321934582ad9a2fa55a), tested with [20240221](https://github.com/intel/llvm/releases/tag/nightly-2024-02-21) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
-[oneAPI DPC++ Compiler source for NVIDIA and AMD GPUs](https://github.com/intel/llvm) | Daily source releases, tested with [20240221](https://github.com/intel/llvm/tree/nightly-2024-02-21) | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
-[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
+[Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | Latest | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
+[AdaptiveCpp](https://github.com/AdaptiveCpp/AdaptiveCpp) | Later than [2cfa530](https://github.com/AdaptiveCpp/AdaptiveCpp/commit/2cfa5303fd88b8f84e539b5bb6ed41e49c6d6118) | [BSD-2-Clause License ](https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/LICENSE)
+[oneAPI DPC++ Compiler binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[oneAPI DPC++ Compiler source for NVIDIA and AMD GPUs](https://github.com/intel/llvm) | Daily source releases | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | Latest | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
 [NVIDIA CUDA SDK](https://developer.nvidia.com/hpc-sdk) | 12.0 | [End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
 [AMD rocBLAS](https://github.com/ROCm/rocblas) | 4.5 | [AMD License](https://github.com/ROCm/rocBLAS/blob/develop/LICENSE.md)
 [AMD rocRAND](https://github.com/ROCm/rocRAND) | 5.1.0 | [AMD License](https://github.com/ROCm/rocRAND/blob/develop/LICENSE.txt)
