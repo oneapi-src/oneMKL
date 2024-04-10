@@ -41,9 +41,23 @@ target_include_directories(${LIB_OBJ}
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
 find_package(HIP REQUIRED)
-find_package(rocfft REQUIRED)
+# Require the minimum rocFFT version matching with ROCm 5.4.3.
+find_package(rocfft 1.0.21 REQUIRED)
 
 target_link_libraries(${LIB_OBJ} PRIVATE hip::host roc::rocfft)
+
+# Allow to compile for different ROCm versions. See the README for the supported
+# ROCm versions.
+# Starting ROCm >=6.0 the include files are one directory level deeper.
+find_path(
+  rocfft_EXTRA_INCLUDE_DIR
+  rocfft.h
+  PATHS ${rocfft_INCLUDE_DIR}
+  PATH_SUFFIXES rocfft
+  NO_DEFAULT_PATH
+  REQUIRED
+)
+target_include_directories(${LIB_OBJ} PRIVATE ${rocfft_EXTRA_INCLUDE_DIR})
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
 
