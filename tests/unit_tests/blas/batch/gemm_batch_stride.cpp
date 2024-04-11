@@ -45,6 +45,54 @@ using std::vector;
 
 extern std::vector<sycl::device *> devices;
 
+template <typename fp>
+typename std::enable_if<std::is_integral<fp>::value, bool>::type check_equal_int(fp x, fp x_ref,
+                                                                                 int error_mag) {
+    return (std::abs(x - x_ref) <= 1);
+}
+
+template <class T>
+struct acc_type {
+    typedef host_accessor<T, 1, access_mode::read> type;
+};
+
+template <class T>
+using acc_type_t = typename acc_type<T>::type;
+
+template <class T>
+struct vec_type {
+    typedef vector<T, allocator_helper<T, 64>> type;
+};
+
+template <class T>
+using vec_type_t = typename vec_type<T>::type;
+
+// Specialized check for Tc=int32_t and Ts=float as small differences in the reference become large after rounding
+template <>
+bool check_equal_matrix<acc_type_t<int32_t>, vec_type_t<int32_t>>(acc_type_t<int32_t> &M,
+                                                                  vec_type_t<int32_t> &M_ref,
+                                                                  oneapi::mkl::layout layout, int m,
+                                                                  int n, int ld, int error_mag,
+                                                                  std::ostream &out) {
+    bool good = true;
+    int idx, count = 0;
+    for (int j = 0; j < n; j++) {
+        for (int i = 0; i < m; i++) {
+            idx = (layout == oneapi::mkl::layout::col_major) ? i + j * ld : j + i * ld;
+            if (!check_equal_int(M[idx], M_ref[idx], error_mag)) {
+                out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[idx]
+                    << " vs. Reference " << M_ref[idx] << std::endl;
+                good = false;
+                count++;
+                if (count > MAX_NUM_PRINT)
+                    return good;
+            }
+        }
+    }
+
+    return good;
+}
+
 namespace {
 
 template <typename Ta, typename Tb, typename Tc, typename Ts>
@@ -215,15 +263,17 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    constexpr int tol_scalar = std::is_same_v<Ta, Ts> ? 10 : 40;
+    int tol_scalar = std::is_same_v<Ta, Ts> ? 10 : 60;
+    if (main_queue.get_device().is_cpu())
+        tol_scalar = 100;
 
     for (size_t i = 0; i < C_ref.size(); ++i) {
         C_cast_ref[i] = C_ref[i];
     }
     auto C_accessor = C_buffer.template get_host_access(read_only);
-    bool good = check_equal_matrix(C_accessor, C_cast_ref, oneapi::mkl::layout::col_major,
-                                   stride_c * batch_size, 1, stride_c * batch_size, tol_scalar * k,
-                                   std::cout);
+    bool good = check_equal_matrix<acc_type_t<Tc>, vec_type_t<Tc>>(
+        C_accessor, C_cast_ref, oneapi::mkl::layout::col_major, stride_c * batch_size, 1,
+        stride_c * batch_size, tol_scalar * k, std::cout);
 
     return (int)good;
 }

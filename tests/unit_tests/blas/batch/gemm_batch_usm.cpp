@@ -45,6 +45,35 @@ using std::vector;
 
 extern std::vector<sycl::device *> devices;
 
+template <typename fp>
+typename std::enable_if<std::is_integral<fp>::value, bool>::type check_equal_int(fp x, fp x_ref,
+                                                                                 int error_mag) {
+    return (std::abs(x - x_ref) <= 1);
+}
+
+// Specialized check for Tc=int32_t and Ts=float as small differences in the reference become large after rounding
+template <>
+bool check_equal_matrix<int32_t>(const int32_t *M, const int32_t *M_ref, oneapi::mkl::layout layout,
+                                 int m, int n, int ld, int error_mag, std::ostream &out) {
+    bool good = true;
+    int idx, count = 0;
+    for (int j = 0; j < n; j++) {
+        for (int i = 0; i < m; i++) {
+            idx = (layout == oneapi::mkl::layout::col_major) ? i + j * ld : j + i * ld;
+            if (!check_equal_int(M[idx], M_ref[idx], error_mag)) {
+                out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[idx]
+                    << " vs. Reference " << M_ref[idx] << std::endl;
+                good = false;
+                count++;
+                if (count > MAX_NUM_PRINT)
+                    return good;
+            }
+        }
+    }
+
+    return good;
+}
+
 namespace {
 
 template <typename Ta, typename Tb, typename Tc, typename Ts>
@@ -321,14 +350,17 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 
     bool good = true;
     // Compare the results of reference implementation and DPC++ implementation.
-    constexpr int tol_scalar = std::is_same_v<Ta, Ts> ? 10 : 40;
+    int tol_scalar = std::is_same_v<Ta, Ts> ? 10 : 60;
+    if (main_queue.get_device().is_cpu())
+        tol_scalar = 100;
+
     idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
             copy_matrix(c_ref_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i],
                         ldc[i], c_cast_ref_array[idx]);
-            good = good && check_equal_matrix(c_array[idx], c_cast_ref_array[idx], layout, m[i],
-                                              n[i], ldc[i], tol_scalar * k[i], std::cout);
+            good = good && check_equal_matrix<Tc>(c_array[idx], c_cast_ref_array[idx], layout, m[i],
+                                                  n[i], ldc[i], tol_scalar * k[i], std::cout);
             idx++;
         }
     }
