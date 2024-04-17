@@ -78,6 +78,12 @@ if(PORTBLAS_TUNING_TARGET)
         -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
       target_link_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=nvptx64-nvidia-cuda)
+      if(DEFINED CUDA_TARGET)
+        target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+          -Xsycl-target-backend --cuda-gpu-arch=${CUDA_TARGET})
+        target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+          -Xsycl-target-backend --cuda-gpu-arch=${CUDA_TARGET})
+      endif()
     else()
       message(WARNING "Compiler is not supported."
       " Unable to automatically set the required flags for the target '${PORTBLAS_TUNING_TARGET}'."
