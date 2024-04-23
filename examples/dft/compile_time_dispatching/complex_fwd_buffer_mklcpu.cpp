@@ -91,7 +91,7 @@ void print_example_banner() {
                  "#\n"
                  "# For Intel CPU with Intel MKLCPU backend.\n"
                  "#\n"
-                 "# The environment variable SYCL_DEVICE_FILTER can be used to specify\n"
+                 "# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify\n"
                  "# SYCL device\n"
                  "########################################################################\n"
               << std::endl;

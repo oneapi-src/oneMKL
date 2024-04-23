@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-# NOTE: user needs to set env var SYCL_DEVICE_FILTER to use runtime example (no need to specify backend when building with CMake)
+# NOTE: user needs to set env var ONEAPI_DEVICE_SELECTOR to use runtime example (no need to specify backend when building with CMake)
 include(WarningsUtils)
 
 
@@ -25,14 +25,14 @@ include(WarningsUtils)
 set(DFT_RT_SOURCES "")
 # Set up for the right backend for run-time dispatching examples
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
-# overwrite SYCL_DEVICE_FILTER in their environment to run on the desired backend
+# overwrite ONEAPI_DEVICE_SELECTOR in their environment to run on the desired backend
 set(DEVICE_FILTERS "")
 if(ENABLE_MKLGPU_BACKEND OR ENABLE_CUFFT_BACKEND OR ENABLE_ROCFFT_BACKEND OR ENABLE_PORTFFT_BACKEND)
   list(APPEND DFT_RT_SOURCES "real_fwd_usm")
-  list(APPEND DEVICE_FILTERS "gpu")
+  list(APPEND DEVICE_FILTERS "level_zero:gpu")
 endif()
 
-message(STATUS "SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
+message(STATUS "ONEAPI_DEVICE_SELECTOR will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
 
 foreach(dft_rt_sources ${DFT_RT_SOURCES})
   add_executable(example_${domain}_${dft_rt_sources} ${dft_rt_sources}.cpp)
@@ -60,7 +60,7 @@ foreach(dft_rt_sources ${DFT_RT_SOURCES})
     add_test(NAME ${domain}/EXAMPLE/RT/${dft_rt_sources}/${device_filter} COMMAND example_${domain}_${dft_rt_sources})
     set_property(TEST ${domain}/EXAMPLE/RT/${dft_rt_sources}/${device_filter} PROPERTY
       ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-      ENVIRONMENT SYCL_DEVICE_FILTER=${device_filter})
+      ENVIRONMENT ONEAPI_DEVICE_SELECTOR=${device_filter})
   endforeach(device_filter)
 
 endforeach()

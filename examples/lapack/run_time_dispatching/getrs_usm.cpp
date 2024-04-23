@@ -203,7 +203,7 @@ void print_example_banner() {
     std::cout << "# Using single precision (float) data type" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Device will be selected during runtime." << std::endl;
-    std::cout << "# The environment variable SYCL_DEVICE_FILTER can be used to specify"
+    std::cout << "# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify"
               << std::endl;
     std::cout << "# SYCL device" << std::endl;
     std::cout << "# " << std::endl;
