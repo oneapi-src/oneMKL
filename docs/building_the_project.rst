@@ -290,6 +290,10 @@ definitions in 2 ways:
   The list of portBLAS targets can be found
   `here <https://github.com/codeplaysoftware/portBLAS#cmake-options>`_.
   This will automatically set ``-fsycl-targets`` if needed.
+  In case of ``AMD_GPU`` target, it is mandatory to set one or more device
+  architectures by means of ``HIP_TARGETS``, e.g., ``-DHIP_TARGETS=gfx90a``.
+  In case of ``NVIDIA_GPU`` target, it is possible to select a specific device
+  architecture by means of ``CUDA_TARGET``, e.g., ``-DCUDA_TARGET=sm_80``.
 #.
   If one target is set via ``-fsycl-targets`` the configuration step will
   try to automatically detect the portBLAS tuning target. One can manually
