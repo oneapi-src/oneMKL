@@ -381,10 +381,19 @@ inline void trmm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
             auto b_ = sc.get_mem<rocDataType *>(b_acc);
             rocblas_status err;
+
+// rocblas version 4.0.0 removed the legacy BLAS trmm implementation
+#ifdef ROCBLAS_NO_LEGACY_TRMM
             ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_side_mode(left_right),
                                     get_rocblas_fill_mode(upper_lower),
                                     get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
+                                    m, n, (rocDataType *)&alpha, a_, lda, b_, ldb, b_, ldb);
+#else
+	    ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_side_mode(left_right),
+                                    get_rocblas_fill_mode(upper_lower),
+                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
                                     m, n, (rocDataType *)&alpha, a_, lda, b_, ldb);
+#endif
         });
     });
 }
@@ -805,10 +814,19 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
             auto a_ = reinterpret_cast<const rocDataType *>(a);
             auto b_ = reinterpret_cast<rocDataType *>(b);
             rocblas_status err;
+
+// rocblas version 4.0.0 removed the legacy BLAS trmm implementation
+#ifdef ROCBLAS_NO_LEGACY_TRMM
+            ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_side_mode(left_right),
+                                    get_rocblas_fill_mode(upper_lower),
+                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
+                                    m, n, (rocDataType *)&alpha, a_, lda, b_, ldb, b_, ldb);
+#else
             ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, get_rocblas_side_mode(left_right),
                                     get_rocblas_fill_mode(upper_lower),
                                     get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
                                     m, n, (rocDataType *)&alpha, a_, lda, b_, ldb);
+#endif
         });
     });
 
