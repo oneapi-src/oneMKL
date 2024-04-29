@@ -1,10 +1,10 @@
-# oneAPI Math Kernel Library (oneMKL) Interfaces
+[![UXL Foundation Logo](https://github.com/uxlfoundation/artwork/blob/main/foundation/uxl-foundation-logo-horizontal-color.png)][UXL Foundation]
 
-<img align="left" src="https://spec.oneapi.io/oneapi-logo-white-scaled.jpg" alt="oneAPI logo">
+# oneAPI Math Kernel Library (oneMKL) Interfaces
 
 oneMKL Interfaces is an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
 
-oneMKL is part of [oneAPI](https://oneapi.io).
+oneMKL is part of the [UXL Foundation](http://www.uxlfoundation.org).
 <br/><br/>
 
 <table>
