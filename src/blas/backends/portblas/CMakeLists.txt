@@ -146,6 +146,10 @@ if (NOT PORTBLAS_FOUND)
   set(BLAS_ENABLE_BENCHMARK OFF)
   set(BLAS_ENABLE_TESTING OFF)
   set(ENABLE_EXPRESSION_TESTS OFF)
+  if(NOT PORTBLAS_TUNING_TARGET)
+    set(PORTBLAS_TUNING_TARGET "DEFAULT")
+  endif()
+  set(TUNING_TARGET ${PORTBLAS_TUNING_TARGET})
   set(BLAS_ENABLE_COMPLEX ON)
   # Set the policy to forward variables to portBLAS configure step
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
@@ -155,22 +159,13 @@ if (NOT PORTBLAS_FOUND)
     GIT_REPOSITORY https://github.com/codeplaysoftware/portBLAS
     GIT_TAG        master
   )
-  FetchContent_MakeAvailable(portBLAS)
+  FetchContent_MakeAvailable(portblas)
   message(STATUS "Looking for portBLAS - downloaded")
 
-  add_library(PORTBLAS::portblas INTERFACE IMPORTED)
-  target_include_directories(PORTBLAS::portblas
-    INTERFACE ${FETCHCONTENT_BASE_DIR}/portblas-src/include
-    INTERFACE ${FETCHCONTENT_BASE_DIR}/portblas-src/src
-  )
 else()
   message(STATUS "Looking for portBLAS - found")
+  add_library(portblas ALIAS PORTBLAS::portblas)
 endif()
-
-# This define is tuning portBLAS in header-only mode
-target_compile_definitions(PORTBLAS::portblas INTERFACE ${PORTBLAS_TUNING_TARGET})
-target_compile_definitions(PORTBLAS::portblas INTERFACE BLAS_ENABLE_COMPLEX=1)
-target_compile_options(ONEMKL::SYCL::SYCL INTERFACE "-DSB_ENABLE_USM=ON")
 
 set(SOURCES
   portblas_level1_double.cpp portblas_level1_float.cpp
@@ -196,7 +191,7 @@ target_include_directories(${LIB_OBJ}
 )
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL PORTBLAS::portblas)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL portblas)
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
