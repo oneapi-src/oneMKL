@@ -31,7 +31,7 @@ if(ENABLE_MKLCPU_BACKEND)
 endif()
 # RNG only supports mklcpu backend on Windows
 if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND DEVICE_FILTERS "level_zerogpu")
+  list(APPEND DEVICE_FILTERS "level_zero:gpu")
 endif()
 if(ENABLE_CURAND_BACKEND)
   list(APPEND DEVICE_FILTERS "cuda:gpu")
