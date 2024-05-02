@@ -149,6 +149,7 @@ if (NOT PORTBLAS_FOUND)
   if(NOT PORTBLAS_TUNING_TARGET)
     set(PORTBLAS_TUNING_TARGET "DEFAULT")
   endif()
+  # Following variable TUNING_TARGET will be used in portBLAS internal configuration
   set(TUNING_TARGET ${PORTBLAS_TUNING_TARGET})
   set(BLAS_ENABLE_COMPLEX ON)
   # Set the policy to forward variables to portBLAS configure step
