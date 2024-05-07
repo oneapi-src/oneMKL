@@ -27,7 +27,7 @@ set(LAPACK_RT_SOURCES "getrs_usm")
 # overwrite ONEAPI_DEVICE_SELECTOR in their environment to run on the desired backend
 set(DEVICE_FILTERS "")
 if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND DEVICE_FILTERS "level_zero:cpu")
+  list(APPEND DEVICE_FILTERS "opencl:cpu")
 endif()
 if(ENABLE_MKLGPU_BACKEND)
   list(APPEND DEVICE_FILTERS "level_zero:gpu")

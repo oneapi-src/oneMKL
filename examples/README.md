@@ -23,7 +23,7 @@ The example executable naming convention follows `example_<$domain>_<$routine>_<
 
 Run-time dispatching examples with mklcpu backend
 ```
-$ export ONEAPI_DEVICE_SELECTOR="level_zero:cpu"
+$ export ONEAPI_DEVICE_SELECTOR="opencl:cpu"
 $ ./bin/example_blas_gemm_usm
 
 ########################################################################
@@ -487,7 +487,7 @@ Unsupported Configuration:
 
 Run-time dispatching examples with mklcpu backend
 ```
-$ export ONEAPI_DEVICE_SELECTOR="level_zero:cpu"
+$ export ONEAPI_DEVICE_SELECTOR="opencl:cpu"
 $ ./bin/example_sparse_blas_gemv_usm
 
 ########################################################################
@@ -563,7 +563,7 @@ Sparse BLAS GEMV USM example ran OK.
 
 Compile-time dispatching example with mklcpu backend
 ```
-$ export ONEAPI_DEVICE_SELECTOR="level_zero:cpu"
+$ export ONEAPI_DEVICE_SELECTOR="opencl:cpu"
 $ ./bin/example_sparse_blas_gemv_usm_mklcpu
 
 ########################################################################
