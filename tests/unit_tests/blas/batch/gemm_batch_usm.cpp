@@ -350,9 +350,11 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
 
     bool good = true;
     // Compare the results of reference implementation and DPC++ implementation.
-    int tol_scalar = std::is_same_v<Ta, Ts> ? 10 : 60;
-    if (main_queue.get_device().is_cpu())
-        tol_scalar = 100;
+    int tol_scalar = 10;
+    // Scale the tolerance for when we generate int8_t, as input range is [-128, 127]
+    // rather than [-1,1]
+    if (std::is_same_v<Ta, int8_t> && std::is_same_v<Ts, float>)
+        tol_scalar *= 256;
 
     idx = 0;
     for (i = 0; i < group_count; i++) {
