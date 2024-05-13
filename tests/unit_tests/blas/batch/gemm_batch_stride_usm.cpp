@@ -313,17 +313,17 @@ TEST_P(GemmBatchStrideUsmTests, RealHalfPrecision) {
         std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
 
-TEST_P(GemmBatchStrideUsmTests, RealHalfRealScalarPrecision) {
+TEST_P(GemmBatchStrideUsmTests, HalfHalfFloatPrecision) {
     EXPECT_TRUEORSKIP((test<sycl::half, sycl::half, float, float>(std::get<0>(GetParam()),
                                                                   std::get<1>(GetParam()), 5)));
 }
 
-TEST_P(GemmBatchStrideUsmTests, RealIntRealScalarPrecision) {
+TEST_P(GemmBatchStrideUsmTests, Int8Int8SinglePrecision) {
     EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, float, float>(std::get<0>(GetParam()),
                                                                     std::get<1>(GetParam()), 5)));
 }
 
-TEST_P(GemmBatchStrideUsmTests, RealIntRealIntPrecision) {
+TEST_P(GemmBatchStrideUsmTests, Int8Int8Int32Precision) {
     EXPECT_TRUEORSKIP((test<std::int8_t, std::int8_t, std::int32_t, float>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), 5)));
 }
