@@ -15,7 +15,7 @@ env:
 
 jobs:
   mkl:
-    runs-on: ubuntu-latest
+    runs-on: intel-ubuntu-latest
     # One runner for each domain
     strategy:
       matrix:
