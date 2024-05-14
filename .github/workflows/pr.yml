@@ -49,10 +49,10 @@ jobs:
     - name: Configure/Build for a domain
       run: |
         source /opt/intel/oneapi/setvars.sh
-        cmake -DREF_BLAS_ROOT=${PWD}/lapack/install -DREF_LAPACK_ROOT=${PWD}/lapack/install -DTARGET_DOMAINS=${{ matrix.domain }} -B build
+        cmake -DREF_BLAS_ROOT=${PWD}/lapack/install -DREF_LAPACK_ROOT=${PWD}/lapack/install -DENABLE_MKLGPU_BACKEND=off -DTARGET_DOMAINS=${{ matrix.domain }} -B build
         cmake --build build ${PARALLEL}
     - name: Run tests
       run: |
         source /opt/intel/oneapi/setvars.sh
         # Run tests, skip GPU tests
-        ctest --test-dir build ${PARALLEL} -E 'gpu$'
+        ctest --test-dir build ${PARALLEL} -E 'ct$'
