@@ -21,7 +21,9 @@
 
 set(LIB_NAME onemkl_blas_rocblas)
 set(LIB_OBJ ${LIB_NAME}_obj)
-find_package(rocBLAS REQUIRED)
+find_package(rocblas 2.46.0 REQUIRED) # Corresponds to ROCm 5.4.3
+find_package(Threads REQUIRED)
+
 set(SOURCES rocblas_level1.cpp 
                 rocblas_level2.cpp 
                 rocblas_level3.cpp 
@@ -55,7 +57,8 @@ else()
     target_link_options(ONEMKL::SYCL::SYCL INTERFACE)
 endif()
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::rocBLAS::rocBLAS)
+target_link_libraries(${LIB_OBJ} PRIVATE roc::rocblas Threads::Threads)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_17)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
