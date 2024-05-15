@@ -539,13 +539,11 @@ The oneMKL Interfaces project is governed by the UXL Foundation and you can get 
 
 You can also join the mailing lists for the [UXL Foundation](https://lists.uxlfoundation.org/g/main/subgroups) to be informed of when meetings are happening and receive the latest information and discussions.
 
-You can contribute to this project and also contribute to the specification for this project, read the [CONTRIBUTING](CONTRIBUTING.md) page for more information.
-
 ---
 
 ## Contributing
 
-See [CONTRIBUTING](CONTRIBUTING.md) for more information.
+You can contribute to this project and also contribute to [the specification for this project](https://spec.oneapi.io/versions/latest/elements/oneMKL/source/index.html). Please read the [CONTRIBUTING](CONTRIBUTING.md) page for more information. You can also contact oneMKL developers and maintainers via [UXL Foundation Slack](https://slack-invite.uxlfoundation.org/) using [#onemkl](https://uxlfoundation.slack.com/archives/onemkl) channel.
 
 ---
 
