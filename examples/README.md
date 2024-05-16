@@ -41,7 +41,7 @@ $ ./bin/example_blas_gemm_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# ONEAPI device
+# available devices
 #
 ########################################################################
 
@@ -94,7 +94,7 @@ $ ./bin/example_blas_gemm_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# ONEAPI device
+# available devices
 #
 ########################################################################
 
@@ -207,7 +207,7 @@ $ ./bin/example_lapack_getrs_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# ONEAPI device
+# available devices
 #
 ########################################################################
 
@@ -371,7 +371,7 @@ $ ONEAPI_DEVICE_SELECTOR="level_zero:gpu" ./bin/example_dft_complex_fwd_buffer_m
 # For Intel GPU with Intel MKLGPU backend.
 #
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# ONEAPI device
+# available devices
 ########################################################################
 
 Running DFT Complex forward out-of-place buffer example
@@ -397,7 +397,7 @@ $ ONEAPI_DEVICE_SELECTOR="level_zero:gpu" ./bin/example_dft_real_fwd_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# SYCL device
+# available devices
 #
 ########################################################################
 
@@ -422,7 +422,7 @@ $ ONEAPI_DEVICE_SELECTOR="level_zero:gpu" ./bin/example_dft_real_fwd_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# SYCL device
+# available devices
 #
 ########################################################################
 
@@ -447,7 +447,7 @@ $ ./bin/example_dft_real_fwd_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# SYCL device
+# available devices
 #
 ########################################################################
 
@@ -471,7 +471,7 @@ $ LD_LIBRARY_PATH=lib/:$LD_LIBRARY_PATH ./bin/example_dft_real_fwd_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# SYCL device
+# available devices
 #
 ########################################################################
 
@@ -505,7 +505,7 @@ $ ./bin/example_sparse_blas_gemv_usm
 # 
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# ONEAPI device
+# available devices
 # 
 ########################################################################
 
@@ -543,7 +543,7 @@ $ ./bin/example_sparse_blas_gemv_usm
 # 
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# ONEAPI device
+# available devices
 # 
 ########################################################################
 

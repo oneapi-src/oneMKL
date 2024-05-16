@@ -91,7 +91,7 @@ void print_example_banner() {
                  "#\n"
                  "# Device will be selected during runtime.\n"
                  "# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify\n"
-                 "# SYCL device\n"
+                 "# available devices\n"
                  "#\n"
                  "########################################################################\n"
               << std::endl;

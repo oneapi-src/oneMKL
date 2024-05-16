@@ -92,7 +92,7 @@ void print_example_banner() {
                  "# For Intel GPU with Intel MKLGPU backend.\n"
                  "#\n"
                  "# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify\n"
-                 "# SYCL device\n"
+                 "# available devices\n"
                  "########################################################################\n"
               << std::endl;
 }
