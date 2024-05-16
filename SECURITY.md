@@ -5,12 +5,8 @@ ensuring the highest level of Security and trust for our users who consume
 oneMKL Interfaces.
 
 ## Supported Versions
-We regularly perform patch releases for the supported
-[latest version][1],
-which contain fixes for security vulnerabilities and important bugs. Prior
-releases might receive critical security fixes on a best-effort basis; however,
-we cannot guarantee that security fixes will get back-ported to these
-unsupported versions.
+We provide support for the [latest version][1] only.
+The security vulnerabilities can be fixed in patch release on top of the latest version.Prior major releases might receive critical security fixes on a best-effort basis; however, we cannot guarantee that security fixes will get back-ported.
 
 ## Report a Vulnerability
 We are very grateful to the security researchers and users that report back
@@ -64,6 +60,6 @@ If you have any suggestions on how this Policy could be improved, please submit
 an issue or a pull request to this repository. Please **do not** report
 potential vulnerabilities or security flaws via a pull request.
 
-[1]: https://github.com/oneapi-src/oneDNN/releases/latest
+[1]: https://github.com/oneapi-src/oneMKL/releases/latest
 [2]: https://github.com/oneapi-src/oneMKL/security/advisories/new
 [3]: https://github.com/oneapi-src/oneMKL/security/advisories
