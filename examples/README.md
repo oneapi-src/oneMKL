@@ -303,7 +303,7 @@ $ ./bin/example_rng_uniform_usm
 #
 # Device will be selected during runtime.
 # The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# ONEAPI device
+# available devices
 #
 ########################################################################
 
