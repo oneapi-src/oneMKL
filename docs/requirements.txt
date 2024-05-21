@@ -1,2 +1,2 @@
-Sphinx
-sphinx-book-theme
+Sphinx==3.5.3
+sphinx-book-theme==0.1.0
