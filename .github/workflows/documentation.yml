@@ -1,0 +1,60 @@
+name: Documentation
+permissions: read-all
+
+# Trigger for PR or merge to develop branch
+on:
+  push:
+    branches: develop
+    paths:
+      - 'docs/**'
+  pull_request:
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+    - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    - name: Install Dependencies
+      run: pip install -r docs/requirements.txt
+    - name: Configure & Build
+      run: |
+        cmake -DCMAKE_VERBOSE_MAKEFILE=on -B build docs
+        cmake --build build
+    - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+      with:
+        name: docs
+        path: build/Documentation/html
+
+  publish:
+    needs: build
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+      with:
+        ref: gh-pages
+        path: gh-pages
+    - name: Remove old site
+      run: rm -rf gh-pages/*
+    - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+      with:
+        name: docs
+        path: gh-pages
+    - name: Push to GitHub Pages
+      run: |
+        cd gh-pages
+        touch .nojekyll
+        git add .
+        git config --global user.name "GitHub Actions"
+        git config --global user.email github-actions@github.com
+        git commit -m "Update documentation"
+        git push --force origin gh-pages
