@@ -1,1030 +1,542 @@
 
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" data-content_root="./" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
-    
-  <link href="_static/css/theme.css" rel="stylesheet" />
-  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    
-      
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" />
-    
-  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
-
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <link rel="shortcut icon" href="_static/favicons.png"/>
+    <script src="_static/documentation_options.js?v=e1a75a79"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'create_new_backend';</script>
+    <link rel="icon" href="_static/favicons.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="ungqr_batch_scratchpad_size" href="domains/lapack/ungqr_batch_scratchpad_size.html" />
-<script type="text/javascript">
-  // Configure TMS settings
-  var wapLocalCode = 'us-en'; // Dynamically set per localized site; see mapping table for values
-  var wapSection = "oneapi-mkl"; // WAP team will give you a unique section for your site
-  // Load TMS
-  if (document.location.href.includes("oneapi-src.github.io")) {
-    (function () {
-      var url = 'https://www.intel.com/content/dam/www/global/wap/tms-loader.js'; // WAP file URL
-      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true; po.src = url;
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-    })();
-  }
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/oneAPI-rgb-rev-100.png" class="logo__image only-light" alt="oneAPI Math Kernel Library Interfaces 0.1 documentation - Home"/>
+    <script>document.write(`<img src="_static/oneAPI-rgb-rev-100.png" class="logo__image only-dark" alt="oneAPI Math Kernel Library Interfaces 0.1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="selecting_a_compiler.html">Selecting a Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_project.html">Building the Project</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="onemkl-datatypes.html">oneMKL Defined Datatypes</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="domains/dense_linear_algebra.html">Dense Linear Algebra</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="domains/matrix-storage.html">Matrix Storage</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="domains/blas/blas.html">BLAS Routines</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-level-1-routines.html">BLAS Level 1 Routines</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/asum.html">asum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/axpy.html">axpy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/copy.html">copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dot.html">dot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/sdsdot.html">sdsdot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dotc.html">dotc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dotu.html">dotu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/nrm2.html">nrm2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rot.html">rot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rotg.html">rotg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rotm.html">rotm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rotmg.html">rotmg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/scal.html">scal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/swap.html">swap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/iamax.html">iamax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/iamin.html">iamin</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-level-2-routines.html">BLAS Level 2 Routines</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gbmv.html">gbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemv.html">gemv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/ger.html">ger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gerc.html">gerc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/geru.html">geru</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hbmv.html">hbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hemv.html">hemv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/her.html">her</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/her2.html">her2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hpmv.html">hpmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hpr.html">hpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hpr2.html">hpr2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/sbmv.html">sbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/spmv.html">spmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/spr.html">spr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/spr2.html">spr2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/symv.html">symv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syr.html">syr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syr2.html">syr2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tbmv.html">tbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tbsv.html">tbsv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tpmv.html">tpmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tpsv.html">tpsv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trmv.html">trmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trsv.html">trsv</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-level-3-routines.html">BLAS Level 3 Routines</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemm.html">gemm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hemm.html">hemm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/herk.html">herk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/her2k.html">her2k</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/symm.html">symm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syrk.html">syrk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syr2k.html">syr2k</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trmm.html">trmm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trsm.html">trsm</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-like-extensions.html">BLAS-like Extensions</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/axpy_batch.html">axpy_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/axpby.html">axpby</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/copy_batch.html">copy_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dgmm_batch.html">dgmm_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemm_batch.html">gemm_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemv_batch.html">gemv_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syrk_batch.html">syrk_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trsm_batch.html">trsm_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemmt.html">gemmt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemm_bias.html">gemm_bias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="domains/lapack/lapack.html">LAPACK Routines</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf.html">geqrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf_scratchpad_size.html">geqrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gerqf.html">gerqf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gerqf_scratchpad_size.html">gerqf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf.html">getrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf_scratchpad_size.html">getrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri.html">getri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri_scratchpad_size.html">getri_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs.html">getrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs_scratchpad_size.html">getrs_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrf.html">hetrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrf_scratchpad_size.html">hetrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr.html">orgqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr_scratchpad_size.html">orgqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormqr.html">ormqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormqr_scratchpad_size.html">ormqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormrq.html">ormrq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormrq_scratchpad_size.html">ormrq_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf.html">potrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf_scratchpad_size.html">potrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potri.html">potri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potri_scratchpad_size.html">potri_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs.html">potrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs_scratchpad_size.html">potrs_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrf.html">sytrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrf_scratchpad_size.html">sytrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/trtrs.html">trtrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/trtrs_scratchpad_size.html">trtrs_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr.html">ungqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr_scratchpad_size.html">ungqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmqr.html">unmqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmqr_scratchpad_size.html">unmqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmrq.html">unmrq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmrq_scratchpad_size.html">unmrq_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gebrd.html">gebrd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gebrd_scratchpad_size.html">gebrd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gesvd.html">gesvd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gesvd_scratchpad_size.html">gesvd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/heevd.html">heevd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/heevd_scratchpad_size.html">heevd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hegvd.html">hegvd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hegvd_scratchpad_size.html">hegvd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrd.html">hetrd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrd_scratchpad_size.html">hetrd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgbr.html">orgbr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgbr_scratchpad_size.html">orgbr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgtr.html">orgtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgtr_scratchpad_size.html">orgtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormtr.html">ormtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormtr_scratchpad_size.html">ormtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/syevd.html">syevd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/syevd_scratchpad_size.html">syevd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sygvd.html">sygvd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sygvd_scratchpad_size.html">sygvd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrd.html">sytrd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrd_scratchpad_size.html">sytrd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungbr.html">ungbr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungbr_scratchpad_size.html">ungbr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungtr.html">ungtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungtr_scratchpad_size.html">ungtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmtr.html">unmtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmtr_scratchpad_size.html">unmtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf_batch.html">geqrf_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf_batch_scratchpad_size.html">geqrf_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf_batch.html">getrf_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf_batch_scratchpad_size.html">getrf_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri_batch.html">getri_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri_batch_scratchpad_size.html">getri_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs_batch.html">getrs_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs_batch_scratchpad_size.html">getrs_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr_batch.html">orgqr_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr_batch_scratchpad_size.html">orgqr_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf_batch.html">potrf_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf_batch_scratchpad_size.html">potrf_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs_batch.html">potrs_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs_batch_scratchpad_size.html">potrs_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr_batch.html">ungqr_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr_batch_scratchpad_size.html">ungqr_batch_scratchpad_size</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/create_new_backend.rst" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fcreate_new_backend.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/create_new_backend.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
 </script>
 
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
 
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
       
-      <img src="_static/oneAPI-rgb-rev-100.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">oneAPI Math Kernel Library Interfaces 0.1 documentation</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <div class="bd-toc-item active">
-        <p class="caption" role="heading">
- <span class="caption-text">
-  About
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="introduction.html">
-   Introduction
-  </a>
- </li>
-</ul>
-<p class="caption" role="heading">
- <span class="caption-text">
-  Get Started
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="selecting_a_compiler.html">
-   Selecting a Compiler
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="building_the_project.html">
-   Building the Project
-  </a>
- </li>
-</ul>
-<p class="caption" role="heading">
- <span class="caption-text">
-  Developer Reference
- </span>
-</p>
-<ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="onemkl-datatypes.html">
-   oneMKL Defined Datatypes
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="domains/dense_linear_algebra.html">
-   Dense Linear Algebra
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="domains/matrix-storage.html">
-     Matrix Storage
-    </a>
-   </li>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="domains/blas/blas.html">
-     BLAS Routines
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-    <label for="toctree-checkbox-2">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="domains/blas/blas-level-1-routines.html">
-       BLAS Level 1 Routines
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-      <label for="toctree-checkbox-3">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/asum.html">
-         asum
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/axpy.html">
-         axpy
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/copy.html">
-         copy
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/dot.html">
-         dot
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/sdsdot.html">
-         sdsdot
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/dotc.html">
-         dotc
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/dotu.html">
-         dotu
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/nrm2.html">
-         nrm2
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/rot.html">
-         rot
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/rotg.html">
-         rotg
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/rotm.html">
-         rotm
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/rotmg.html">
-         rotmg
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/scal.html">
-         scal
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/swap.html">
-         swap
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/iamax.html">
-         iamax
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/iamin.html">
-         iamin
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="domains/blas/blas-level-2-routines.html">
-       BLAS Level 2 Routines
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-      <label for="toctree-checkbox-4">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gbmv.html">
-         gbmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gemv.html">
-         gemv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/ger.html">
-         ger
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gerc.html">
-         gerc
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/geru.html">
-         geru
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/hbmv.html">
-         hbmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/hemv.html">
-         hemv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/her.html">
-         her
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/her2.html">
-         her2
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/hpmv.html">
-         hpmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/hpr.html">
-         hpr
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/hpr2.html">
-         hpr2
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/sbmv.html">
-         sbmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/spmv.html">
-         spmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/spr.html">
-         spr
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/spr2.html">
-         spr2
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/symv.html">
-         symv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/syr.html">
-         syr
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/syr2.html">
-         syr2
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/tbmv.html">
-         tbmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/tbsv.html">
-         tbsv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/tpmv.html">
-         tpmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/tpsv.html">
-         tpsv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/trmv.html">
-         trmv
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/trsv.html">
-         trsv
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="domains/blas/blas-level-3-routines.html">
-       BLAS Level 3 Routines
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-      <label for="toctree-checkbox-5">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gemm.html">
-         gemm
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/hemm.html">
-         hemm
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/herk.html">
-         herk
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/her2k.html">
-         her2k
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/symm.html">
-         symm
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/syrk.html">
-         syrk
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/syr2k.html">
-         syr2k
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/trmm.html">
-         trmm
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/trsm.html">
-         trsm
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="domains/blas/blas-like-extensions.html">
-       BLAS-like Extensions
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-      <label for="toctree-checkbox-6">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/axpy_batch.html">
-         axpy_batch
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/axpby.html">
-         axpby
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/copy_batch.html">
-         copy_batch
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/dgmm_batch.html">
-         dgmm_batch
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gemm_batch.html">
-         gemm_batch
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gemv_batch.html">
-         gemv_batch
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/syrk_batch.html">
-         syrk_batch
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/trsm_batch.html">
-         trsm_batch
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gemmt.html">
-         gemmt
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="domains/blas/gemm_bias.html">
-         gemm_bias
-        </a>
-       </li>
-      </ul>
-     </li>
-    </ul>
-   </li>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="domains/lapack/lapack.html">
-     LAPACK Routines
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-    <label for="toctree-checkbox-7">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/geqrf.html">
-       geqrf
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/geqrf_scratchpad_size.html">
-       geqrf_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/gerqf.html">
-       gerqf
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/gerqf_scratchpad_size.html">
-       gerqf_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrf.html">
-       getrf
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrf_scratchpad_size.html">
-       getrf_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getri.html">
-       getri
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getri_scratchpad_size.html">
-       getri_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrs.html">
-       getrs
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrs_scratchpad_size.html">
-       getrs_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/hetrf.html">
-       hetrf
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/hetrf_scratchpad_size.html">
-       hetrf_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgqr.html">
-       orgqr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgqr_scratchpad_size.html">
-       orgqr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ormqr.html">
-       ormqr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ormqr_scratchpad_size.html">
-       ormqr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ormrq.html">
-       ormrq
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ormrq_scratchpad_size.html">
-       ormrq_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrf.html">
-       potrf
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrf_scratchpad_size.html">
-       potrf_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potri.html">
-       potri
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potri_scratchpad_size.html">
-       potri_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrs.html">
-       potrs
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrs_scratchpad_size.html">
-       potrs_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/sytrf.html">
-       sytrf
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/sytrf_scratchpad_size.html">
-       sytrf_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/trtrs.html">
-       trtrs
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/trtrs_scratchpad_size.html">
-       trtrs_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungqr.html">
-       ungqr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungqr_scratchpad_size.html">
-       ungqr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/unmqr.html">
-       unmqr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/unmqr_scratchpad_size.html">
-       unmqr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/unmrq.html">
-       unmrq
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/unmrq_scratchpad_size.html">
-       unmrq_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/gebrd.html">
-       gebrd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/gebrd_scratchpad_size.html">
-       gebrd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/gesvd.html">
-       gesvd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/gesvd_scratchpad_size.html">
-       gesvd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/heevd.html">
-       heevd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/heevd_scratchpad_size.html">
-       heevd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/hegvd.html">
-       hegvd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/hegvd_scratchpad_size.html">
-       hegvd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/hetrd.html">
-       hetrd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/hetrd_scratchpad_size.html">
-       hetrd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgbr.html">
-       orgbr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgbr_scratchpad_size.html">
-       orgbr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgtr.html">
-       orgtr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgtr_scratchpad_size.html">
-       orgtr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ormtr.html">
-       ormtr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ormtr_scratchpad_size.html">
-       ormtr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/syevd.html">
-       syevd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/syevd_scratchpad_size.html">
-       syevd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/sygvd.html">
-       sygvd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/sygvd_scratchpad_size.html">
-       sygvd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/sytrd.html">
-       sytrd
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/sytrd_scratchpad_size.html">
-       sytrd_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungbr.html">
-       ungbr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungbr_scratchpad_size.html">
-       ungbr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungtr.html">
-       ungtr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungtr_scratchpad_size.html">
-       ungtr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/unmtr.html">
-       unmtr
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/unmtr_scratchpad_size.html">
-       unmtr_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/geqrf_batch.html">
-       geqrf_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/geqrf_batch_scratchpad_size.html">
-       geqrf_batch_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrf_batch.html">
-       getrf_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrf_batch_scratchpad_size.html">
-       getrf_batch_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getri_batch.html">
-       getri_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getri_batch_scratchpad_size.html">
-       getri_batch_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrs_batch.html">
-       getrs_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/getrs_batch_scratchpad_size.html">
-       getrs_batch_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgqr_batch.html">
-       orgqr_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/orgqr_batch_scratchpad_size.html">
-       orgqr_batch_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrf_batch.html">
-       potrf_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrf_batch_scratchpad_size.html">
-       potrf_batch_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrs_batch.html">
-       potrs_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/potrs_batch_scratchpad_size.html">
-       potrs_batch_scratchpad_size
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungqr_batch.html">
-       ungqr_batch
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="domains/lapack/ungqr_batch_scratchpad_size.html">
-       ungqr_batch_scratchpad_size
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
-  </a>
- </li>
-</ul>
-
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+  
 </div>
-
 </div>
+              
+              
 
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/create_new_backend.rst.txt"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        
-        <a class="issues-button"
-            href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fcreate_new_backend.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        <a class="edit-button" href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/create_new_backend.rst"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div>
+                <h2> Contents </h2>
             </div>
-            <nav id="bd-toc-nav">
+            <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#create-header-files">
-   1. Create Header Files
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#integrate-header-files">
-   2. Integrate Header Files
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#create-wrappers">
-   3. Create Wrappers
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#integrate-wrappers-to-the-build-system">
-   4. Integrate Wrappers to the Build System
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#update-the-test-system">
-   5. Update the Test System
-  </a>
- </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-header-files">1. Create Header Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-header-files">2. Integrate Header Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-wrappers">3. Create Wrappers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-wrappers-to-the-build-system">4. Integrate Wrappers to the Build System</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-the-test-system">5. Update the Test System</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
+
+              
                 
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="integrating-a-third-party-library-to-oneapi-math-kernel-library-onemkl-interfaces">
-<span id="create-backend-wrappers"></span><h1>Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces<a class="headerlink" href="#integrating-a-third-party-library-to-oneapi-math-kernel-library-onemkl-interfaces" title="Permalink to this headline">¶</a></h1>
+<span id="create-backend-wrappers"></span><h1>Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces<a class="headerlink" href="#integrating-a-third-party-library-to-oneapi-math-kernel-library-onemkl-interfaces" title="Link to this heading">#</a></h1>
 <p>This step-by-step tutorial provides examples for enabling new third-party libraries in oneMKL.</p>
 <p>oneMKL has a header-based implementation of the interface layer (<code class="docutils literal notranslate"><span class="pre">include</span></code> directory) and a source-based implementation of the backend layer for each third-party library (<code class="docutils literal notranslate"><span class="pre">src</span></code> directory). To enable a third-party library, you must update both parts of oneMKL and integrate the new third-party library to the oneMKL build and test systems.</p>
 <p>For the new backend library and header naming please use the following template:</p>
@@ -1039,54 +551,54 @@
 <p><a class="reference internal" href="#integrate-wrappers-to-the-build-system">4. Integrate Wrappers To the Build System</a></p>
 <p><a class="reference internal" href="#update-the-test-system">5. Update the Test System</a></p>
 <section id="create-header-files">
-<span id="generate-header-files"></span><h2>1. Create Header Files<a class="headerlink" href="#create-header-files" title="Permalink to this headline">¶</a></h2>
+<span id="generate-header-files"></span><h2>1. Create Header Files<a class="headerlink" href="#create-header-files" title="Link to this heading">#</a></h2>
 <p>For each new backend library, you should create the following two header files:</p>
 <ul class="simple">
 <li><p>Header file with a declaration of entry points to the new third-party library wrappers</p></li>
 <li><p>Compiler-time dispatching interface (see <a class="reference external" href="../README.md#supported-usage-models">oneMKL Usage Models</a>) for new third-party libraries</p></li>
 </ul>
 <p><strong>Header File Example</strong>: command to generate the header file with a declaration of BLAS entry points in the oneapi::mkl::newlib namespace</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python scripts/generate_backend_api.py include/oneapi/mkl/blas.hpp <span class="se">\ </span>                                 <span class="c1"># Base header file</span>
-                                       include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp <span class="se">\ </span><span class="c1"># Output header file</span>
-                                       oneapi::mkl::newlib                                            <span class="c1"># Wrappers namespace</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/generate_backend_api.py<span class="w"> </span>include/oneapi/mkl/blas.hpp<span class="w"> </span><span class="se">\ </span><span class="w">                                 </span><span class="c1"># Base header file</span>
+<span class="w">                                       </span>include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp<span class="w"> </span><span class="se">\ </span><span class="c1"># Output header file</span>
+<span class="w">                                       </span>oneapi::mkl::newlib<span class="w">                                            </span><span class="c1"># Wrappers namespace</span>
 </pre></div>
 </div>
 <p>Code snippet of the generated header file <code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp</span></code></p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">oneapi</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="k">namespace</span><span class="w"> </span><span class="nn">mkl</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="k">namespace</span><span class="w"> </span><span class="nn">newlib</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">oneapi</span><span class="w"> </span><span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mkl</span><span class="w"> </span><span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">newlib</span><span class="w"> </span><span class="p">{</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">asum</span><span class="p">(</span><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">asum</span><span class="p">(</span><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span>
+<span class="w">          </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
 </pre></div>
 </div>
 <p><strong>Compile-time Dispatching Interface Example</strong>: command to generate the compile-time dispatching interface template instantiations for <code class="docutils literal notranslate"><span class="pre">newlib</span></code> and supported device <code class="docutils literal notranslate"><span class="pre">newdevice</span></code></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python scripts/generate_ct_instant.py   include/oneapi/mkl/blas/detail/blas_ct_templates.hpp <span class="se">\ </span>        <span class="c1"># Base header file</span>
-                                        include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp <span class="se">\ </span>           <span class="c1"># Output header file</span>
-                                        include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp <span class="se">\ </span><span class="c1"># Header file with declaration of entry points to wrappers</span>
-                                        newlib <span class="se">\ </span>                                                      <span class="c1"># Library name</span>
-                                        newdevice <span class="se">\ </span>                                                   <span class="c1"># Backend name</span>
-                                        oneapi::mkl::newlib                                            <span class="c1"># Wrappers namespace</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/generate_ct_instant.py<span class="w">   </span>include/oneapi/mkl/blas/detail/blas_ct_templates.hpp<span class="w"> </span><span class="se">\ </span><span class="w">        </span><span class="c1"># Base header file</span>
+<span class="w">                                        </span>include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp<span class="w"> </span><span class="se">\ </span><span class="w">           </span><span class="c1"># Output header file</span>
+<span class="w">                                        </span>include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp<span class="w"> </span><span class="se">\ </span><span class="c1"># Header file with declaration of entry points to wrappers</span>
+<span class="w">                                        </span>newlib<span class="w"> </span><span class="se">\ </span><span class="w">                                                      </span><span class="c1"># Library name</span>
+<span class="w">                                        </span>newdevice<span class="w"> </span><span class="se">\ </span><span class="w">                                                   </span><span class="c1"># Backend name</span>
+<span class="w">                                        </span>oneapi::mkl::newlib<span class="w">                                            </span><span class="c1"># Wrappers namespace</span>
 </pre></div>
 </div>
 <p>Code snippet of the generated header file <code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp</span></code></p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">oneapi</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="k">namespace</span><span class="w"> </span><span class="nn">mkl</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="k">namespace</span><span class="w"> </span><span class="nn">blas</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">oneapi</span><span class="w"> </span><span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mkl</span><span class="w"> </span><span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">blas</span><span class="w"> </span><span class="p">{</span>
 
-<span class="k">template</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"></span>
-<span class="kt">void</span><span class="w"> </span><span class="n">asum</span><span class="o">&lt;</span><span class="n">library</span><span class="o">::</span><span class="n">newlib</span><span class="p">,</span><span class="w"> </span><span class="n">backend</span><span class="o">::</span><span class="n">newdevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                               </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                               </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">asum_precondition</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">oneapi</span><span class="o">::</span><span class="n">mkl</span><span class="o">::</span><span class="n">newlib</span><span class="o">::</span><span class="n">asum</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">asum_postcondition</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;&gt;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">asum</span><span class="o">&lt;</span><span class="n">library</span><span class="o">::</span><span class="n">newlib</span><span class="p">,</span><span class="w"> </span><span class="n">backend</span><span class="o">::</span><span class="n">newdevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="p">,</span>
+<span class="w">                                               </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span>
+<span class="w">                                               </span><span class="n">sycl</span><span class="o">::</span><span class="n">buffer</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">asum_precondition</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+<span class="w">    </span><span class="n">oneapi</span><span class="o">::</span><span class="n">mkl</span><span class="o">::</span><span class="n">newlib</span><span class="o">::</span><span class="n">asum</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+<span class="w">    </span><span class="n">asum_postcondition</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">incx</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="integrate-header-files">
-<span id="id1"></span><h2>2. Integrate Header Files<a class="headerlink" href="#integrate-header-files" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>2. Integrate Header Files<a class="headerlink" href="#integrate-header-files" title="Link to this heading">#</a></h2>
 <p>Below you can see structure of oneMKL top-level include directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">include</span><span class="o">/</span>
     <span class="n">oneapi</span><span class="o">/</span>
@@ -1118,83 +630,83 @@
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/detail/backends.hpp</span></code>: add the new backend</p>
 <p><strong>Example</strong>: add the <code class="docutils literal notranslate"><span class="pre">newbackend</span></code> backend</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  enum class backend { mklcpu,<span class="w"></span>
-<span class="gi">+                       newbackend,</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  enum class backend { mklcpu,
+<span class="gi">+                       newbackend,</span>
 </pre></div>
 </div>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  static backendmap backend_map = { { backend::mklcpu, &quot;mklcpu&quot; },<span class="w"></span>
-<span class="gi">+                                    { backend::newbackend, &quot;newbackend&quot; },</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  static backendmap backend_map = { { backend::mklcpu, &quot;mklcpu&quot; },
+<span class="gi">+                                    { backend::newbackend, &quot;newbackend&quot; },</span>
 </pre></div>
 </div>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/detail/backends_table.hpp</span></code>: add new backend library for supported domain(s) and device(s)</p>
 <p><strong>Example</strong>: enable <code class="docutils literal notranslate"><span class="pre">newlib</span></code> for <code class="docutils literal notranslate"><span class="pre">blas</span></code> domain and <code class="docutils literal notranslate"><span class="pre">newdevice</span></code> device</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  enum class device : uint16_t { x86cpu,<span class="w"></span>
-<span class="w"> </span>                                 ...<span class="w"></span>
-<span class="gi">+                                 newdevice</span><span class="w"></span>
-<span class="w"> </span>                               };<span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  enum class device : uint16_t { x86cpu,
+<span class="w"> </span>                                 ...
+<span class="gi">+                                 newdevice</span>
+<span class="w"> </span>                               };
 
-<span class="w"> </span>  static std::map&lt;domain, std::map&lt;device, std::vector&lt;const char*&gt;&gt;&gt; libraries = {<span class="w"></span>
-<span class="w"> </span>      { domain::blas,<span class="w"></span>
-<span class="w"> </span>        { { device::x86cpu,<span class="w"></span>
-<span class="w"> </span>            {<span class="w"></span>
-<span class="w"> </span>  #ifdef ENABLE_MKLCPU_BACKEND<span class="w"></span>
-<span class="w"> </span>                LIB_NAME(&quot;blas_mklcpu&quot;)<span class="w"></span>
-<span class="w"> </span>  #endif<span class="w"></span>
-<span class="w"> </span>             } },<span class="w"></span>
-<span class="gi">+          { device::newdevice,</span><span class="w"></span>
-<span class="gi">+            {</span><span class="w"></span>
-<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span><span class="w"></span>
-<span class="gi">+                 LIB_NAME(&quot;blas_newlib&quot;)</span><span class="w"></span>
-<span class="gi">+  #endif</span><span class="w"></span>
-<span class="gi">+             } },</span><span class="w"></span>
+<span class="w"> </span>  static std::map&lt;domain, std::map&lt;device, std::vector&lt;const char*&gt;&gt;&gt; libraries = {
+<span class="w"> </span>      { domain::blas,
+<span class="w"> </span>        { { device::x86cpu,
+<span class="w"> </span>            {
+<span class="w"> </span>  #ifdef ENABLE_MKLCPU_BACKEND
+<span class="w"> </span>                LIB_NAME(&quot;blas_mklcpu&quot;)
+<span class="w"> </span>  #endif
+<span class="w"> </span>             } },
+<span class="gi">+          { device::newdevice,</span>
+<span class="gi">+            {</span>
+<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span>
+<span class="gi">+                 LIB_NAME(&quot;blas_newlib&quot;)</span>
+<span class="gi">+  #endif</span>
+<span class="gi">+             } },</span>
 </pre></div>
 </div>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/detail/get_device_id.hpp</span></code>: add new device detection mechanism for Run-time dispatching</p>
 <p><strong>Example</strong>: enable <code class="docutils literal notranslate"><span class="pre">newdevice</span></code> if the queue is targeted for the Host</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  inline oneapi::mkl::device get_device_id(sycl::queue &amp;queue) {<span class="w"></span>
-<span class="w"> </span>      oneapi::mkl::device device_id;<span class="w"></span>
-<span class="gi">+      if (queue.is_host())</span><span class="w"></span>
-<span class="gi">+          device_id=device::newdevice;</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  inline oneapi::mkl::device get_device_id(sycl::queue &amp;queue) {
+<span class="w"> </span>      oneapi::mkl::device device_id;
+<span class="gi">+      if (queue.is_host())</span>
+<span class="gi">+          device_id=device::newdevice;</span>
 </pre></div>
 </div>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/blas.hpp</span></code>: include the generated header file for the compile-time dispatching interface (see <a class="reference external" href="../README.md#supported-usage-models">oneMKL Usage Models</a>)</p>
 <p><strong>Example</strong>: add <code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/blas/detail/newlib/blas_ct.hpp</span></code> generated at the <a class="reference internal" href="#create-header-files">1. Create Header Files</a> step</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #include &quot;oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp&quot;<span class="w"></span>
-<span class="w"> </span>  #include &quot;oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp&quot;<span class="w"></span>
-<span class="gi">+  #include &quot;oneapi/mkl/blas/detail/newlib/blas_ct.hpp&quot;</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #include &quot;oneapi/mkl/blas/detail/mklcpu/blas_ct.hpp&quot;
+<span class="w"> </span>  #include &quot;oneapi/mkl/blas/detail/mklgpu/blas_ct.hpp&quot;
+<span class="gi">+  #include &quot;oneapi/mkl/blas/detail/newlib/blas_ct.hpp&quot;</span>
 </pre></div>
 </div>
 </li>
 </ul>
 <p>The new files generated at the <a class="reference internal" href="#create-header-files">1. Create Header Files</a> step result in the following updated structure of the BLAS domain header files.</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">include/</span>
-<span class="w"> </span>   oneapi/<span class="w"></span>
-<span class="w"> </span>       mkl/<span class="w"></span>
-<span class="w"> </span>           blas.hpp -&gt; oneMKL BLAS APIs w/ pre-check/dispatching/post-check<span class="w"></span>
-<span class="w"> </span>           blas/<span class="w"></span>
-<span class="w"> </span>               predicates.hpp -&gt; oneMKL BLAS pre-check post-check<span class="w"></span>
-<span class="w"> </span>               detail/        -&gt; BLAS domain specific implementation details<span class="w"></span>
-<span class="w"> </span>                   blas_loader.hpp       -&gt; oneMKL Run-time BLAS API<span class="w"></span>
-<span class="w"> </span>                   blas_ct_templates.hpp -&gt; oneMKL Compile-time BLAS API general templates<span class="w"></span>
-<span class="w"> </span>                   cublas/<span class="w"></span>
-<span class="w"> </span>                       blas_ct.hpp            -&gt; oneMKL Compile-time BLAS API template instantiations for &lt;cublas&gt;<span class="w"></span>
-<span class="w"> </span>                       onemkl_blas_cublas.hpp -&gt; backend wrappers library API<span class="w"></span>
-<span class="w"> </span>                   mklcpu/<span class="w"></span>
-<span class="w"> </span>                       blas_ct.hpp            -&gt; oneMKL Compile-time BLAS API template instantiations for &lt;mklcpu&gt;<span class="w"></span>
-<span class="w"> </span>                       onemkl_blas_mklcpu.hpp -&gt; backend wrappers library API<span class="w"></span>
-<span class="w"> </span>   +              newlib/<span class="w"></span>
-<span class="w"> </span>   +                  blas_ct.hpp            -&gt; oneMKL Compile-time BLAS API template instantiations for &lt;newbackend&gt;<span class="w"></span>
-<span class="w"> </span>   +                  onemkl_blas_newlib.hpp -&gt; backend wrappers library API<span class="w"></span>
-<span class="w"> </span>                   &lt;other backends&gt;/<span class="w"></span>
-<span class="w"> </span>           &lt;other domains&gt;/<span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>include/
+<span class="w"> </span>   oneapi/
+<span class="w"> </span>       mkl/
+<span class="w"> </span>           blas.hpp -&gt; oneMKL BLAS APIs w/ pre-check/dispatching/post-check
+<span class="w"> </span>           blas/
+<span class="w"> </span>               predicates.hpp -&gt; oneMKL BLAS pre-check post-check
+<span class="w"> </span>               detail/        -&gt; BLAS domain specific implementation details
+<span class="w"> </span>                   blas_loader.hpp       -&gt; oneMKL Run-time BLAS API
+<span class="w"> </span>                   blas_ct_templates.hpp -&gt; oneMKL Compile-time BLAS API general templates
+<span class="w"> </span>                   cublas/
+<span class="w"> </span>                       blas_ct.hpp            -&gt; oneMKL Compile-time BLAS API template instantiations for &lt;cublas&gt;
+<span class="w"> </span>                       onemkl_blas_cublas.hpp -&gt; backend wrappers library API
+<span class="w"> </span>                   mklcpu/
+<span class="w"> </span>                       blas_ct.hpp            -&gt; oneMKL Compile-time BLAS API template instantiations for &lt;mklcpu&gt;
+<span class="w"> </span>                       onemkl_blas_mklcpu.hpp -&gt; backend wrappers library API
+<span class="w"> </span>   +              newlib/
+<span class="w"> </span>   +                  blas_ct.hpp            -&gt; oneMKL Compile-time BLAS API template instantiations for &lt;newbackend&gt;
+<span class="w"> </span>   +                  onemkl_blas_newlib.hpp -&gt; backend wrappers library API
+<span class="w"> </span>                   &lt;other backends&gt;/
+<span class="w"> </span>           &lt;other domains&gt;/
 </pre></div>
 </div>
 </section>
 <section id="create-wrappers">
-<span id="generate-wrappers-and-cmake"></span><h2>3. Create Wrappers<a class="headerlink" href="#create-wrappers" title="Permalink to this headline">¶</a></h2>
+<span id="generate-wrappers-and-cmake"></span><h2>3. Create Wrappers<a class="headerlink" href="#create-wrappers" title="Link to this heading">#</a></h2>
 <p>Wrappers convert Data Parallel C++ (DPC++) input data types to third-party library data types and call corresponding implementation from the third-party library. Wrappers for each third-party library are built to separate oneMKL backend libraries. The <code class="docutils literal notranslate"><span class="pre">libonemkl.so</span></code> dispatcher library loads the wrappers at run-time if you are using the interface for run-time dispatching, or you will link with them directly in case you are using the interface for compile-time dispatching (for more information see <a class="reference external" href="../README.md#supported-usage-models">oneMKL Usage Models</a>).</p>
 <p>All wrappers and dispatcher library implementations are in the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">src</span><span class="o">/</span>
@@ -1220,10 +732,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">src/blas/backends/newlib/newlib_wrappers.cpp</span></code> - DPC++ wrappers for all functions from <code class="docutils literal notranslate"><span class="pre">include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">src/blas/backends/newlib/newlib_wrappers_table_dyn.cpp</span></code> - structure of symbols for run-time dispatcher (in the same location as wrappers), suffix <code class="docutils literal notranslate"><span class="pre">_dyn</span></code> indicates that this file is required for dynamic library only.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python scripts/generate_wrappers.py include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp <span class="se">\ </span><span class="c1"># Base header file</span>
-                                    src/blas/function_table.hpp <span class="se">\ </span>                                 <span class="c1"># Declaration for structure of symbols</span>
-                                    src/blas/backends/newlib/newlib_wrappers.cpp <span class="se">\ </span>                <span class="c1"># Output wrappers</span>
-                                    newlib                                                         <span class="c1"># Library name</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/generate_wrappers.py<span class="w"> </span>include/oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp<span class="w"> </span><span class="se">\ </span><span class="c1"># Base header file</span>
+<span class="w">                                    </span>src/blas/function_table.hpp<span class="w"> </span><span class="se">\ </span><span class="w">                                 </span><span class="c1"># Declaration for structure of symbols</span>
+<span class="w">                                    </span>src/blas/backends/newlib/newlib_wrappers.cpp<span class="w"> </span><span class="se">\ </span><span class="w">                </span><span class="c1"># Output wrappers</span>
+<span class="w">                                    </span>newlib<span class="w">                                                         </span><span class="c1"># Library name</span>
 </pre></div>
 </div>
 <p>You can then modify <code class="docutils literal notranslate"><span class="pre">src/blas/backends/newlib/newlib_wrappers.cpp</span></code> to enable the C function <code class="docutils literal notranslate"><span class="pre">newlib_sasum</span></code> from the third-party library <code class="docutils literal notranslate"><span class="pre">libnewlib.so</span></code>.</p>
@@ -1234,76 +746,80 @@
 <li><p>Submit the DPC++ kernel with a C function call to <code class="docutils literal notranslate"><span class="pre">newlib</span></code> as <code class="docutils literal notranslate"><span class="pre">single_task</span></code></p></li>
 </ul>
 <p>The following code snippet is updated for <code class="docutils literal notranslate"><span class="pre">src/blas/backends/newlib/newlib_wrappers.cpp</span></code>:</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   #include &lt;CL/sycl.hpp&gt;<span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   #if __has_include(&lt;sycl/sycl.hpp&gt;)
+<span class="w"> </span>   #include &lt;sycl/sycl.hpp&gt;
+<span class="w"> </span>   #else
+<span class="w"> </span>   #include &lt;CL/sycl.hpp&gt;
+<span class="w"> </span>   #endif
 
-<span class="w"> </span>   #include &quot;oneapi/mkl/types.hpp&quot;<span class="w"></span>
+<span class="w"> </span>   #include &quot;oneapi/mkl/types.hpp&quot;
 
-<span class="w"> </span>   #include &quot;oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp&quot;<span class="w"></span>
-<span class="gi">+</span><span class="w"></span>
-<span class="gi">+    #include &quot;newlib.h&quot;</span><span class="w"></span>
+<span class="w"> </span>   #include &quot;oneapi/mkl/blas/detail/newlib/onemkl_blas_newlib.hpp&quot;
+<span class="gi">+</span>
+<span class="gi">+    #include &quot;newlib.h&quot;</span>
 
-<span class="w"> </span>   namespace oneapi {<span class="w"></span>
-<span class="w"> </span>   namespace mkl {<span class="w"></span>
-<span class="w"> </span>   namespace newlib {<span class="w"></span>
+<span class="w"> </span>   namespace oneapi {
+<span class="w"> </span>   namespace mkl {
+<span class="w"> </span>   namespace newlib {
 
-<span class="w"> </span>   void asum(sycl::queue &amp;queue, std::int64_t n, sycl::buffer&lt;float, 1&gt; &amp;x, std::int64_t incx,<span class="w"></span>
-<span class="w"> </span>              sycl::buffer&lt;float, 1&gt; &amp;result) {<span class="w"></span>
-<span class="gd">-       throw std::runtime_error(&quot;Not implemented for newlib&quot;);</span><span class="w"></span>
-<span class="gi">+       queue.submit([&amp;](sycl::handler &amp;cgh) {</span><span class="w"></span>
-<span class="gi">+           auto accessor_x      = x.get_access&lt;sycl::access::mode::read&gt;(cgh);</span><span class="w"></span>
-<span class="gi">+           auto accessor_result = result.get_access&lt;sycl::access::mode::write&gt;(cgh);</span><span class="w"></span>
-<span class="gi">+           cgh.single_task&lt;class newlib_sasum&gt;([=]() {</span><span class="w"></span>
-<span class="gi">+               accessor_result[0] = ::newlib_sasum((const int)n, accessor_x.get_pointer(), (const int)incx);</span><span class="w"></span>
-<span class="gi">+           });</span><span class="w"></span>
-<span class="gi">+       });</span><span class="w"></span>
-<span class="w"> </span>   }<span class="w"></span>
+<span class="w"> </span>   void asum(sycl::queue &amp;queue, std::int64_t n, sycl::buffer&lt;float, 1&gt; &amp;x, std::int64_t incx,
+<span class="w"> </span>              sycl::buffer&lt;float, 1&gt; &amp;result) {
+<span class="gd">-       throw std::runtime_error(&quot;Not implemented for newlib&quot;);</span>
+<span class="gi">+       queue.submit([&amp;](sycl::handler &amp;cgh) {</span>
+<span class="gi">+           auto accessor_x      = x.get_access&lt;sycl::access::mode::read&gt;(cgh);</span>
+<span class="gi">+           auto accessor_result = result.get_access&lt;sycl::access::mode::write&gt;(cgh);</span>
+<span class="gi">+           cgh.single_task&lt;class newlib_sasum&gt;([=]() {</span>
+<span class="gi">+               accessor_result[0] = ::newlib_sasum((const int)n, accessor_x.get_pointer(), (const int)incx);</span>
+<span class="gi">+           });</span>
+<span class="gi">+       });</span>
+<span class="w"> </span>   }
 
-<span class="w"> </span>   void asum(sycl::queue &amp;queue, std::int64_t n, sycl::buffer&lt;double, 1&gt; &amp;x, std::int64_t incx,<span class="w"></span>
-<span class="w"> </span>             sycl::buffer&lt;double, 1&gt; &amp;result) {<span class="w"></span>
-<span class="w"> </span>       throw std::runtime_error(&quot;Not implemented for newlib&quot;);<span class="w"></span>
-<span class="w"> </span>   }<span class="w"></span>
+<span class="w"> </span>   void asum(sycl::queue &amp;queue, std::int64_t n, sycl::buffer&lt;double, 1&gt; &amp;x, std::int64_t incx,
+<span class="w"> </span>             sycl::buffer&lt;double, 1&gt; &amp;result) {
+<span class="w"> </span>       throw std::runtime_error(&quot;Not implemented for newlib&quot;);
+<span class="w"> </span>   }
 </pre></div>
 </div>
 <p>Updated structure of the <code class="docutils literal notranslate"><span class="pre">src</span></code> folder with the <code class="docutils literal notranslate"><span class="pre">newlib</span></code> wrappers:</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">src/</span>
-<span class="w"> </span>   blas/<span class="w"></span>
-<span class="w"> </span>       loader.hpp -&gt; general loader implementation w/ global libraries table<span class="w"></span>
-<span class="w"> </span>       function_table.hpp -&gt; loaded BLAS functions declaration<span class="w"></span>
-<span class="w"> </span>       blas_loader.cpp -&gt; BLAS wrappers for loader<span class="w"></span>
-<span class="w"> </span>       backends/<span class="w"></span>
-<span class="w"> </span>           cublas/ -&gt; cuBLAS wrappers<span class="w"></span>
-<span class="w"> </span>           mklcpu/ -&gt; Intel oneMKL CPU wrappers<span class="w"></span>
-<span class="w"> </span>           mklgpu/ -&gt; Intel oneMKL GPU wrappers<span class="w"></span>
-<span class="w"> </span>+          newlib/<span class="w"></span>
-<span class="w"> </span>+              newlib.h<span class="w"></span>
-<span class="w"> </span>+              newlib_wrappers.cpp<span class="w"></span>
-<span class="w"> </span>+              newlib_wrappers_table_dyn.cpp<span class="w"></span>
-<span class="w"> </span>           &lt;other backend libraries&gt;/<span class="w"></span>
-<span class="w"> </span>   &lt;other domains&gt;/<span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>src/
+<span class="w"> </span>   blas/
+<span class="w"> </span>       loader.hpp -&gt; general loader implementation w/ global libraries table
+<span class="w"> </span>       function_table.hpp -&gt; loaded BLAS functions declaration
+<span class="w"> </span>       blas_loader.cpp -&gt; BLAS wrappers for loader
+<span class="w"> </span>       backends/
+<span class="w"> </span>           cublas/ -&gt; cuBLAS wrappers
+<span class="w"> </span>           mklcpu/ -&gt; Intel oneMKL CPU wrappers
+<span class="w"> </span>           mklgpu/ -&gt; Intel oneMKL GPU wrappers
+<span class="w"> </span>+          newlib/
+<span class="w"> </span>+              newlib.h
+<span class="w"> </span>+              newlib_wrappers.cpp
+<span class="w"> </span>+              newlib_wrappers_table_dyn.cpp
+<span class="w"> </span>           &lt;other backend libraries&gt;/
+<span class="w"> </span>   &lt;other domains&gt;/
 </pre></div>
 </div>
 </section>
 <section id="integrate-wrappers-to-the-build-system">
-<span id="integrate-backend-to-build-system"></span><h2>4. Integrate Wrappers to the Build System<a class="headerlink" href="#integrate-wrappers-to-the-build-system" title="Permalink to this headline">¶</a></h2>
+<span id="integrate-backend-to-build-system"></span><h2>4. Integrate Wrappers to the Build System<a class="headerlink" href="#integrate-wrappers-to-the-build-system" title="Link to this heading">#</a></h2>
 <p>Here is the list of files that should be created/updated to integrate the new wrappers for the third-party library to the oneMKL build system:</p>
 <ul>
 <li><p>Add the new option <code class="docutils literal notranslate"><span class="pre">ENABLE_XXX_BACKEND</span></code> for the new third-party library to the top of the <code class="docutils literal notranslate"><span class="pre">CMakeList.txt</span></code> file.</p>
 <p><strong>Example</strong>: changes for <code class="docutils literal notranslate"><span class="pre">newlib</span></code> in the top of the <code class="docutils literal notranslate"><span class="pre">CMakeList.txt</span></code> file</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   option(ENABLE_MKLCPU_BACKEND &quot;&quot; ON)<span class="w"></span>
-<span class="w"> </span>   option(ENABLE_MKLGPU_BACKEND &quot;&quot; ON)<span class="w"></span>
-<span class="gi">+   option(ENABLE_NEWLIB_BACKEND &quot;&quot; ON)</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   option(ENABLE_MKLCPU_BACKEND &quot;&quot; ON)
+<span class="w"> </span>   option(ENABLE_MKLGPU_BACKEND &quot;&quot; ON)
+<span class="gi">+   option(ENABLE_NEWLIB_BACKEND &quot;&quot; ON)</span>
 </pre></div>
 </div>
 </li>
 <li><p>Add the new directory (<code class="docutils literal notranslate"><span class="pre">src/&lt;domain&gt;/backends/&lt;new_directory&gt;</span></code>) with the wrappers for the new third-party library under the <code class="docutils literal notranslate"><span class="pre">ENABLE_XXX_BACKEND</span></code> condition to the <code class="docutils literal notranslate"><span class="pre">src/&lt;domain&gt;/backends/CMakeList.txt</span></code> file.</p>
 <p><strong>Example</strong>: changes for <code class="docutils literal notranslate"><span class="pre">newlib</span></code> in <code class="docutils literal notranslate"><span class="pre">src/blas/backends/CMakeLists.txt</span></code></p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   if(ENABLE_MKLCPU_BACKEND)<span class="w"></span>
-<span class="w"> </span>       add_subdirectory(mklcpu)<span class="w"></span>
-<span class="w"> </span>   endif()<span class="w"></span>
-<span class="gi">+</span><span class="w"></span>
-<span class="gi">+   if(ENABLE_NEWLIB_BACKEND)</span><span class="w"></span>
-<span class="gi">+       add_subdirectory(newlib)</span><span class="w"></span>
-<span class="gi">+   endif()</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   if(ENABLE_MKLCPU_BACKEND)
+<span class="w"> </span>       add_subdirectory(mklcpu)
+<span class="w"> </span>   endif()
+<span class="gi">+</span>
+<span class="gi">+   if(ENABLE_NEWLIB_BACKEND)</span>
+<span class="gi">+       add_subdirectory(newlib)</span>
+<span class="gi">+   endif()</span>
 </pre></div>
 </div>
 </li>
@@ -1328,118 +844,118 @@
 <p><code class="docutils literal notranslate"><span class="pre">scripts/generate_cmake.py</span></code> can help to generate the initial <code class="docutils literal notranslate"><span class="pre">src/&lt;domain&gt;/backends/&lt;new_directory&gt;/CMakeList.txt</span></code> config file automatically for all files in the directory.
 Note: all source files with the <code class="docutils literal notranslate"><span class="pre">_dyn</span></code> suffix are added to build if the target is a dynamic library only.</p>
 <p><strong>Example</strong>: command to generate the cmake config file for the <code class="docutils literal notranslate"><span class="pre">src/blas/backends/newlib</span></code> directory</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python scripts/generate_cmake.py src/blas/backends/newlib <span class="se">\ </span><span class="c1"># Full path to the directory</span>
-                                 newlib                     <span class="c1"># Library name</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>scripts/generate_cmake.py<span class="w"> </span>src/blas/backends/newlib<span class="w"> </span><span class="se">\ </span><span class="c1"># Full path to the directory</span>
+<span class="w">                                 </span>newlib<span class="w">                     </span><span class="c1"># Library name</span>
 </pre></div>
 </div>
 <p>You should manually update the generated config file with information about the new <code class="docutils literal notranslate"><span class="pre">cmake/FindXXX.cmake</span></code> file and instructions about how to link with the third-party library.</p>
 <p><strong>Example</strong>: update the generated <code class="docutils literal notranslate"><span class="pre">src/blas/backends/newlib/CMakeLists.txt</span></code> file</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   # Add third-party library<span class="w"></span>
-<span class="gd">-   # find_package(XXX REQUIRED)</span><span class="w"></span>
-<span class="gi">+   find_package(NEWLIB REQUIRED)</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   # Add third-party library
+<span class="gd">-   # find_package(XXX REQUIRED)</span>
+<span class="gi">+   find_package(NEWLIB REQUIRED)</span>
 </pre></div>
 </div>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   target_link_libraries(${LIB_OBJ}<span class="w"></span>
-<span class="w"> </span>       PUBLIC ONEMKL::SYCL::SYCL<span class="w"></span>
-<span class="gd">-       # Add third-party library to link with here</span><span class="w"></span>
-<span class="gi">+       PUBLIC ONEMKL::NEWLIB::NEWLIB</span><span class="w"></span>
-<span class="w"> </span>   )<span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>   target_link_libraries(${LIB_OBJ}
+<span class="w"> </span>       PUBLIC ONEMKL::SYCL::SYCL
+<span class="gd">-       # Add third-party library to link with here</span>
+<span class="gi">+       PUBLIC ONEMKL::NEWLIB::NEWLIB</span>
+<span class="w"> </span>   )
 </pre></div>
 </div>
 </li>
 </ul>
 <p>Now you can build the backend library for <code class="docutils literal notranslate"><span class="pre">newlib</span></code> to make sure the third-party library integration was completed successfully (for more information, see <a class="reference external" href="../README.md#building-with-cmake">Build with cmake</a>)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> build/
-cmake .. -DNEWLIB_ROOT<span class="o">=</span>&lt;path/to/newlib&gt; <span class="se">\</span>
-    -DENABLE_MKLCPU_BACKEND<span class="o">=</span>OFF <span class="se">\</span>
-    -DENABLE_MKLGPU_BACKEND<span class="o">=</span>OFF <span class="se">\</span>
-    -DENABLE_NEWLIB_BACKEND<span class="o">=</span>ON <span class="se">\ </span>          <span class="c1"># Enable new third-party library backend</span>
-    -DBUILD_FUNCTIONAL_TESTS<span class="o">=</span>OFF           <span class="c1"># At this step we want build only</span>
-cmake --build . -j4
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build/
+cmake<span class="w"> </span>..<span class="w"> </span>-DNEWLIB_ROOT<span class="o">=</span>&lt;path/to/newlib&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>OFF<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>OFF<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_NEWLIB_BACKEND<span class="o">=</span>ON<span class="w"> </span><span class="se">\ </span><span class="w">          </span><span class="c1"># Enable new third-party library backend</span>
+<span class="w">    </span>-DBUILD_FUNCTIONAL_TESTS<span class="o">=</span>OFF<span class="w">           </span><span class="c1"># At this step we want build only</span>
+cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </span>-j4
 </pre></div>
 </div>
 </section>
 <section id="update-the-test-system">
-<span id="integrate-backend-to-test-system"></span><h2>5. Update the Test System<a class="headerlink" href="#update-the-test-system" title="Permalink to this headline">¶</a></h2>
+<span id="integrate-backend-to-test-system"></span><h2>5. Update the Test System<a class="headerlink" href="#update-the-test-system" title="Link to this heading">#</a></h2>
 <p>Update the following files to enable the new third-party library for unit tests:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">src/config.hpp.in</span></code>: add a cmake option for the new third-party library so this macro can be propagated to unit tests</p>
 <p><strong>Example</strong>: add <code class="docutils literal notranslate"><span class="pre">ENABLE_NEWLIB_BACKEND</span></code></p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #cmakedefine ENABLE_MKLCPU_BACKEND<span class="w"></span>
-<span class="gi">+  #cmakedefine ENABLE_NEWLIB_BACKEND</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #cmakedefine ENABLE_MKLCPU_BACKEND
+<span class="gi">+  #cmakedefine ENABLE_NEWLIB_BACKEND</span>
 </pre></div>
 </div>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tests/unit_tests/CMakeLists.txt</span></code>: add instructions about how to link tests with the new backend library</p>
 <p><strong>Example</strong>: add the <code class="docutils literal notranslate"><span class="pre">newlib</span></code> backend library</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  if(ENABLE_MKLCPU_BACKEND)<span class="w"></span>
-<span class="w"> </span>      add_dependencies(test_main_ct onemkl_blas_mklcpu)<span class="w"></span>
-<span class="w"> </span>      if(BUILD_SHARED_LIBS)<span class="w"></span>
-<span class="w"> </span>          list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklcpu)<span class="w"></span>
-<span class="w"> </span>      else()<span class="w"></span>
-<span class="w"> </span>          list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemkl_blas_mklcpu.a)<span class="w"></span>
-<span class="w"> </span>          find_package(MKL REQUIRED)<span class="w"></span>
-<span class="w"> </span>          list(APPEND ONEMKL_LIBRARIES ${MKL_LINK_C})<span class="w"></span>
-<span class="w"> </span>      endif()<span class="w"></span>
-<span class="w"> </span>  endif()<span class="w"></span>
-<span class="gi">+</span><span class="w"></span>
-<span class="gi">+    if(ENABLE_NEWLIB_BACKEND)</span><span class="w"></span>
-<span class="gi">+       add_dependencies(test_main_ct onemkl_blas_newlib)</span><span class="w"></span>
-<span class="gi">+       if(BUILD_SHARED_LIBS)</span><span class="w"></span>
-<span class="gi">+           list(APPEND ONEMKL_LIBRARIES onemkl_blas_newlib)</span><span class="w"></span>
-<span class="gi">+       else()</span><span class="w"></span>
-<span class="gi">+           list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemkl_blas_newlib.a)</span><span class="w"></span>
-<span class="gi">+           find_package(NEWLIB REQUIRED)</span><span class="w"></span>
-<span class="gi">+           list(APPEND ONEMKL_LIBRARIES ONEMKL::NEWLIB::NEWLIB)</span><span class="w"></span>
-<span class="gi">+       endif()</span><span class="w"></span>
-<span class="gi">+   endif()</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  if(ENABLE_MKLCPU_BACKEND)
+<span class="w"> </span>      add_dependencies(test_main_ct onemkl_blas_mklcpu)
+<span class="w"> </span>      if(BUILD_SHARED_LIBS)
+<span class="w"> </span>          list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklcpu)
+<span class="w"> </span>      else()
+<span class="w"> </span>          list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemkl_blas_mklcpu.a)
+<span class="w"> </span>          find_package(MKL REQUIRED)
+<span class="w"> </span>          list(APPEND ONEMKL_LIBRARIES ${MKL_LINK_C})
+<span class="w"> </span>      endif()
+<span class="w"> </span>  endif()
+<span class="gi">+</span>
+<span class="gi">+    if(ENABLE_NEWLIB_BACKEND)</span>
+<span class="gi">+       add_dependencies(test_main_ct onemkl_blas_newlib)</span>
+<span class="gi">+       if(BUILD_SHARED_LIBS)</span>
+<span class="gi">+           list(APPEND ONEMKL_LIBRARIES onemkl_blas_newlib)</span>
+<span class="gi">+       else()</span>
+<span class="gi">+           list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemkl_blas_newlib.a)</span>
+<span class="gi">+           find_package(NEWLIB REQUIRED)</span>
+<span class="gi">+           list(APPEND ONEMKL_LIBRARIES ONEMKL::NEWLIB::NEWLIB)</span>
+<span class="gi">+       endif()</span>
+<span class="gi">+   endif()</span>
 </pre></div>
 </div>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tests/unit_tests/include/test_helper.hpp</span></code>: add the helper function for the compile-time dispatching interface with the new backend, and specify the device for which it should be called</p>
 <p><strong>Example</strong>: add the helper function for the <code class="docutils literal notranslate"><span class="pre">newlib</span></code> compile-time dispatching interface with <code class="docutils literal notranslate"><span class="pre">newdevice</span></code> if it is the Host</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #ifdef ENABLE_MKLGPU_BACKEND<span class="w"></span>
-<span class="w"> </span>      #define TEST_RUN_INTELGPU(q, func, args) \<span class="w"></span>
-<span class="w"> </span>          func&lt;oneapi::mkl::backend::mklgpu&gt; args<span class="w"></span>
-<span class="w"> </span>  #else<span class="w"></span>
-<span class="w"> </span>      #define TEST_RUN_INTELGPU(q, func, args)<span class="w"></span>
-<span class="w"> </span>  #endif<span class="w"></span>
-<span class="gi">+</span><span class="w"></span>
-<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span><span class="w"></span>
-<span class="gi">+     #define TEST_RUN_NEWDEVICE(q, func, args) \</span><span class="w"></span>
-<span class="gi">+         func&lt;oneapi::mkl::backend::newbackend&gt; args</span><span class="w"></span>
-<span class="gi">+  #else</span><span class="w"></span>
-<span class="gi">+      #define TEST_RUN_NEWDEVICE(q, func, args)</span><span class="w"></span>
-<span class="gi">+  #endif</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #ifdef ENABLE_MKLGPU_BACKEND
+<span class="w"> </span>      #define TEST_RUN_INTELGPU(q, func, args) \
+<span class="w"> </span>          func&lt;oneapi::mkl::backend::mklgpu&gt; args
+<span class="w"> </span>  #else
+<span class="w"> </span>      #define TEST_RUN_INTELGPU(q, func, args)
+<span class="w"> </span>  #endif
+<span class="gi">+</span>
+<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span>
+<span class="gi">+     #define TEST_RUN_NEWDEVICE(q, func, args) \</span>
+<span class="gi">+         func&lt;oneapi::mkl::backend::newbackend&gt; args</span>
+<span class="gi">+  #else</span>
+<span class="gi">+      #define TEST_RUN_NEWDEVICE(q, func, args)</span>
+<span class="gi">+  #endif</span>
 </pre></div>
 </div>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #define TEST_RUN_CT(q, func, args)               \<span class="w"></span>
-<span class="w"> </span>      do {                                         \<span class="w"></span>
-<span class="gi">+          if (q.is_host())                         \</span><span class="w"></span>
-<span class="gi">+              TEST_RUN_NEWDEVICE(q, func, args);   \</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #define TEST_RUN_CT(q, func, args)               \
+<span class="w"> </span>      do {                                         \
+<span class="gi">+          if (q.is_host())                         \</span>
+<span class="gi">+              TEST_RUN_NEWDEVICE(q, func, args);   \</span>
 </pre></div>
 </div>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tests/unit_tests/main_test.cpp</span></code>: add the targeted device to the vector of devices to test</p>
 <p><strong>Example</strong>: add the targeted device CPU for <code class="docutils literal notranslate"><span class="pre">newlib</span></code></p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>          }<span class="w"></span>
-<span class="w"> </span>      }<span class="w"></span>
-<span class="gi">+</span><span class="w"></span>
-<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span><span class="w"></span>
-<span class="gi">+      devices.push_back(sycl::device(sycl::host_selector()));</span><span class="w"></span>
-<span class="gi">+  #endif</span><span class="w"></span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>          }
+<span class="w"> </span>      }
+<span class="gi">+</span>
+<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span>
+<span class="gi">+      devices.push_back(sycl::device(sycl::host_selector()));</span>
+<span class="gi">+  #endif</span>
 </pre></div>
 </div>
 </li>
 </ul>
 <p>Now you can build and run functional testing for enabled third-party libraries (for more information see <a class="reference external" href="../README.md#building-with-cmake">Build with cmake</a>).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> build/
-cmake .. -DNEWLIB_ROOT<span class="o">=</span>&lt;path/to/newlib&gt; <span class="se">\</span>
-    -DENABLE_MKLCPU_BACKEND<span class="o">=</span>OFF <span class="se">\</span>
-    -DENABLE_MKLGPU_BACKEND<span class="o">=</span>OFF <span class="se">\</span>
-    -DENABLE_NEWLIB_BACKEND<span class="o">=</span>ON  <span class="se">\</span>
-    -DBUILD_FUNCTIONAL_TESTS<span class="o">=</span>ON
-cmake --build . -j4
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build/
+cmake<span class="w"> </span>..<span class="w"> </span>-DNEWLIB_ROOT<span class="o">=</span>&lt;path/to/newlib&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>OFF<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>OFF<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_NEWLIB_BACKEND<span class="o">=</span>ON<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-DBUILD_FUNCTIONAL_TESTS<span class="o">=</span>ON
+cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </span>-j4
 ctest
 </pre></div>
 </div>
@@ -1447,38 +963,101 @@ ctest
 </section>
 
 
-              </div>
+                </article>
               
-        
-        <div class='prev-next-bottom'>
-            
-    <a class='left-prev' id="prev-link" href="domains/lapack/ungqr_batch_scratchpad_size.html" title="previous page">ungqr_batch_scratchpad_size</a>
 
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
-        
-          By Intel Corporation<br/>
-        
-            &copy; Copyright 2020-2022, Intel Corporation.<br/>
-          <div class="extra_footer">
-            <p align="right"><a href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">Cookies</a></p>
-          </div>
-      </p>
-    </div>
-  </footer>
-</main>
-
-
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="domains/lapack/ungqr_batch_scratchpad_size.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">ungqr_batch_scratchpad_size</p>
       </div>
-    </div>
-  
-  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-header-files">1. Create Header Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-header-files">2. Integrate Header Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-wrappers">3. Create Wrappers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrate-wrappers-to-the-build-system">4. Integrate Wrappers to the Build System</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-the-test-system">5. Update the Test System</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
   
+  <div class="footer-item">
+    
+<p class="component-author">
+By Intel Corporation
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2020-2022, Intel Corporation.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p align="right"><a href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">Cookies</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
