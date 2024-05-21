@@ -21,9 +21,9 @@ jobs:
       matrix:
         include:
         - config: portBLAS
-          options: -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=blas
+          options: -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=blas -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
         - config: portFFT
-          options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft
+          options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
         - config: MKL BLAS
           options: -DTARGET_DOMAINS=blas
         - config: MKL DFT
