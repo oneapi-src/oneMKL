@@ -21,11 +21,13 @@ jobs:
       matrix:
         include:
         - config: portBLAS
-          options: -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=blas
-          tests: '.*Nrm2Tests.RealSinglePrecision.*'
+          options: -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=blas -DPORTBLAS_TUNING_TARGET=INTEL_CPU
+          # tests: '.*Nrm2Tests.RealSinglePrecision.*'
+          tests: '.*'
         - config: portFFT
-          options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
-          tests: 'DFT/CT/.*ComputeTests_in_place_COMPLEX.COMPLEX_SINGLE_in_place_buffer.sizes_8_batches_1*'
+          options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64_x86_64"
+          # tests: 'DFT/CT/.*ComputeTests_in_place_COMPLEX.COMPLEX_SINGLE_in_place_buffer.sizes_8_batches_1*'
+          tests: '.*'
         - config: MKL BLAS
           options: -DTARGET_DOMAINS=blas
           tests: '.*'
