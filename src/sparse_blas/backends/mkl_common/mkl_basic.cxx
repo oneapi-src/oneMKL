@@ -37,6 +37,15 @@ std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>> set_csr_data(
 }
 
 template <typename fpType, typename intType>
+std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>> set_coo_data(
+    sycl::queue &queue, detail::matrix_handle *handle, intType num_rows, intType num_cols,
+    intType /*nnz*/, sycl::buffer<intType, 1> &row_ind, sycl::buffer<intType, 1> &col_ind,
+    sycl::buffer<fpType, 1> &val) {
+    oneapi::mkl::sparse::set_coo_data(queue, detail::get_handle(handle), num_rows, num_cols, row_ind,
+                                      col_ind, val);
+}
+
+template <typename fpType, typename intType>
 std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>, sycl::event> set_csr_data(
     sycl::queue &queue, detail::matrix_handle *handle, intType num_rows, intType num_cols,
     intType /*nnz*/, index_base index, intType *row_ptr, intType *col_ind, fpType *val,
@@ -60,3 +69,20 @@ std::enable_if_t<detail::are_fp_int_supported_v<fpType, intType>, sycl::event> s
 FOR_EACH_FP_AND_INT_TYPE(INSTANTIATE_SET_CSR_DATA);
 
 #undef INSTANTIATE_SET_CSR_DATA
+
+
+#define INSTANTIATE_SET_COO_DATA(FP_TYPE, INT_TYPE)                                                \
+    template std::enable_if_t<detail::are_fp_int_supported_v<FP_TYPE, INT_TYPE>>                   \
+    set_csr_data<FP_TYPE, INT_TYPE>(                                                               \
+        sycl::queue & queue, detail::matrix_handle * handle, INT_TYPE num_rows, INT_TYPE num_cols, \
+        INT_TYPE nnz, sycl::buffer<INT_TYPE, 1> & row_ind,                                         \
+        sycl::buffer<INT_TYPE, 1> & col_ind, sycl::buffer<FP_TYPE, 1> & val);                      \
+    template std::enable_if_t<detail::are_fp_int_supported_v<FP_TYPE, INT_TYPE>, sycl::event>      \
+    set_coo_data<FP_TYPE, INT_TYPE>(sycl::queue & queue, detail::matrix_handle * handle,           \
+                                    INT_TYPE num_rows, INT_TYPE num_cols, INT_TYPE nnz,            \
+                                    INT_TYPE * row_ind, INT_TYPE * col_ind,                        \
+                                    FP_TYPE * val, const std::vector<sycl::event> &dependencies)
+
+FOR_EACH_FP_AND_INT_TYPE(INSTANTIATE_SET_COO_DATA);
+
+#undef INSTANTIATE_SET_COO_DATA

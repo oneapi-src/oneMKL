@@ -34,6 +34,18 @@
         INT_TYPE num_cols, INT_TYPE nnz, oneapi::mkl::index_base index, INT_TYPE * row_ptr,  \
         INT_TYPE * col_ind, FP_TYPE * val, const std::vector<sycl::event> &dependencies)
 
+#define DEFINE_SET_COO_DATA(FP_TYPE, FP_SUFFIX, INT_TYPE, INT_SUFFIX)                        \
+    void (*set_coo_data_buffer##FP_SUFFIX##INT_SUFFIX)(                                      \
+        sycl::queue & queue, oneapi::mkl::sparse::matrix_handle_t handle, INT_TYPE num_rows, \
+        INT_TYPE num_cols, INT_TYPE nnz,                                                     \
+        sycl::buffer<INT_TYPE, 1> & row_ind, sycl::buffer<INT_TYPE, 1> & col_ind,            \
+        sycl::buffer<FP_TYPE, 1> & val);                                                     \
+    sycl::event (*set_coo_data_usm##FP_SUFFIX##INT_SUFFIX)(                                  \
+        sycl::queue & queue, oneapi::mkl::sparse::matrix_handle_t handle, INT_TYPE num_rows, \
+        INT_TYPE num_cols, INT_TYPE nnz, INT_TYPE * row_ind, INT_TYPE * col_ind,             \
+        FP_TYPE * val, const std::vector<sycl::event> &dependencies)
+
+
 #define DEFINE_GEMV(FP_TYPE, FP_SUFFIX)                                                      \
     void (*gemv_buffer##FP_SUFFIX)(                                                          \
         sycl::queue & queue, oneapi::mkl::transpose transpose_val, const FP_TYPE alpha,      \
@@ -102,6 +114,7 @@ typedef struct {
 } sparse_blas_function_table_t;
 
 #undef DEFINE_SET_CSR_DATA
+#undef DEFINE_SET_COO_DATA
 #undef DEFINE_GEMV
 #undef DEFINE_TRSV
 #undef DEFINE_GEMM

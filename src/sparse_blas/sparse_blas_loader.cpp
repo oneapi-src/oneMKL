@@ -62,7 +62,31 @@ sycl::event release_matrix_handle(sycl::queue &queue, matrix_handle_t *p_handle,
     }
 
 FOR_EACH_FP_AND_INT_TYPE(DEFINE_SET_CSR_DATA)
-#undef DEFINE_SET_CSR_DATA
+#undef DEFINE_SET_COO_DATA
+
+#define DEFINE_SET_COO_DATA(FP_TYPE, FP_SUFFIX, INT_TYPE, INT_SUFFIX)                              \
+    template <>                                                                                    \
+    void set_coo_data(sycl::queue &queue, matrix_handle_t handle, INT_TYPE num_rows,               \
+                      INT_TYPE num_cols, INT_TYPE nnz,                                             \
+                      sycl::buffer<INT_TYPE, 1> &row_ind, sycl::buffer<INT_TYPE, 1> &col_ind,      \
+                      sycl::buffer<FP_TYPE, 1> &val) {                                             \
+        auto libkey = get_device_id(queue);                                                        \
+        function_tables[libkey].set_coo_data_buffer##FP_SUFFIX##INT_SUFFIX(                        \
+            queue, handle, num_rows, num_cols, nnz, row_ind, col_ind, val);                 \
+    }                                                                                              \
+    template <>                                                                                    \
+    sycl::event set_coo_data(sycl::queue &queue, matrix_handle_t handle, INT_TYPE num_rows,        \
+                             INT_TYPE num_cols, INT_TYPE nnz, INT_TYPE *row_ind,                   \
+                             INT_TYPE *col_ind, FP_TYPE *val,                                      \
+                             const std::vector<sycl::event> &dependencies) {                       \
+        auto libkey = get_device_id(queue);                                                        \
+        return function_tables[libkey].set_coo_data_usm##FP_SUFFIX##INT_SUFFIX(                    \
+            queue, handle, num_rows, num_cols, nnz, row_ind, col_ind, val, dependencies);   \
+    }
+
+FOR_EACH_FP_AND_INT_TYPE(DEFINE_SET_COO_DATA)
+#undef DEFINE_SET_COO_DATA
+
 
 sycl::event optimize_gemm(sycl::queue &queue, transpose transpose_A, matrix_handle_t handle,
                           const std::vector<sycl::event> &dependencies) {
