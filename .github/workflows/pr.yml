@@ -22,7 +22,6 @@ jobs:
         include:
         - config: portBLAS
           options: -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=blas -DPORTBLAS_TUNING_TARGET=INTEL_CPU
-          # tests: '.*Nrm2Tests.RealSinglePrecision.*'
           tests: '.*'
         - config: portFFT
           options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
