@@ -20,11 +20,7 @@
 #ifndef _ONEMKL_ERROR_HELPER_HPP_
 #define _ONEMKL_ERROR_HELPER_HPP_
 
-#if __has_include(<sycl/sycl.hpp>)
-#include <sycl/sycl.hpp>
-#else
-#include <CL/sycl.hpp>
-#endif
+#include <string>
 
 template <typename T>
 inline const std::string dtype_string();
