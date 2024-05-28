@@ -111,16 +111,8 @@ static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::mcg59<VecSi
 
 template <std::int32_t VecSize>
 static inline void init(engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state,
-                        std::uint64_t n, std::uint32_t* seed_ptr, std::uint64_t offset) {
-    if (n < 1) {
-        state.s = 1;
-    }
-    else if (n == 1) {
-        state.s = static_cast<uint64_t>(seed_ptr[0]) & mcg59_param::m_64;
-    }
-    else {
-        state.s = *(reinterpret_cast<std::uint64_t*>(&seed_ptr[0])) & mcg59_param::m_64;
-    }
+                        std::uint64_t seed, std::uint64_t offset) {
+    state.s = seed & mcg59_param::m_64;
     if (state.s == 0)
         state.s = 1;
 
@@ -154,12 +146,8 @@ static inline std::uint64_t generate_single(
 template <std::int32_t VecSize>
 class engine_base<oneapi::mkl::rng::device::mcg59<VecSize>> {
 protected:
-    engine_base(std::uint32_t seed, std::uint64_t offset = 0) {
-        mcg59_impl::init(this->state_, 1, &seed, offset);
-    }
-
-    engine_base(std::uint64_t n, const std::uint32_t* seed, std::uint64_t offset = 0) {
-        mcg59_impl::init(this->state_, n, seed, offset);
+    engine_base(std::uint64_t seed, std::uint64_t offset = 0) {
+        mcg59_impl::init(this->state_, seed, offset);
     }
 
     template <typename RealType>

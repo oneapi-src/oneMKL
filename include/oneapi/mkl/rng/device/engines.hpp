@@ -130,9 +130,6 @@ public:
     mcg31m1(std::uint32_t seed, std::uint64_t offset = 0)
             : detail::engine_base<mcg31m1<VecSize>>(seed, offset) {}
 
-    mcg31m1(std::initializer_list<std::uint32_t> seed, std::uint64_t offset = 0)
-            : detail::engine_base<mcg31m1<VecSize>>(seed.size(), seed.begin(), offset) {}
-
 private:
     template <typename Engine>
     friend void skip_ahead(Engine& engine, std::uint64_t num_to_skip);
@@ -157,11 +154,8 @@ public:
 
     mcg59() : detail::engine_base<mcg59<VecSize>>(default_seed) {}
 
-    mcg59(std::uint32_t seed, std::uint64_t offset = 0)
+    mcg59(std::uint64_t seed, std::uint64_t offset = 0)
             : detail::engine_base<mcg59<VecSize>>(seed, offset) {}
-
-    mcg59(std::initializer_list<std::uint32_t> seed, std::uint64_t offset = 0)
-            : detail::engine_base<mcg59<VecSize>>(seed.size(), seed.begin(), offset) {}
 
 private:
     template <typename Engine>

@@ -46,7 +46,7 @@ bool isDoubleSupported(sycl::device my_dev) {
 }
 
 // example parameters
-constexpr int seed = 777;
+constexpr std::uint64_t seed = 777;
 constexpr std::size_t n = 1024;
 constexpr int n_print = 10;
 
