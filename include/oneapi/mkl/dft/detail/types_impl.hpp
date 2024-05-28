@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020-2023 Intel Corporation
+* Copyright 2020-2024 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -96,6 +96,12 @@ using valid_compute_arg = typename std::bool_constant<
      is_one_of<T, float, sycl::float2, sycl::float4, std::complex<float>>::value) ||
     (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, double> &&
      is_one_of<T, double, sycl::double2, sycl::double4, std::complex<double>>::value)>;
+
+template <typename T>
+class is_complex_arg : public std::false_type {};
+
+template <typename T>
+class is_complex_arg<std::complex<T>> : public std::true_type {};
 
 // compute the range of a reinterpreted buffer
 template <typename In, typename Out>

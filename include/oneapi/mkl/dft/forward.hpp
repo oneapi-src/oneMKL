@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2023 Intel Corporation
+* Copyright 2023-2024 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re
                      sycl::buffer<data_type, 1> &inout_im) {
     static_assert(detail::valid_compute_arg<descriptor_type, data_type>::value,
                   "unexpected type for data_type");
+    static_assert(!detail::is_complex_arg<data_type>::value, "expected real type for data_type");
 
     using scalar_type = typename detail::descriptor_info<descriptor_type>::scalar_type;
     auto type_corrected_inout_re = inout_re.template reinterpret<scalar_type, 1>(
@@ -70,6 +71,13 @@ void compute_forward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
 
     using fwd_type = typename detail::descriptor_info<descriptor_type>::forward_type;
     using bwd_type = typename detail::descriptor_info<descriptor_type>::backward_type;
+
+    // If the DFT is COMPLEX, the input and output types are expected to be complex.
+    static_assert(
+        !std::is_same_v<fwd_type, bwd_type> || (detail::is_complex_arg<input_type>::value &&
+                                                detail::is_complex_arg<output_type>::value),
+        "expected std::complex input_type and output_type");
+
     auto type_corrected_in = in.template reinterpret<fwd_type, 1>(
         detail::reinterpret_range<input_type, fwd_type>(in.size()));
     auto type_corrected_out = out.template reinterpret<bwd_type, 1>(
@@ -86,6 +94,9 @@ void compute_forward(descriptor_type &desc, sycl::buffer<input_type, 1> &in_re,
                   "unexpected type for input_type");
     static_assert(detail::valid_compute_arg<descriptor_type, output_type>::value,
                   "unexpected type for output_type");
+    static_assert(
+        !detail::is_complex_arg<input_type>::value && !detail::is_complex_arg<output_type>::value,
+        "expected input_type and output_type to be real");
 
     using scalar_type = typename detail::descriptor_info<descriptor_type>::scalar_type;
     auto type_corrected_in_re = in_re.template reinterpret<scalar_type, 1>(
@@ -119,6 +130,7 @@ sycl::event compute_forward(descriptor_type &desc, data_type *inout_re, data_typ
                             const std::vector<sycl::event> &dependencies = {}) {
     static_assert(detail::valid_compute_arg<descriptor_type, data_type>::value,
                   "unexpected type for data_type");
+    static_assert(!detail::is_complex_arg<data_type>::value, "data_type is expected to be real");
 
     using scalar_type = typename detail::descriptor_info<descriptor_type>::scalar_type;
     return get_commit(desc)->forward_ip_rr(desc, reinterpret_cast<scalar_type *>(inout_re),
@@ -136,6 +148,13 @@ sycl::event compute_forward(descriptor_type &desc, input_type *in, output_type *
 
     using fwd_type = typename detail::descriptor_info<descriptor_type>::forward_type;
     using bwd_type = typename detail::descriptor_info<descriptor_type>::backward_type;
+
+    // If the DFT is COMPLEX, the input and output types are expected to be complex.
+    static_assert(
+        !std::is_same_v<fwd_type, bwd_type> || (detail::is_complex_arg<input_type>::value &&
+                                                detail::is_complex_arg<output_type>::value),
+        "expected std::complex input_type and output_type");
+
     return get_commit(desc)->forward_op_cc(desc, reinterpret_cast<fwd_type *>(in),
                                            reinterpret_cast<bwd_type *>(out), dependencies);
 }
@@ -149,6 +168,9 @@ sycl::event compute_forward(descriptor_type &desc, input_type *in_re, input_type
                   "unexpected type for input_type");
     static_assert(detail::valid_compute_arg<descriptor_type, output_type>::value,
                   "unexpected type for output_type");
+    static_assert(
+        !detail::is_complex_arg<input_type>::value && !detail::is_complex_arg<output_type>::value,
+        "expected input_type and output_type to be real");
 
     using scalar_type = typename detail::descriptor_info<descriptor_type>::scalar_type;
     return get_commit(desc)->forward_op_rr(desc, reinterpret_cast<scalar_type *>(in_re),
