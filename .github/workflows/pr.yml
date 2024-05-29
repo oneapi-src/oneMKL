@@ -21,19 +21,19 @@ jobs:
       matrix:
         include:
         - config: portBLAS
-          options: -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=blas -DPORTBLAS_TUNING_TARGET=INTEL_CPU
+          options: -DTARGET_DOMAINS=blas -DREF_BLAS_ROOT=${PWD}/lapack/install -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DPORTBLAS_TUNING_TARGET=INTEL_CPU
           tests: '.*'
         - config: portFFT
           options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
           tests: 'DFT/CT/.*ComputeTests_in_place_COMPLEX.COMPLEX_SINGLE_in_place_buffer.sizes_8_batches_1*'
         - config: MKL BLAS
-          options: -DTARGET_DOMAINS=blas
+          options: -DTARGET_DOMAINS=blas -DREF_BLAS_ROOT=${PWD}/lapack/install
           tests: '.*'
         - config: MKL DFT
           options: -DTARGET_DOMAINS=dft
           tests: '.*'
         - config: MKL LAPACK
-          options: -DTARGET_DOMAINS=lapack
+          options: -DTARGET_DOMAINS=lapack -DREF_LAPACK_ROOT=${PWD}/lapack/install
           tests: '.*'
         - config: MKL RNG
           options: -DTARGET_DOMAINS=rng
@@ -67,7 +67,7 @@ jobs:
     - name: Configure/Build for a domain
       run: |
         source /opt/intel/oneapi/setvars.sh
-        cmake -DREF_BLAS_ROOT=${PWD}/lapack/install -DREF_LAPACK_ROOT=${PWD}/lapack/install -DENABLE_MKLGPU_BACKEND=off -DCMAKE_VERBOSE_MAKEFILE=on ${{ matrix.options }} -B build
+        cmake -DENABLE_MKLGPU_BACKEND=off -DCMAKE_VERBOSE_MAKEFILE=on ${{ matrix.options }} -B build
         cmake --build build ${PARALLEL}
     - name: Run tests
       run: |
