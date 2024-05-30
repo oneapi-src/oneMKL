@@ -87,6 +87,20 @@ struct descriptor_info<descriptor<precision::DOUBLE, domain::COMPLEX>> {
     using backward_type = std::complex<double>;
 };
 
+// Get the scalar type associated with a descriptor.
+template <class descriptor_t>
+using descriptor_scalar_t = typename descriptor_info<descriptor_t>::scalar_type;
+
+template <typename T>
+constexpr bool is_complex_dft = false;
+template <precision Prec>
+constexpr bool is_complex_dft<descriptor<Prec, domain::COMPLEX>> = true;
+
+template <typename T>
+constexpr bool is_complex = false;
+template <typename T>
+constexpr bool is_complex<std::complex<T>> = true;
+
 template <typename T, typename... Ts>
 using is_one_of = typename std::bool_constant<(std::is_same_v<T, Ts> || ...)>;
 
@@ -96,6 +110,24 @@ using valid_compute_arg = typename std::bool_constant<
      is_one_of<T, float, sycl::float2, sycl::float4, std::complex<float>>::value) ||
     (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, double> &&
      is_one_of<T, double, sycl::double2, sycl::double4, std::complex<double>>::value)>;
+
+// For out-of-place complex-complex DFTs, are the input and output types correct? For SFINAE.
+template <class descriptor_t, typename input_t, typename output_t>
+constexpr bool valid_oop_iotypes = []() {
+    if constexpr (is_complex_dft<descriptor_t>) {
+        // Both input and output types must be complex, otherwise select real-real inplace overload.
+        return is_complex<input_t> && is_complex<output_t>;
+    }
+    else {
+        // I/O can be real or complex - no issues resolving overload with real-real inplace.
+        return valid_compute_arg<descriptor_t, input_t>::value &&
+               valid_compute_arg<descriptor_t, output_t>::value;
+    }
+}();
+
+template <class descriptor_t, typename data_t>
+constexpr bool valid_ip_realreal_impl =
+    is_complex_dft<descriptor_t>&& std::is_same_v<descriptor_scalar_t<descriptor_t>, data_t>;
 
 // compute the range of a reinterpreted buffer
 template <typename In, typename Out>
