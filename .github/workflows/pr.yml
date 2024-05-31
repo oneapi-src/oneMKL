@@ -15,7 +15,7 @@ env:
 
 jobs:
   unit-tests:
-    runs-on: intel-ubuntu-latest
+    runs-on: ubuntu-latest
     # One runner for each domain
     strategy:
       matrix:
@@ -66,7 +66,7 @@ jobs:
           - 'src/${{ matrix.domain}}/**'
           - 'tests/unit_tests/${{ matrix.domain }}/**'
           - CMakeLists.txt
-          # - '.github/workflows/**'
+          - '.github/workflows/**'
     - name: Install oneapi
       if: steps.changes.outputs.src == 'true'
       uses: rscohn2/setup-oneapi@2ad0cf6b74bc2426bdcee825cf88f9db719dd727 # v0.1.0
