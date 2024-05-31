@@ -106,9 +106,9 @@ using is_one_of = typename std::bool_constant<(std::is_same_v<T, Ts> || ...)>;
 
 template <typename descriptor_type, typename T>
 using valid_compute_arg = typename std::bool_constant<
-    (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, float> &&
+    (std::is_same_v<descriptor_scalar_t<descriptor_type>, float> &&
      is_one_of<T, float, sycl::float2, sycl::float4, std::complex<float>>::value) ||
-    (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, double> &&
+    (std::is_same_v<descriptor_scalar_t<descriptor_type>, double> &&
      is_one_of<T, double, sycl::double2, sycl::double4, std::complex<double>>::value)>;
 
 // For out-of-place complex-complex DFTs, are the input and output types correct? For SFINAE.
