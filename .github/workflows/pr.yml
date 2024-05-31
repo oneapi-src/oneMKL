@@ -68,20 +68,20 @@ jobs:
           - CMakeLists.txt
           # - '.github/workflows/**'
     - name: Install oneapi
-      if: needs.check_changes.outputs.src == 'true'
+      if: steps.changes.outputs.src == 'true'
       uses: rscohn2/setup-oneapi@2ad0cf6b74bc2426bdcee825cf88f9db719dd727 # v0.1.0
       with:
         components: |
           icx@2024.1.0
           mkl@2024.1.0
     - name: Configure/Build for a domain
-      if: needs.check_changes.outputs.src == 'true'
+    if: steps.changes.outputs.src == 'true'
       run: |
         source /opt/intel/oneapi/setvars.sh
         cmake -DTARGET_DOMAINS=${{ matrix.domain }} -DENABLE_MKLGPU_BACKEND=off -DCMAKE_VERBOSE_MAKEFILE=on ${{ matrix.build_options }} -B build
         cmake --build build ${PARALLEL}
     - name: Run tests
-      if: needs.check_changes.outputs.src == 'true'
+      if: steps.changes.outputs.src == 'true'
       run: |
         source /opt/intel/oneapi/setvars.sh
         ctest --test-dir build ${{ matrix.test_options }}
