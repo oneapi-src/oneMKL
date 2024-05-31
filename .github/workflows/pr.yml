@@ -15,7 +15,7 @@ env:
 
 jobs:
   unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: intel-ubuntu-latest
     # One runner for each domain
     strategy:
       matrix:
@@ -59,7 +59,7 @@ jobs:
         cmake --build lapack/build64 ${PARALLEL} --target install
     - name: Check for changes to this domain
       id: changes
-      uses: dorny/paths-filter@v2
+      uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
       with:
         filters: |
           src:
