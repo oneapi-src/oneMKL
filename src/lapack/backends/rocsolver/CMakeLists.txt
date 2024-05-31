@@ -21,7 +21,8 @@
 
 set(LIB_NAME onemkl_lapack_rocsolver)
 set(LIB_OBJ ${LIB_NAME}_obj)
-find_package(rocsolver 3.20.0 REQUIRED) # Version for ROCm 5.4.3
+find_package(hip REQUIRED)
+find_package(rocsolver REQUIRED)
 find_package(Threads REQUIRED)
 
 set(SOURCES rocsolver_lapack.cpp
@@ -40,7 +41,7 @@ target_include_directories(${LIB_OBJ}
           ${ONEMKL_GENERATED_INCLUDE_PATH}
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
-target_link_libraries(${LIB_OBJ} PRIVATE roc::rocsolver Threads::Threads)
+target_link_libraries(${LIB_OBJ} PRIVATE roc::rocsolver hip::host Threads::Threads)
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_17)
 set_target_properties(${LIB_OBJ} PROPERTIES
