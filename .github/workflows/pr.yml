@@ -75,7 +75,7 @@ jobs:
           icx@2024.1.0
           mkl@2024.1.0
     - name: Configure/Build for a domain
-    if: steps.changes.outputs.src == 'true'
+      if: steps.changes.outputs.src == 'true'
       run: |
         source /opt/intel/oneapi/setvars.sh
         cmake -DTARGET_DOMAINS=${{ matrix.domain }} -DENABLE_MKLGPU_BACKEND=off -DCMAKE_VERBOSE_MAKEFILE=on ${{ matrix.build_options }} -B build
