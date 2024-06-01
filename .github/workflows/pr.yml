@@ -63,7 +63,7 @@ jobs:
       with:
         filters: |
           src:
-          - 'src/${{ matrix.domain}}/**'
+          - 'src/${{ matrix.domain }}/**'
           - 'tests/unit_tests/${{ matrix.domain }}/**'
           - CMakeLists.txt
           - '.github/workflows/**'
