@@ -720,7 +720,7 @@ cmake<span class="w"> </span>..<span class="w"> </span><span class="o">[</span>-
 <span class="w">         </span>-DHIP_TARGETS<span class="o">=</span>gfx90a<span class="w">                                         </span><span class="se">\ </span><span class="c1"># Specify the targetted device architectures</span>
 <span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">              </span><span class="c1"># required only for testing</span>
 cmake<span class="w"> </span>--build<span class="w"> </span>.
-<span class="nb">export</span><span class="w"> </span><span class="nv">SYCL_DEVICE_FILTER</span><span class="o">=</span>HIP
+<span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_DEVICE_SELECTOR</span><span class="o">=</span><span class="s2">&quot;hip:gpu&quot;</span>
 ctest
 cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">                        </span><span class="c1"># required to have full package structure</span>
 </pre></div>
@@ -950,7 +950,7 @@ see the tables in the hipSYCL-specific sections.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When building with clang++ for AMD backends, you must additionally set
-<code class="docutils literal notranslate"><span class="pre">SYCL_DEVICE_FILTER</span></code> to <code class="docutils literal notranslate"><span class="pre">HIP</span></code> and provide <code class="docutils literal notranslate"><span class="pre">-DHIP_TARGETS</span></code> according to
+<code class="docutils literal notranslate"><span class="pre">ONEAPI_DEVICE_SELECTOR</span></code> to <code class="docutils literal notranslate"><span class="pre">hip:gpu</span></code> and provide <code class="docutils literal notranslate"><span class="pre">-DHIP_TARGETS</span></code> according to
 the targeted hardware. This backend has only been tested for the <code class="docutils literal notranslate"><span class="pre">gfx90a</span></code>
 architecture (MI210) at the time of writing.</p>
 </div>
