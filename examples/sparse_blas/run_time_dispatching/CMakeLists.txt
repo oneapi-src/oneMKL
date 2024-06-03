@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-# NOTE: user needs to set env var SYCL_DEVICE_FILTER to use runtime example (no need to specify backend when building with CMake)
+# NOTE: user needs to set env var ONEAPI_DEVICE_SELECTOR to use runtime example (no need to specify backend when building with CMake)
 
 include(WarningsUtils)
 
@@ -25,16 +25,16 @@ include(WarningsUtils)
 set(SPARSE_BLAS_RT_SOURCES "sparse_blas_gemv_usm")
 # Set up for the right backend for run-time dispatching examples
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
-# overwrite SYCL_DEVICE_FILTER in their environment to run on the desired backend
+# overwrite ONEAPI_DEVICE_SELECTOR in their environment to run on the desired backend
 set(DEVICE_FILTERS "")
 if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND DEVICE_FILTERS "cpu")
+  list(APPEND DEVICE_FILTERS "opencl:cpu")
 endif()
 if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND DEVICE_FILTERS "gpu")
+  list(APPEND DEVICE_FILTERS "level_zero:gpu")
 endif()
 
-message(STATUS "SYCL_DEVICE_FILTER will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
+message(STATUS "ONEAPI_DEVICE_SELECTOR will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
 
 foreach(sparse_blas_rt_sources ${SPARSE_BLAS_RT_SOURCES})
   add_executable(example_${sparse_blas_rt_sources} ${sparse_blas_rt_sources}.cpp)
@@ -62,7 +62,7 @@ foreach(sparse_blas_rt_sources ${SPARSE_BLAS_RT_SOURCES})
     add_test(NAME ${domain}/EXAMPLE/RT/${sparse_blas_rt_sources}/${device_filter} COMMAND example_${sparse_blas_rt_sources})
     set_property(TEST ${domain}/EXAMPLE/RT/${sparse_blas_rt_sources}/${device_filter} PROPERTY
       ENVIRONMENT LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-      ENVIRONMENT SYCL_DEVICE_FILTER=${device_filter})
+      ENVIRONMENT ONEAPI_DEVICE_SELECTOR=${device_filter})
   endforeach(device_filter)
 
 endforeach()
