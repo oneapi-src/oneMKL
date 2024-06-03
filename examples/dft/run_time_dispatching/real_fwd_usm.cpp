@@ -90,8 +90,8 @@ void print_example_banner() {
                  "# Using single precision (float) data type\n"
                  "#\n"
                  "# Device will be selected during runtime.\n"
-                 "# The environment variable SYCL_DEVICE_FILTER can be used to specify\n"
-                 "# SYCL device\n"
+                 "# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify\n"
+                 "# available devices\n"
                  "#\n"
                  "########################################################################\n"
               << std::endl;
