@@ -54,7 +54,9 @@
 
 set(LIB_NAME onemkl_rng_rocrand)
 set(LIB_OBJ ${LIB_NAME}_obj)
-find_package(rocRAND REQUIRED)
+find_package(hip REQUIRED)
+find_package(rocrand REQUIRED)
+find_package(Threads REQUIRED)
 
 set(SOURCES philox4x32x10.cpp mrg32k3a.cpp $<$<BOOL:${BUILD_SHARED_LIBS}>:
             mkl_rng_rocrand_wrappers.cpp>)
@@ -67,8 +69,8 @@ target_include_directories(
   ${LIB_OBJ} PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src
                      ${CMAKE_BINARY_DIR}/bin ${MKL_INCLUDE} ${ONEMKL_GENERATED_INCLUDE_PATH})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL
-                                        ONEMKL::rocRAND::rocRAND)
+target_link_libraries(${LIB_OBJ} PRIVATE roc::rocrand hip::host Threads::Threads)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
 set_target_properties(${LIB_OBJ} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
