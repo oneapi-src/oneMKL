@@ -36,7 +36,7 @@
 namespace {
 
 const char* accuracy_input = R"(
-0 33 35 27182
+1 33 35 27182
 )";
 
 template <typename data_T>
@@ -132,7 +132,7 @@ bool accuracy(const sycl::device& dev, oneapi::mkl::uplo uplo, int64_t n, int64_
             e[diag] -= A[diag + (diag + 1) * lda];
     else
         for (int64_t diag = 0; diag < n - 1; diag++)
-            e[diag] -= A[diag + 1 + (diag)*ldt];
+            e[diag] -= A[diag + 1 + (diag)*lda];
 
     auto ulp = reference::lamch<fp_real>('P');
     if (reference::lange('I', n, 1, d.data(), n) > 10.0 * ulp) {
