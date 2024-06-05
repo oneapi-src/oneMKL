@@ -53,8 +53,9 @@ typename std::enable_if<std::is_integral<fp>::value, bool>::type check_equal_int
 
 // Specialized check for Tc=int32_t and Ts=float as small differences in the reference become large after rounding
 template <>
-bool check_equal_matrix<int32_t>(const int32_t *M, const int32_t *M_ref, oneapi::mkl::layout layout,
-                                 int m, int n, int ld, int error_mag, std::ostream &out) {
+static bool check_equal_matrix<int32_t>(const int32_t *M, const int32_t *M_ref,
+                                        oneapi::mkl::layout layout, int m, int n, int ld,
+                                        int error_mag, std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {

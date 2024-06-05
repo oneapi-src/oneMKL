@@ -69,11 +69,9 @@ using vec_type_t = typename vec_type<T>::type;
 
 // Specialized check for Tc=int32_t and Ts=float as small differences in the reference become large after rounding
 template <>
-bool check_equal_matrix<acc_type_t<int32_t>, vec_type_t<int32_t>>(acc_type_t<int32_t> &M,
-                                                                  vec_type_t<int32_t> &M_ref,
-                                                                  oneapi::mkl::layout layout, int m,
-                                                                  int n, int ld, int error_mag,
-                                                                  std::ostream &out) {
+static bool check_equal_matrix<acc_type_t<int32_t>, vec_type_t<int32_t>>(
+    acc_type_t<int32_t> &M, vec_type_t<int32_t> &M_ref, oneapi::mkl::layout layout, int m, int n,
+    int ld, int error_mag, std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
