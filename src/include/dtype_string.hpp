@@ -25,18 +25,32 @@
 template <typename T>
 inline const std::string dtype_string();
 template <>
-inline const std::string dtype_string<float>() {return "float";}
+inline const std::string dtype_string<float>() {
+    return "float";
+}
 template <>
-inline const std::string dtype_string<double>() {return "double";}
+inline const std::string dtype_string<double>() {
+    return "double";
+}
 template <>
-inline const std::string dtype_string<sycl::half>() {return "half";}
+inline const std::string dtype_string<sycl::half>() {
+    return "half";
+}
 template <>
-inline const std::string dtype_string<std::complex<float>>() {return "complex<float>";}
+inline const std::string dtype_string<std::complex<float>>() {
+    return "complex<float>";
+}
 template <>
-inline const std::string dtype_string<std::complex<double>>() {return "complex<double>";}
+inline const std::string dtype_string<std::complex<double>>() {
+    return "complex<double>";
+}
 template <>
-inline const std::string dtype_string<std::int32_t>() {return "int32";}
+inline const std::string dtype_string<std::int32_t>() {
+    return "int32";
+}
 template <>
-inline const std::string dtype_string<std::int8_t>() {return "int8";}
+inline const std::string dtype_string<std::int8_t>() {
+    return "int8";
+}
 
 #endif //_ONEMKL_ERROR_HELPER_HPP_
