@@ -196,8 +196,8 @@ void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t 
                 int64_t stride_a, sycl::buffer<std::int8_t, 1> &b, int64_t ldb, int64_t stride_b,
                 float beta, sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size) {
-    blas_major::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                           stride_b, beta, c, ldc, stride_c, batch_size);
+    throw unimplemented("blas", "gemm_batch",
+                        "unsupported dtype combination: int8_t, int8_t, float, float");
 }
 
 void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
@@ -683,8 +683,8 @@ sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, i
                        const std::int8_t *b, int64_t ldb, int64_t stride_b, float beta, float *c,
                        int64_t ldc, int64_t stride_c, int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    return blas_major::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb,
-                                  stride_b, beta, c, ldc, stride_c, batch_size, dependencies);
+    throw unimplemented("blas", "gemm_batch",
+                        "unsupported dtype combination: int8_t, int8_t, float, float");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
@@ -757,8 +757,8 @@ sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb,
                        const std::int8_t **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
                        int64_t group_count, int64_t *groupsize,
                        const std::vector<sycl::event> &dependencies) {
-    return blas_major::gemm_batch(queue, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-                                  ldc, group_count, groupsize, dependencies);
+    throw unimplemented("blas", "gemm_batch",
+                        "unsupported dtype combination: int8_t, int8_t, float, float");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
