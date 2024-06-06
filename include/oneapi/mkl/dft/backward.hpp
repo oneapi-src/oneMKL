@@ -60,9 +60,7 @@ void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_r
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type,
-          std::enable_if_t<detail::valid_oop_iotypes<descriptor_type, input_type, output_type>,
-                           bool> = true>
+template <typename descriptor_type, typename input_type, typename output_type>
 void compute_backward(descriptor_type &desc, sycl::buffer<input_type, 1> &in,
                       sycl::buffer<output_type, 1> &out) {
     static_assert(detail::valid_compute_arg<descriptor_type, input_type>::value,
@@ -131,9 +129,7 @@ sycl::event compute_backward(descriptor_type &desc, data_type *inout_re, data_ty
 }
 
 //Out-of-place transform
-template <typename descriptor_type, typename input_type, typename output_type,
-          std::enable_if_t<detail::valid_oop_iotypes<descriptor_type, input_type, output_type>,
-                           bool> = true>
+template <typename descriptor_type, typename input_type, typename output_type>
 sycl::event compute_backward(descriptor_type &desc, input_type *in, output_type *out,
                              const std::vector<sycl::event> &dependencies = {}) {
     static_assert(detail::valid_compute_arg<descriptor_type, input_type>::value,

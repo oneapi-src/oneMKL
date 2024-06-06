@@ -111,20 +111,6 @@ using valid_compute_arg = typename std::bool_constant<
     (std::is_same_v<descriptor_scalar_t<descriptor_type>, double> &&
      is_one_of<T, double, sycl::double2, sycl::double4, std::complex<double>>::value)>;
 
-// For out-of-place complex-complex DFTs, are the input and output types correct? For SFINAE.
-template <class descriptor_t, typename input_t, typename output_t>
-constexpr bool valid_oop_iotypes = []() {
-    if constexpr (is_complex_dft<descriptor_t>) {
-        // Both input and output types must be complex, otherwise select real-real inplace overload.
-        return is_complex<input_t> && is_complex<output_t>;
-    }
-    else {
-        // I/O can be real or complex - no issues resolving overload with real-real inplace.
-        return valid_compute_arg<descriptor_t, input_t>::value &&
-               valid_compute_arg<descriptor_t, output_t>::value;
-    }
-}();
-
 template <class descriptor_t, typename data_t>
 constexpr bool valid_ip_realreal_impl =
     is_complex_dft<descriptor_t>&& std::is_same_v<descriptor_scalar_t<descriptor_t>, data_t>;
