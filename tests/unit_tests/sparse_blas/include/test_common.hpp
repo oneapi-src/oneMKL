@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2023 Intel Corporation
+* Copyright 2024 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #include <memory>
 #include <limits>
 #include <vector>
+#include <set>
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -53,6 +54,18 @@ struct complex_info<std::complex<T>> {
     static const bool is_complex = true;
 };
 
+enum sparse_matrix_format_t {
+    CSR,
+    COO,
+};
+
+static std::vector<std::set<oneapi::mkl::sparse::matrix_property>> test_matrix_properties{
+    { oneapi::mkl::sparse::matrix_property::sorted },
+    { oneapi::mkl::sparse::matrix_property::symmetric },
+    { oneapi::mkl::sparse::matrix_property::sorted,
+      oneapi::mkl::sparse::matrix_property::symmetric }
+};
+
 void print_error_code(sycl::exception const &e);
 
 // Catch asynchronous exceptions.
@@ -70,17 +83,18 @@ struct exception_handler_t {
     }
 };
 
+struct UsmDeleter {
+    sycl::queue q;
+    UsmDeleter(sycl::queue _q) : q(_q) {}
+    void operator()(void *ptr) {
+        sycl::free(ptr, q);
+    }
+};
+
 // Use a unique_ptr to automatically free device memory on unique_ptr destruction.
 template <class T>
 auto malloc_device_uptr(sycl::queue q, std::size_t num_elts) {
-    struct Deleter {
-        sycl::queue q;
-        Deleter(sycl::queue _q) : q(_q) {}
-        void operator()(T *ptr) {
-            sycl::free(ptr, q);
-        }
-    };
-    return std::unique_ptr<T, Deleter>(sycl::malloc_device<T>(num_elts, q), Deleter(q));
+    return std::unique_ptr<T, UsmDeleter>(sycl::malloc_device<T>(num_elts, q), UsmDeleter(q));
 }
 
 // SYCL buffer creation helper.
@@ -88,6 +102,24 @@ template <typename vec>
 sycl::buffer<typename vec::value_type, 1> make_buffer(const vec &v) {
     sycl::buffer<typename vec::value_type, 1> buf(v.data(), sycl::range<1>(v.size()));
     return buf;
+}
+
+template <typename T>
+void copy_host_to_buffer(sycl::queue queue, const std::vector<T> &src, sycl::buffer<T, 1> dst) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto dst_acc = dst.template get_access<sycl::access::mode::discard_write>(
+            cgh, sycl::range<1>(src.size()));
+        cgh.copy(src.data(), dst_acc);
+    });
+}
+
+template <typename T>
+void fill_buffer_to_0(sycl::queue queue, sycl::buffer<T, 1> dst) {
+    queue.submit([&](sycl::handler &cgh) {
+        auto dst_acc = dst.template get_access<sycl::access::mode::discard_write>(
+            cgh, sycl::range<1>(dst.size()));
+        cgh.fill(dst_acc, T(0));
+    });
 }
 
 template <typename fpType>
@@ -138,6 +170,9 @@ void rand_matrix(std::vector<fpType> &m, oneapi::mkl::layout layout_val, std::si
     if (layout_val == oneapi::mkl::layout::col_major) {
         std::swap(outer_size, inner_size);
     }
+    if (inner_size > ld) {
+        throw std::runtime_error("Expected inner_size <= ld");
+    }
     m.resize(outer_size * ld);
     rand_scalar<fpType> rand;
     for (std::size_t i = 0; i < outer_size; ++i) {
@@ -151,69 +186,256 @@ void rand_matrix(std::vector<fpType> &m, oneapi::mkl::layout layout_val, std::si
     }
 }
 
-// Creating the 3arrays CSR representation (ia, ja, values)
-// of general random sparse matrix
-// with density (0 < density <= 1.0)
-// -0.5 <= value < 0.5
-// require_diagonal means all diagonal entries guaranteed to be nonzero
+/// Generate random value in the range [-0.5, 0.5]
+/// The amplitude is guaranteed to be >= 0.1 if is_diag is true
+template <typename fpType>
+fpType generate_data(bool is_diag) {
+    rand_scalar<fpType> rand_data;
+    if (is_diag) {
+        // Guarantee an amplitude >= 0.1
+        fpType sign = (std::rand() % 2) * 2 - 1;
+        return rand_data(0.1, 0.5) * sign;
+    }
+    return rand_data(-0.5, 0.5);
+}
+
+/// Populate the 3 arrays of a random sparse matrix in CSR representation (ia, ja, values)
+/// with the given density in range [0, 1] and values in range [-0.5, 0.5].
+/// ja is sorted.
+/// require_diagonal means all diagonal entries guaranteed to be nonzero.
 template <typename fpType, typename intType>
-intType generate_random_matrix(const intType nrows, const intType ncols, const double density_val,
-                               intType indexing, std::vector<intType> &ia, std::vector<intType> &ja,
-                               std::vector<fpType> &a, bool require_diagonal = false) {
+intType generate_random_csr_matrix(const intType nrows, const intType ncols,
+                                   const double density_val, intType indexing,
+                                   std::vector<intType> &ia, std::vector<intType> &ja,
+                                   std::vector<fpType> &a, bool is_symmetric,
+                                   bool require_diagonal = false) {
     intType nnz = 0;
     rand_scalar<double> rand_density;
-    rand_scalar<fpType> rand_data;
 
     ia.push_back(indexing); // starting index of row0.
     for (intType i = 0; i < nrows; i++) {
-        ia.push_back(nnz + indexing); // ending index of row_i.
-        for (intType j = 0; j < ncols; j++) {
+        if (is_symmetric) {
+            // Fill the lower triangular part based on the previously filled upper triangle
+            // This ensures that the ja indices are always sorted
+            for (intType j = 0; j < i; ++j) {
+                // Check if element at row j and column i has been added, assuming ja is sorted
+                intType row_offset_j = ia[static_cast<std::size_t>(j)];
+                intType num_elts_row_j = ia.at(static_cast<std::size_t>(j) + 1) - row_offset_j;
+                intType ja_idx = 0;
+                while (ja_idx < num_elts_row_j &&
+                       ja[static_cast<std::size_t>(row_offset_j + ja_idx)] < i) {
+                    ++ja_idx;
+                }
+                auto symmetric_idx = static_cast<std::size_t>(row_offset_j + ja_idx);
+                if (ja_idx < num_elts_row_j && ja[symmetric_idx] == i) {
+                    a.push_back(a[symmetric_idx]);
+                    ja.push_back(j + indexing);
+                    nnz++;
+                }
+            }
+        }
+        // Loop through the upper triangular to fill a symmetric matrix
+        const intType j_start = is_symmetric ? i : 0;
+        for (intType j = j_start; j < ncols; j++) {
             const bool is_diag = require_diagonal && i == j;
             if (is_diag || (rand_density(0.0, 1.0) <= density_val)) {
-                fpType val;
-                if (is_diag) {
-                    // Guarantee an amplitude >= 0.1
-                    fpType sign = (std::rand() % 2) * 2 - 1;
-                    val = rand_data(0.1, 0.5) * sign;
-                }
-                else {
-                    val = rand_data(-0.5, 0.5);
-                }
-                a.push_back(val);
+                a.push_back(generate_data<fpType>(is_diag));
                 ja.push_back(j + indexing);
                 nnz++;
             }
         }
-        ia[static_cast<std::size_t>(i) + 1] = nnz + indexing;
+        ia.push_back(nnz + indexing); // ending index of row_i
     }
     return nnz;
 }
 
-// Shuffle the 3arrays CSR representation (ia, ja, values)
-// of any sparse matrix and set values serially from 0..nnz.
-// Intended for use with sorting.
+/// Populate the 3 arrays of a random sparse matrix in COO representation (ia, ja, values)
+/// with the given density in range [0, 1] and values in range [-0.5, 0.5].
+/// Indices are sorted by row (ia) then by column (ja).
+/// require_diagonal means all diagonal entries guaranteed to be nonzero.
 template <typename fpType, typename intType>
-void shuffle_data(const intType *ia, intType *ja, fpType *a, const std::size_t nrows) {
-    //
-    // shuffle indices according to random seed
-    //
-    intType indexing = ia[0];
-    for (std::size_t i = 0; i < nrows; ++i) {
-        intType nnz_row = ia[i + 1] - ia[i];
-        for (intType j = ia[i] - indexing; j < ia[i + 1] - indexing; ++j) {
-            intType q = ia[i] - indexing + std::rand() % (nnz_row);
-            // swap element i and q
-            std::swap(ja[q], ja[j]);
-            std::swap(a[q], a[j]);
+intType generate_random_coo_matrix(const intType nrows, const intType ncols,
+                                   const double density_val, intType indexing,
+                                   std::vector<intType> &ia, std::vector<intType> &ja,
+                                   std::vector<fpType> &a, bool is_symmetric,
+                                   bool require_diagonal = false) {
+    rand_scalar<double> rand_density;
+
+    for (intType i = 0; i < nrows; i++) {
+        if (is_symmetric) {
+            // Fill the lower triangular part based on the previously filled upper triangle
+            // This ensures that the ja indices are always sorted
+            for (intType j = 0; j < i; ++j) {
+                // Check if element at row j and column i has been added, assuming ia and ja are sorted
+                std::size_t idx = 0;
+                while (idx < ia.size() && ia[idx] - indexing <= j && ja[idx] - indexing < i) {
+                    ++idx;
+                }
+                if (idx < ia.size() && ia[idx] - indexing == j && ja[idx] - indexing == i) {
+                    a.push_back(a[idx]);
+                    ia.push_back(i + indexing);
+                    ja.push_back(j + indexing);
+                }
+            }
         }
+        // Loop through the upper triangular to fill a symmetric matrix
+        const intType j_start = is_symmetric ? i : 0;
+        for (intType j = j_start; j < ncols; j++) {
+            const bool is_diag = require_diagonal && i == j;
+            if (is_diag || (rand_density(0.0, 1.0) <= density_val)) {
+                a.push_back(generate_data<fpType>(is_diag));
+                ia.push_back(i + indexing);
+                ja.push_back(j + indexing);
+            }
+        }
+    }
+    return static_cast<intType>(a.size());
+}
+
+// Populate the 3 arrays of a random sparse matrix in CSR or COO representation
+// with the given density in range [0, 1] and values in range [-0.5, 0.5].
+// require_diagonal means all diagonal entries guaranteed to be nonzero
+template <typename fpType, typename intType>
+intType generate_random_matrix(sparse_matrix_format_t format, const intType nrows,
+                               const intType ncols, const double density_val, intType indexing,
+                               std::vector<intType> &ia, std::vector<intType> &ja,
+                               std::vector<fpType> &a, bool is_symmetric,
+                               bool require_diagonal = false) {
+    ia.clear();
+    ja.clear();
+    a.clear();
+    if (format == sparse_matrix_format_t::CSR) {
+        return generate_random_csr_matrix(nrows, ncols, density_val, indexing, ia, ja, a,
+                                          is_symmetric, require_diagonal);
+    }
+    else if (format == sparse_matrix_format_t::COO) {
+        return generate_random_coo_matrix(nrows, ncols, density_val, indexing, ia, ja, a,
+                                          is_symmetric, require_diagonal);
+    }
+    throw std::runtime_error("Unsupported sparse format");
+}
+
+/// Shuffle the 3arrays CSR or COO representation (ia, ja, values)
+/// of any sparse matrix.
+/// In CSR format, the elements within a row are shuffled without changing ia.
+/// In COO format, all the elements are shuffled.
+template <typename fpType, typename intType>
+void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intType *ia,
+                           intType *ja, fpType *a, intType nnz, std::size_t nrows) {
+    if (format == sparse_matrix_format_t::CSR) {
+        for (std::size_t i = 0; i < nrows; ++i) {
+            intType nnz_row = ia[i + 1] - ia[i];
+            for (intType j = ia[i] - indexing; j < ia[i + 1] - indexing; ++j) {
+                intType q = ia[i] - indexing + std::rand() % nnz_row;
+                // Swap elements j and q
+                std::swap(ja[q], ja[j]);
+                std::swap(a[q], a[j]);
+            }
+        }
+    }
+    else if (format == sparse_matrix_format_t::COO) {
+        for (std::size_t i = 0; i < static_cast<std::size_t>(nnz); ++i) {
+            intType q = std::rand() % nnz;
+            // Swap elements i and q
+            std::swap(ia[q], ia[i]);
+            std::swap(ja[q], ja[i]);
+            std::swap(a[q], a[i]);
+        }
+    }
+    else {
+        throw oneapi::mkl::exception("sparse_blas", "shuffle_sparse_matrix",
+                                     "Internal error: unsupported format");
     }
 }
 
-inline void wait_and_free(sycl::queue &main_queue, oneapi::mkl::sparse::matrix_handle_t *p_handle) {
-    main_queue.wait();
-    sycl::event ev_release;
-    CALL_RT_OR_CT(ev_release = oneapi::mkl::sparse::release_matrix_handle, main_queue, p_handle);
-    ev_release.wait();
+/// Initialize a sparse matrix specified by the given format
+template <typename ContainerValueT, typename ContainerIndexT>
+void init_sparse_matrix(sycl::queue &queue, sparse_matrix_format_t format,
+                        oneapi::mkl::sparse::matrix_handle_t *p_smhandle, std::int64_t num_rows,
+                        std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                        ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
+    if (format == sparse_matrix_format_t::CSR) {
+        CALL_RT_OR_CT(oneapi::mkl::sparse::init_csr_matrix, queue, p_smhandle, num_rows, num_cols,
+                      nnz, index, rows, cols, vals);
+    }
+    else if (format == sparse_matrix_format_t::COO) {
+        CALL_RT_OR_CT(oneapi::mkl::sparse::init_coo_matrix, queue, p_smhandle, num_rows, num_cols,
+                      nnz, index, rows, cols, vals);
+    }
+    else {
+        throw oneapi::mkl::exception("sparse_blas", "init_sparse_matrix",
+                                     "Internal error: unsupported format");
+    }
+}
+
+/// Reset the data of a sparse matrix specified by the given format
+template <typename ContainerValueT, typename ContainerIndexT>
+void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
+                     oneapi::mkl::sparse::matrix_handle_t smhandle, std::int64_t num_rows,
+                     std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                     ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
+    if (format == sparse_matrix_format_t::CSR) {
+        CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_matrix_data, queue, smhandle, num_rows, num_cols,
+                      nnz, index, rows, cols, vals);
+    }
+    else if (format == sparse_matrix_format_t::COO) {
+        CALL_RT_OR_CT(oneapi::mkl::sparse::set_coo_matrix_data, queue, smhandle, num_rows, num_cols,
+                      nnz, index, rows, cols, vals);
+    }
+    else {
+        throw oneapi::mkl::exception("sparse_blas", "set_matrix_data",
+                                     "Internal error: unsupported format");
+    }
+}
+
+template <typename... HandlesT>
+inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> dependencies,
+                         HandlesT &&...handles) {
+    // Fold expression so that handles expands to each value one after the other.
+    (
+        [&] {
+            if (!handles) {
+                return;
+            }
+            sycl::event event;
+            if constexpr (std::is_same_v<decltype(handles),
+                                         oneapi::mkl::sparse::dense_vector_handle_t>) {
+                CALL_RT_OR_CT(event = oneapi::mkl::sparse::release_dense_vector, queue, handles,
+                              dependencies);
+            }
+            else if constexpr (std::is_same_v<decltype(handles),
+                                              oneapi::mkl::sparse::dense_matrix_handle_t>) {
+                CALL_RT_OR_CT(event = oneapi::mkl::sparse::release_dense_matrix, queue, handles,
+                              dependencies);
+            }
+            else if constexpr (std::is_same_v<decltype(handles),
+                                              oneapi::mkl::sparse::matrix_handle_t>) {
+                CALL_RT_OR_CT(event = oneapi::mkl::sparse::release_sparse_matrix, queue, handles,
+                              dependencies);
+            }
+            event.wait();
+        }(),
+        ...);
+}
+
+template <typename... HandlesT>
+inline void free_handles(sycl::queue &queue, HandlesT &&...handles) {
+    free_handles(queue, {}, handles...);
+}
+
+template <typename... HandlesT>
+inline void wait_and_free_handles(sycl::queue &queue, HandlesT &&...handles) {
+    queue.wait();
+    free_handles(queue, handles...);
+}
+
+inline bool require_square_matrix(
+    oneapi::mkl::sparse::matrix_view A_view,
+    const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties) {
+    const bool is_symmetric =
+        matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
+        matrix_properties.cend();
+    return A_view.type_view != oneapi::mkl::sparse::matrix_descr::general || is_symmetric;
 }
 
 template <typename fpType>

@@ -17,16 +17,22 @@
 *
 **************************************************************************/
 
-#include "oneapi/mkl/sparse_blas/types.hpp"
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+namespace oneapi::mkl::sparse {
 
-#include "sparse_blas/function_table.hpp"
+// Each backend can create its own descriptor type or re-use the native descriptor types that will be reinterpret_cast'ed to the types below
 
-#define WRAPPER_VERSION 1
-#define BACKEND         mklcpu
+struct spmm_descr;
+using spmm_descr_t = spmm_descr*;
 
-extern "C" sparse_blas_function_table_t mkl_sparse_blas_table = {
-    WRAPPER_VERSION,
-#include "sparse_blas/backends/backend_wrappers.cxx"
-};
+struct spmv_descr;
+using spmv_descr_t = spmv_descr*;
+
+struct spsv_descr;
+using spsv_descr_t = spsv_descr*;
+
+} // namespace oneapi::mkl::sparse
+
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_

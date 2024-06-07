@@ -17,16 +17,22 @@
 *
 **************************************************************************/
 
-#include "oneapi/mkl/sparse_blas/types.hpp"
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+namespace oneapi::mkl::sparse {
 
-#include "sparse_blas/function_table.hpp"
+// Each backend can create its own handle type or re-use the native handle types that will be reinterpret_cast'ed to the types below
 
-#define WRAPPER_VERSION 1
-#define BACKEND         mklcpu
+struct dense_matrix_handle;
+using dense_matrix_handle_t = dense_matrix_handle*;
 
-extern "C" sparse_blas_function_table_t mkl_sparse_blas_table = {
-    WRAPPER_VERSION,
-#include "sparse_blas/backends/backend_wrappers.cxx"
-};
+struct dense_vector_handle;
+using dense_vector_handle_t = dense_vector_handle*;
+
+struct matrix_handle;
+using matrix_handle_t = matrix_handle*;
+
+} // namespace oneapi::mkl::sparse
+
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_

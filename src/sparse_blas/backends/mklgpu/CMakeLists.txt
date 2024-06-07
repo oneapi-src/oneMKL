@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2023 Intel Corporation
+# Copyright 2024 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,8 +24,10 @@ include(WarningsUtils)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
-  mklgpu_basic.cpp
-  mklgpu_operations.cpp
+  mklgpu_handles.cpp
+  mklgpu_spmm.cpp
+  mklgpu_spmv.cpp
+  mklgpu_spsv.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklgpu_wrappers.cpp>
 )
 add_dependencies(onemkl_backend_libs_sparse_blas ${LIB_NAME})

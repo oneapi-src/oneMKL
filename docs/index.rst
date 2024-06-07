@@ -30,4 +30,5 @@ Contents
 
    onemkl-datatypes.rst
    domains/dense_linear_algebra.rst
+   domains/sparse_linear_algebra.rst
    create_new_backend.rst

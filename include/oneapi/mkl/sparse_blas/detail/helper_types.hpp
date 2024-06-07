@@ -29,20 +29,18 @@ namespace mkl {
 namespace sparse {
 namespace detail {
 
-struct matrix_handle;
-
-template <typename fpType>
+template <typename dataType>
 inline constexpr bool is_fp_supported_v =
-    std::is_same_v<fpType, float> || std::is_same_v<fpType, double> ||
-    std::is_same_v<fpType, std::complex<float>> || std::is_same_v<fpType, std::complex<double>>;
+    std::is_same_v<dataType, float> || std::is_same_v<dataType, double> ||
+    std::is_same_v<dataType, std::complex<float>> || std::is_same_v<dataType, std::complex<double>>;
 
-template <typename intType>
+template <typename indexType>
 inline constexpr bool is_int_supported_v =
-    std::is_same_v<intType, std::int32_t> || std::is_same_v<intType, std::int64_t>;
+    std::is_same_v<indexType, std::int32_t> || std::is_same_v<indexType, std::int64_t>;
 
-template <typename fpType, typename intType>
+template <typename dataType, typename indexType>
 inline constexpr bool are_fp_int_supported_v =
-    is_fp_supported_v<fpType>&& is_int_supported_v<intType>;
+    is_fp_supported_v<dataType> && is_int_supported_v<indexType>;
 
 } // namespace detail
 } // namespace sparse

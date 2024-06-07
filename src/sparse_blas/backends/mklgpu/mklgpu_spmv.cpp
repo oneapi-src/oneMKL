@@ -17,16 +17,14 @@
 *
 **************************************************************************/
 
-#include "oneapi/mkl/sparse_blas/types.hpp"
+#include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
+#include "sparse_blas/macros.hpp"
+#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+#include "oneapi/mkl/sparse_blas/detail/mklgpu/onemkl_sparse_blas_mklgpu.hpp"
 
-#include "sparse_blas/function_table.hpp"
+namespace oneapi::mkl::sparse::mklgpu {
 
-#define WRAPPER_VERSION 1
-#define BACKEND         mklcpu
+#include "sparse_blas/backends/mkl_common/mkl_spmv.cxx"
 
-extern "C" sparse_blas_function_table_t mkl_sparse_blas_table = {
-    WRAPPER_VERSION,
-#include "sparse_blas/backends/backend_wrappers.cxx"
-};
+} // namespace oneapi::mkl::sparse::mklgpu

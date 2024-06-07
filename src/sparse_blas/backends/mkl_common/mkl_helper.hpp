@@ -1,56 +1,101 @@
-/*******************************************************************************
-* Copyright 2023 Codeplay Software Ltd.
+/***************************************************************************
+*  Copyright (C) Codeplay Software Limited
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
 *
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
+*      http://www.apache.org/licenses/LICENSE-2.0
 *
-* http://www.apache.org/licenses/LICENSE-2.0
+*  For your convenience, a copy of the License has been included in this
+*  repository.
 *
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions
-* and limitations under the License.
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
 *
-*
-* SPDX-License-Identifier: Apache-2.0
-*******************************************************************************/
+**************************************************************************/
 
-// MKLCPU and MKLGPU backends include
-// This include defines its own oneapi::mkl::sparse namespace with some of the types that are used here: matrix_handle_t, index_base, transpose, uolo, diag.
-#include <oneapi/mkl/spblas.hpp>
+#ifndef _ONEMKL_SRC_SPARSE_BLAS_BACKENDS_MKL_COMMON_MKL_HELPER_HPP_
+#define _ONEMKL_SRC_SPARSE_BLAS_BACKENDS_MKL_COMMON_MKL_HELPER_HPP_
 
-// Includes are set up so that oneapi::mkl::sparse namespace refers to the MKLCPU and MKLGPU backends namespace (oneMKL product)
-// in this file.
-// oneapi::mkl::sparse::detail namespace refers to the oneMKL interface namespace.
+#if __has_include(<sycl/sycl.hpp>)
+#include <sycl/sycl.hpp>
+#else
+#include <CL/sycl.hpp>
+#endif
 
+#include "oneapi/mkl/exceptions.hpp"
 #include "oneapi/mkl/sparse_blas/detail/helper_types.hpp"
+
+#include "sparse_blas/enum_data_types.hpp"
+#include "sparse_blas/macros.hpp"
 
 namespace oneapi::mkl::sparse::detail {
 
-inline auto get_handle(detail::matrix_handle **handle) {
-    return reinterpret_cast<oneapi::mkl::sparse::matrix_handle_t *>(handle);
+/// Return whether a pointer is accessible on the host
+template <typename T>
+inline bool is_ptr_accessible_on_host(sycl::queue &queue, const T *host_or_device_ptr) {
+    auto alloc_type = sycl::get_pointer_type(host_or_device_ptr, queue.get_context());
+    // Note sycl::usm::alloc::host may not be accessible on the host according to SYCL specification.
+    return alloc_type == sycl::usm::alloc::shared;
 }
 
-inline auto get_handle(detail::matrix_handle *handle) {
-    return reinterpret_cast<oneapi::mkl::sparse::matrix_handle_t>(handle);
+/// Throw an exception if the scalar is not accessible in the host
+template <typename T>
+void check_ptr_is_host_accessible(const std::string &function_name, const std::string &scalar_name,
+                                  sycl::queue &queue, const T *host_or_device_ptr) {
+    if (is_ptr_accessible_on_host(queue, host_or_device_ptr)) {
+        throw mkl::invalid_argument(
+            "sparse_blas", function_name,
+            "Scalar " + scalar_name + "must be accessible on the host for buffer functions.");
+    }
 }
+
+/// Return a scalar on the host from a pointer to host or device memory
+/// Used for USM functions
+template <typename T>
+inline T get_scalar(sycl::queue &queue, const T *host_or_device_ptr) {
+    if (is_ptr_accessible_on_host(queue, host_or_device_ptr)) {
+        return *host_or_device_ptr;
+    }
+    T scalar;
+    auto event = queue.copy(host_or_device_ptr, &scalar, 1);
+    event.wait_and_throw();
+    return scalar;
+}
+
+/// Merge multiple event dependencies into one
+inline sycl::event collapse_dependencies(sycl::queue &queue,
+                                         const std::vector<sycl::event> &dependencies) {
+    if (dependencies.empty()) {
+        return {};
+    }
+    else if (dependencies.size() == 1) {
+        return dependencies[0];
+    }
+
+    return queue.submit([&](sycl::handler &cgh) {
+        cgh.depends_on(dependencies);
+        cgh.host_task([=]() {});
+    });
+}
+
+/// Convert \p value_type to template type argument and use it to call \p op_functor.
+#define DISPATCH_MKL_OPERATION(function_name, value_type, op_functor, ...)                         \
+    switch (value_type) {                                                                          \
+        case detail::data_type::real_fp32: return op_functor<float>(__VA_ARGS__);                  \
+        case detail::data_type::real_fp64: return op_functor<double>(__VA_ARGS__);                 \
+        case detail::data_type::complex_fp32: return op_functor<std::complex<float>>(__VA_ARGS__); \
+        case detail::data_type::complex_fp64:                                                      \
+            return op_functor<std::complex<double>>(__VA_ARGS__);                                  \
+        default:                                                                                   \
+            throw oneapi::mkl::exception(                                                          \
+                "sparse_blas", function_name,                                                      \
+                "Internal error: unsupported type " + data_type_to_str(value_type));               \
+    }
 
 } // namespace oneapi::mkl::sparse::detail
 
-#define FOR_EACH_FP_TYPE(INSTANTIATE_MACRO) \
-    INSTANTIATE_MACRO(float);               \
-    INSTANTIATE_MACRO(double);              \
-    INSTANTIATE_MACRO(std::complex<float>); \
-    INSTANTIATE_MACRO(std::complex<double>)
-
-#define FOR_EACH_FP_AND_INT_TYPE_HELPER(INSTANTIATE_MACRO, INT_TYPE) \
-    INSTANTIATE_MACRO(float, INT_TYPE);                              \
-    INSTANTIATE_MACRO(double, INT_TYPE);                             \
-    INSTANTIATE_MACRO(std::complex<float>, INT_TYPE);                \
-    INSTANTIATE_MACRO(std::complex<double>, INT_TYPE)
-
-#define FOR_EACH_FP_AND_INT_TYPE(INSTANTIATE_MACRO)                   \
-    FOR_EACH_FP_AND_INT_TYPE_HELPER(INSTANTIATE_MACRO, std::int32_t); \
-    FOR_EACH_FP_AND_INT_TYPE_HELPER(INSTANTIATE_MACRO, std::int64_t)
+#endif // _ONEMKL_SRC_SPARSE_BLAS_BACKENDS_MKL_COMMON_MKL_HELPER_HPP_

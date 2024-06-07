@@ -17,16 +17,35 @@
 *
 **************************************************************************/
 
-#include "oneapi/mkl/sparse_blas/types.hpp"
+#ifndef _ONEMKL_SPARSE_BLAS_MATRIX_VIEW_HPP_
+#define _ONEMKL_SPARSE_BLAS_MATRIX_VIEW_HPP_
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+#include "oneapi/mkl/types.hpp"
 
-#include "sparse_blas/function_table.hpp"
+namespace oneapi {
+namespace mkl {
+namespace sparse {
 
-#define WRAPPER_VERSION 1
-#define BACKEND         mklcpu
-
-extern "C" sparse_blas_function_table_t mkl_sparse_blas_table = {
-    WRAPPER_VERSION,
-#include "sparse_blas/backends/backend_wrappers.cxx"
+enum class matrix_descr {
+    general,
+    symmetric,
+    hermitian,
+    triangular,
+    diagonal,
 };
+
+struct matrix_view {
+    matrix_descr type_view = matrix_descr::general;
+    uplo uplo_view = uplo::lower;
+    diag diag_view = diag::nonunit;
+
+    matrix_view() = default;
+
+    matrix_view(matrix_descr type_view) : type_view(type_view) {}
+};
+
+} // namespace sparse
+} // namespace mkl
+} // namespace oneapi
+
+#endif // _ONEMKL_SPARSE_BLAS_MATRIX_VIEW_HPP_

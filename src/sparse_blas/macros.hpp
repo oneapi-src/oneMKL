@@ -36,4 +36,10 @@
     FOR_EACH_FP_AND_INT_TYPE_HELPER(DEFINE_MACRO, std::int32_t, _i32); \
     FOR_EACH_FP_AND_INT_TYPE_HELPER(DEFINE_MACRO, std::int64_t, _i64)
 
+#define THROW_IF_NULLPTR(FUNC_NAME, PTR)                                       \
+    if (!(PTR)) {                                                              \
+        throw mkl::uninitialized("sparse_blas", FUNC_NAME,                     \
+                                 std::string(#PTR) + " must not be nullptr."); \
+    }
+
 #endif // _ONEMKL_SPARSE_BLAS_MACROS_HPP_
