@@ -94,10 +94,13 @@ void spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::
                    oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
     check_valid_spmm(__FUNCTION__, queue, opA, A_view, A_handle, B_handle, C_handle, alpha, beta);
+    auto internal_A_handle = detail::get_internal_handle(A_handle);
+    if (!internal_A_handle->all_use_buffer()) {
+        detail::throw_incompatible_container(__FUNCTION__);
+    }
     if (alg == oneapi::mkl::sparse::spmm_alg::no_optimize_alg) {
         return;
     }
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     // TODO: Add support for spmm_optimize once the close-source oneMKL backend supports it.
 }
@@ -112,10 +115,13 @@ sycl::event spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
                           oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
     check_valid_spmm(__FUNCTION__, queue, opA, A_view, A_handle, B_handle, C_handle, alpha, beta);
+    auto internal_A_handle = detail::get_internal_handle(A_handle);
+    if (internal_A_handle->all_use_buffer()) {
+        detail::throw_incompatible_container(__FUNCTION__);
+    }
     if (alg == oneapi::mkl::sparse::spmm_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     // TODO: Add support for spmm_optimize once the close-source oneMKL backend supports it.
     return detail::collapse_dependencies(queue, dependencies);

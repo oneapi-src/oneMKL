@@ -80,11 +80,14 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
     check_valid_spmv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, beta);
+    auto internal_A_handle = detail::get_internal_handle(A_handle);
+    if (!internal_A_handle->all_use_buffer()) {
+        detail::throw_incompatible_container(__FUNCTION__);
+    }
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return;
     }
     sycl::event event;
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     if (A_view.type_view == matrix_descr::triangular) {
         event = oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
@@ -111,10 +114,13 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
     check_valid_spmv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, beta);
+    auto internal_A_handle = detail::get_internal_handle(A_handle);
+    if (internal_A_handle->all_use_buffer()) {
+        detail::throw_incompatible_container(__FUNCTION__);
+    }
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     if (A_view.type_view == matrix_descr::triangular) {
         return oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,

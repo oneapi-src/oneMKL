@@ -269,6 +269,12 @@ private:
     }
 };
 
+inline void throw_incompatible_container(const std::string& function_name) {
+    throw oneapi::mkl::invalid_argument(
+        "sparse_blas", function_name,
+        "Incompatible container types. All inputs and outputs must use the same container: buffer or USM");
+}
+
 /**
  * Check that all internal containers use the same container.
 */
@@ -279,9 +285,7 @@ void check_all_containers_use_buffers(const std::string& function_name,
     bool first_use_buffer = first_internal_container->all_use_buffer();
     for (const auto internal_container : { internal_containers... }) {
         if (internal_container->all_use_buffer() != first_use_buffer) {
-            throw oneapi::mkl::invalid_argument(
-                "sparse_blas", function_name,
-                "Incompatible container types. All inputs and outputs must use the same container: buffer or USM");
+            throw_incompatible_container(function_name);
         }
     }
 }

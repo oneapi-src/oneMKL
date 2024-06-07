@@ -80,10 +80,13 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
     check_valid_spsv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
+    auto internal_A_handle = detail::get_internal_handle(A_handle);
+    if (!internal_A_handle->all_use_buffer()) {
+        detail::throw_incompatible_container(__FUNCTION__);
+    }
     if (alg == oneapi::mkl::sparse::spsv_alg::no_optimize_alg) {
         return;
     }
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     auto event = oneapi::mkl::sparse::optimize_trsv(queue, A_view.uplo_view, opA, A_view.diag_view,
                                                     internal_A_handle->backend_handle);
@@ -100,10 +103,13 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
     check_valid_spsv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
+    auto internal_A_handle = detail::get_internal_handle(A_handle);
+    if (internal_A_handle->all_use_buffer()) {
+        detail::throw_incompatible_container(__FUNCTION__);
+    }
     if (alg == oneapi::mkl::sparse::spsv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     return oneapi::mkl::sparse::optimize_trsv(queue, A_view.uplo_view, opA, A_view.diag_view,
                                               internal_A_handle->backend_handle, dependencies);
