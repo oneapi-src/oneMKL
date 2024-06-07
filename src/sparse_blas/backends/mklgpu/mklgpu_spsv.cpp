@@ -17,9 +17,11 @@
 *
 **************************************************************************/
 
-#include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
-#include "sparse_blas/macros.hpp"
 #include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
+#include "sparse_blas/backends/mkl_common/mkl_dispatch.hpp"
+#include "sparse_blas/common_op_verification.hpp"
+#include "sparse_blas/macros.hpp"
+#include "sparse_blas/sycl_helper.hpp"
 
 #include "oneapi/mkl/sparse_blas/detail/mklgpu/onemkl_sparse_blas_mklgpu.hpp"
 

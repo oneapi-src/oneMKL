@@ -59,65 +59,49 @@
 //
 // is performed and finally the results are post processed.
 //
-template <typename fp, typename intType>
-int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
+template <typename fpType, typename intType, typename selectorType>
+int run_sparse_matrix_vector_multiply_example(const selectorType &selector) {
+    auto queue = selector.get_queue();
+
     // Matrix data size
     intType size = 4;
     intType nrows = size * size * size;
 
-    // Set scalar fp values
-    fp alpha = set_fp_value(fp(1.0));
-    fp beta = set_fp_value(fp(0.0));
-
-    // Catch asynchronous exceptions
-    auto exception_handler = [](sycl::exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
-            try {
-                std::rethrow_exception(e);
-            }
-            catch (sycl::exception const &e) {
-                std::cout << "Caught asynchronous SYCL "
-                             "exception during sparse::spmv:\n"
-                          << e.what() << std::endl;
-            }
-        }
-    };
-
-    // create execution queue and buffers of matrix data
-    sycl::queue cpu_queue(cpu_dev, exception_handler);
-    oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector{ cpu_queue };
+    // Set scalar fpType values
+    fpType alpha = set_fp_value(fpType(1.0));
+    fpType beta = set_fp_value(fpType(0.0));
 
     intType *ia, *ja;
-    fp *a, *x, *y, *z;
+    fpType *a, *x, *y, *z;
     std::size_t sizea = static_cast<std::size_t>(27 * nrows);
     std::size_t sizeja = static_cast<std::size_t>(27 * nrows);
     std::size_t sizeia = static_cast<std::size_t>(nrows + 1);
     std::size_t sizevec = static_cast<std::size_t>(nrows);
 
-    ia = (intType *)sycl::malloc_shared(sizeia * sizeof(intType), cpu_queue);
-    ja = (intType *)sycl::malloc_shared(sizeja * sizeof(intType), cpu_queue);
-    a = (fp *)sycl::malloc_shared(sizea * sizeof(fp), cpu_queue);
-    x = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), cpu_queue);
-    y = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), cpu_queue);
-    z = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), cpu_queue);
+    ia = (intType *)sycl::malloc_shared(sizeia * sizeof(intType), queue);
+    ja = (intType *)sycl::malloc_shared(sizeja * sizeof(intType), queue);
+    a = (fpType *)sycl::malloc_shared(sizea * sizeof(fpType), queue);
+    x = (fpType *)sycl::malloc_shared(sizevec * sizeof(fpType), queue);
+    y = (fpType *)sycl::malloc_shared(sizevec * sizeof(fpType), queue);
+    z = (fpType *)sycl::malloc_shared(sizevec * sizeof(fpType), queue);
 
     if (!ia || !ja || !a || !x || !y || !z) {
         throw std::runtime_error("Failed to allocate USM memory");
     }
 
-    intType nnz = generate_sparse_matrix<fp, intType>(size, ia, ja, a);
+    intType nnz = generate_sparse_matrix<fpType, intType>(size, ia, ja, a);
 
     // Init vectors x and y
     for (int i = 0; i < nrows; i++) {
-        x[i] = set_fp_value(fp(1.0));
-        y[i] = set_fp_value(fp(0.0));
-        z[i] = set_fp_value(fp(0.0));
+        x[i] = set_fp_value(fpType(1.0));
+        y[i] = set_fp_value(fpType(0.0));
+        z[i] = set_fp_value(fpType(0.0));
     }
 
     std::vector<intType *> int_ptr_vec;
     int_ptr_vec.push_back(ia);
     int_ptr_vec.push_back(ja);
-    std::vector<fp *> fp_ptr_vec;
+    std::vector<fpType *> fp_ptr_vec;
     fp_ptr_vec.push_back(a);
     fp_ptr_vec.push_back(x);
     fp_ptr_vec.push_back(y);
@@ -142,44 +126,43 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
 
     // Create and initialize handle for a Sparse Matrix in CSR format
     oneapi::mkl::sparse::matrix_handle_t A_handle = nullptr;
-    oneapi::mkl::sparse::init_csr_matrix(cpu_selector, &A_handle, nrows, nrows, nnz,
+    oneapi::mkl::sparse::init_csr_matrix(selector, &A_handle, nrows, nrows, nnz,
                                          oneapi::mkl::index_base::zero, ia, ja, a);
 
     // Create and initialize dense vector handles
     oneapi::mkl::sparse::dense_vector_handle_t x_handle = nullptr;
     oneapi::mkl::sparse::dense_vector_handle_t y_handle = nullptr;
-    oneapi::mkl::sparse::init_dense_vector(cpu_selector, &x_handle, sizevec, x);
-    oneapi::mkl::sparse::init_dense_vector(cpu_selector, &y_handle, sizevec, y);
+    oneapi::mkl::sparse::init_dense_vector(selector, &x_handle, sizevec, x);
+    oneapi::mkl::sparse::init_dense_vector(selector, &y_handle, sizevec, y);
 
     // Create operation descriptor
     oneapi::mkl::sparse::spmv_descr_t descr = nullptr;
-    oneapi::mkl::sparse::init_spmv_descr(cpu_selector, &descr);
+    oneapi::mkl::sparse::init_spmv_descr(selector, &descr);
 
     // Allocate external workspace
     std::size_t workspace_size = 0;
-    oneapi::mkl::sparse::spmv_buffer_size(cpu_selector, transA, &alpha, A_view, A_handle, x_handle,
+    oneapi::mkl::sparse::spmv_buffer_size(selector, transA, &alpha, A_view, A_handle, x_handle,
                                           &beta, y_handle, alg, descr, workspace_size);
-    void *workspace = sycl::malloc_device(workspace_size, cpu_queue);
+    void *workspace = sycl::malloc_device(workspace_size, queue);
 
     // Optimize spmv
     auto ev_opt =
-        oneapi::mkl::sparse::spmv_optimize(cpu_selector, transA, &alpha, A_view, A_handle, x_handle,
+        oneapi::mkl::sparse::spmv_optimize(selector, transA, &alpha, A_view, A_handle, x_handle,
                                            &beta, y_handle, alg, descr, workspace);
 
     // Run spmv
-    auto ev_spmv = oneapi::mkl::sparse::spmv(cpu_selector, transA, &alpha, A_view, A_handle,
-                                             x_handle, &beta, y_handle, alg, descr, { ev_opt });
+    auto ev_spmv = oneapi::mkl::sparse::spmv(selector, transA, &alpha, A_view, A_handle, x_handle,
+                                             &beta, y_handle, alg, descr, { ev_opt });
 
     // Release handles and descriptor
     std::vector<sycl::event> release_events;
     release_events.push_back(
-        oneapi::mkl::sparse::release_dense_vector(cpu_selector, x_handle, { ev_spmv }));
+        oneapi::mkl::sparse::release_dense_vector(selector, x_handle, { ev_spmv }));
     release_events.push_back(
-        oneapi::mkl::sparse::release_dense_vector(cpu_selector, y_handle, { ev_spmv }));
+        oneapi::mkl::sparse::release_dense_vector(selector, y_handle, { ev_spmv }));
     release_events.push_back(
-        oneapi::mkl::sparse::release_sparse_matrix(cpu_selector, A_handle, { ev_spmv }));
-    release_events.push_back(
-        oneapi::mkl::sparse::release_spmv_descr(cpu_selector, descr, { ev_spmv }));
+        oneapi::mkl::sparse::release_sparse_matrix(selector, A_handle, { ev_spmv }));
+    release_events.push_back(oneapi::mkl::sparse::release_spmv_descr(selector, descr, { ev_spmv }));
     for (auto event : release_events) {
         event.wait_and_throw();
     }
@@ -188,15 +171,15 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
     // Post Processing
     //
 
-    fp *res = y;
+    fpType *res = y;
     const bool isConj = (transA == oneapi::mkl::transpose::conjtrans);
     for (intType row = 0; row < nrows; row++) {
         z[row] *= beta;
     }
     for (intType row = 0; row < nrows; row++) {
-        fp tmp = alpha * x[row];
+        fpType tmp = alpha * x[row];
         for (intType i = ia[row]; i < ia[row + 1]; i++) {
-            if constexpr (is_complex<fp>()) {
+            if constexpr (is_complex<fpType>()) {
                 z[ja[i]] += tmp * (isConj ? std::conj(a[i]) : a[i]);
             }
             else {
@@ -213,8 +196,8 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
     std::cout << "\n\t\t sparse::spmv example " << (good ? "passed" : "failed") << "\n\tFinished"
               << std::endl;
 
-    free_vec(fp_ptr_vec, cpu_queue);
-    free_vec(int_ptr_vec, cpu_queue);
+    free_vec(fp_ptr_vec, queue);
+    free_vec(int_ptr_vec, queue);
 
     if (!good)
         return 1;
@@ -244,7 +227,7 @@ void print_example_banner() {
     std::cout << "# " << std::endl;
     std::cout << "# Using single precision (float) data type" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "# Running on Intel CPU device" << std::endl;
+    std::cout << "# Running on both Intel CPU and Nvidia GPU devices" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "########################################################################"
               << std::endl;
@@ -257,17 +240,40 @@ void print_example_banner() {
 int main(int /*argc*/, char ** /*argv*/) {
     print_example_banner();
 
-    try {
-        // TODO: Add cuSPARSE compile-time dispatcher in this example once it is supported.
-        sycl::device cpu_dev(sycl::cpu_selector_v);
+    auto exception_handler = [](sycl::exception_list exceptions) {
+        for (std::exception_ptr const &e : exceptions) {
+            try {
+                std::rethrow_exception(e);
+            }
+            catch (sycl::exception const &e) {
+                std::cout << "Caught asynchronous SYCL "
+                             "exception during sparse::spmv:\n"
+                          << e.what() << std::endl;
+            }
+        }
+    };
 
-        std::cout << "Running Sparse BLAS SPMV USM example on CPU device." << std::endl;
-        std::cout << "Device name is: " << cpu_dev.get_info<sycl::info::device::name>()
+    try {
+        sycl::queue cpu_queue(sycl::cpu_selector_v, exception_handler);
+        sycl::queue gpu_queue(sycl::gpu_selector_v, exception_handler);
+        unsigned int vendor_id = gpu_queue.get_info<sycl::info::device::vendor_id>();
+        if (vendor_id != NVIDIA_ID) {
+            std::cerr << "FAILED: NVIDIA GPU device not found" << std::endl;
+            return 1;
+        }
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector{ cpu_queue };
+        oneapi::mkl::backend_selector<oneapi::mkl::backend::cusparse> gpu_selector{ gpu_queue };
+
+        std::cout << "Running Sparse BLAS SPMV USM example on:" << std::endl;
+        std::cout << "\tCPU device: " << cpu_queue.get_info<sycl::info::device::name>()
+                  << std::endl;
+        std::cout << "\tGPU device: " << gpu_queue.get_info<sycl::info::device::name>()
                   << std::endl;
         std::cout << "Running with single precision real data type:" << std::endl;
 
-        run_sparse_matrix_vector_multiply_example<float, std::int32_t>(cpu_dev);
-        std::cout << "Sparse BLAS SPMV USM example ran OK." << std::endl;
+        run_sparse_matrix_vector_multiply_example<float, std::int32_t>(cpu_selector);
+        run_sparse_matrix_vector_multiply_example<float, std::int32_t>(gpu_selector);
+        std::cout << "Sparse BLAS SPMV USM example ran OK on MKLCPU and CUSPARSE." << std::endl;
     }
     catch (sycl::exception const &e) {
         std::cerr << "Caught synchronous SYCL exception during Sparse SPMV:" << std::endl;

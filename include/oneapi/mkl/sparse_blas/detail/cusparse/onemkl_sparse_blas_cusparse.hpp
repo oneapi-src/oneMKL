@@ -17,16 +17,19 @@
 *
 **************************************************************************/
 
-#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
-#include "sparse_blas/backends/mkl_common/mkl_dispatch.hpp"
-#include "sparse_blas/common_op_verification.hpp"
-#include "sparse_blas/macros.hpp"
-#include "sparse_blas/sycl_helper.hpp"
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_CUSPARSE_ONEMKL_SPARSE_BLAS_CUSPARSE_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_CUSPARSE_ONEMKL_SPARSE_BLAS_CUSPARSE_HPP_
 
-#include "oneapi/mkl/sparse_blas/detail/mklgpu/onemkl_sparse_blas_mklgpu.hpp"
+#include "oneapi/mkl/detail/export.hpp"
+#include "oneapi/mkl/sparse_blas/detail/helper_types.hpp"
+#include "oneapi/mkl/sparse_blas/types.hpp"
 
-namespace oneapi::mkl::sparse::mklgpu {
+namespace oneapi::mkl::sparse::cusparse {
 
-#include "sparse_blas/backends/mkl_common/mkl_spmv.cxx"
+namespace detail = oneapi::mkl::sparse::detail;
 
-} // namespace oneapi::mkl::sparse::mklgpu
+#include "oneapi/mkl/sparse_blas/detail/onemkl_sparse_blas_backends.hxx"
+
+} // namespace oneapi::mkl::sparse::cusparse
+
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_CUSPARSE_ONEMKL_SPARSE_BLAS_CUSPARSE_HPP_

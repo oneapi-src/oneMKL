@@ -35,36 +35,9 @@ void check_valid_spmm(const std::string function_name, sycl::queue &queue,
                       oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
                       oneapi::mkl::sparse::dense_matrix_handle_t C_handle, const void *alpha,
                       const void *beta) {
-    THROW_IF_NULLPTR(function_name, A_handle);
-    THROW_IF_NULLPTR(function_name, B_handle);
-    THROW_IF_NULLPTR(function_name, C_handle);
-
     auto internal_A_handle = detail::get_internal_handle(A_handle);
-    detail::check_all_containers_compatible(function_name, internal_A_handle, B_handle, C_handle);
-    if (internal_A_handle->all_use_buffer()) {
-        detail::check_ptr_is_host_accessible("spmm", "alpha", queue, alpha);
-        detail::check_ptr_is_host_accessible("spmm", "beta", queue, beta);
-    }
-    if (detail::is_ptr_accessible_on_host(queue, alpha) !=
-        detail::is_ptr_accessible_on_host(queue, beta)) {
-        throw mkl::invalid_argument(
-            "sparse_blas", function_name,
-            "Alpha and beta must both be placed on host memory or device memory.");
-    }
-    if (B_handle->dense_layout != C_handle->dense_layout) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "B and C matrices must used the same layout.");
-    }
-
-    if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::general) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix view's type must be `matrix_descr::general`.");
-    }
-
-    if (A_view.diag_view != oneapi::mkl::diag::nonunit) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix's diag_view must be `nonunit`.");
-    }
+    detail::check_valid_spmm_common(function_name, queue, A_view, internal_A_handle, B_handle,
+                                    C_handle, alpha, beta);
 
 #if BACKEND == gpu
     if (opA == oneapi::mkl::transpose::conjtrans &&
