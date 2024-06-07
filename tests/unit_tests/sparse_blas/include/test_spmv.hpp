@@ -143,22 +143,24 @@ void test_helper_with_format(
                          fp_one, fp_zero, default_alg, triangular_unit_A_view, no_properties,
                          no_reset_data),
         num_passed, num_skipped);
-    // Lower symmetric or hermitian
-    oneapi::mkl::sparse::matrix_view symmetric_view(
-        complex_info<fpType>::is_complex ? oneapi::mkl::sparse::matrix_descr::hermitian
-                                         : oneapi::mkl::sparse::matrix_descr::symmetric);
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, symmetric_view, no_properties,
-                         no_reset_data),
-        num_passed, num_skipped);
-    // Upper symmetric or hermitian
-    symmetric_view.uplo_view = oneapi::mkl::uplo::upper;
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, symmetric_view, no_properties,
-                         no_reset_data),
-        num_passed, num_skipped);
+    if (transpose_val != oneapi::mkl::transpose::conjtrans) {
+        // Lower symmetric or hermitian
+        oneapi::mkl::sparse::matrix_view symmetric_view(
+            complex_info<fpType>::is_complex ? oneapi::mkl::sparse::matrix_descr::hermitian
+                                             : oneapi::mkl::sparse::matrix_descr::symmetric);
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
+                             transpose_val, fp_one, fp_zero, default_alg, symmetric_view,
+                             no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Upper symmetric or hermitian
+        symmetric_view.uplo_view = oneapi::mkl::uplo::upper;
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
+                             transpose_val, fp_one, fp_zero, default_alg, symmetric_view,
+                             no_properties, no_reset_data),
+            num_passed, num_skipped);
+    }
     // Test other algorithms
     for (auto alg : non_default_algorithms) {
         EXPECT_TRUE_OR_FUTURE_SKIP(test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix,

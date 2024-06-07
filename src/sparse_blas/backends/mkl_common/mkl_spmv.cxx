@@ -30,7 +30,7 @@ sycl::event release_spmv_descr(sycl::queue &queue, oneapi::mkl::sparse::spmv_des
 }
 
 void check_valid_spmv(const std::string function_name, sycl::queue &queue,
-                      oneapi::mkl::sparse::matrix_view A_view,
+                      oneapi::mkl::transpose opA, oneapi::mkl::sparse::matrix_view A_view,
                       oneapi::mkl::sparse::matrix_handle_t A_handle,
                       oneapi::mkl::sparse::dense_vector_handle_t x_handle,
                       oneapi::mkl::sparse::dense_vector_handle_t y_handle, const void *alpha,
@@ -51,14 +51,22 @@ void check_valid_spmv(const std::string function_name, sycl::queue &queue,
     }
 
     if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::triangular &&
-        A_view.diag_view != oneapi::mkl::diag::nonunit) {
+        A_view.diag_view == oneapi::mkl::diag::unit) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
             "`unit` diag_view can only be used with a triangular type_view.");
     }
+
+    if ((A_view.type_view == oneapi::mkl::sparse::matrix_descr::symmetric ||
+         A_view.type_view == oneapi::mkl::sparse::matrix_descr::hermitian) &&
+        opA == oneapi::mkl::transpose::conjtrans) {
+        throw mkl::invalid_argument(
+            "sparse_blas", function_name,
+            "Symmetric or Hermitian matrix cannot be conjugated with `conjtrans`.");
+    }
 }
 
-void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose /*opA*/, const void *alpha,
+void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
                       oneapi::mkl::sparse::matrix_view A_view,
                       oneapi::mkl::sparse::matrix_handle_t A_handle,
                       oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
@@ -67,7 +75,7 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose /*opA*/, const 
                       oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/,
                       std::size_t &temp_buffer_size) {
     // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
-    check_valid_spmv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, beta);
+    check_valid_spmv(__FUNCTION__, queue, opA, A_view, A_handle, x_handle, y_handle, alpha, beta);
     temp_buffer_size = 0;
 }
 
@@ -79,7 +87,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    oneapi::mkl::sparse::spmv_alg alg,
                    oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
-    check_valid_spmv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, beta);
+    check_valid_spmv(__FUNCTION__, queue, opA, A_view, A_handle, x_handle, y_handle, alpha, beta);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (!internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__FUNCTION__);
@@ -113,7 +121,7 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::spmv_alg alg,
                           oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
-    check_valid_spmv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, beta);
+    check_valid_spmv(__FUNCTION__, queue, opA, A_view, A_handle, x_handle, y_handle, alpha, beta);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__FUNCTION__);
@@ -196,7 +204,7 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                  oneapi::mkl::sparse::spmv_alg alg, oneapi::mkl::sparse::spmv_descr_t spmv_descr,
                  const std::vector<sycl::event> &dependencies) {
-    check_valid_spmv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, beta);
+    check_valid_spmv(__FUNCTION__, queue, opA, A_view, A_handle, x_handle, y_handle, alpha, beta);
     auto value_type = detail::get_internal_handle(A_handle)->get_value_type();
     DISPATCH_MKL_OPERATION("spmv", value_type, internal_spmv, queue, opA, alpha, A_view, A_handle,
                            x_handle, beta, y_handle, alg, spmv_descr, dependencies);

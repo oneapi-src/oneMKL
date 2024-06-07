@@ -161,9 +161,7 @@ std::vector<fpType> sparse_to_dense(sparse_matrix_format_t format, const intType
     const bool is_symmetric_or_hermitian_view =
         type_view == oneapi::mkl::sparse::matrix_descr::symmetric ||
         type_view == oneapi::mkl::sparse::matrix_descr::hermitian;
-    // Matrices are not conjugated if they are symmetric
-    const bool apply_conjugate =
-        !is_symmetric_or_hermitian_view && transpose_val == oneapi::mkl::transpose::conjtrans;
+    const bool apply_conjugate = transpose_val == oneapi::mkl::transpose::conjtrans;
     std::vector<fpType> dense_a(a_nrows * a_ncols, fpType(0));
 
     auto write_to_dense_if_needed = [&](std::size_t a_idx, std::size_t row, std::size_t col) {
