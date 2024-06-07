@@ -21,23 +21,22 @@ jobs:
       matrix:
         include:
         - config: portBLAS
-          options: -DTARGET_DOMAINS=blas -DREF_BLAS_ROOT=${PWD}/lapack/install -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DPORTBLAS_TUNING_TARGET=INTEL_CPU
-          tests: '.*'
+          domain: blas
+          build_options: -DREF_BLAS_ROOT=${PWD}/lapack/install -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DPORTBLAS_TUNING_TARGET=INTEL_CPU
         - config: portFFT
-          options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
-          tests: 'DFT/CT/.*ComputeTests_in_place_COMPLEX.COMPLEX_SINGLE_in_place_buffer.sizes_8_batches_1*'
+          domain: dft
+          build_options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
+          test_options: -R 'DFT/CT/.*ComputeTests_in_place_COMPLEX.COMPLEX_SINGLE_in_place_buffer.sizes_8_batches_1*'
         - config: MKL BLAS
-          options: -DTARGET_DOMAINS=blas -DREF_BLAS_ROOT=${PWD}/lapack/install
-          tests: '.*'
+          domain: blas
+          build_options: -DREF_BLAS_ROOT=${PWD}/lapack/install
         - config: MKL DFT
-          options: -DTARGET_DOMAINS=dft
-          tests: '.*'
+          domain: dft
         - config: MKL LAPACK
-          options: -DTARGET_DOMAINS=lapack -DREF_LAPACK_ROOT=${PWD}/lapack/install
-          tests: '.*'
+          domain: lapack
+          build_options: -DREF_LAPACK_ROOT=${PWD}/lapack/install
         - config: MKL RNG
-          options: -DTARGET_DOMAINS=rng
-          tests: '.*'
+          domain: rng
     name: unit tests ${{ matrix.config }} CPU
     steps:
     - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
@@ -58,18 +57,44 @@ jobs:
         # 64 bit int
         cmake ${SHARED_OPT} -DBUILD_INDEX64=on -B lapack/build64
         cmake --build lapack/build64 ${PARALLEL} --target install
+    - name: Test if the changes affect this domain
+      id: test_domain
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      with:
+        script: |
+          function matchesPattern(filePaths) {
+            console.log('files:', filePaths)
+            // These directories contain domain specific code
+            const dirs = '(tests/unit_tests|examples|src|include/oneapi/mkl)'
+            const domains = '(blas|lapack|rng|dft)'
+            const domain = '${{ matrix.domain }}'
+            // matches changes to the domain of interest or non domain-specific code
+            const re = new RegExp(`^(${dirs}/${domain}|(?!${dirs}/${domains}))`);
+            return filePaths.some(filePath => re.test(filePath));
+          }
+          const pr = context.payload.pull_request
+          const compare = await github.rest.repos.compareCommits({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            base: pr.base.sha,
+            head: pr.head.sha
+          });
+          return matchesPattern(compare.data.files.map((f) => f.filename));
     - name: Install oneapi
+      if: steps.test_domain.outputs.result == 'true'
       uses: rscohn2/setup-oneapi@2ad0cf6b74bc2426bdcee825cf88f9db719dd727 # v0.1.0
       with:
         components: |
           icx@2024.1.0
           mkl@2024.1.0
     - name: Configure/Build for a domain
+      if: steps.test_domain.outputs.result == 'true'
       run: |
         source /opt/intel/oneapi/setvars.sh
-        cmake -DENABLE_MKLGPU_BACKEND=off -DCMAKE_VERBOSE_MAKEFILE=on ${{ matrix.options }} -B build
+        cmake -DTARGET_DOMAINS=${{ matrix.domain }} -DENABLE_MKLGPU_BACKEND=off -DCMAKE_VERBOSE_MAKEFILE=on ${{ matrix.build_options }} -B build
         cmake --build build ${PARALLEL}
     - name: Run tests
+      if: steps.test_domain.outputs.result == 'true'
       run: |
         source /opt/intel/oneapi/setvars.sh
-        ctest --test-dir build -R ${{ matrix.tests }}
+        ctest --test-dir build ${{ matrix.test_options }}
