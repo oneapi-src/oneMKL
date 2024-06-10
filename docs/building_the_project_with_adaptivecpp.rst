@@ -1,0 +1,153 @@
+.. _building_the_project_with_adaptivecpp:
+
+Building the Project with AdaptiveCpp
+=====================================
+
+.. _build_setup_with_adaptivecpp:
+
+Build Setup with AdaptiveCpp
+############################
+
+#. 
+   Make sure that the dependencies of AdaptiveCpp are fulfilled. For a detailed
+   description, see the
+   `AdaptiveCpp installation readme <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/installing.md#compilation-flows>`_.
+
+#. 
+   Install AdaptiveCpp with the preferred backends enabled. AdaptiveCpp supports
+   various backends. You can customize support for the target system at
+   compile time by setting the appropriate configuration flags; see the
+   `AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/installing.md>`_
+   for instructions.
+
+#. 
+   Clone this project to ``<path to onemkl>``, where ``<path to onemkl>`` is
+   the root directory of this repository.
+
+#. 
+   Download and install the required dependencies manually and
+   :ref:`Build with CMake <building_with_cmake>`.
+
+Introduction
+############
+
+In most cases, building oneMKL is as simple as setting the compiler and selecting the desired backends to build with.
+
+On Linux (other OSes are not supported):
+
+  .. code-block:: bash
+
+     # Inside <path to onemkl>
+     mkdir build && cd build
+     cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl                      \ # Indicate that AdaptiveCpp is being used.
+              -DENABLE_MKLGPU_BACKEND=OFF                               \ # MKLGPU backend is not supported by AdaptiveCpp
+              -DENABLE_<BACKEND_NAME>_BACKEND=ON                        \ # Enable backend(s) (optional)
+              -DENABLE_<BACKEND_NAME_2>_BACKEND=ON                      \ # Multiple backends can be enabled at once.
+              -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906                  \ # Set target architectures depending on supported devices.
+              -DBUILD_FUNCTIONAL_TESTS=OFF                              \ # See section *Building the tests* for more on building tests. ON by default.
+              -DBUILD_EXAMPLES=OFF                                        # Optional: On by default.
+     cmake --build .
+     cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
+
+Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=ON`` for each desired backend. 
+By default, the ``MKLGPU`` and ``MKLCPU`` backends are enabled, but must be disabled with AdaptiveCpp.
+The supported backends for the compilers are given in the table at
+`oneMKL supported configurations table <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations>`_,
+and the CMake option names are given in the table below.
+Some backends may require additional parameters to be set. See the relevant section below for additional guidance.
+
+If a backend library supports multiple domains (i.e. BLAS, RNG), it may be desirable to only enable selected domains.
+For this, the ``TARGET_DOMAINS`` variable should be set. For further details, see :ref:`_build_target_domains`.
+
+By default, the library also additionally builds examples and tests.
+These can be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and ``BUILD_EXAMPLES`` to off.
+Building the functional tests may require additional external libraries.
+See the section :ref:`_building_and_running_tests_dpcpp` for more information.
+
+The most important supported build options are:
+
+.. list-table::
+   :header-rows: 1
+
+   * - CMake Option
+     - Supported Values
+     - Default Value 
+   * - ENABLE_MKLCPU_BACKEND
+     - True, False
+     - True      
+   * - ENABLE_CUBLAS_BACKEND
+     - True, False
+     - False     
+   * - ENABLE_CURAND_BACKEND
+     - True, False
+     - False     
+   * - ENABLE_NETLIB_BACKEND
+     - True, False
+     - False     
+   * - ENABLE_ROCBLAS_BACKEND
+     - True, False
+     - False     
+   * - ENABLE_ROCRAND_BACKEND
+     - True, False
+     - False     
+   * - ENABLE_MKLCPU_THREAD_TBB
+     - True, False
+     - True      
+   * - BUILD_FUNCTIONAL_TESTS
+     - True, False
+     - True      
+   * - BUILD_EXAMPLES
+     - True, False
+     - True      
+   * - TARGET_DOMAINS (list)
+     - blas, rng
+     - All supported domains
+
+Some additional build options are given in :ref:`build_additional_options_dpcpp`.
+
+.. _build_for_cuda_adaptivecpp:
+
+Building for CUDA
+~~~~~~~~~~~~~~~~~
+
+The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND`` and ``ENABLE_CURAND_BACKEND``.
+
+The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. 
+For example, to target a Nvidia A100 (Ampere architecture), set ``-DHIPSYCL_TARGETS=cuda:sm_80``.
+Multiple architectures can be enabled using a comma separated list.
+
+No additional parameters are required for using CUDA libraries. In most cases, the CUDA libraries should be
+found automatically by CMake.
+
+.. _build_for_rocm_adaptivecpp:
+
+Building for ROCm
+~~~~~~~~~~~~~~~~~
+
+The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND`` and ``ENABLE_ROCRAND_BACKEND``.
+
+The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. 
+For example, to target the MI200 series, set ``-DHIPSYCL_TARGETS=hip:gfx90a``.
+Multiple architectures can be enabled using a comma separated list. 
+For example, ``-DHIPSYCL_TARGETS=hip:gfx906,gfx90a``, and multiple APIs with a semicolon (``-DHIPSYCL_TARGETS=omp\;hip:gfx906,gfx90a``).
+
+For common AMD GPU architectures, see the :ref:`build_for_ROCM_dpcpp` in the DPC++ build guide.
+
+.. _project_cleanup:
+
+Project Cleanup
+###############
+
+Most use-cases involve building the project without the need to cleanup the
+build directory. However, if you wish to cleanup the build directory, you can
+delete the ``build`` folder and create a new one. If you wish to cleanup the
+build files but retain the build configuration, following commands will help
+you do so.
+
+.. code-block:: sh
+
+   # If you use "GNU/Unix Makefiles" for building,
+   make clean
+
+   # If you use "Ninja" for building
+   ninja -t clean

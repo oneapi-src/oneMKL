@@ -1,5 +1,5 @@
 ..
-  Copyright 2020–2022 Intel Corporation
+  Copyright 2020ï¿½2022 Intel Corporation
 
 .. _onemkl:
 
@@ -21,7 +21,9 @@ Contents
    :maxdepth: 2
 
    selecting_a_compiler.rst
-   building_the_project.rst
+   building_the_project_with_dpcpp.rst
+   building_the_project_with_adaptivecpp.rst
+   consuming_with_cmake.rst
 
 .. toctree::
    :caption: Developer Reference
