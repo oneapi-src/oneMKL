@@ -50,7 +50,7 @@ On Linux (other OSes are not supported):
      cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
 Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=ON`` for each desired backend. 
-By default, the ``MKLGPU`` and ``MKLCPU`` backends are enabled, but must be disabled with AdaptiveCpp.
+By default, the ``MKLGPU`` and ``MKLCPU`` backends are enabled, but ``MKLGPU`` must be disabled with AdaptiveCpp.
 The supported backends for the compilers are given in the table at
 `oneMKL supported configurations table <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations>`_,
 and the CMake option names are given in the table below.
@@ -100,7 +100,7 @@ The most important supported build options are:
      - True, False
      - True      
    * - TARGET_DOMAINS (list)
-     - blas, rng
+     - blas, lapack, rng, dft, sparse_blas
      - All supported domains
 
 Some additional build options are given in :ref:`build_additional_options_dpcpp`.

@@ -1,5 +1,5 @@
 ..
-  Copyright 2020�2022 Intel Corporation
+  Copyright 2020-2024 Intel Corporation
 
 .. _onemkl:
 

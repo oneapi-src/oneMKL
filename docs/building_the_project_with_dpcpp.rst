@@ -124,7 +124,7 @@ The most important supported build options are:
      - True, False
      - True      
    * - TARGET_DOMAINS (list)
-     - blas, lapack, rng, dft
+     - blas, lapack, rng, dft, sparse_blas
      - All domains 
 
 Some additional build options are given in the section `Additional build options`_.
@@ -134,13 +134,13 @@ Some additional build options are given in the section `Additional build options
 TARGET_DOMAINS
 ^^^^^^^^^^^^^^
 
-OneMKL supports multiple domains: BLAS, DFT, LAPACK, RNG.
+OneMKL supports multiple domains: BLAS, DFT, LAPACK, RNG and sparse BLAS.
 The domains built by oneMKL can be selected using the ``TARGET_DOMAINS`` parameter.
 In most cases, ``TARGET_DOMAINS`` is set automatically according to the domains supported
 by the backend libraries enabled.
 However, while most backend libraries support only one of these domains, but some may support multiple.
 For example, the ``MKLCPU`` backend supports every domain. To enable support for only the BLAS domain in
-the oneMKL interface library whilst compiling with ``MKLGPU``, ``TARGET_DOMAINS`` could be set to ``blas``. 
+the oneMKL interface library whilst compiling with ``MKLCPU``, ``TARGET_DOMAINS`` could be set to ``blas``. 
 To enable BLAS and DFT, ``-DTARGET_DOMAINS="blas dft"`` would be used.
 
 
@@ -419,7 +419,9 @@ testing enabled:
         -DTARGET_DOMAINS=dft \
         -DBUILD_EXAMPLES=OFF
 
-Note that this is not a supported configuration, and requires Codeplay's oneAPI for AMD and Nvidia GPU plugins.
+Note that this is not a supported configuration, and requires Codeplay's oneAPI for 
+`AMD <https://developer.codeplay.com/products/oneapi/amd/home/>`_ and 
+`Nvidia <https://developer.codeplay.com/products/oneapi/nvidia/home/>`_ GPU plugins.
 Like the above example, the MKLCPU and MKLGPU backends are enabled by default, with
 backends for Nvidia GPU and AMD GPU explicitly enabled.
 ``-DTARGET_DOMAINS=dft`` causes only DFT backends to be built. If this was not set,
