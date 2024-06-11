@@ -33,7 +33,7 @@ Introduction
 
 In most cases, building oneMKL is as simple as setting the compiler and selecting the desired backends to build with.
 
-On Linux (other OSes are not supported):
+On Linux (other OSes are not supported with the AdaptiveCpp compiler):
 
   .. code-block:: bash
 
@@ -55,6 +55,8 @@ The supported backends for the compilers are given in the table at
 `oneMKL supported configurations table <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations>`_,
 and the CMake option names are given in the table below.
 Some backends may require additional parameters to be set. See the relevant section below for additional guidance.
+The target architectures must be specified with ``HIP_TARGETS``. See the
+`AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
 
 If a backend library supports multiple domains (i.e. BLAS, RNG), it may be desirable to only enable selected domains.
 For this, the ``TARGET_DOMAINS`` variable should be set. For further details, see :ref:`_build_target_domains`.
@@ -100,7 +102,7 @@ The most important supported build options are:
      - True, False
      - True      
    * - TARGET_DOMAINS (list)
-     - blas, lapack, rng, dft, sparse_blas
+     - blas, rng
      - All supported domains
 
 Some additional build options are given in :ref:`build_additional_options_dpcpp`.
@@ -114,7 +116,8 @@ The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND`` and ``ENABLE_CUR
 
 The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. 
 For example, to target a Nvidia A100 (Ampere architecture), set ``-DHIPSYCL_TARGETS=cuda:sm_80``.
-Multiple architectures can be enabled using a comma separated list.
+Multiple architectures can be enabled using a comma separated list. See the 
+`AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
 
 No additional parameters are required for using CUDA libraries. In most cases, the CUDA libraries should be
 found automatically by CMake.
@@ -127,6 +130,8 @@ Building for ROCm
 The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND`` and ``ENABLE_ROCRAND_BACKEND``.
 
 The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. 
+See the 
+`AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
 For example, to target the MI200 series, set ``-DHIPSYCL_TARGETS=hip:gfx90a``.
 Multiple architectures can be enabled using a comma separated list. 
 For example, ``-DHIPSYCL_TARGETS=hip:gfx906,gfx90a``, and multiple APIs with a semicolon (``-DHIPSYCL_TARGETS=omp\;hip:gfx906,gfx90a``).

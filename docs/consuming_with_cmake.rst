@@ -3,7 +3,7 @@
 Consuming with CMake
 ==================== 
 
-The best way to use oneMKL is through integration with CMake. This can be done in two ways:
+This can be done in two ways:
 
 * By using ``find_package`` with an installed version of oneMKL interface library.
 * By downloading and building oneMKL as part of your application using FetchContent_.
@@ -11,11 +11,11 @@ The best way to use oneMKL is through integration with CMake. This can be done i
 
 .. _using_from_installed_binary:
 
-Using an installed oneMKL interface library
-#######################################
+Using an installed oneMKL Interface Library
+###########################################
 
-If oneMKL has been previously installed, either by building from source or as a distributed
-binary, it can be consumed using CMake using ``find_package(oneMKL REQUIRED)``. The compiler used
+If the oneMKL interfaces have been previously installed, either by building from source or as a distributed
+binary, they can be consumed using CMake using ``find_package(oneMKL REQUIRED)``. The compiler used
 for the target library or application should match that used to build oneMKL interface library.
 
 For example:
@@ -31,7 +31,7 @@ For specific domains, ``MKL::onemkl_<domain>`` should be used.
 And for specific backends, ``MKL::onemkl_<domain>_<backend>`` should be used.
 
 When using a binary, it may be useful to know the backends that were enabled during the build.
-To check for the existance of backends, CMake's ``if(TARGET <target>)`` construct can be used.
+To check for the existence of backends, CMake's ``if(TARGET <target>)`` construct can be used.
 For example, with the ``cufft`` backend:
 
 .. code-block:: cmake

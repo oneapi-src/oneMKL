@@ -149,7 +149,7 @@ To enable BLAS and DFT, ``-DTARGET_DOMAINS="blas dft"`` would be used.
 Building for Intel(R) oneMKL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The closed-source Intel(R) oneMKL supports multiple domains on both x86 CPUs and Intel GPUs.
+The Intel(R) oneMKL backend supports multiple domains on both x86 CPUs and Intel GPUs.
 The MKLCPU backend using Intel(R) oneMKL for x86 CPU is enabled by default, and controlled with the parameter ``ENABLE_MKLCPU_BACKEND``.
 The MKLGPU backend using Intel(R) oneMKL for Intel GPU is enabled by default, and controlled with the parameter ``ENABLE_MKLGPU_BACKEND``.
 
@@ -177,7 +177,7 @@ The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND``, ``ENABLE_ROCFF
 
 For *RocBLAS*, *RocSOLVER* and *RocRAND*, the target device architecture must be set. This can be set with using the ``HIP_TARGETS`` parameter.
 For example, to enable a build for MI200 series GPUs, ``-DHIP_TARGETS=gfx90a`` should be set.
-Currently, DPC++ only supports a single HIP target. This may change in future versions.
+Currently, DPC++ can only build for a single HIP target at a time. This may change in future versions.
 
 A few often-used architectures are listed below:
 
