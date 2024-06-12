@@ -1,12 +1,19 @@
-.. _consuming_with_cmake:
+.. _using_onemkl_interface_library_with_cmake:
 
-Consuming with CMake
-==================== 
+Using the oneMKL Interface Library in your project with CMake
+=============================================================
 
-This can be done in two ways:
+The CMake build tool can help you use oneMKL Interface Library in your own project.
+Instead of manually linking and including directories, you can use the CMake targets
+exported by the oneMKL Interface Library project. You can use oneMKL in one of two
+forms, with the target names depending on the approach taken: 
 
-* By using ``find_package`` with an installed version of oneMKL interface library.
-* By downloading and building oneMKL as part of your application using FetchContent_.
+* you can use a previously installed copy, either from a binary distribution
+or built from source. This can be imported using CMake's ``find_package`` command.
+See the section `using_from_installed_binary`_.
+* or you can have CMake automatically download and build oneMKL as part of the
+build process using CMake's FetchContent_ functionality.
+See the section `using_with_fetchcontent`_.
 
 
 .. _using_from_installed_binary:

@@ -64,7 +64,7 @@ For this, the ``TARGET_DOMAINS`` variable should be set. For further details, se
 By default, the library also additionally builds examples and tests.
 These can be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and ``BUILD_EXAMPLES`` to off.
 Building the functional tests may require additional external libraries.
-See the section :ref:`_building_and_running_tests_dpcpp` for more information.
+See the section :ref:`building_and_running_tests` for more information.
 
 The most important supported build options are:
 

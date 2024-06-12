@@ -23,7 +23,8 @@ Contents
    selecting_a_compiler.rst
    building_the_project_with_dpcpp.rst
    building_the_project_with_adaptivecpp.rst
-   consuming_with_cmake.rst
+   building_and_running_tests.rst
+   using_onemkl_with_cmake.rst
 
 .. toctree::
    :caption: Developer Reference
