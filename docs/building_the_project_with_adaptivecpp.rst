@@ -9,24 +9,16 @@ Build Setup with AdaptiveCpp
 ############################
 
 #. 
-   Make sure that the dependencies of AdaptiveCpp are fulfilled. For a detailed
-   description, see the
+   Build and install AdaptiveCpp. 
+   For a detailed description of available AdaptiveCpp backends, their dependencies, and installation, see the
    `AdaptiveCpp installation readme <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/installing.md#compilation-flows>`_.
-
-#. 
-   Install AdaptiveCpp with the preferred backends enabled. AdaptiveCpp supports
-   various backends. You can customize support for the target system at
-   compile time by setting the appropriate configuration flags; see the
-   `AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/installing.md>`_
-   for instructions.
 
 #. 
    Clone this project to ``<path to onemkl>``, where ``<path to onemkl>`` is
    the root directory of this repository.
 
 #. 
-   Download and install the required dependencies manually and
-   :ref:`Build with CMake <building_with_cmake>`.
+   Download and install the `required dependencies <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_ manually.
 
 Introduction
 ############

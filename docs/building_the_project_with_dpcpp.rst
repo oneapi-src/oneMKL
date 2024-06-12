@@ -20,7 +20,7 @@ Build Setup
    is the root directory of this repository.
 
 #. 
-   Build and install all required `dependencies <#software-requirements>`_. 
+   Build and install all `required dependencies <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_. 
 
 .. _build_introduction_with_dpcpp:
 
