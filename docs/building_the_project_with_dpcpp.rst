@@ -144,6 +144,9 @@ the oneMKL interface library whilst compiling with ``MKLCPU``, ``TARGET_DOMAINS`
 To enable BLAS and DFT, ``-DTARGET_DOMAINS="blas dft"`` would be used.
 
 
+Backends
+#########
+
 .. _build_for_intel_onemkl_dpcpp:
 
 Building for Intel(R) oneMKL
@@ -160,7 +163,7 @@ If it is not, the parameter ``MKL_ROOT`` can be set to point to the installation
 .. _build_for_CUDA_dpcpp:
 
 Building for CUDA
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 
 The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND``, ``ENABLE_CUFFT_BACKEND``, ``ENABLE_CURAND_BACKEND``,
 and ``ENABLE_CUSOLVER_BACKEND``.
@@ -171,7 +174,7 @@ found automatically by CMake.
 .. _build_for_ROCM_dpcpp:
 
 Building for ROCm
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 
 The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND``, ``ENABLE_ROCFFT_BACKEND``, ``ENABLE_ROCSOLVER_BACKEND`` and ``ENABLE_ROCRAND_BACKEND``.
 
@@ -200,33 +203,33 @@ A few often-used architectures are listed below:
 For a host with ROCm installed, the device architecture can be retrieved via the ``rocminfo`` tool.
 The architecture will be displayed in the ``Name:`` row.
 
+.. _build_for_portlibs_dpcpp:
+
+Pure SYCL backends: portBLAS and portFFT
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`portBLAS <https://github.com/codeplaysoftware/portBLAS>`_ and 
+`portFFT <https://github.com/codeplaysoftware/portFFT>`_ are 
+experimental pure-SYCL backends that work on all
+SYCL targets supported by the DPC++ compiler. Since they support multiple targets,
+they cannot be enabled with other backends in the same domain.
+Both libraries are experimental and currently only support a subset of operations
+and features.
+
+For best performance, both libraries must be tuned. See the individual sections 
+for more details.
+
+Both portBLAS and portFFT are used as header-only libraries, and will be downloaded
+automatically if not found.
+
 .. _build_for_portblas_dpcpp:
 
 Building for portBLAS
-^^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
-Note the portBLAS backend is experimental and currently only supports a
-subset of the operations and features. The portBLAS backend cannot be enabled
-with other backends and can only be used with the compile time dispatch.
-The portBLAS backend uses the `portBLAS <https://github.com/codeplaysoftware/portBLAS>`_
-project as a header-only library.
+`portBLAS <https://github.com/codeplaysoftware/portBLAS>`_ is
+enabled by setting ``-DENABLE_PORTBLAS_BACKEND=ON``.
 
-* On Linux*
-
-.. code-block:: bash
-
-   # Inside <path to onemkl>
-   mkdir build && cd build
-   cmake .. -DENABLE_PORTBLAS_BACKEND=ON \
-            -DENABLE_MKLCPU_BACKEND=OFF  \
-            -DENABLE_MKLGPU_BACKEND=OFF  \
-            [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \ # required only for testing
-            [-DPORTBLAS_DIR=<path to portBLAS install directory>]
-   cmake --build .
-   ctest
-
-
-portBLAS will be downloaded automatically if not found.
 By default, the portBLAS backend is not tuned for any specific device.
 This tuning is required to achieve best performance.
 portBLAS can be tuned for a specific hardware target by adding compiler
@@ -244,46 +247,25 @@ definitions in 2 ways:
   `DPC++ User Manual <https://intel.github.io/llvm-docs/UsersManual.html>`_
   for more information on ``-fsycl-targets``.
 
+
 .. _build_for_portfft_dpcpp:
 
 Building for portFFT
-^^^^^^^^^^^^^^^^^^^^
+---------------------
 
-Note the portFFT backend is experimental and currently only supports a
-subset of the operations and features.
-The portFFT backend uses the `portFFT <https://github.com/codeplaysoftware/portFFT>`_
-project as a header-only library.
-
-* On Linux*
-
-.. code-block:: bash
-
-   # Inside <path to onemkl>
-   mkdir build && cd build
-   cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER \ # Should be icpx or clang++
-            -DCMAKE_C_COMPILER=$C_COMPILER \ # Should be icx or clang
-            -DENABLE_PORTFFT_BACKEND=ON \
-            -DENABLE_MKLCPU_BACKEND=OFF  \
-            -DENABLE_MKLGPU_BACKEND=OFF  \
-            [-DPORTFFT_REGISTERS_PER_WI=128] \ # Example portFFT tuning parameter
-            [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] \ # required only for testing
-            [-DPORTFFT_DIR=<path to portFFT install directory>]
-   cmake --build .
-   ctest
-
-
-portFFT will be downloaded automatically if not found.
+`portFFT <https://github.com/codeplaysoftware/portFFT>`_ is
+enabled by setting ``-DENABLE_PORTFFT_BACKEND=ON``.
 
 By default, the portFFT backend is not tuned for any specific device. The tuning flags are
-detailed in the `portFFT <https://github.com/codeplaysoftware/portFFT>`_ repository.
-The tuning parameters can be set at configuration time,
-with the above example showing how to set the tuning parameter
-``PORTFFT_REGISTERS_PER_WI``. Note that some tuning configurations may be incompatible
+detailed in the `portFFT <https://github.com/codeplaysoftware/portFFT>`_ repository, and can 
+set at configuration time.
+Note that some tuning configurations may be incompatible
 with some targets.
 
 The portFFT library is compiled using the same ``-fsycl-targets`` as specified
-by the ``CMAKE_CXX_FLAGS``. If none are found, it will compile for
-``-fsycl-targets=nvptx64-nvidia-cuda,spir64``. To enable HIP targets,
+by the ``CMAKE_CXX_FLAGS``. 
+If none are found, it will compile for
+``-fsycl-targets=spir64``, and -if the compiler supports it- ``nvptx64-nvidia-cuda``. To enable HIP targets,
 ``HIP_TARGETS`` must be specified. See
 `DPC++ User Manual <https://intel.github.io/llvm-docs/UsersManual.html>`_
 for more information on ``-fsycl-targets``.
@@ -426,7 +408,9 @@ you do so.
 Building for Windows
 ####################
 
-The Windows build is similar to the Linux build, albeit that fewer backends are supported. For example:
+The Windows build is similar to the Linux build, albeit that 
+`fewer backends are supported <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#windows>`_.
+For example:
 
 .. code-block:: bash
 
