@@ -36,6 +36,9 @@ if(is_dpcpp)
   if(UNIX)
     set(UNIX_INTERFACE_COMPILE_OPTIONS -fsycl)
     set(UNIX_INTERFACE_LINK_OPTIONS -fsycl)
+    # Check if the Nvidia target is supported. PortFFT uses this for choosing default configuration.
+    check_cxx_compiler_flag("-fsycl -fsycl-targets=nvptx64-nvidia-cuda" dpcpp_supports_nvptx64)
+
     if(ENABLE_CURAND_BACKEND OR ENABLE_CUSOLVER_BACKEND)
       list(APPEND UNIX_INTERFACE_COMPILE_OPTIONS
         -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
