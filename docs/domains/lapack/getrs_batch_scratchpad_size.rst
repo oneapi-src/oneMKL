@@ -114,13 +114,16 @@ lda
   Leading dimension of :math:`A_i`.
 
 stride_a
-  Stride between the beginnings of matrices :math:`B_i` inside the batch array ``b``.
+  Stride between the beginnings of matrices :math:`A_i` inside the batch array ``a``.
 
 stride_ipiv
-  Stride between the beginnings of arrays ipivi inside the array ``ipiv``.
+  Stride between the beginnings of arrays :math:`ipiv_i` inside the array ``ipiv``.
 
 ldb
   Leading dimension of :math:`B_i`.
+
+stride_b
+  Stride between the beginnings of matrices :math:`B_i` inside the batch array ``b``.
 
 batch_size
   Number of problems in a batch.
