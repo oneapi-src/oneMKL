@@ -333,7 +333,7 @@ Build oneMKL with support for x86 CPU, Intel GPU, and Nvidia GPUs with tests dis
         -DENABLE_CURAND_BACKEND=ON \
         -DBUILD_FUNCTIONAL_TESTS=OFF
 
-`$ONEMKL_DIR` points at the oneMKL source directly.
+``$ONEMKL_DIR`` points at the oneMKL source directly.
 The x86 CPU (``MKLCPU``) and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled here.
 The backends for Nvidia GPUs must all be explicilty enabled.
 The tests are disabled, but the examples will still be built.
@@ -353,7 +353,7 @@ Building oneMKL with support x86 CPU, Intel GPU, and AMD GPUs with tests disable
         -DHIP_TARGETS=gfx90a \
         -DBUILD_FUNCTIONAL_TESTS=OFF
 
-`$ONEMKL_DIR` points at the oneMKL source directly.
+``$ONEMKL_DIR`` points at the oneMKL source directly.
 The x86 CPU (``MKLCPU``) and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled here.
 The backends for AMD GPUs must all be explicilty enabled.
 The tests are disabled, but the examples will still be built.

@@ -107,6 +107,9 @@ The most important supported build options are:
 
 Some additional build options are given in :ref:`build_additional_options_dpcpp`.
 
+Backends
+########
+
 .. _build_for_cuda_adaptivecpp:
 
 Building for CUDA
@@ -115,7 +118,9 @@ Building for CUDA
 The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND`` and ``ENABLE_CURAND_BACKEND``.
 
 The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. 
-For example, to target a Nvidia A100 (Ampere architecture), set ``-DHIPSYCL_TARGETS=cuda:sm_80``.
+For example, to target a Nvidia A100 (Ampere architecture), set ``-DHIPSYCL_TARGETS=cuda:sm_80``,
+where the figure ``80`` corresponds to a CUDA compute capability of 8.0.
+The correspondence between compute capabilities and Nvidia GPU products is given on the `Nvidia website <https://developer.nvidia.com/cuda-gpus>`_.
 Multiple architectures can be enabled using a comma separated list. See the 
 `AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
 
