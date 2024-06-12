@@ -36,10 +36,9 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
   set(TARGETS_LINK_OPTIONS -fsycl-unnamed-lambda)
 
   # spir64 must be last in the list due to a bug in dpcpp 2024.0.0
+  set(TARGETS_TRIPLES "spir64")
   if(dpcpp_supports_nvptx64)
-    set(TARGETS_TRIPLES "nvptx64-nvidia-cuda,spir64")
-  else()
-    set(TARGETS_TRIPLES "spir64")
+    set(TARGETS_TRIPLES nvptx64-nvidia-cuda,${TARGETS_TRIPLES})
   endif()
 
   if (NOT (HIP_TARGETS STREQUAL ""))
