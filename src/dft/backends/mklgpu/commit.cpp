@@ -37,6 +37,12 @@
 // MKLGPU header
 #include "oneapi/mkl/dfti.hpp"
 
+// MKL 2024.1 deprecates input/output strides.
+#include "mkl_version.h"
+namespace oneapi::mkl::dft::mklgpu::detail {
+constexpr bool mklgpu_use_forward_backward_strides_api = INTEL_MKL_VERSION >= 20240001;
+}
+
 /**
 Note that in this file, the Intel oneMKL closed-source library's interface mirrors the interface
 of this OneMKL open-source library. Consequently, the types under dft::TYPE are closed-source oneMKL types,
@@ -53,14 +59,22 @@ private:
     // Equivalent MKLGPU precision and domain from OneMKL's precision / domain.
     static constexpr dft::precision mklgpu_prec = to_mklgpu(prec);
     static constexpr dft::domain mklgpu_dom = to_mklgpu(dom);
+
+    // A pair of descriptors are needed because of the [[deprecated]]IN/OUTPUT_STRIDES vs F/BWD_STRIDES API.
+    // Of the pair [0] is fwd DFT, [1] is backward DFT. If possible, the pointers refer to the same desciptor.
+    // Both pointers must be valid.
     using mklgpu_descriptor_t = dft::descriptor<mklgpu_prec, mklgpu_dom>;
+    using descriptor_shptr_t = std::shared_ptr<mklgpu_descriptor_t>;
+    using handle_t = std::pair<descriptor_shptr_t, descriptor_shptr_t>;
+
     using scalar_type = typename dft::detail::commit_impl<prec, dom>::scalar_type;
 
 public:
     mklgpu_commit(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
             : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu,
                                                                config_values),
-              handle(config_values.dimensions) {
+              handle(std::make_shared<mklgpu_descriptor_t>(config_values.dimensions), nullptr) {
+        handle.second = handle.first; // Make sure the bwd pointer is valid.
         // MKLGPU does not throw an informative exception for the following:
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
@@ -75,13 +89,31 @@ public:
             oneapi::mkl::dft::detail::external_workspace_helper<prec, dom>(
                 config_values.workspace_placement ==
                 oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
-        set_value(handle, config_values);
+        // Generate forward DFT descriptor.
+        set_value(*handle.first, config_values, true);
         try {
-            handle.commit(this->get_queue());
+            handle.first->commit(this->get_queue());
         }
         catch (const std::exception& mkl_exception) {
             // Catching the real Intel oneMKL exception causes headaches with naming.
             throw mkl::exception("dft/backends/mklgpu", "commit", mkl_exception.what());
+        }
+
+        // Generate backward DFT descriptor only if required.
+        if (config_values.input_strides == config_values.output_strides) {
+            // Required if second != first before a recommit.
+            handle.second = handle.first;
+        }
+        else {
+            handle.second = std::make_shared<mklgpu_descriptor_t>(config_values.dimensions);
+            set_value(*handle.second, config_values, false);
+            try {
+                handle.second->commit(this->get_queue());
+            }
+            catch (const std::exception& mkl_exception) {
+                // Catching the real Intel oneMKL exception causes headaches with naming.
+                throw mkl::exception("dft/backends/mklgpu", "commit", mkl_exception.what());
+            }
         }
     }
 
@@ -93,12 +125,18 @@ public:
 
     virtual void set_workspace(scalar_type* usm_workspace) override {
         this->external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
-        handle.set_workspace(usm_workspace);
+        handle.first->set_workspace(usm_workspace);
+        if (handle.first != handle.second) {
+            handle.second->set_workspace(usm_workspace);
+        }
     }
 
     virtual void set_workspace(sycl::buffer<scalar_type>& buffer_workspace) override {
         this->external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
-        handle.set_workspace(buffer_workspace);
+        handle.first->set_workspace(buffer_workspace);
+        if (handle.first != handle.second) {
+            handle.second->set_workspace(buffer_workspace);
+        }
     }
 
 #define BACKEND mklgpu
@@ -107,9 +145,10 @@ public:
 
 private:
     // The native MKLGPU class.
-    mklgpu_descriptor_t handle;
+    handle_t handle;
 
-    void set_value(mklgpu_descriptor_t& desc, const dft::detail::dft_values<prec, dom>& config) {
+    void set_value(mklgpu_descriptor_t& desc, const dft::detail::dft_values<prec, dom>& config,
+                   bool assume_fwd_dft) {
         using onemkl_param = dft::detail::config_param;
         using backend_param = dft::config_param;
 
@@ -134,8 +173,22 @@ private:
             throw mkl::unimplemented("dft/backends/mklgpu", "commit",
                                      "MKLGPU does not support nonzero offsets.");
         }
-        desc.set_value(backend_param::INPUT_STRIDES, config.input_strides.data());
-        desc.set_value(backend_param::OUTPUT_STRIDES, config.output_strides.data());
+        if constexpr (mklgpu_use_forward_backward_strides_api) {
+            // Support for Intel oneMKL 2024.1 or newer using FWD/BWD stride API.
+            if (assume_fwd_dft) {
+                desc.set_value(backend_param::FWD_STRIDES, config.input_strides.data());
+                desc.set_value(backend_param::BWD_STRIDES, config.output_strides.data());
+            }
+            else {
+                desc.set_value(backend_param::FWD_STRIDES, config.output_strides.data());
+                desc.set_value(backend_param::BWD_STRIDES, config.input_strides.data());
+            }
+        }
+        else {
+            // Support for Intel oneMKL older than 2024.1
+            desc.set_value(backend_param::INPUT_STRIDES, config.input_strides.data());
+            desc.set_value(backend_param::OUTPUT_STRIDES, config.output_strides.data());
+        }
         desc.set_value(backend_param::FWD_DISTANCE, config.fwd_dist);
         desc.set_value(backend_param::BWD_DISTANCE, config.bwd_dist);
         if (config.workspace_placement == dft::detail::config_value::WORKSPACE_EXTERNAL) {
@@ -158,9 +211,10 @@ private:
 
     // This is called by the workspace_helper, and is not part of the user API.
     virtual std::int64_t get_workspace_external_bytes_impl() override {
-        std::size_t workspaceSize = 0;
-        handle.get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSize);
-        return static_cast<std::int64_t>(workspaceSize);
+        std::size_t workspaceSizeFwd = 0, workspaceSizeBwd;
+        handle.first->get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSizeFwd);
+        handle.second->get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSizeBwd);
+        return static_cast<std::int64_t>(std::max(workspaceSizeFwd, workspaceSizeFwd));
     }
 };
 } // namespace detail
