@@ -3,9 +3,9 @@
 Building the Project with DPC++
 ===============================
 
-This page describes building the oneMKL interface library with either the
-Intel(R) oneAPI DPC++ Compiler or open-source oneAPI DPC++ Compiler. For
-guidance on building the project with AdaptiveCpp, see
+This page describes building the oneMKL Interfaces with either the Intel(R)
+oneAPI DPC++ Compiler or open-source oneAPI DPC++ Compiler. For guidance on
+building the project with AdaptiveCpp, see
 :ref:`building_the_project_with_adaptivecpp`.
 
 .. _build_setup_with_dpcpp:
@@ -148,8 +148,8 @@ In most cases, ``TARGET_DOMAINS`` is set automatically according to the domains
 supported by the backend libraries enabled. However, while most backend
 libraries support only one of these domains, but some may support multiple. For
 example, the ``MKLCPU`` backend supports every domain. To enable support for
-only the BLAS domain in the oneMKL interface library whilst compiling with
-``MKLCPU``, ``TARGET_DOMAINS`` could be set to ``blas``. To enable BLAS and DFT,
+only the BLAS domain in the oneMKL Interfaces whilst compiling with ``MKLCPU``,
+``TARGET_DOMAINS`` could be set to ``blas``. To enable BLAS and DFT,
 ``-DTARGET_DOMAINS="blas dft"`` would be used.
 
 

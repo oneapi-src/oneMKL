@@ -26,7 +26,7 @@ Environment Setup
 Build Commands
 ###############
 
-In most cases, building oneMKL is as simple as setting the compiler and
+In most cases, building oneMKL Interfaces is as simple as setting the compiler and
 selecting the desired backends to build with.
 
 On Linux (other OSes are not supported with the AdaptiveCpp compiler):
