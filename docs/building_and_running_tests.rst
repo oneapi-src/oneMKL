@@ -4,7 +4,7 @@ Building and Running Tests
 ==========================
 
 The functional are tests are enabled by default, and can be enabled/disabled
-with the CMake build parameter ``-DBUILD_FUNCTIONAL_TESTS=ON/OFF``. Only tests
+with the CMake build parameter ``-DBUILD_FUNCTIONAL_TESTS=True/False``. Only tests
 relevant for the enabled backends and target domains are built.
 
 Building tests for some domains may require additional libraries for reference.
@@ -22,9 +22,9 @@ following:
 
   git clone https://github.com/Reference-LAPACK/lapack.git 
   cd lapack; mkdir -p build; cd build 
-  cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=ON -DLAPACK=ON -DLAPACKE=ON -DBUILD_INDEX64=ON -DBUILD_SHARED_LIBS=ON .. 
+  cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=True -DLAPACK=True -DLAPACKE=True -DBUILD_INDEX64=True -DBUILD_SHARED_LIBS=True .. 
   cmake --build . -j --target install 
-  cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=ON -DLAPACK=ON -DLAPACKE=ON -DBUILD_INDEX64=OFF -DBUILD_SHARED_LIBS=ON .. 
+  cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=True -DLAPACK=True -DLAPACKE=True -DBUILD_INDEX64=False -DBUILD_SHARED_LIBS=True .. 
   cmake --build . -j --target install
 
 and then used in oneMKL by setting ``-REF_BLAS_ROOT=/path/to/lapack/install``
@@ -33,6 +33,6 @@ and ``-DREF_LAPACK_ROOT=/path/to/lapack/install``.
 To run the tests, either use the CMake test driver, by running ``ctest``, or run
 individual test binaries individually.
 
-When running tests you may encounter the issue ``BACKEND NOT FOUND EXECEPTION``,
+When running tests you may encounter the issue ``BACKEND NOT FOUND EXCEPTION``,
 you may need to add your ``<oneMKL build directory>/lib`` to your
 ``LD_LIBRARY_PATH`` on Linux.

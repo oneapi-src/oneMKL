@@ -39,14 +39,14 @@ On Linux (see `Building for Windows`_ for building on Windows):
 
   # Inside <path to onemkl>
   mkdir build && cd build
-  cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER                        \ # Should be icpx or clang++
+  cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER                       \ # Should be icpx or clang++
           -DCMAKE_C_COMPILER=$C_COMPILER                            \ # Should be icx or clang
-          -DENABLE_MKLGPU_BACKEND=OFF                               \ # Optional: The MKLCPU backend is ON by default.
-          -DENABLE_MKLGPU_BACKEND=OFF                               \ # Optional: The MKLGPU backend is ON by default.
-          -DENABLE_<BACKEND_NAME>_BACKEND=ON                        \ # Enable any other backend(s) (optional)
-          -DENABLE_<BACKEND_NAME_2>_BACKEND=ON                      \ # Multiple backends can be enabled at once.
-          -DBUILD_FUNCTIONAL_TESTS=OFF                              \ # See page *Building and Running Tests* for more on building tests. ON by default.
-          -DBUILD_EXAMPLES=OFF                                        # Optional: On by default.
+          -DENABLE_MKLGPU_BACKEND=False                             \ # Optional: The MKLCPU backend is True by default.
+          -DENABLE_MKLGPU_BACKEND=False                             \ # Optional: The MKLGPU backend is True by default.
+          -DENABLE_<BACKEND_NAME>_BACKEND=True                      \ # Enable any other backend(s) (optional)
+          -DENABLE_<BACKEND_NAME_2>_BACKEND=True                    \ # Multiple backends can be enabled at once.
+          -DBUILD_FUNCTIONAL_TESTS=False                            \ # See page *Building and Running Tests* for more on building tests. ON by default.
+          -DBUILD_EXAMPLES=False                                      # Optional: On by default.
   cmake --build .
   cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
@@ -54,7 +54,7 @@ In the above, the ``$CXX_COMPILER`` and ``$C_COMPILER`` should be set to
 ``icpx`` and ``icx`` respectively when using the Intel(R) oneAPI DPC++ Compiler,
 or ``clang++`` and ``clang`` respectively when using the Open DPC++ Compiler. 
 
-Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=ON`` for
+Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=True`` for
 each desired backend. By default, only the ``MKLGPU`` and ``MKLCPU`` backends
 are enabled. Multiple backends for multiple device vendors can be enabled at
 once (albeit with limitations when using portBLAS and portFFT). For examples,
@@ -244,7 +244,7 @@ Building for portBLAS
 ---------------------
 
 `portBLAS <https://github.com/codeplaysoftware/portBLAS>`_ is
-enabled by setting ``-DENABLE_PORTBLAS_BACKEND=ON``.
+enabled by setting ``-DENABLE_PORTBLAS_BACKEND=True``.
 
 By default, the portBLAS backend is not tuned for any specific device.
 This tuning is required to achieve best performance.
@@ -273,7 +273,7 @@ Building for portFFT
 ---------------------
 
 `portFFT <https://github.com/codeplaysoftware/portFFT>`_ is enabled by setting
-``-DENABLE_PORTFFT_BACKEND=ON``.
+``-DENABLE_PORTFFT_BACKEND=True``.
 
 By default, the portFFT backend is not tuned for any specific device. The tuning
 flags are detailed in the `portFFT
@@ -327,7 +327,7 @@ The following table provides details of CMake options and their default values:
   architecture (MI210) at the time of writing. 
 
 .. note::
-  When building with ``BUILD_FUNCTIONAL_TESTS=yes`` (default option) only single CUDA backend can be built
+  When building with ``BUILD_FUNCTIONAL_TESTS=True`` (default option) only single CUDA backend can be built
   (`#270 <https://github.com/oneapi-src/oneMKL/issues/270>`_).
 
 
@@ -345,13 +345,13 @@ disabled using the Ninja build system:
       -GNinja \
       -DCMAKE_CXX_COMPILER=clang++ \
       -DCMAKE_C_COMPILER=clang \
-      -DENABLE_MKLGPU_BACKEND=OFF \
-      -DENABLE_MKLCPU_BACKEND=OFF \
-      -DENABLE_CUFFT_BACKEND=ON \
-      -DENABLE_CUBLAS_BACKEND=ON \
-      -DENABLE_CUSOLVER_BACKEND=ON \
-      -DENABLE_CURAND_BACKEND=ON \
-      -DBUILD_FUNCTIONAL_TESTS=OFF
+      -DENABLE_MKLGPU_BACKEND=False \
+      -DENABLE_MKLCPU_BACKEND=False \
+      -DENABLE_CUFFT_BACKEND=True \
+      -DENABLE_CUBLAS_BACKEND=True \
+      -DENABLE_CUSOLVER_BACKEND=True \
+      -DENABLE_CURAND_BACKEND=True \
+      -DBUILD_FUNCTIONAL_TESTS=False
 
 ``$ONEMKL_DIR`` points at the oneMKL source directly. The x86 CPU (``MKLCPU``)
 and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled
@@ -366,13 +366,13 @@ disabled:
   cmake $ONEMKL_DIR \
       -DCMAKE_CXX_COMPILER=clang++ \ 
       -DCMAKE_C_COMPILER=clang \
-      -DENABLE_MKLCPU_BACKEND=OFF \ 
-      -DENABLE_MKLGPU_BACKEND=OFF \
-      -DENABLE_ROCFFT_BACKEND=ON  \ 
-      -DENABLE_ROCBLAS_BACKEND=ON \
-      -DENABLE_ROCSOLVER_BACKEND=ON \ 
+      -DENABLE_MKLCPU_BACKEND=False \ 
+      -DENABLE_MKLGPU_BACKEND=False \
+      -DENABLE_ROCFFT_BACKEND=True  \ 
+      -DENABLE_ROCBLAS_BACKEND=True \
+      -DENABLE_ROCSOLVER_BACKEND=True \ 
       -DHIP_TARGETS=gfx90a \
-      -DBUILD_FUNCTIONAL_TESTS=OFF
+      -DBUILD_FUNCTIONAL_TESTS=False
 
 ``$ONEMKL_DIR`` points at the oneMKL source directly. The x86 CPU (``MKLCPU``)
 and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled
@@ -388,10 +388,10 @@ GPU and Nvidia GPU with testing enabled:
   cmake $ONEMKL_DIR \ 
       -DCMAKE_CXX_COMPILER=icpx \
       -DCMAKE_C_COMPILER=icx \ 
-      -DENABLE_ROCFFT_BACKEND=ON \
-      -DENABLE_CUFFT_BACKEND=ON \
+      -DENABLE_ROCFFT_BACKEND=True \
+      -DENABLE_CUFFT_BACKEND=True \
       -DTARGET_DOMAINS=dft \
-      -DBUILD_EXAMPLES=OFF
+      -DBUILD_EXAMPLES=False
 
 Note that this is not a supported configuration, and requires Codeplay's oneAPI
 for `AMD <https://developer.codeplay.com/products/oneapi/amd/home/>`_ and
@@ -463,7 +463,7 @@ Could NOT find CBLAS (missing: CBLAS file)
   require a reference BLAS implementation, but cannot find one. Either install
   or build a BLAS library and set ``-DREF_BLAS_ROOT``` as described in
   :ref:`building_and_running_tests`. Alternatively, the tests can be disabled by
-  setting ``-DBUILD_FUNCTIONAL_TESTS=OFF``.
+  setting ``-DBUILD_FUNCTIONAL_TESTS=False``.
 
 error: invalid target ID ''; format is a processor name followed by an optional
 colon-delimited list of features followed by an enable/disable sign (e.g.,

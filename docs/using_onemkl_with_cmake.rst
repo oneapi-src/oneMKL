@@ -69,9 +69,9 @@ For example:
 .. code-block:: cmake
 
     include(FetchContent)
-    set(BUILD_FUNCTIONAL_TESTS OFF)
-    set(BUILD_EXAMPLES OFF)
-    set(ENABLE_<BACKEND_NAME>_BACKEND ON)
+    set(BUILD_FUNCTIONAL_TESTS False)
+    set(BUILD_EXAMPLES False)
+    set(ENABLE_<BACKEND_NAME>_BACKEND True)
     FetchContent_Declare(
             onemkl_interface_library
             GIT_REPOSITORY https://github.com/oneapi-src/oneMKL.git

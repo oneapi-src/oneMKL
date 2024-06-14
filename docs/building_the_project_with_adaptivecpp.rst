@@ -35,17 +35,17 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
 
   # Inside <path to onemkl>
   mkdir build && cd build
-  cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl                      \ # Indicate that AdaptiveCpp is being used.
-          -DENABLE_MKLGPU_BACKEND=OFF                               \ # MKLGPU backend is not supported by AdaptiveCpp
-          -DENABLE_<BACKEND_NAME>_BACKEND=ON                        \ # Enable backend(s) (optional)
-          -DENABLE_<BACKEND_NAME_2>_BACKEND=ON                      \ # Multiple backends can be enabled at once.
+  cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl                     \ # Indicate that AdaptiveCpp is being used.
+          -DENABLE_MKLGPU_BACKEND=False                             \ # MKLGPU backend is not supported by AdaptiveCpp
+          -DENABLE_<BACKEND_NAME>_BACKEND=True                      \ # Enable backend(s) (optional)
+          -DENABLE_<BACKEND_NAME_2>_BACKEND=True                    \ # Multiple backends can be enabled at once.
           -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906                  \ # Set target architectures depending on supported devices.
-          -DBUILD_FUNCTIONAL_TESTS=OFF                              \ # See section *Building the tests* for more on building tests. ON by default.
-          -DBUILD_EXAMPLES=OFF                                        # Optional: On by default.
+          -DBUILD_FUNCTIONAL_TESTS=False                            \ # See section *Building the tests* for more on building tests. ON by default.
+          -DBUILD_EXAMPLES=False                                      # Optional: On by default.
   cmake --build .
   cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
-Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=ON`` for
+Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=True`` for
 each desired backend. By default, the ``MKLGPU`` and ``MKLCPU`` backends are
 enabled, but ``MKLGPU`` must be disabled with AdaptiveCpp. The supported
 backends for the compilers are given in the table at `oneMKL supported
@@ -63,7 +63,7 @@ variable should be set. For further details, see :ref:`_build_target_domains`.
 
 By default, the library also additionally builds examples and tests. These can
 be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and
-``BUILD_EXAMPLES`` to off. Building the functional tests may require additional
+``BUILD_EXAMPLES`` to False. Building the functional tests may require additional
 external libraries. See the section :ref:`building_and_running_tests` for more
 information.
 
