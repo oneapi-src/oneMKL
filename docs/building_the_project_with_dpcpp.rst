@@ -8,19 +8,20 @@ For guidance on building the project with AdaptiveCpp, see :ref:`building_the_pr
 
 .. _build_setup_with_dpcpp:
 
-Build Setup
-###########
+Environment Setup
+##################
 
 #. 
-   Install Intel(R) oneAPI DPC++ Compiler (select the variant as described in
+   Install the required DPC++ compiler (Intel(R) DPC++ or Open DPC++ - see
    :ref:`Selecting a Compiler<selecting_a_compiler>`).
 
 #. 
-   Clone this project to ``<path to onemkl>``\ , where ``<path to onemkl>``
-   is the root directory of this repository.
+   Clone this project. The root directory of the cloned repository will be
+   referred to as ``<path to onemkl>``.
 
 #. 
-   Build and install all `required dependencies <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_. 
+   Build and install all `required dependencies
+   <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_. 
 
 .. _build_introduction_with_dpcpp:
 

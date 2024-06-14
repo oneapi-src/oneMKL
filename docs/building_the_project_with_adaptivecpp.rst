@@ -5,8 +5,8 @@ Building the Project with AdaptiveCpp
 
 .. _build_setup_with_adaptivecpp:
 
-Build Setup with AdaptiveCpp
-############################
+Environment Setup
+#################
 
 #. 
    Build and install AdaptiveCpp. 
@@ -14,8 +14,8 @@ Build Setup with AdaptiveCpp
    `AdaptiveCpp installation readme <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/installing.md#compilation-flows>`_.
 
 #. 
-   Clone this project to ``<path to onemkl>``, where ``<path to onemkl>`` is
-   the root directory of this repository.
+   Clone this project. The root directory of the cloned repository will be
+   referred to as ``<path to onemkl>``.
 
 #. 
    Download and install the `required dependencies <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_ manually.
