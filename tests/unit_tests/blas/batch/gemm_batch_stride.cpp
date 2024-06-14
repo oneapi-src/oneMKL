@@ -45,6 +45,8 @@ using std::vector;
 
 extern std::vector<sycl::device *> devices;
 
+namespace {
+
 template <typename fp>
 typename std::enable_if<std::is_integral<fp>::value, bool>::type check_equal_int(fp x, fp x_ref,
                                                                                  int error_mag) {
@@ -67,11 +69,10 @@ struct vec_type {
 template <class T>
 using vec_type_t = typename vec_type<T>::type;
 
-// Specialized check for Tc=int32_t and Ts=float as small differences in the reference become large after rounding
-template <>
-static bool check_equal_matrix<acc_type_t<int32_t>, vec_type_t<int32_t>>(
-    acc_type_t<int32_t> &M, vec_type_t<int32_t> &M_ref, oneapi::mkl::layout layout, int m, int n,
-    int ld, int error_mag, std::ostream &out) {
+// Check for int32_t and Ts=float as small differences in the reference become large after rounding
+inline bool check_equal_matrix_int(acc_type_t<int32_t> &M, vec_type_t<int32_t> &M_ref,
+                                   oneapi::mkl::layout layout, int m, int n, int ld, int error_mag,
+                                   std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -91,7 +92,13 @@ static bool check_equal_matrix<acc_type_t<int32_t>, vec_type_t<int32_t>>(
     return good;
 }
 
-namespace {
+template <typename T>
+inline bool check_mat(acc_type_t<T> &M, vec_type_t<T> &M_ref, oneapi::mkl::layout layout, int m,
+                      int n, int ld, int error_mag, std::ostream &out) {
+    if constexpr (std::is_same<T, int32_t>::value)
+        return check_equal_matrix_int(M, M_ref, layout, m, n, ld, error_mag, out);
+    return check_equal_matrix<acc_type_t<T>>(M, M_ref, layout, m, n, ld, error_mag, out);
+}
 
 template <typename Ta, typename Tb, typename Tc, typename Ts>
 int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
@@ -269,9 +276,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
         C_cast_ref[i] = C_ref[i];
     }
     auto C_accessor = C_buffer.template get_host_access(read_only);
-    bool good = check_equal_matrix<acc_type_t<Tc>, vec_type_t<Tc>>(
-        C_accessor, C_cast_ref, oneapi::mkl::layout::col_major, stride_c * batch_size, 1,
-        stride_c * batch_size, tol_scalar * k, std::cout);
+    bool good =
+        check_mat<Tc>(C_accessor, C_cast_ref, oneapi::mkl::layout::col_major, stride_c * batch_size,
+                      1, stride_c * batch_size, tol_scalar * k, std::cout);
 
     return (int)good;
 }
