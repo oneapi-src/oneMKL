@@ -25,27 +25,27 @@ Environment Setup
 
 .. _build_introduction_with_dpcpp:
 
-Introduction
-############
+Build Commands
+###############
 
 In most cases, building oneMKL is as simple as setting the compiler and selecting the desired backends to build with.
 
 On Linux (see `Building for Windows`_ for building on Windows):
 
-  .. code-block:: bash
+.. code-block:: bash
 
-     # Inside <path to onemkl>
-     mkdir build && cd build
-     cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER                        \ # Should be icpx or clang++
-              -DCMAKE_C_COMPILER=$C_COMPILER                            \ # Should be icx or clang
-              -DENABLE_MKLGPU_BACKEND=OFF                               \ # Optional: The MKLCPU backend is ON by default.
-              -DENABLE_MKLGPU_BACKEND=OFF                               \ # Optional: The MKLGPU backend is ON by default.
-              -DENABLE_<BACKEND_NAME>_BACKEND=ON                        \ # Enable any other backend(s) (optional)
-              -DENABLE_<BACKEND_NAME_2>_BACKEND=ON                      \ # Multiple backends can be enabled at once.
-              -DBUILD_FUNCTIONAL_TESTS=OFF                              \ # See page *Building and Running Tests* for more on building tests. ON by default.
-              -DBUILD_EXAMPLES=OFF                                        # Optional: On by default.
-     cmake --build .
-     cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
+  # Inside <path to onemkl>
+  mkdir build && cd build
+  cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER                        \ # Should be icpx or clang++
+          -DCMAKE_C_COMPILER=$C_COMPILER                            \ # Should be icx or clang
+          -DENABLE_MKLGPU_BACKEND=OFF                               \ # Optional: The MKLCPU backend is ON by default.
+          -DENABLE_MKLGPU_BACKEND=OFF                               \ # Optional: The MKLGPU backend is ON by default.
+          -DENABLE_<BACKEND_NAME>_BACKEND=ON                        \ # Enable any other backend(s) (optional)
+          -DENABLE_<BACKEND_NAME_2>_BACKEND=ON                      \ # Multiple backends can be enabled at once.
+          -DBUILD_FUNCTIONAL_TESTS=OFF                              \ # See page *Building and Running Tests* for more on building tests. ON by default.
+          -DBUILD_EXAMPLES=OFF                                        # Optional: On by default.
+  cmake --build .
+  cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
 In the above, the ``$CXX_COMPILER`` and ``$C_COMPILER`` should be set to ``icpx`` and ``icx`` respectively when using the Intel(R) oneAPI DPC++ Compiler,
 or ``clang++`` and ``clang`` respectively when using the Open DPC++ Compiler. 
@@ -322,17 +322,17 @@ Build oneMKL with support for x86 CPU, Intel GPU, and Nvidia GPUs with tests dis
 
 .. code-block:: bash
 
-    cmake $ONEMKL_DIR \
-        -GNinja \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_C_COMPILER=clang \
-        -DENABLE_MKLGPU_BACKEND=OFF \
-        -DENABLE_MKLCPU_BACKEND=OFF \
-        -DENABLE_CUFFT_BACKEND=ON \
-        -DENABLE_CUBLAS_BACKEND=ON \
-        -DENABLE_CUSOLVER_BACKEND=ON \
-        -DENABLE_CURAND_BACKEND=ON \
-        -DBUILD_FUNCTIONAL_TESTS=OFF
+  cmake $ONEMKL_DIR \
+      -GNinja \
+      -DCMAKE_CXX_COMPILER=clang++ \
+      -DCMAKE_C_COMPILER=clang \
+      -DENABLE_MKLGPU_BACKEND=OFF \
+      -DENABLE_MKLCPU_BACKEND=OFF \
+      -DENABLE_CUFFT_BACKEND=ON \
+      -DENABLE_CUBLAS_BACKEND=ON \
+      -DENABLE_CUSOLVER_BACKEND=ON \
+      -DENABLE_CURAND_BACKEND=ON \
+      -DBUILD_FUNCTIONAL_TESTS=OFF
 
 ``$ONEMKL_DIR`` points at the oneMKL source directly.
 The x86 CPU (``MKLCPU``) and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled here.
@@ -343,16 +343,16 @@ Building oneMKL with support x86 CPU, Intel GPU, and AMD GPUs with tests disable
 
 .. code-block:: bash
 
-    cmake $ONEMKL_DIR \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_C_COMPILER=clang \
-        -DENABLE_MKLCPU_BACKEND=OFF \
-        -DENABLE_MKLGPU_BACKEND=OFF \
-        -DENABLE_ROCFFT_BACKEND=ON  \
-        -DENABLE_ROCBLAS_BACKEND=ON \
-        -DENABLE_ROCSOLVER_BACKEND=ON \
-        -DHIP_TARGETS=gfx90a \
-        -DBUILD_FUNCTIONAL_TESTS=OFF
+  cmake $ONEMKL_DIR \
+      -DCMAKE_CXX_COMPILER=clang++ \
+      -DCMAKE_C_COMPILER=clang \
+      -DENABLE_MKLCPU_BACKEND=OFF \
+      -DENABLE_MKLGPU_BACKEND=OFF \
+      -DENABLE_ROCFFT_BACKEND=ON  \
+      -DENABLE_ROCBLAS_BACKEND=ON \
+      -DENABLE_ROCSOLVER_BACKEND=ON \
+      -DHIP_TARGETS=gfx90a \
+      -DBUILD_FUNCTIONAL_TESTS=OFF
 
 ``$ONEMKL_DIR`` points at the oneMKL source directly.
 The x86 CPU (``MKLCPU``) and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled here.
@@ -365,13 +365,13 @@ testing enabled:
 
 .. code-block:: bash
 
-    cmake $ONEMKL_DIR \ 
-        -DCMAKE_CXX_COMPILER=icpx \
-        -DCMAKE_C_COMPILER=icx \ 
-        -DENABLE_ROCFFT_BACKEND=ON \
-        -DENABLE_CUFFT_BACKEND=ON \
-        -DTARGET_DOMAINS=dft \
-        -DBUILD_EXAMPLES=OFF
+  cmake $ONEMKL_DIR \ 
+      -DCMAKE_CXX_COMPILER=icpx \
+      -DCMAKE_C_COMPILER=icx \ 
+      -DENABLE_ROCFFT_BACKEND=ON \
+      -DENABLE_CUFFT_BACKEND=ON \
+      -DTARGET_DOMAINS=dft \
+      -DBUILD_EXAMPLES=OFF
 
 Note that this is not a supported configuration, and requires Codeplay's oneAPI for 
 `AMD <https://developer.codeplay.com/products/oneapi/amd/home/>`_ and 
@@ -397,11 +397,11 @@ you do so.
 
 .. code-block:: sh
 
-   # If you use "GNU/Unix Makefiles" for building,
-   make clean
-
-   # If you use "Ninja" for building
-   ninja -t clean
+  # If you use "GNU/Unix Makefiles" for building,
+  make clean
+  
+  # If you use "Ninja" for building
+  ninja -t clean
 
 
 .. _build_for_windows_dpcpp:
@@ -415,16 +415,16 @@ For example:
 
 .. code-block:: bash
 
-    # Inside <path to onemkl>
-    md build && cd build
-    cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_icx_compiler>\bin\icx]      # required only if icx is not found in environment variable PATH
-                      [-DCMAKE_C_COMPILER=<path_to_icx_compiler>\bin\icx]        # required only if icx is not found in environment variable PATH
-                      [-DMKL_ROOT=<mkl_install_prefix>]                          # required only if environment variable MKLROOT is not set
-                      [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]          # required only for testing
-                      [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
-    ninja
-    ctest
-    cmake --install . --prefix <path_to_install_dir>                             # required to have full package structure
+  # Inside <path to onemkl>
+  md build && cd build
+  cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_icx_compiler>\bin\icx]      # required only if icx is not found in environment variable PATH
+                    [-DCMAKE_C_COMPILER=<path_to_icx_compiler>\bin\icx]        # required only if icx is not found in environment variable PATH
+                    [-DMKL_ROOT=<mkl_install_prefix>]                          # required only if environment variable MKLROOT is not set
+                    [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]          # required only for testing
+                    [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
+  ninja
+  ctest
+  cmake --install . --prefix <path_to_install_dir>                             # required to have full package structure
 
 .. _build_common_problems_dpcpp:
 

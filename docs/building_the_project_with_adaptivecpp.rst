@@ -20,26 +20,26 @@ Environment Setup
 #. 
    Download and install the `required dependencies <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_ manually.
 
-Introduction
-############
+Build Commands
+###############
 
 In most cases, building oneMKL is as simple as setting the compiler and selecting the desired backends to build with.
 
 On Linux (other OSes are not supported with the AdaptiveCpp compiler):
 
-  .. code-block:: bash
+.. code-block:: bash
 
-     # Inside <path to onemkl>
-     mkdir build && cd build
-     cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl                      \ # Indicate that AdaptiveCpp is being used.
-              -DENABLE_MKLGPU_BACKEND=OFF                               \ # MKLGPU backend is not supported by AdaptiveCpp
-              -DENABLE_<BACKEND_NAME>_BACKEND=ON                        \ # Enable backend(s) (optional)
-              -DENABLE_<BACKEND_NAME_2>_BACKEND=ON                      \ # Multiple backends can be enabled at once.
-              -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906                  \ # Set target architectures depending on supported devices.
-              -DBUILD_FUNCTIONAL_TESTS=OFF                              \ # See section *Building the tests* for more on building tests. ON by default.
-              -DBUILD_EXAMPLES=OFF                                        # Optional: On by default.
-     cmake --build .
-     cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
+  # Inside <path to onemkl>
+  mkdir build && cd build
+  cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl                      \ # Indicate that AdaptiveCpp is being used.
+          -DENABLE_MKLGPU_BACKEND=OFF                               \ # MKLGPU backend is not supported by AdaptiveCpp
+          -DENABLE_<BACKEND_NAME>_BACKEND=ON                        \ # Enable backend(s) (optional)
+          -DENABLE_<BACKEND_NAME_2>_BACKEND=ON                      \ # Multiple backends can be enabled at once.
+          -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906                  \ # Set target architectures depending on supported devices.
+          -DBUILD_FUNCTIONAL_TESTS=OFF                              \ # See section *Building the tests* for more on building tests. ON by default.
+          -DBUILD_EXAMPLES=OFF                                        # Optional: On by default.
+  cmake --build .
+  cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
 Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=ON`` for each desired backend. 
 By default, the ``MKLGPU`` and ``MKLCPU`` backends are enabled, but ``MKLGPU`` must be disabled with AdaptiveCpp.
@@ -148,8 +148,8 @@ you do so.
 
 .. code-block:: sh
 
-   # If you use "GNU/Unix Makefiles" for building,
-   make clean
+  # If you use "GNU/Unix Makefiles" for building,
+  make clean
 
-   # If you use "Ninja" for building
-   ninja -t clean
+  # If you use "Ninja" for building
+  ninja -t clean

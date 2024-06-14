@@ -18,12 +18,12 @@ A reference LAPACK implementation (including BLAS) can be built as the following
 
 .. code-block:: bash
 
-    git clone https://github.com/Reference-LAPACK/lapack.git 
-    cd lapack; mkdir -p build; cd build 
-    cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=ON -DLAPACK=ON -DLAPACKE=ON -DBUILD_INDEX64=ON -DBUILD_SHARED_LIBS=ON .. 
-    cmake --build . -j --target install 
-    cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=ON -DLAPACK=ON -DLAPACKE=ON -DBUILD_INDEX64=OFF -DBUILD_SHARED_LIBS=ON .. 
-    cmake --build . -j --target install
+  git clone https://github.com/Reference-LAPACK/lapack.git 
+  cd lapack; mkdir -p build; cd build 
+  cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=ON -DLAPACK=ON -DLAPACKE=ON -DBUILD_INDEX64=ON -DBUILD_SHARED_LIBS=ON .. 
+  cmake --build . -j --target install 
+  cmake -DCMAKE_INSTALL_PREFIX=~/lapack -DCBLAS=ON -DLAPACK=ON -DLAPACKE=ON -DBUILD_INDEX64=OFF -DBUILD_SHARED_LIBS=ON .. 
+  cmake --build . -j --target install
 
 and then used in oneMKL by setting ``-REF_BLAS_ROOT=/path/to/lapack/install`` and ``-DREF_LAPACK_ROOT=/path/to/lapack/install``.
 
