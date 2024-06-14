@@ -9,21 +9,25 @@ Environment Setup
 #################
 
 #. 
-   Build and install AdaptiveCpp. 
-   For a detailed description of available AdaptiveCpp backends, their dependencies, and installation, see the
-   `AdaptiveCpp installation readme <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/installing.md#compilation-flows>`_.
+   Build and install AdaptiveCpp. For a detailed description of available
+   AdaptiveCpp backends, their dependencies, and installation, see the
+   `AdaptiveCpp installation readme
+   <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/installing.md#compilation-flows>`_.
 
 #. 
    Clone this project. The root directory of the cloned repository will be
    referred to as ``<path to onemkl>``.
 
 #. 
-   Download and install the `required dependencies <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_ manually.
+   Download and install the `required dependencies
+   <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_
+   manually.
 
 Build Commands
 ###############
 
-In most cases, building oneMKL is as simple as setting the compiler and selecting the desired backends to build with.
+In most cases, building oneMKL is as simple as setting the compiler and
+selecting the desired backends to build with.
 
 On Linux (other OSes are not supported with the AdaptiveCpp compiler):
 
@@ -41,22 +45,27 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
   cmake --build .
   cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
 
-Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=ON`` for each desired backend. 
-By default, the ``MKLGPU`` and ``MKLCPU`` backends are enabled, but ``MKLGPU`` must be disabled with AdaptiveCpp.
-The supported backends for the compilers are given in the table at
-`oneMKL supported configurations table <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations>`_,
-and the CMake option names are given in the table below.
-Some backends may require additional parameters to be set. See the relevant section below for additional guidance.
-The target architectures must be specified with ``HIP_TARGETS``. See the
-`AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
+Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=ON`` for
+each desired backend. By default, the ``MKLGPU`` and ``MKLCPU`` backends are
+enabled, but ``MKLGPU`` must be disabled with AdaptiveCpp. The supported
+backends for the compilers are given in the table at `oneMKL supported
+configurations table
+<https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations>`_,
+and the CMake option names are given in the table below. Some backends may
+require additional parameters to be set. See the relevant section below for
+additional guidance. The target architectures must be specified with
+``HIP_TARGETS``. See the `AdaptiveCpp documentation
+<https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
 
-If a backend library supports multiple domains (i.e. BLAS, RNG), it may be desirable to only enable selected domains.
-For this, the ``TARGET_DOMAINS`` variable should be set. For further details, see :ref:`_build_target_domains`.
+If a backend library supports multiple domains (i.e. BLAS, RNG), it may be
+desirable to only enable selected domains. For this, the ``TARGET_DOMAINS``
+variable should be set. For further details, see :ref:`_build_target_domains`.
 
-By default, the library also additionally builds examples and tests.
-These can be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and ``BUILD_EXAMPLES`` to off.
-Building the functional tests may require additional external libraries.
-See the section :ref:`building_and_running_tests` for more information.
+By default, the library also additionally builds examples and tests. These can
+be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and
+``BUILD_EXAMPLES`` to off. Building the functional tests may require additional
+external libraries. See the section :ref:`building_and_running_tests` for more
+information.
 
 The most important supported build options are:
 
@@ -97,7 +106,8 @@ The most important supported build options are:
      - blas, rng
      - All supported domains
 
-Some additional build options are given in :ref:`build_additional_options_dpcpp`.
+Some additional build options are given in
+:ref:`build_additional_options_dpcpp`.
 
 Backends
 ########
@@ -107,33 +117,39 @@ Backends
 Building for CUDA
 ~~~~~~~~~~~~~~~~~
 
-The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND`` and ``ENABLE_CURAND_BACKEND``.
+The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND`` and
+``ENABLE_CURAND_BACKEND``.
 
-The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. 
-For example, to target a Nvidia A100 (Ampere architecture), set ``-DHIPSYCL_TARGETS=cuda:sm_80``,
-where the figure ``80`` corresponds to a CUDA compute capability of 8.0.
-The correspondence between compute capabilities and Nvidia GPU products is given on the `Nvidia website <https://developer.nvidia.com/cuda-gpus>`_.
-Multiple architectures can be enabled using a comma separated list. See the 
-`AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
+The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. For
+example, to target a Nvidia A100 (Ampere architecture), set
+``-DHIPSYCL_TARGETS=cuda:sm_80``, where the figure ``80`` corresponds to a CUDA
+compute capability of 8.0. The correspondence between compute capabilities and
+Nvidia GPU products is given on the `Nvidia website
+<https://developer.nvidia.com/cuda-gpus>`_. Multiple architectures can be
+enabled using a comma separated list. See the `AdaptiveCpp documentation
+<https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
 
-No additional parameters are required for using CUDA libraries. In most cases, the CUDA libraries should be
-found automatically by CMake.
+No additional parameters are required for using CUDA libraries. In most cases,
+the CUDA libraries should be found automatically by CMake.
 
 .. _build_for_rocm_adaptivecpp:
 
 Building for ROCm
 ~~~~~~~~~~~~~~~~~
 
-The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND`` and ``ENABLE_ROCRAND_BACKEND``.
+The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND`` and
+``ENABLE_ROCRAND_BACKEND``.
 
-The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. 
-See the 
-`AdaptiveCpp documentation <https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
+The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. See
+the `AdaptiveCpp documentation
+<https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md#adaptivecpp-targets-specification>`_.
 For example, to target the MI200 series, set ``-DHIPSYCL_TARGETS=hip:gfx90a``.
-Multiple architectures can be enabled using a comma separated list. 
-For example, ``-DHIPSYCL_TARGETS=hip:gfx906,gfx90a``, and multiple APIs with a semicolon (``-DHIPSYCL_TARGETS=omp\;hip:gfx906,gfx90a``).
+Multiple architectures can be enabled using a comma separated list. For example,
+``-DHIPSYCL_TARGETS=hip:gfx906,gfx90a``, and multiple APIs with a semicolon
+(``-DHIPSYCL_TARGETS=omp\;hip:gfx906,gfx90a``).
 
-For common AMD GPU architectures, see the :ref:`build_for_ROCM_dpcpp` in the DPC++ build guide.
+For common AMD GPU architectures, see the :ref:`build_for_ROCM_dpcpp` in the
+DPC++ build guide.
 
 .. _project_cleanup:
 
@@ -143,8 +159,8 @@ Project Cleanup
 Most use-cases involve building the project without the need to cleanup the
 build directory. However, if you wish to cleanup the build directory, you can
 delete the ``build`` folder and create a new one. If you wish to cleanup the
-build files but retain the build configuration, following commands will help
-you do so.
+build files but retain the build configuration, following commands will help you
+do so.
 
 .. code-block:: sh
 
