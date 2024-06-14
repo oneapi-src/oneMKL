@@ -46,7 +46,7 @@ $ ./bin/example_blas_gemm_usm
 ########################################################################
 
 Running BLAS GEMM USM example on CPU device.
-Device name is: Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz
+Device name is: Intel(R) Core(TM) i7-6770HQ Processor @ 2.60GHz
 Running with single precision real data type:
 
                 GEMM parameters:
@@ -510,7 +510,7 @@ $ ./bin/example_sparse_blas_gemv_usm
 ########################################################################
 
 Running Sparse BLAS GEMV USM example on CPU device.
-Device name is: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+Device name is: Intel(R) Core(TM) i7-6700K Processor @ 4.00GHz
 Running with single precision real data type:
 
 		sparse::gemv parameters:
@@ -584,7 +584,7 @@ $ ./bin/example_sparse_blas_gemv_usm_mklcpu
 ########################################################################
 
 Running Sparse BLAS GEMV USM example on CPU device.
-Device name is: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+Device name is: Intel(R) Core(TM) i7-6700K Processor @ 4.00GHz
 Running with single precision real data type:
 
 		sparse::gemv parameters:
