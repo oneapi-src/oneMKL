@@ -292,7 +292,7 @@ specified. See `DPC++ User Manual
 .. _build_additional_options_dpcpp:
 
 Additional Build Options
-^^^^^^^^^^^^^^^^^^^^^^^^
+##########################
 
 When building oneMKL the SYCL implementation can be specified by setting the
 ``ONEMKL_SYCL_IMPLEMENTATION`` option. Possible values are:
@@ -302,7 +302,7 @@ When building oneMKL the SYCL implementation can be specified by setting the
   DPC++ Compiler <https://github.com/intel/llvm>`_ compilers.
 * ``hipsycl`` for the `AdaptiveCpp <https://github.com/illuhad/AdaptiveCpp>`_
   SYCL implementation.
-Please see `building with AdaptiveCpp` if using this option.
+Please see :ref:`building_the_project_with_adaptivecpp` if using this option.
 
 The following table provides details of CMake options and their default values:
 
@@ -322,9 +322,9 @@ The following table provides details of CMake options and their default values:
 
 .. note::
   When building with clang++ for AMD backends, you must additionally set
-  ``SYCL_DEVICE_FILTER`` to ``HIP`` and provide ``-DHIP_TARGETS`` according to
-  the targeted hardware. This backend has only been tested for the ``gfx90a``
-  architecture (MI210) at the time of writing. 
+  ``ONEAPI_DEVICE_SELECTOR`` to ``hip:gpu`` and provide ``-DHIP_TARGETS`` 
+  according to the targeted hardware. This backend has only been tested for the 
+  ``gfx90a`` architecture (MI210) at the time of writing. 
 
 .. note::
   When building with ``BUILD_FUNCTIONAL_TESTS=True`` (default option) only single CUDA backend can be built
@@ -334,7 +334,7 @@ The following table provides details of CMake options and their default values:
 .. _build_invocation_examples_dpcpp:
 
 CMake invocation examples
-^^^^^^^^^^^^^^^^^^^^^^^^^
+##########################
 
 Build oneMKL with support for x86 CPU, Intel GPU, and Nvidia GPUs with tests
 disabled using the Ninja build system:
@@ -465,8 +465,6 @@ Could NOT find CBLAS (missing: CBLAS file)
   :ref:`building_and_running_tests`. Alternatively, the tests can be disabled by
   setting ``-DBUILD_FUNCTIONAL_TESTS=False``.
 
-error: invalid target ID ''; format is a processor name followed by an optional
-colon-delimited list of features followed by an enable/disable sign (e.g.,
-'gfx908:sramecc+:xnack-')
+error: invalid target ID ''; format is a processor name followed by an optional colon-delimited list of features followed by an enable/disable sign (e.g.,'gfx908:sramecc+:xnack-')
   The HIP_TARGET has not been set. Please see `Building for ROCm`_.
 
