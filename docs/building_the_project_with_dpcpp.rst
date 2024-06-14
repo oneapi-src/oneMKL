@@ -213,7 +213,7 @@ Pure SYCL backends: portBLAS and portFFT
 `portFFT <https://github.com/codeplaysoftware/portFFT>`_ are 
 experimental pure-SYCL backends that work on all
 SYCL targets supported by the DPC++ compiler. Since they support multiple targets,
-they cannot be enabled with other backends in the same domain.
+they cannot be enabled with other backends in the same domain, or the MKLCPU or MKLGPU backends.
 Both libraries are experimental and currently only support a subset of operations
 and features.
 
@@ -248,6 +248,9 @@ definitions in 2 ways:
   `DPC++ User Manual <https://intel.github.io/llvm-docs/UsersManual.html>`_
   for more information on ``-fsycl-targets``.
 
+portBLAS relies heavily on JIT compilation. This may cause time-outs on some
+systems. To avoid this issue, use ahead-of-time compilation through tuning
+targets or ``sycl-targets``.
 
 .. _build_for_portfft_dpcpp:
 
@@ -411,6 +414,7 @@ Building for Windows
 
 The Windows build is similar to the Linux build, albeit that 
 `fewer backends are supported <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#windows>`_.
+Additionally, the Ninja build system must be used.
 For example:
 
 .. code-block:: bash
@@ -428,8 +432,8 @@ For example:
 
 .. _build_common_problems_dpcpp:
 
-Common Problems
-###############
+Build FAQ
+#########
 
 clangrt builtins lib not found
   Encountered when trying to build oneMKL with some ROCm libraries. There are several possible solutions:
