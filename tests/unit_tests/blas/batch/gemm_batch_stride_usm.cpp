@@ -62,9 +62,9 @@ template <class T>
 using vec_type_t = typename vec_type<T>::type;
 
 // Check for int32_t and Ts=float as small differences in the reference become large after rounding
-inline bool check_equal_matrix_int(vec_type_t<int32_t> &M, vec_type_t<int32_t> &M_ref,
-                                   oneapi::mkl::layout layout, int m, int n, int ld, int error_mag,
-                                   std::ostream &out) {
+bool check_equal_matrix_int(vec_type_t<int32_t> &M, vec_type_t<int32_t> &M_ref,
+                            oneapi::mkl::layout layout, int m, int n, int ld, int error_mag,
+                            std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -85,8 +85,8 @@ inline bool check_equal_matrix_int(vec_type_t<int32_t> &M, vec_type_t<int32_t> &
 }
 
 template <typename T>
-inline bool check_mat(vec_type_t<T> &M, vec_type_t<T> &M_ref, oneapi::mkl::layout layout, int m,
-                      int n, int ld, int error_mag, std::ostream &out) {
+bool check_mat(vec_type_t<T> &M, vec_type_t<T> &M_ref, oneapi::mkl::layout layout, int m, int n,
+               int ld, int error_mag, std::ostream &out) {
     if constexpr (std::is_same<T, int32_t>::value)
         return check_equal_matrix_int(M, M_ref, layout, m, n, ld, error_mag, out);
     return check_equal_matrix<vec_type_t<T>>(M, M_ref, layout, m, n, ld, error_mag, out);

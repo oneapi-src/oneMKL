@@ -54,9 +54,8 @@ typename std::enable_if<std::is_integral<fp>::value, bool>::type check_equal_int
 }
 
 // Check for int32_t and Ts=float as small differences in the reference become large after rounding
-static bool check_equal_matrix_int(const int32_t *M, const int32_t *M_ref,
-                                   oneapi::mkl::layout layout, int m, int n, int ld, int error_mag,
-                                   std::ostream &out) {
+bool check_equal_matrix_int(const int32_t *M, const int32_t *M_ref, oneapi::mkl::layout layout,
+                            int m, int n, int ld, int error_mag, std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -77,8 +76,8 @@ static bool check_equal_matrix_int(const int32_t *M, const int32_t *M_ref,
 }
 
 template <typename T>
-inline bool check_mat(const T *M, const T *M_ref, oneapi::mkl::layout layout, int m, int n, int ld,
-                      int error_mag, std::ostream &out) {
+bool check_mat(const T *M, const T *M_ref, oneapi::mkl::layout layout, int m, int n, int ld,
+               int error_mag, std::ostream &out) {
     if constexpr (std::is_same<T, int32_t>::value)
         return check_equal_matrix_int(M, M_ref, layout, m, n, ld, error_mag, out);
     return check_equal_matrix<T>(M, M_ref, layout, m, n, ld, error_mag, out);
