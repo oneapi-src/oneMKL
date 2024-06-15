@@ -1,7 +1,7 @@
 name: "PR Tests"
 permissions: read-all
 
-# Trigger for PR an merge to develop branch
+# Trigger for PR and merge to develop branch
 on:
   push:
     branches: develop
@@ -46,7 +46,7 @@ jobs:
       with:
         script: |
          const domainCheck = require('.github/scripts/domain-check.js')
-         return domainCheck({github, context, domain: "${{ matrix.domain}}"})
+         return domainCheck({github, context, domain: "${{ matrix.domain }}"})
     - name: Restore netlib from cache
       id: cache-lapack
       uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2

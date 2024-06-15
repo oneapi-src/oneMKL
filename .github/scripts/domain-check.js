@@ -1,9 +1,14 @@
-function matchesPattern(domain, filePaths) {
-    // filter files that end in .md
-    filePaths = filePaths.filter(filePath => 
-        !filePath.endsWith('.md') && 
-        !filePath.startsWith('docs/') && 
-        !filePath.startsWith('third-party-programs/')
+//
+// This script is used by pr.yml to determine if a domain must be tested based
+// on the files modified in the pull request.
+//
+ 
+// Given a domain name and set of files, return true if the domain should be
+// tested
+function matchesPattern(domain, filePaths) { // filter files that end in .md
+    filePaths = filePaths.filter(filePath => !filePath.endsWith('.md') &&
+    !filePath.startsWith('docs/') &&
+    !filePath.startsWith('third-party-programs/')
     );
     // These directories contain domain specific code
     const dirs = '(tests/unit_tests|examples|src|include/oneapi/mkl)'
@@ -14,20 +19,20 @@ function matchesPattern(domain, filePaths) {
     return match;
 }
 
-async function prFiles(github, context) {
-  const response = await github.rest.pulls.listFiles({
-    owner: context.repo.owner,
-    repo: context.repo.repo,
-    pull_number: context.payload.pull_request.number
+// Return the list of files modified in the pull request
+async function prFiles(github, context) { const response = await
+  github.rest.pulls.listFiles({ owner: context.repo.owner, repo:
+  context.repo.repo, pull_number: context.payload.pull_request.number
   });
-  const prFiles = response.data.map(file => file.filename);
-  return prFiles;
+  const prFiles = response.data.map(file => file.filename); return prFiles;
 }
 
-module.exports = async ({github, context, domain}) => {
-    if (!context.payload.pull_request) {
-        console.log('Not a pull request. Testing all domains.');
-        return true;
+// Called by pr.yml. See:
+// https://github.com/actions/github-script/blob/main/README.md for more
+// information on the github and context parameters
+module.exports = async ({github, context, domain}) => { if
+    (!context.payload.pull_request) { console.log('Not a pull request. Testing
+    all domains.'); return true;
     }
     const files = await prFiles(github, context);
     const match = matchesPattern(domain, files);
@@ -37,6 +42,18 @@ module.exports = async ({github, context, domain}) => {
     return match;
 }
 
+
+//
+// Test the matchesPattern function
+//
+// Run this script with `node domain-check.js` It should exit with code 0 if
+// all tests pass.
+//
+// If you need to change the set of files that are ignored, add a test pattern
+// below with positive and negative examples. It is also possible to test by
+// setting up a fork and then submitting pull requests that modify files, but
+// it requires a lot of manual work.
+//
 test_patterns = [
     {
         domain: 'blas',
@@ -132,4 +149,5 @@ function testPattern(test) {
 if (require.main === module) {
     // invoke test for each test pattern
     test_patterns.forEach(testPattern)
+    console.log('All tests pass')
 }
