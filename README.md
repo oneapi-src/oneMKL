@@ -547,9 +547,10 @@ You can contribute to this project and also contribute to [the specification for
 
 For GitHub questions, issues, RFCs, or PRs you can contact maintainers via one of the following GitHub teams based on the topic:
 
-| Team name | Description |
+| GitHub team name | Description |
 :-----------|:------------|
 | [oneMKL-maintain](https://github.com/orgs/oneapi-src/teams/onemkl-maintain) | All oneMKL maintainers |
+| [oneMKL-arch-write](https://github.com/orgs/oneapi-src/teams/onemkl-arch-write) | oneMKL Architecture maintainers |
 | [oneMKL-blas-write](https://github.com/orgs/oneapi-src/teams/onemkl-blas-write) | oneMKL BLAS maintainers |
 | [oneMKL-dft-write](https://github.com/orgs/oneapi-src/teams/onemkl-dft-write) | oneMKL DFT maintainers |
 | [oneMKL-lapack-write](https://github.com/orgs/oneapi-src/teams/onemkl-lapack-write) | oneMKL LAPACK maintainers |
