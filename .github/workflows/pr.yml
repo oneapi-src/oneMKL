@@ -24,7 +24,7 @@ jobs:
           options: -DTARGET_DOMAINS=blas -DREF_BLAS_ROOT=${PWD}/lapack/install -DENABLE_PORTBLAS_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DPORTBLAS_TUNING_TARGET=INTEL_CPU
           tests: '.*'
         - config: portFFT
-          options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft -DCMAKE_CXX_FLAGS="-fsycl -fsycl-targets=spir64"
+          options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF -DTARGET_DOMAINS=dft
           tests: 'DFT/CT/.*ComputeTests_in_place_COMPLEX.COMPLEX_SINGLE_in_place_buffer.sizes_8_batches_1*'
         - config: MKL BLAS
           options: -DTARGET_DOMAINS=blas -DREF_BLAS_ROOT=${PWD}/lapack/install
