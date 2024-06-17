@@ -545,6 +545,19 @@ You can also join the mailing lists for the [UXL Foundation](https://lists.uxlfo
 
 You can contribute to this project and also contribute to [the specification for this project](https://spec.oneapi.io/versions/latest/elements/oneMKL/source/index.html). Please read the [CONTRIBUTING](CONTRIBUTING.md) page for more information. You can also contact oneMKL developers and maintainers via [UXL Foundation Slack](https://slack-invite.uxlfoundation.org/) using [#onemkl](https://uxlfoundation.slack.com/archives/onemkl) channel.
 
+For GitHub questions, issues, RFCs, or PRs you can contact maintainers via one of the following GitHub teams based on the topic:
+
+| GitHub team name | Description |
+:-----------|:------------|
+| [oneMKL-maintain](https://github.com/orgs/oneapi-src/teams/onemkl-maintain) | All oneMKL maintainers |
+| [oneMKL-arch-write](https://github.com/orgs/oneapi-src/teams/onemkl-arch-write) | oneMKL Architecture maintainers |
+| [oneMKL-blas-write](https://github.com/orgs/oneapi-src/teams/onemkl-blas-write) | oneMKL BLAS maintainers |
+| [oneMKL-dft-write](https://github.com/orgs/oneapi-src/teams/onemkl-dft-write) | oneMKL DFT maintainers |
+| [oneMKL-lapack-write](https://github.com/orgs/oneapi-src/teams/onemkl-lapack-write) | oneMKL LAPACK maintainers |
+| [oneMKL-rng-write](https://github.com/orgs/oneapi-src/teams/onemkl-rng-write) | oneMKL RNG maintainers |
+| [oneMKL-sparse-write](https://github.com/orgs/oneapi-src/teams/onemkl-sparse-write) | oneMKL Sparse Algebra maintainers |
+| [oneMKL-vm-write](https://github.com/orgs/oneapi-src/teams/onemkl-vm-write) | oneMKL Vector Math maintainers |
+
 ---
 
 ## License
