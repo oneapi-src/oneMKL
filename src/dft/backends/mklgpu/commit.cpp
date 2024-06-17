@@ -211,7 +211,7 @@ private:
 
     // This is called by the workspace_helper, and is not part of the user API.
     virtual std::int64_t get_workspace_external_bytes_impl() override {
-        std::size_t workspaceSizeFwd = 0, workspaceSizeBwd;
+        std::size_t workspaceSizeFwd = 0, workspaceSizeBwd = 0;
         handle.first->get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSizeFwd);
         handle.second->get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSizeBwd);
         return static_cast<std::int64_t>(std::max(workspaceSizeFwd, workspaceSizeFwd));
