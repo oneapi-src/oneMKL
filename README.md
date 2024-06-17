@@ -151,7 +151,7 @@ Header-based and backend-independent Device API can be called within ```sycl ker
 
 ### Supported Configurations:
 
-Supported domains include: BLAS, LAPACK, RNG, DFT, SPARSE_BLASS
+Supported domains include: BLAS, LAPACK, RNG, DFT, SPARSE_BLAS
 
 Supported compilers include:
 - [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler): Intel proprietary compiler that supports CPUs and Intel GPUs. 
