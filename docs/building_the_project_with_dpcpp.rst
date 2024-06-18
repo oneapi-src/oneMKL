@@ -411,9 +411,9 @@ functional testing was not disabled, tests would be built.
 Project Cleanup
 ###############
 
-Most use-cases involve building the project without the need to cleanup the
-build directory. However, if you wish to cleanup the build directory, you can
-delete the ``build`` folder and create a new one. If you wish to cleanup the
+Most use-cases involve building the project without the need to clean up the
+build directory. However, if you wish to clean up the build directory, you can
+delete the ``build`` folder and create a new one. If you wish to clean up the
 build files but retain the build configuration, following commands will help you
 do so.
 
