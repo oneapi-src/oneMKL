@@ -121,7 +121,7 @@ void run_example(const sycl::device& cpu_device, const sycl::device& gpu_device)
 void print_example_banner() {
     std::cout << "\n"
                  "########################################################################\n"
-                 "# Complex out-of-place forward transform for Buffer API's example:\n"
+                 "# Complex out-of-place forward transform for USM API's example:\n"
                  "#\n"
                  "# Using APIs:\n"
                  "#   Compile-time dispatch API\n"
@@ -144,17 +144,20 @@ int main(int /*argc*/, char** /*argv*/) {
     try {
         sycl::device cpu_device((sycl::cpu_selector_v));
         sycl::device gpu_device((sycl::gpu_selector_v));
-        std::cout << "Running DFT Complex forward out-of-place buffer example" << std::endl;
-        std::cout << "Using compile-time dispatch API with MKLGPU." << std::endl;
-        std::cout << "Running with single precision real data type on:" << std::endl;
-        std::cout << "\tGPU device :" << gpu_device.get_info<sycl::info::device::name>()
-                  << std::endl;
 
         unsigned int vendor_id = gpu_device.get_info<sycl::info::device::vendor_id>();
         if (vendor_id != NVIDIA_ID) {
             std::cerr << "FAILED: NVIDIA GPU device not found" << std::endl;
             return 1;
         }
+
+        std::cout << "Running DFT Complex forward out-of-place usm example" << std::endl;
+        std::cout << "Using compile-time dispatch API with MKLCPU and cuFFT." << std::endl;
+        std::cout << "Running with single precision real data type on:" << std::endl;
+        std::cout << "\tCPU device: " << cpu_device.get_info<sycl::info::device::name>() << std::endl;
+        std::cout << "\tGPU device :" << gpu_device.get_info<sycl::info::device::name>()
+                  << std::endl;
+
         run_example(cpu_device, gpu_device);
         std::cout << "DFT Complex USM example ran OK on MKLCPU and CUFFT" << std::endl;
     }
