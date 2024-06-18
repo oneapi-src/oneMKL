@@ -30,10 +30,13 @@ Environment Setup
 Build Commands
 ###############
 
-In most cases, building oneMKL is as simple as setting the compiler and
-selecting the desired backends to build with.
+The build commands for various compilers and backends differ mostly in setting
+the values of CMake options for compiler and backend. In this section, we
+describe the common build commands. We will discuss backend-specific details in
+the `Backends`_ section and provide examples in `CMake invocation examples`_.
 
-On Linux (see `Building for Windows`_ for building on Windows):
+On Linux, the common form of the build command looks as follows (see `Building
+for Windows`_ for building on Windows):
 
 .. code-block:: bash
 
