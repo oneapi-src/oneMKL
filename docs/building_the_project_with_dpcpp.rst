@@ -60,23 +60,23 @@ or ``clang++`` and ``clang`` respectively when using the Open DPC++ Compiler.
 Backends should be enabled by setting ``-DENABLE_<BACKEND_NAME>_BACKEND=True`` for
 each desired backend. By default, only the ``MKLGPU`` and ``MKLCPU`` backends
 are enabled. Multiple backends for multiple device vendors can be enabled at
-once (albeit with limitations when using portBLAS and portFFT). For examples,
-see the section `CMake invocation examples`_. The supported backends for the
-compilers are given in the table at `oneMKL supported configurations table
+once (albeit with limitations when using portBLAS and portFFT). The supported
+backends for the compilers are given in the table at `oneMKL supported
+configurations table
 <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations>`_,
 and the CMake option names are given in the table below. Some backends may
 require additional parameters to be set. See the relevant section below for
 additional guidance.
 
-If a backend library supports multiple domains (i.e. BLAS, LAPACK, DFT, RNG), it
-may be desirable to only enable selected domains. For this, the
+If a backend library supports multiple domains (i.e., BLAS, LAPACK, DFT, RNG,
+sparse BLAS), it may be desirable to only enable selected domains. For this, the
 ``TARGET_DOMAINS`` variable should be set. See the section `TARGET_DOMAINS`_.
 
 By default, the library also additionally builds examples and tests. These can
 be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and
-``BUILD_EXAMPLES`` to ``False``. Building the functional tests may require
-additional external libraries. See the section :ref:`building_and_running_tests`
-for more information.
+``BUILD_EXAMPLES`` to ``False``. Building the functional tests requires
+additional external libraries for the BLAS and LAPACK domains. See the section
+:ref:`building_and_running_tests` for more information.
 
 The most important supported build options are:
 
@@ -145,7 +145,7 @@ Some additional build options are given in the section `Additional build options
 TARGET_DOMAINS
 ^^^^^^^^^^^^^^
 
-OneMKL supports multiple domains: BLAS, DFT, LAPACK, RNG and sparse BLAS. The
+oneMKL supports multiple domains: BLAS, DFT, LAPACK, RNG and sparse BLAS. The
 domains built by oneMKL can be selected using the ``TARGET_DOMAINS`` parameter.
 In most cases, ``TARGET_DOMAINS`` is set automatically according to the domains
 supported by the backend libraries enabled. However, while most backend
@@ -324,7 +324,7 @@ The following table provides details of CMake options and their default values:
 
 
 .. note::
-  When building with clang++ for AMD backends, you must additionally set
+  When building with ``clang++`` for AMD backends, you must additionally set
   ``ONEAPI_DEVICE_SELECTOR`` to ``hip:gpu`` and provide ``-DHIP_TARGETS`` 
   according to the targeted hardware. This backend has only been tested for the 
   ``gfx90a`` architecture (MI210) at the time of writing. 
