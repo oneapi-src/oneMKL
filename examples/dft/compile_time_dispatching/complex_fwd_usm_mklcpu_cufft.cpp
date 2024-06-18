@@ -154,7 +154,8 @@ int main(int /*argc*/, char** /*argv*/) {
         std::cout << "Running DFT Complex forward out-of-place usm example" << std::endl;
         std::cout << "Using compile-time dispatch API with MKLCPU and cuFFT." << std::endl;
         std::cout << "Running with single precision real data type on:" << std::endl;
-        std::cout << "\tCPU device: " << cpu_device.get_info<sycl::info::device::name>() << std::endl;
+        std::cout << "\tCPU device: " << cpu_device.get_info<sycl::info::device::name>()
+                  << std::endl;
         std::cout << "\tGPU device :" << gpu_device.get_info<sycl::info::device::name>()
                   << std::endl;
 
