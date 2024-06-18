@@ -18,14 +18,14 @@
 #===============================================================================
 
 #Build object from all sources
-set(DFTI_CT_SOURCES "")
+set(DFT_CT_SOURCES "")
 if (ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
-  list(APPEND DFTI_CT_SOURCES "complex_fwd_usm_mklcpu_cufft")
+  list(APPEND DFT_CT_SOURCES "complex_fwd_usm_mklcpu_cufft")
 endif()
 
-foreach(dfti_ct_source ${DFTI_CT_SOURCES})
-  set(EXAMPLE_NAME example_${domain}_${dfti_ct_source})
-  add_executable(${EXAMPLE_NAME} ${dfti_ct_source}.cpp)
+foreach(dft_ct_source ${DFT_CT_SOURCES})
+  set(EXAMPLE_NAME example_${domain}_${dft_ct_source})
+  add_executable(${EXAMPLE_NAME} ${dft_ct_source}.cpp)
   target_include_directories(${EXAMPLE_NAME}
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
@@ -43,7 +43,7 @@ target_link_libraries(${EXAMPLE_NAME} PUBLIC
   )
 
   # Register example as ctest
-  add_test(NAME dft/EXAMPLE/CT/${dfti_ct_source} COMMAND ${EXAMPLE_NAME})
+  add_test(NAME dft/EXAMPLE/CT/${dft_ct_source} COMMAND ${EXAMPLE_NAME})
 
-endforeach(dfti_ct_source)
+endforeach(dft_ct_source)
 
