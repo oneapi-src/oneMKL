@@ -564,8 +564,8 @@ bool check_equal_trsv_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag
 }
 
 template <typename acc1, typename acc2>
-static bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout, int m, int n,
-                               int ld, int error_mag, std::ostream &out) {
+bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout, int m, int n, int ld,
+                        int error_mag, std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -586,8 +586,8 @@ static bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout,
 }
 
 template <typename fp>
-static bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::mkl::layout layout, int m,
-                               int n, int ld, int error_mag, std::ostream &out) {
+bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::mkl::layout layout, int m, int n,
+                        int ld, int error_mag, std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -608,9 +608,9 @@ static bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::mkl::layout
 }
 
 template <typename acc1, typename acc2>
-static bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout,
-                               oneapi::mkl::uplo upper_lower, int m, int n, int ld, int error_mag,
-                               std::ostream &out) {
+bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout,
+                        oneapi::mkl::uplo upper_lower, int m, int n, int ld, int error_mag,
+                        std::ostream &out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
