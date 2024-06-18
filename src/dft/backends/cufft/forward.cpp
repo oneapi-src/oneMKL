@@ -19,6 +19,7 @@
 
 #include <type_traits>
 #if __has_include(<sycl/sycl.hpp>)
+#include <sycl/ext/adaptivecpp/custom_operation.hpp>
 #include <sycl/sycl.hpp>
 #else
 #include <CL/sycl.hpp>
@@ -74,7 +75,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_forward", cgh);
 
-        cgh.host_task([=](sycl::interop_handle ih) {
+        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             auto inout_native = reinterpret_cast<fwd<descriptor_type> *>(
@@ -119,7 +120,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descr
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_forward", cgh);
 
-        cgh.host_task([=](sycl::interop_handle ih) {
+        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             auto in_native = reinterpret_cast<void *>(
@@ -173,7 +174,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_
         cgh.depends_on(dependencies);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        cgh.host_task([=](sycl::interop_handle ih) {
+        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Forward, fwd<descriptor_type>>(
@@ -219,7 +220,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_
         cgh.depends_on(dependencies);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        cgh.host_task([=](sycl::interop_handle ih) {
+        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Forward, fwd<descriptor_type>>(

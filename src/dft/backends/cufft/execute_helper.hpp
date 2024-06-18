@@ -126,11 +126,11 @@ void cufft_execute(const std::string &func, CUstream stream, cufftHandle plan, v
         }
     }
 
-    auto result = cuStreamSynchronize(stream);
-    if (result != CUDA_SUCCESS) {
-        throw oneapi::mkl::exception("dft/backends/cufft", func,
-                                     "cuStreamSynchronize returned " + std::to_string(result));
-    }
+    // auto result = cuStreamSynchronize(stream);
+    // if (result != CUDA_SUCCESS) {
+    //     throw oneapi::mkl::exception("dft/backends/cufft", func,
+    //                                  "cuStreamSynchronize returned " + std::to_string(result));
+    // }
 }
 
 inline CUstream setup_stream(const std::string &func, sycl::interop_handle ih, cufftHandle plan) {
