@@ -48,8 +48,8 @@ for Windows`_ for building on Windows):
           -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLGPU backend is True by default.
           -DENABLE_<BACKEND_NAME>_BACKEND=True   \ # Enable any other backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True \ # Multiple backends can be enabled at once.
-          -DBUILD_FUNCTIONAL_TESTS=False         \ # See page *Building and Running Tests* for more on building tests. ON by default.
-          -DBUILD_EXAMPLES=False                   # Optional: On by default.
+          -DBUILD_FUNCTIONAL_TESTS=False         \ # See page *Building and Running Tests* for more on building tests. True by default.
+          -DBUILD_EXAMPLES=False                   # Optional: True by default.
   cmake --build .
   cmake --install . --prefix <path_to_install_dir>  # required to have full package structure
 
@@ -74,9 +74,9 @@ may be desirable to only enable selected domains. For this, the
 
 By default, the library also additionally builds examples and tests. These can
 be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and
-``BUILD_EXAMPLES`` to off. Building the functional tests may require additional
-external libraries. See the section :ref:`building_and_running_tests` for more
-information.
+``BUILD_EXAMPLES`` to ``False``. Building the functional tests may require
+additional external libraries. See the section :ref:`building_and_running_tests`
+for more information.
 
 The most important supported build options are:
 
