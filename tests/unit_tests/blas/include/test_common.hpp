@@ -655,4 +655,57 @@ bool check_equal_trsm_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout, i
     return good;
 }
 
+// Helper for using std::result_of for evalutation operator[] return type
+template <typename T>
+struct access_index {
+    auto operator()(int i) {
+        return M[i];
+    }
+    T *M[0];
+};
+
+// Helper for checking if a matrix/vector/accessor structure returns an integral type
+template <typename T>
+constexpr bool is_matrix_type_integral() {
+    return std::is_integral_v<typename std::result_of<access_index<T>(int)>::type>;
+}
+
+template <typename fp>
+typename std::enable_if<std::is_integral<fp>::value, bool>::type check_almost_equal_int(
+    fp x, fp x_ref, int error_mag) {
+    return (std::abs(x - x_ref) <= 1);
+}
+
+template <typename Ta, typename Tb>
+bool check_almost_equal_matrix_int(Ta &M, Tb &M_ref, oneapi::mkl::layout layout, int m, int n,
+                                   int ld, int error_mag, std::ostream &out) {
+    static_assert(is_matrix_type_integral<Ta>() && is_matrix_type_integral<Tb>());
+    bool good = true;
+    int idx, count = 0;
+    for (int j = 0; j < n; j++) {
+        for (int i = 0; i < m; i++) {
+            idx = (layout == oneapi::mkl::layout::col_major) ? i + j * ld : j + i * ld;
+            if (!check_almost_equal_int(M[idx], M_ref[idx], error_mag)) {
+                out << "Difference in entry (" << i << ',' << j << "): DPC++ " << M[idx]
+                    << " vs. Reference " << M_ref[idx] << std::endl;
+                good = false;
+                count++;
+                if (count > MAX_NUM_PRINT)
+                    return good;
+            }
+        }
+    }
+
+    return good;
+}
+
+template <typename Ta, typename Tb>
+bool check_almost_equal_matrix(Ta &M, Tb &M_ref, oneapi::mkl::layout layout, int m, int n, int ld,
+                               int error_mag, std::ostream &out) {
+    // Only call if returned dtype is integral
+    if constexpr (is_matrix_type_integral<Ta>() && is_matrix_type_integral<Tb>())
+        return check_almost_equal_matrix_int(M, M_ref, layout, m, n, ld, error_mag, out);
+    return check_equal_matrix(M, M_ref, layout, m, n, ld, error_mag, out);
+}
+
 #endif /* header guard */
