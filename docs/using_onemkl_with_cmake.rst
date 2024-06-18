@@ -8,12 +8,12 @@ Instead of manually linking and including directories, you can use the CMake tar
 exported by the oneMKL Interfaces project. You can use oneMKL in one of two
 forms, with the target names depending on the approach taken: 
 
-* you can use a previously installed copy, either from a binary distribution
-or built from source. This can be imported using CMake's ``find_package`` command.
-See the section `using_from_installed_binary`_.
+* you can use a previously installed copy, either from a binary distribution or
+  built from source. This can be imported using CMake's ``find_package``
+  command. See the section `using_from_installed_binary`_.
 * or you can have CMake automatically download and build oneMKL as part of the
-build process using CMake's FetchContent_ functionality.
-See the section `using_with_fetchcontent`_.
+  build process using CMake's FetchContent_ functionality.
+  See the section `using_with_fetchcontent`_.
 
 
 .. _using_from_installed_binary:
