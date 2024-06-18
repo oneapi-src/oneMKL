@@ -3,11 +3,12 @@
 Building and Running Tests
 ==========================
 
-The functional are tests are enabled by default, and can be enabled/disabled
+The functional tests are enabled by default, and can be enabled/disabled
 with the CMake build parameter ``-DBUILD_FUNCTIONAL_TESTS=True/False``. Only
-tests relevant for the enabled backends and target domains are built.
+the tests relevant to the enabled backends and target domains will be built.
 
-Building tests for some domains may require additional libraries for reference.
+Building tests for BLAS and LAPACK domains requires additional libraries for
+reference.
 
 * BLAS: Requires a reference BLAS library.
 * LAPACK: Requires a reference LAPACK library.
