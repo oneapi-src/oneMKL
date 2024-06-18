@@ -42,16 +42,16 @@ for Windows`_ for building on Windows):
 
   # Inside <path to onemkl>
   mkdir build && cd build
-  cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER                       \ # Should be icpx or clang++
-          -DCMAKE_C_COMPILER=$C_COMPILER                            \ # Should be icx or clang
-          -DENABLE_MKLGPU_BACKEND=False                             \ # Optional: The MKLCPU backend is True by default.
-          -DENABLE_MKLGPU_BACKEND=False                             \ # Optional: The MKLGPU backend is True by default.
-          -DENABLE_<BACKEND_NAME>_BACKEND=True                      \ # Enable any other backend(s) (optional)
-          -DENABLE_<BACKEND_NAME_2>_BACKEND=True                    \ # Multiple backends can be enabled at once.
-          -DBUILD_FUNCTIONAL_TESTS=False                            \ # See page *Building and Running Tests* for more on building tests. ON by default.
-          -DBUILD_EXAMPLES=False                                      # Optional: On by default.
+  cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER    \ # Should be icpx or clang++
+          -DCMAKE_C_COMPILER=$C_COMPILER         \ # Should be icx or clang
+          -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLCPU backend is True by default.
+          -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLGPU backend is True by default.
+          -DENABLE_<BACKEND_NAME>_BACKEND=True   \ # Enable any other backend(s) (optional)
+          -DENABLE_<BACKEND_NAME_2>_BACKEND=True \ # Multiple backends can be enabled at once.
+          -DBUILD_FUNCTIONAL_TESTS=False         \ # See page *Building and Running Tests* for more on building tests. ON by default.
+          -DBUILD_EXAMPLES=False                   # Optional: On by default.
   cmake --build .
-  cmake --install . --prefix <path_to_install_dir>                    # required to have full package structure
+  cmake --install . --prefix <path_to_install_dir>  # required to have full package structure
 
 In the above, the ``$CXX_COMPILER`` and ``$C_COMPILER`` should be set to
 ``icpx`` and ``icx`` respectively when using the Intel(R) oneAPI DPC++ Compiler,
@@ -439,14 +439,14 @@ Additionally, the Ninja build system must be used. For example:
 
   # Inside <path to onemkl>
   md build && cd build
-  cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_icx_compiler>\bin\icx]      # required only if icx is not found in environment variable PATH
-                    [-DCMAKE_C_COMPILER=<path_to_icx_compiler>\bin\icx]        # required only if icx is not found in environment variable PATH
-                    [-DMKL_ROOT=<mkl_install_prefix>]                          # required only if environment variable MKLROOT is not set
-                    [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]          # required only for testing
-                    [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>]      # required only for testing
+  cmake .. -G Ninja [-DCMAKE_CXX_COMPILER=<path_to_icx_compiler>\bin\icx] # required only if icx is not found in environment variable PATH
+                    [-DCMAKE_C_COMPILER=<path_to_icx_compiler>\bin\icx]   # required only if icx is not found in environment variable PATH
+                    [-DMKL_ROOT=<mkl_install_prefix>]                     # required only if environment variable MKLROOT is not set
+                    [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
+                    [-DREF_LAPACK_ROOT=<reference_lapack_install_prefix>] # required only for testing
   ninja
   ctest
-  cmake --install . --prefix <path_to_install_dir>                             # required to have full package structure
+  cmake --install . --prefix <path_to_install_dir> # required to have full package structure
 
 .. _build_common_problems_dpcpp:
 
