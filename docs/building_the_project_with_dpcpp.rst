@@ -172,7 +172,9 @@ controlled with the parameter ``ENABLE_MKLGPU_BACKEND``.
 
 When using the Intel(R) oneAPI DPC++ Compiler, it is likely that Intel(R) oneMKL
 will be found automatically. If it is not, the parameter ``MKL_ROOT`` can be set
-to point to the installation prefix of Intel(R) oneMKL.
+to point to the installation prefix of Intel(R) oneMKL. Alternatively, the
+``MKLROOT`` environment variable can be set, either manually or by using an
+environment script provided by the package.
 
 
 .. _build_for_CUDA_dpcpp:
