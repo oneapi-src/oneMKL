@@ -658,16 +658,16 @@ bool check_equal_trsm_matrix(acc1 &M, acc2 &M_ref, oneapi::mkl::layout layout, i
 // Helper for using std::result_of for evalutation operator[] return type
 template <typename T>
 struct access_index {
-    auto operator()(int i) {
-        return M[i];
+    auto operator()(T M) {
+        return M[0];
     }
-    T *M[0];
 };
 
 // Helper for checking if a matrix/vector/accessor structure returns an integral type
 template <typename T>
 constexpr bool is_matrix_type_integral() {
-    return std::is_integral_v<typename std::result_of<access_index<T>(int)>::type>;
+    return std::is_integral_v<
+        std::remove_reference_t<typename std::result_of<access_index<T>(T)>::type>>;
 }
 
 template <typename fp>
