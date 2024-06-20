@@ -215,9 +215,10 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     }
 
     // Compare the results of reference implementation and DPC++ implementation.
-    int tol_scalar = std::is_same_v<Ta, Ts> ? 10 : 60;
-    if (main_queue.get_device().is_cpu())
-        tol_scalar = 100;
+    int tol_scalar = 10;
+    int error_mag = tol_scalar * k;
+    if (std::is_same_v<Tc, int32_t>)
+        error_mag = 1;
 
     for (size_t i = 0; i < C_ref.size(); ++i) {
         C_cast_ref[i] = C_ref[i];
@@ -225,7 +226,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     auto C_accessor = C_buffer.template get_host_access(read_only);
     bool good = check_almost_equal_matrix(C_accessor, C_cast_ref, oneapi::mkl::layout::col_major,
                                           stride_c * batch_size, 1, stride_c * batch_size,
-                                          tol_scalar * k, std::cout);
+                                          error_mag, std::cout);
 
     return (int)good;
 }

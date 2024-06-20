@@ -673,7 +673,7 @@ constexpr bool is_matrix_type_integral() {
 template <typename fp>
 typename std::enable_if<std::is_integral<fp>::value, bool>::type check_almost_equal_int(
     fp x, fp x_ref, int error_mag) {
-    return (std::abs(x - x_ref) <= 1);
+    return (std::abs(x - x_ref) <= error_mag);
 }
 
 template <typename Ta, typename Tb>

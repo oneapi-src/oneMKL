@@ -322,19 +322,18 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
     bool good = true;
     // Compare the results of reference implementation and DPC++ implementation.
     int tol_scalar = 10;
-    // Scale the tolerance for when we generate int8_t, as input range is [-128, 127]
-    // rather than [-1,1]
-    if (std::is_same_v<Ta, int8_t> && std::is_same_v<Ts, float>)
-        tol_scalar *= 256;
 
     idx = 0;
     for (i = 0; i < group_count; i++) {
         for (j = 0; j < group_size[i]; j++) {
+            int error_mag = tol_scalar * k[i];
+            if (std::is_same_v<Tc, int32_t>)
+                error_mag = 1;
+
             copy_matrix(c_ref_array[idx], layout, oneapi::mkl::transpose::nontrans, m[i], n[i],
                         ldc[i], c_cast_ref_array[idx]);
-            good =
-                good && check_almost_equal_matrix(c_array[idx], c_cast_ref_array[idx], layout, m[i],
-                                                  n[i], ldc[i], tol_scalar * k[i], std::cout);
+            good = good && check_almost_equal_matrix(c_array[idx], c_cast_ref_array[idx], layout,
+                                                     m[i], n[i], ldc[i], error_mag, std::cout);
             idx++;
         }
     }
