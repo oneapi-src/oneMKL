@@ -47,6 +47,10 @@ if(ENABLE_PORTBLAS_BACKEND)
     elseif(PORTBLAS_TUNING_TARGET MATCHES "_GPU")
       list(APPEND DEVICE_FILTERS "*:gpu")
     endif()
+  else()
+    # portBLAS default sycl-target is spir64, testing runtime on both supported
+    # devices.
+    list(APPEND DEVICE_FILTERS "opencl:cpu;level_zero:gpu")
   endif()
 endif()
 
