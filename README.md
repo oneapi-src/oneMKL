@@ -549,14 +549,14 @@ For GitHub questions, issues, RFCs, or PRs you can contact maintainers via one o
 
 | GitHub team name | Description |
 :-----------|:------------|
-| [oneMKL-maintain](https://github.com/orgs/oneapi-src/teams/onemkl-maintain) | All oneMKL maintainers |
-| [oneMKL-arch-write](https://github.com/orgs/oneapi-src/teams/onemkl-arch-write) | oneMKL Architecture maintainers |
-| [oneMKL-blas-write](https://github.com/orgs/oneapi-src/teams/onemkl-blas-write) | oneMKL BLAS maintainers |
-| [oneMKL-dft-write](https://github.com/orgs/oneapi-src/teams/onemkl-dft-write) | oneMKL DFT maintainers |
-| [oneMKL-lapack-write](https://github.com/orgs/oneapi-src/teams/onemkl-lapack-write) | oneMKL LAPACK maintainers |
-| [oneMKL-rng-write](https://github.com/orgs/oneapi-src/teams/onemkl-rng-write) | oneMKL RNG maintainers |
-| [oneMKL-sparse-write](https://github.com/orgs/oneapi-src/teams/onemkl-sparse-write) | oneMKL Sparse Algebra maintainers |
-| [oneMKL-vm-write](https://github.com/orgs/oneapi-src/teams/onemkl-vm-write) | oneMKL Vector Math maintainers |
+| @oneapi-src/onemkl-maintain  | All oneMKL maintainers |
+| @oneapi-src/onemkl-arch-write | oneMKL Architecture maintainers |
+| @oneapi-src/onemkl-blas-write | oneMKL BLAS maintainers |
+| @oneapi-src/onemkl-dft-write | oneMKL DFT maintainers |
+| @oneapi-src/onemkl-lapack-write) | oneMKL LAPACK maintainers |
+| @oneapi-src/onemkl-rng-write | oneMKL RNG maintainers |
+| @oneapi-src/onemkl-sparse-write | oneMKL Sparse Algebra maintainers |
+| @oneapi-src/onemkl-vm-write | oneMKL Vector Math maintainers |
 
 ---
 
