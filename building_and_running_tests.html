@@ -1,0 +1,650 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Building and Running Tests &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="_static/documentation_options.js?v=e1a75a79"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'building_and_running_tests';</script>
+    <link rel="icon" href="_static/favicons.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using the oneMKL Interfaces in your project with CMake" href="using_onemkl_with_cmake.html" />
+    <link rel="prev" title="Building the Project with AdaptiveCpp" href="building_the_project_with_adaptivecpp.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/oneAPI-rgb-rev-100.png" class="logo__image only-light" alt="oneAPI Math Kernel Library Interfaces 0.1 documentation - Home"/>
+    <script>document.write(`<img src="_static/oneAPI-rgb-rev-100.png" class="logo__image only-dark" alt="oneAPI Math Kernel Library Interfaces 0.1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="selecting_a_compiler.html">Selecting a Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_project_with_dpcpp.html">Building the Project with DPC++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_project_with_adaptivecpp.html">Building the Project with AdaptiveCpp</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Building and Running Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_onemkl_with_cmake.html">Using the oneMKL Interfaces in your project with CMake</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="onemkl-datatypes.html">oneMKL Defined Datatypes</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="domains/dense_linear_algebra.html">Dense Linear Algebra</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="domains/matrix-storage.html">Matrix Storage</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="domains/blas/blas.html">BLAS Routines</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-level-1-routines.html">BLAS Level 1 Routines</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/asum.html">asum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/axpy.html">axpy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/copy.html">copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dot.html">dot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/sdsdot.html">sdsdot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dotc.html">dotc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dotu.html">dotu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/nrm2.html">nrm2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rot.html">rot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rotg.html">rotg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rotm.html">rotm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/rotmg.html">rotmg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/scal.html">scal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/swap.html">swap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/iamax.html">iamax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/iamin.html">iamin</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-level-2-routines.html">BLAS Level 2 Routines</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gbmv.html">gbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemv.html">gemv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/ger.html">ger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gerc.html">gerc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/geru.html">geru</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hbmv.html">hbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hemv.html">hemv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/her.html">her</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/her2.html">her2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hpmv.html">hpmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hpr.html">hpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hpr2.html">hpr2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/sbmv.html">sbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/spmv.html">spmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/spr.html">spr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/spr2.html">spr2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/symv.html">symv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syr.html">syr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syr2.html">syr2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tbmv.html">tbmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tbsv.html">tbsv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tpmv.html">tpmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/tpsv.html">tpsv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trmv.html">trmv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trsv.html">trsv</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-level-3-routines.html">BLAS Level 3 Routines</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemm.html">gemm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/hemm.html">hemm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/herk.html">herk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/her2k.html">her2k</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/symm.html">symm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syrk.html">syrk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syr2k.html">syr2k</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trmm.html">trmm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trsm.html">trsm</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="domains/blas/blas-like-extensions.html">BLAS-like Extensions</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/axpy_batch.html">axpy_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/axpby.html">axpby</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/copy_batch.html">copy_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/dgmm_batch.html">dgmm_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemm_batch.html">gemm_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemv_batch.html">gemv_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/syrk_batch.html">syrk_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/trsm_batch.html">trsm_batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemmt.html">gemmt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains/blas/gemm_bias.html">gemm_bias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="domains/lapack/lapack.html">LAPACK Routines</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf.html">geqrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf_scratchpad_size.html">geqrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gerqf.html">gerqf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gerqf_scratchpad_size.html">gerqf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf.html">getrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf_scratchpad_size.html">getrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri.html">getri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri_scratchpad_size.html">getri_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs.html">getrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs_scratchpad_size.html">getrs_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrf.html">hetrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrf_scratchpad_size.html">hetrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr.html">orgqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr_scratchpad_size.html">orgqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormqr.html">ormqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormqr_scratchpad_size.html">ormqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormrq.html">ormrq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormrq_scratchpad_size.html">ormrq_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf.html">potrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf_scratchpad_size.html">potrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potri.html">potri</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potri_scratchpad_size.html">potri_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs.html">potrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs_scratchpad_size.html">potrs_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrf.html">sytrf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrf_scratchpad_size.html">sytrf_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/trtrs.html">trtrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/trtrs_scratchpad_size.html">trtrs_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr.html">ungqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr_scratchpad_size.html">ungqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmqr.html">unmqr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmqr_scratchpad_size.html">unmqr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmrq.html">unmrq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmrq_scratchpad_size.html">unmrq_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gebrd.html">gebrd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gebrd_scratchpad_size.html">gebrd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gesvd.html">gesvd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/gesvd_scratchpad_size.html">gesvd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/heevd.html">heevd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/heevd_scratchpad_size.html">heevd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hegvd.html">hegvd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hegvd_scratchpad_size.html">hegvd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrd.html">hetrd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/hetrd_scratchpad_size.html">hetrd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgbr.html">orgbr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgbr_scratchpad_size.html">orgbr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgtr.html">orgtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgtr_scratchpad_size.html">orgtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormtr.html">ormtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ormtr_scratchpad_size.html">ormtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/syevd.html">syevd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/syevd_scratchpad_size.html">syevd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sygvd.html">sygvd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sygvd_scratchpad_size.html">sygvd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrd.html">sytrd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/sytrd_scratchpad_size.html">sytrd_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungbr.html">ungbr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungbr_scratchpad_size.html">ungbr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungtr.html">ungtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungtr_scratchpad_size.html">ungtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmtr.html">unmtr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/unmtr_scratchpad_size.html">unmtr_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf_batch.html">geqrf_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/geqrf_batch_scratchpad_size.html">geqrf_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf_batch.html">getrf_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrf_batch_scratchpad_size.html">getrf_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri_batch.html">getri_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getri_batch_scratchpad_size.html">getri_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs_batch.html">getrs_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/getrs_batch_scratchpad_size.html">getrs_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr_batch.html">orgqr_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/orgqr_batch_scratchpad_size.html">orgqr_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf_batch.html">potrf_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrf_batch_scratchpad_size.html">potrf_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs_batch.html">potrs_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/potrs_batch_scratchpad_size.html">potrs_batch_scratchpad_size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr_batch.html">ungqr_batch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains/lapack/ungqr_batch_scratchpad_size.html">ungqr_batch_scratchpad_size</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="create_new_backend.html">Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/building_and_running_tests.rst" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fbuilding_and_running_tests.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/building_and_running_tests.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Building and Running Tests</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="building-and-running-tests">
+<span id="id1"></span><h1>Building and Running Tests<a class="headerlink" href="#building-and-running-tests" title="Link to this heading">#</a></h1>
+<p>The functional tests are enabled by default, and can be enabled/disabled
+with the CMake build parameter <code class="docutils literal notranslate"><span class="pre">-DBUILD_FUNCTIONAL_TESTS=True/False</span></code>. Only
+the tests relevant to the enabled backends and target domains will be built.</p>
+<p>Building tests for BLAS and LAPACK domains requires additional libraries for
+reference.</p>
+<ul class="simple">
+<li><p>BLAS: Requires a reference BLAS library.</p></li>
+<li><p>LAPACK: Requires a reference LAPACK library.</p></li>
+</ul>
+<p>For both BLAS and LAPACK, shared libraries supporting both 32 and 64 bit
+indexing are required.</p>
+<p>A reference LAPACK implementation (including BLAS) can be built as the
+following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Reference-LAPACK/lapack.git
+<span class="nb">cd</span><span class="w"> </span>lapack<span class="p">;</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>build<span class="p">;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>~/lapack<span class="w"> </span>-DCBLAS<span class="o">=</span>True<span class="w"> </span>-DLAPACK<span class="o">=</span>True<span class="w"> </span>-DLAPACKE<span class="o">=</span>True<span class="w"> </span>-DBUILD_INDEX64<span class="o">=</span>True<span class="w"> </span>-DBUILD_SHARED_LIBS<span class="o">=</span>True<span class="w"> </span>..
+cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </span>-j<span class="w"> </span>--target<span class="w"> </span>install
+cmake<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>~/lapack<span class="w"> </span>-DCBLAS<span class="o">=</span>True<span class="w"> </span>-DLAPACK<span class="o">=</span>True<span class="w"> </span>-DLAPACKE<span class="o">=</span>True<span class="w"> </span>-DBUILD_INDEX64<span class="o">=</span>False<span class="w"> </span>-DBUILD_SHARED_LIBS<span class="o">=</span>True<span class="w"> </span>..
+cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </span>-j<span class="w"> </span>--target<span class="w"> </span>install
+</pre></div>
+</div>
+<p>and then used in oneMKL by setting <code class="docutils literal notranslate"><span class="pre">-REF_BLAS_ROOT=/path/to/lapack/install</span></code>
+and <code class="docutils literal notranslate"><span class="pre">-DREF_LAPACK_ROOT=/path/to/lapack/install</span></code>.</p>
+<p>To run the tests, either use the CMake test driver, by running <code class="docutils literal notranslate"><span class="pre">ctest</span></code>, or run
+individual test binaries individually.</p>
+<p>When running tests you may encounter the issue <code class="docutils literal notranslate"><span class="pre">BACKEND</span> <span class="pre">NOT</span> <span class="pre">FOUND</span> <span class="pre">EXCEPTION</span></code>,
+you may need to add your <code class="docutils literal notranslate"><span class="pre">&lt;oneMKL</span> <span class="pre">build</span> <span class="pre">directory&gt;/lib</span></code> to your
+<code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code> on Linux.</p>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="building_the_project_with_adaptivecpp.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Building the Project with AdaptiveCpp</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="using_onemkl_with_cmake.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Using the oneMKL Interfaces in your project with CMake</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Intel Corporation
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2020-2022, Intel Corporation.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p align="right"><a href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">Cookies</a></p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

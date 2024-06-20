@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building the Project &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
+    <title>Building the Project with DPC++ &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
   
   
   
@@ -40,11 +40,11 @@
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'building_the_project';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'building_the_project_with_dpcpp';</script>
     <link rel="icon" href="_static/favicons.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="oneMKL Defined Datatypes" href="onemkl-datatypes.html" />
+    <link rel="next" title="Building the Project with AdaptiveCpp" href="building_the_project_with_adaptivecpp.html" />
     <link rel="prev" title="Selecting a Compiler" href="selecting_a_compiler.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -159,7 +159,10 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="selecting_a_compiler.html">Selecting a Compiler</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Building the Project</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Building the Project with DPC++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_project_with_adaptivecpp.html">Building the Project with AdaptiveCpp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_and_running_tests.html">Building and Running Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_onemkl_with_cmake.html">Using the oneMKL Interfaces in your project with CMake</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -379,7 +382,7 @@
       
       
       
-      <li><a href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/building_the_project.rst" target="_blank"
+      <li><a href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/building_the_project_with_dpcpp.rst" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -396,7 +399,7 @@
       
       
       
-      <li><a href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fbuilding_the_project.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fbuilding_the_project_with_dpcpp.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -426,7 +429,7 @@
       
       
       
-      <li><a href="_sources/building_the_project.rst" target="_blank"
+      <li><a href="_sources/building_the_project_with_dpcpp.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -510,7 +513,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Building the Project</h1>
+    <h1>Building the Project with DPC++</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -520,22 +523,27 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-setup">Build Setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-setup-with-hipsycl">Build Setup with hipSYCL</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-with-cmake">Building with CMake</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-onemkl">Building for oneMKL</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda-with-hipsycl">Building for CUDA (with hipSYCL)</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda-with-clang">Building for CUDA (with clang++)</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm-with-hipsycl">Building for ROCm (with hipSYCL)</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm-with-clang">Building for ROCm (with clang++)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">Environment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-commands">Build Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#target-domains">TARGET_DOMAINS</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portblas">Building for portBLAS</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portfft">Building for portFFT</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-options">Build Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backends">Backends</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-intel-r-onemkl">Building for Intel(R) oneMKL</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda">Building for CUDA</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm">Building for ROCm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-sycl-backends-portblas-and-portfft">Pure SYCL backends: portBLAS and portFFT</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portblas">Building for portBLAS</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portfft">Building for portFFT</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-build-options">Additional Build Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cmake-invocation-examples">CMake invocation examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-cleanup">Project Cleanup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-windows">Building for Windows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-faq">Build FAQ</a></li>
 </ul>
             </nav>
         </div>
@@ -547,192 +555,190 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="building-the-project">
-<span id="id1"></span><h1>Building the Project<a class="headerlink" href="#building-the-project" title="Link to this heading">#</a></h1>
-<section id="build-setup">
-<span id="id2"></span><h2>Build Setup<a class="headerlink" href="#build-setup" title="Link to this heading">#</a></h2>
+  <section id="building-the-project-with-dpc">
+<span id="building-the-project-with-dpcpp"></span><h1>Building the Project with DPC++<a class="headerlink" href="#building-the-project-with-dpc" title="Link to this heading">#</a></h1>
+<p>This page describes building the oneMKL Interfaces with either the Intel(R)
+oneAPI DPC++ Compiler or open-source oneAPI DPC++ Compiler. For guidance on
+building the project with AdaptiveCpp, see
+<a class="reference internal" href="building_the_project_with_adaptivecpp.html#building-the-project-with-adaptivecpp"><span class="std std-ref">Building the Project with AdaptiveCpp</span></a>.</p>
+<section id="environment-setup">
+<span id="build-setup-with-dpcpp"></span><h2>Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
-<li><p>Install Intel(R) oneAPI DPC++ Compiler (select the variant as described in
+<li><p>Install the required DPC++ compiler (Intel(R) DPC++ or Open DPC++ - see
 <a class="reference internal" href="selecting_a_compiler.html#selecting-a-compiler"><span class="std std-ref">Selecting a Compiler</span></a>).</p></li>
-<li><p>Clone this project to <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code>
-is the root directory of this repository.</p></li>
-<li><p>Download and install the required dependencies manually and <a class="reference internal" href="#building-with-cmake"><span class="std std-ref">Build with CMake</span></a>.</p></li>
+<li><p>Clone this project. The root directory of the cloned repository will be
+referred to as <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code>.</p></li>
+<li><p>Build and install all <a class="reference external" href="https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements">required dependencies</a>.</p></li>
 </ol>
 </section>
-<section id="build-setup-with-hipsycl">
-<span id="id3"></span><h2>Build Setup with hipSYCL<a class="headerlink" href="#build-setup-with-hipsycl" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p>Make sure that the dependencies of hipSYCL are fulfilled. For a detailed
-description, see the
-<a class="reference external" href="https://github.com/illuhad/hipSYCL/blob/develop/doc/installing.md#software-dependencies">hipSYCL installation readme</a>.</p></li>
-<li><p>Install hipSYCL with the prefered backends enabled. hipSYCL supports
-various backends. You can customize support for the target system at
-compile time by setting the appropriate configuration flags; see the
-<a class="reference external" href="https://github.com/illuhad/hipSYCL/blob/develop/doc/installing.md">hipSYCL documentation</a>
-for instructions.</p></li>
-<li><p>Install <a class="reference external" href="https://rocblas.readthedocs.io/en/master/install.html">AMD rocBLAS</a>.</p></li>
-<li><p>Clone this project to <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">onemkl&gt;</span></code> is
-the root directory of this repository.</p></li>
-<li><p>Download and install the required dependencies manually and
-<a class="reference internal" href="#building-with-cmake"><span class="std std-ref">Build with CMake</span></a>.</p></li>
-</ol>
+<section id="build-commands">
+<span id="build-introduction-with-dpcpp"></span><h2>Build Commands<a class="headerlink" href="#build-commands" title="Link to this heading">#</a></h2>
+<p>The build commands for various compilers and backends differ mostly in setting
+the values of CMake options for compiler and backend. In this section, we
+describe the common build commands. We will discuss backend-specific details in
+the <a class="reference internal" href="#backends">Backends</a> section and provide examples in <a class="reference internal" href="#cmake-invocation-examples">CMake invocation examples</a>.</p>
+<p>On Linux, the common form of the build command looks as follows (see <a class="reference internal" href="#building-for-windows">Building
+for Windows</a> for building on Windows):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_CXX_COMPILER<span class="o">=</span><span class="nv">$CXX_COMPILER</span><span class="w">    </span><span class="se">\ </span><span class="c1"># Should be icpx or clang++</span>
+<span class="w">        </span>-DCMAKE_C_COMPILER<span class="o">=</span><span class="nv">$C_COMPILER</span><span class="w">         </span><span class="se">\ </span><span class="c1"># Should be icx or clang</span>
+<span class="w">        </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">          </span><span class="se">\ </span><span class="c1"># Optional: The MKLCPU backend is True by default.</span>
+<span class="w">        </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">          </span><span class="se">\ </span><span class="c1"># Optional: The MKLGPU backend is True by default.</span>
+<span class="w">        </span>-DENABLE_&lt;BACKEND_NAME&gt;_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\ </span><span class="c1"># Enable any other backend(s) (optional)</span>
+<span class="w">        </span>-DENABLE_&lt;BACKEND_NAME_2&gt;_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\ </span><span class="c1"># Multiple backends can be enabled at once.</span>
+<span class="w">        </span>-DBUILD_FUNCTIONAL_TESTS<span class="o">=</span>False<span class="w">         </span><span class="se">\ </span><span class="c1"># See page *Building and Running Tests* for more on building tests. True by default.</span>
+<span class="w">        </span>-DBUILD_EXAMPLES<span class="o">=</span>False<span class="w">                   </span><span class="c1"># Optional: True by default.</span>
+cmake<span class="w"> </span>--build<span class="w"> </span>.
+cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">  </span><span class="c1"># required to have full package structure</span>
+</pre></div>
+</div>
+<p>In the above, the <code class="docutils literal notranslate"><span class="pre">$CXX_COMPILER</span></code> and <code class="docutils literal notranslate"><span class="pre">$C_COMPILER</span></code> should be set to
+<code class="docutils literal notranslate"><span class="pre">icpx</span></code> and <code class="docutils literal notranslate"><span class="pre">icx</span></code> respectively when using the Intel(R) oneAPI DPC++ Compiler,
+or <code class="docutils literal notranslate"><span class="pre">clang++</span></code> and <code class="docutils literal notranslate"><span class="pre">clang</span></code> respectively when using the Open DPC++ Compiler.</p>
+<p>Backends should be enabled by setting <code class="docutils literal notranslate"><span class="pre">-DENABLE_&lt;BACKEND_NAME&gt;_BACKEND=True</span></code> for
+each desired backend. By default, only the <code class="docutils literal notranslate"><span class="pre">MKLGPU</span></code> and <code class="docutils literal notranslate"><span class="pre">MKLCPU</span></code> backends
+are enabled. Multiple backends for multiple device vendors can be enabled at
+once (albeit with limitations when using portBLAS and portFFT). The supported
+backends for the compilers are given in the table at <a class="reference external" href="https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations">oneMKL supported
+configurations table</a>,
+and the CMake option names are given in the table below. Some backends may
+require additional parameters to be set. See the relevant section below for
+additional guidance.</p>
+<p>If a backend library supports multiple domains (i.e., BLAS, LAPACK, DFT, RNG,
+sparse BLAS), it may be desirable to only enable selected domains. For this, the
+<code class="docutils literal notranslate"><span class="pre">TARGET_DOMAINS</span></code> variable should be set. See the section <a class="reference internal" href="#target-domains">TARGET_DOMAINS</a>.</p>
+<p>By default, the library also additionally builds examples and tests. These can
+be disabled by setting the parameters <code class="docutils literal notranslate"><span class="pre">BUILD_FUNCTIONAL_TESTS</span></code> and
+<code class="docutils literal notranslate"><span class="pre">BUILD_EXAMPLES</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>. Building the functional tests requires
+additional external libraries for the BLAS and LAPACK domains. See the section
+<a class="reference internal" href="building_and_running_tests.html#building-and-running-tests"><span class="std std-ref">Building and Running Tests</span></a> for more information.</p>
+<p>The most important supported build options are:</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>CMake Option</p></th>
+<th class="head"><p>Supported Values</p></th>
+<th class="head"><p>Default Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ENABLE_MKLCPU_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_MKLGPU_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>ENABLE_CUBLAS_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_CUSOLVER_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>ENABLE_CUFFT_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_CURAND_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>ENABLE_NETLIB_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_ROCBLAS_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>ENABLE_ROCFFT_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_ROCSOLVER_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>ENABLE_ROCRAND_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_MKLCPU_THREAD_TBB</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>ENABLE_PORTBLAS_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_PORTFFT_BACKEND</p></td>
+<td><p>True, False</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p>BUILD_FUNCTIONAL_TESTS</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p>BUILD_EXAMPLES</p></td>
+<td><p>True, False</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>TARGET_DOMAINS (list)</p></td>
+<td><p>blas, lapack, rng, dft, sparse_blas</p></td>
+<td><p>All domains</p></td>
+</tr>
+</tbody>
+</table>
+<p>Some additional build options are given in the section <a class="reference internal" href="#additional-build-options">Additional build options</a>.</p>
+<section id="target-domains">
+<span id="build-target-domains"></span><h3>TARGET_DOMAINS<a class="headerlink" href="#target-domains" title="Link to this heading">#</a></h3>
+<p>oneMKL supports multiple domains: BLAS, DFT, LAPACK, RNG and sparse BLAS. The
+domains built by oneMKL can be selected using the <code class="docutils literal notranslate"><span class="pre">TARGET_DOMAINS</span></code> parameter.
+In most cases, <code class="docutils literal notranslate"><span class="pre">TARGET_DOMAINS</span></code> is set automatically according to the domains
+supported by the backend libraries enabled. However, while most backend
+libraries support only one of these domains, but some may support multiple. For
+example, the <code class="docutils literal notranslate"><span class="pre">MKLCPU</span></code> backend supports every domain. To enable support for
+only the BLAS domain in the oneMKL Interfaces whilst compiling with <code class="docutils literal notranslate"><span class="pre">MKLCPU</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TARGET_DOMAINS</span></code> could be set to <code class="docutils literal notranslate"><span class="pre">blas</span></code>. To enable BLAS and DFT,
+<code class="docutils literal notranslate"><span class="pre">-DTARGET_DOMAINS=&quot;blas</span> <span class="pre">dft&quot;</span></code> would be used.</p>
 </section>
-<section id="building-with-cmake">
-<span id="id4"></span><h2>Building with CMake<a class="headerlink" href="#building-with-cmake" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p>Make sure you have completed <a class="reference external" href="#build-setup">Build Setup</a>.</p></li>
-<li><p>Build and install all required <a class="reference external" href="#software-requirements">dependencies</a>.</p></li>
-</ol>
-<section id="building-for-onemkl">
-<h3>Building for oneMKL<a class="headerlink" href="#building-for-onemkl" title="Link to this heading">#</a></h3>
-<ul>
-<li><p>On Linux*</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span><span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_icpx_compiler&gt;/bin/icpx<span class="o">]</span><span class="w">    </span><span class="c1"># required only if icpx is not found in environment variable PATH</span>
-<span class="w">         </span><span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_icx_compiler&gt;/bin/icx<span class="o">]</span><span class="w">        </span><span class="c1"># required only if icx is not found in environment variable PATH</span>
-<span class="w">         </span><span class="o">[</span>-DMKL_ROOT<span class="o">=</span>&lt;mkl_install_prefix&gt;<span class="o">]</span><span class="w">                          </span><span class="c1"># required only if environment variable MKLROOT is not set</span>
-<span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">          </span><span class="c1"># required only for testing</span>
-<span class="w">         </span><span class="o">[</span>-DREF_LAPACK_ROOT<span class="o">=</span>&lt;reference_lapack_install_prefix&gt;<span class="o">]</span><span class="w">      </span><span class="c1"># required only for testing</span>
-cmake<span class="w"> </span>--build<span class="w"> </span>.
-ctest
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">                    </span><span class="c1"># required to have full package structure</span>
-</pre></div>
-</div>
-</li>
-<li><p>On Windows*</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-md<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span><span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_icx_compiler&gt;<span class="se">\b</span>in<span class="se">\i</span>cx<span class="o">]</span><span class="w">      </span><span class="c1"># required only if icx is not found in environment variable PATH</span>
-<span class="w">                  </span><span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_icx_compiler&gt;<span class="se">\b</span>in<span class="se">\i</span>cx<span class="o">]</span><span class="w">        </span><span class="c1"># required only if icx is not found in environment variable PATH</span>
-<span class="w">                  </span><span class="o">[</span>-DMKL_ROOT<span class="o">=</span>&lt;mkl_install_prefix&gt;<span class="o">]</span><span class="w">                          </span><span class="c1"># required only if environment variable MKLROOT is not set</span>
-<span class="w">                  </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">          </span><span class="c1"># required only for testing</span>
-<span class="w">                  </span><span class="o">[</span>-DREF_LAPACK_ROOT<span class="o">=</span>&lt;reference_lapack_install_prefix&gt;<span class="o">]</span><span class="w">      </span><span class="c1"># required only for testing</span>
-ninja
-ctest
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">                             </span><span class="c1"># required to have full package structure</span>
-</pre></div>
-</div>
-</li>
-</ul>
-<section id="building-for-cuda-with-hipsycl">
-<h4>Building for CUDA (with hipSYCL)<a class="headerlink" href="#building-for-cuda-with-hipsycl" title="Link to this heading">#</a></h4>
-<ul class="simple">
-<li><p>On Linux*</p></li>
-</ul>
-<p>With the cuBLAS backend:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span>-DENABLE_CUBLAS_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">                                </span><span class="c1"># Disable all backends except for cuBLAS</span>
-<span class="w">         </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_NETLIB_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_ROCBLAS_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span>-DHIPSYCL_TARGETS<span class="o">=</span>cuda:sm_75<span class="w"> </span><span class="se">\ </span><span class="w">                              </span><span class="c1"># Specify the targeted device architectures</span>
-<span class="w">         </span>-DONEMKL_SYCL_IMPLEMENTATION<span class="o">=</span>hipSYCL<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">            </span><span class="c1"># required only for testing</span>
-cmake<span class="w"> </span>--build<span class="w"> </span>.
-ctest
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">                      </span><span class="c1"># required to have full package structure</span>
-</pre></div>
-</div>
-<p>To build with the cuRAND backend instead simply replace:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_CUBLAS_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\</span>
-</pre></div>
-</div>
-<p>With:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_CURAND_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\</span>
-</pre></div>
-</div>
 </section>
-<section id="building-for-cuda-with-clang">
-<h4>Building for CUDA (with clang++)<a class="headerlink" href="#building-for-cuda-with-clang" title="Link to this heading">#</a></h4>
-<ul class="simple">
-<li><p>On Linux*</p></li>
-</ul>
-<p>With the cuBLAS backend:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span><span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_clang++_compiler&gt;/bin/clang++<span class="o">]</span><span class="w">  </span><span class="c1"># required only if clang++ is not found in environment variable PATH</span>
-<span class="w">         </span><span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_clang_compiler&gt;/bin/clang<span class="o">]</span><span class="w">        </span><span class="c1"># required only if clang is not found in environment variable PATH</span>
-<span class="w">         </span>-DENABLE_CUBLAS_BACKEND<span class="o">=</span>True<span class="w">  </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w">                                  </span><span class="c1"># disable Intel MKL CPU backend</span>
-<span class="w">         </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">                                  </span><span class="c1"># disable Intel MKL GPU backend</span>
-<span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">              </span><span class="c1"># required only for testing</span>
-cmake<span class="w"> </span>--build<span class="w"> </span>.
-ctest
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">                        </span><span class="c1"># required to have full package structure</span>
-</pre></div>
-</div>
-<p>The CuFFT and CuRAND backends can be enabled in a similar way to the CuBLAS backend, by setting the corresponding CMake variable(s) to <cite>True</cite>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_CUFFT_BACKEND<span class="o">=</span>True<span class="w">    </span><span class="se">\</span>
--DENABLE_CURAND_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\</span>
-</pre></div>
-</div>
+<section id="backends">
+<h2>Backends<a class="headerlink" href="#backends" title="Link to this heading">#</a></h2>
+<section id="building-for-intel-r-onemkl">
+<span id="build-for-intel-onemkl-dpcpp"></span><h3>Building for Intel(R) oneMKL<a class="headerlink" href="#building-for-intel-r-onemkl" title="Link to this heading">#</a></h3>
+<p>The Intel(R) oneMKL backend supports multiple domains on both x86 CPUs and Intel
+GPUs. The MKLCPU backend using Intel(R) oneMKL for x86 CPU is enabled by
+default, and controlled with the parameter <code class="docutils literal notranslate"><span class="pre">ENABLE_MKLCPU_BACKEND</span></code>. The MKLGPU
+backend using Intel(R) oneMKL for Intel GPU is enabled by default, and
+controlled with the parameter <code class="docutils literal notranslate"><span class="pre">ENABLE_MKLGPU_BACKEND</span></code>.</p>
+<p>When using the Intel(R) oneAPI DPC++ Compiler, it is likely that Intel(R) oneMKL
+will be found automatically. If it is not, the parameter <code class="docutils literal notranslate"><span class="pre">MKL_ROOT</span></code> can be set
+to point to the installation prefix of Intel(R) oneMKL. Alternatively, the
+<code class="docutils literal notranslate"><span class="pre">MKLROOT</span></code> environment variable can be set, either manually or by using an
+environment script provided by the package.</p>
 </section>
-<section id="building-for-rocm-with-hipsycl">
-<h4>Building for ROCm (with hipSYCL)<a class="headerlink" href="#building-for-rocm-with-hipsycl" title="Link to this heading">#</a></h4>
-<p>With the AMD rocBLAS backend:</p>
-<ul class="simple">
-<li><p>On Linux*</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span>-DENABLE_CUBLAS_BACKEND<span class="o">=</span>False<span class="w">                     </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False/True<span class="w">                  </span><span class="c1"># hipSYCL supports MKLCPU backend</span>
-<span class="w">         </span>-DENABLE_NETLIB_BACKEND<span class="o">=</span>False/True<span class="w">                  </span><span class="c1"># hipSYCL supports NETLIB backend</span>
-<span class="w">         </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">                       </span><span class="c1"># disable Intel MKL GPU backend</span>
-<span class="w">         </span>-DENABLE_ROCBLAS_BACKEND<span class="o">=</span>True<span class="w">                     </span><span class="se">\</span>
-<span class="w">         </span>-DTARGET_DOMAINS<span class="o">=</span>blas<span class="w">                               </span><span class="c1"># hipSYCL supports BLAS and RNG domains</span>
-<span class="w">         </span>-DHIPSYCL_TARGETS<span class="o">=</span>omp<span class="se">\;</span>hip:gfx906<span class="w">                   </span><span class="c1"># Specify the targetted device architectures</span>
-<span class="w">         </span>-DONEMKL_SYCL_IMPLEMENTATION<span class="o">=</span>hipSYCL<span class="w">                </span><span class="c1"># Use the hipSYCL cmake integration</span>
-<span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">   </span><span class="c1"># required only for testing</span>
-cmake<span class="w"> </span>--build<span class="w"> </span>.
-ctest
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">             </span><span class="c1"># required to have full package structure</span>
-</pre></div>
-</div>
-<p>To build with the rocRAND backend instead simply replace:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_ROCBLAS_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\</span>
--DTARGET_DOMAINS<span class="o">=</span>blas
-</pre></div>
-</div>
-<p>With:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_ROCRAND_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\</span>
--DTARGET_DOMAINS<span class="o">=</span>rng
-</pre></div>
-</div>
+<section id="building-for-cuda">
+<span id="build-for-cuda-dpcpp"></span><h3>Building for CUDA<a class="headerlink" href="#building-for-cuda" title="Link to this heading">#</a></h3>
+<p>The CUDA backends can be enabled with <code class="docutils literal notranslate"><span class="pre">ENABLE_CUBLAS_BACKEND</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ENABLE_CUFFT_BACKEND</span></code>, <code class="docutils literal notranslate"><span class="pre">ENABLE_CURAND_BACKEND</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">ENABLE_CUSOLVER_BACKEND</span></code>.</p>
+<p>No additional parameters are required for using CUDA libraries. In most cases,
+the CUDA libraries should be found automatically by CMake.</p>
 </section>
-<section id="building-for-rocm-with-clang">
-<h4>Building for ROCm (with clang++)<a class="headerlink" href="#building-for-rocm-with-clang" title="Link to this heading">#</a></h4>
-<p>With the AMD rocBLAS backend:</p>
-<ul class="simple">
-<li><p>On Linux*</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span><span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_clang++_compiler&gt;/bin/clang++<span class="o">]</span><span class="w">  </span><span class="c1"># required only if clang++ is not found in environment variable PATH</span>
-<span class="w">         </span><span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_clang_compiler&gt;/bin/clang<span class="o">]</span><span class="w">        </span><span class="c1"># required only if clang is not found in environment variable PATH</span>
-<span class="w">         </span>-DENABLE_CUBLAS_BACKEND<span class="o">=</span>False<span class="w">                                </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w">                                </span><span class="se">\ </span><span class="c1"># disable Intel MKL CPU backend</span>
-<span class="w">         </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">                                </span><span class="se">\ </span><span class="c1"># disable Intel MKL GPU backend</span>
-<span class="w">         </span>-DENABLE_ROCBLAS_BACKEND<span class="o">=</span>True<span class="w">                                </span><span class="se">\</span>
-<span class="w">         </span>-DHIP_TARGETS<span class="o">=</span>gfx90a<span class="w">                                         </span><span class="se">\ </span><span class="c1"># Specify the targetted device architectures</span>
-<span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">              </span><span class="c1"># required only for testing</span>
-cmake<span class="w"> </span>--build<span class="w"> </span>.
-<span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_DEVICE_SELECTOR</span><span class="o">=</span><span class="s2">&quot;hip:gpu&quot;</span>
-ctest
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w">                        </span><span class="c1"># required to have full package structure</span>
-</pre></div>
-</div>
-<p>The rocRAND, rocFFT, and rocSOLVER backends can be enabled in a similar way to the rocBLAS backend, by setting the corresponding CMake variable(s) to <cite>True</cite>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_ROCRAND_BACKEND<span class="o">=</span>True<span class="w">     </span><span class="se">\</span>
--DENABLE_ROCFFT_BACKEND<span class="o">=</span>True<span class="w">      </span><span class="se">\</span>
--DENABLE_ROCSOLVER_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\</span>
-</pre></div>
-</div>
-<p><strong>AMD GPU device architectures</strong></p>
-<p>The device architecture can be retrieved via the <code class="docutils literal notranslate"><span class="pre">rocminfo</span></code> tool. The architecture will be displayed in the <code class="docutils literal notranslate"><span class="pre">Name:</span></code> row.</p>
+<section id="building-for-rocm">
+<span id="build-for-rocm-dpcpp"></span><h3>Building for ROCm<a class="headerlink" href="#building-for-rocm" title="Link to this heading">#</a></h3>
+<p>The ROCm backends can be enabled with <code class="docutils literal notranslate"><span class="pre">ENABLE_ROCBLAS_BACKEND</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ENABLE_ROCFFT_BACKEND</span></code>, <code class="docutils literal notranslate"><span class="pre">ENABLE_ROCSOLVER_BACKEND</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ENABLE_ROCRAND_BACKEND</span></code>.</p>
+<p>For <em>RocBLAS</em>, <em>RocSOLVER</em> and <em>RocRAND</em>, the target device architecture must be
+set. This can be set with using the <code class="docutils literal notranslate"><span class="pre">HIP_TARGETS</span></code> parameter. For example, to
+enable a build for MI200 series GPUs, <code class="docutils literal notranslate"><span class="pre">-DHIP_TARGETS=gfx90a</span></code> should be set.
+Currently, DPC++ can only build for a single HIP target at a time. This may
+change in future versions.</p>
 <p>A few often-used architectures are listed below:</p>
 <table class="table">
 <thead>
@@ -742,7 +748,7 @@ cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> 
 </thead>
 <tbody>
 <tr class="row-even"><td><p>gfx90a</p></td>
-<td><p>AMD Instinct(TM) MI210/250/250X Accellerator</p></td>
+<td><p>AMD Instinct(TM) MI210/250/250X Accelerator</p></td>
 </tr>
 <tr class="row-odd"><td><p>gfx908</p></td>
 <td><p>AMD Instinct(TM) MI 100 Accelerator</p></td>
@@ -763,100 +769,71 @@ cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> 
 </tr>
 </tbody>
 </table>
+<p>For a host with ROCm installed, the device architecture can be retrieved via the
+<code class="docutils literal notranslate"><span class="pre">rocminfo</span></code> tool. The architecture will be displayed in the <code class="docutils literal notranslate"><span class="pre">Name:</span></code> row.</p>
 </section>
-</section>
+<section id="pure-sycl-backends-portblas-and-portfft">
+<span id="build-for-portlibs-dpcpp"></span><h3>Pure SYCL backends: portBLAS and portFFT<a class="headerlink" href="#pure-sycl-backends-portblas-and-portfft" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://github.com/codeplaysoftware/portBLAS">portBLAS</a> and <a class="reference external" href="https://github.com/codeplaysoftware/portFFT">portFFT</a> are experimental pure-SYCL
+backends that work on all SYCL targets supported by the DPC++ compiler. Since
+they support multiple targets, they cannot be enabled with other backends in the
+same domain, or the MKLCPU or MKLGPU backends. Both libraries are experimental
+and currently only support a subset of operations and features.</p>
+<p>For best performance, both libraries must be tuned. See the individual sections
+for more details.</p>
+<p>Both portBLAS and portFFT are used as header-only libraries, and will be
+downloaded automatically if not found.</p>
 <section id="building-for-portblas">
-<h3>Building for portBLAS<a class="headerlink" href="#building-for-portblas" title="Link to this heading">#</a></h3>
-<p>Note the portBLAS backend is experimental and currently only supports a
-subset of the operations and features. The portBLAS backend cannot be enabled
-with other backends and can only be used with the compile time dispatch.
-The portBLAS backend uses the <a class="reference external" href="https://github.com/codeplaysoftware/portBLAS">portBLAS</a>
-project as a header-only library.</p>
-<ul class="simple">
-<li><p>On Linux*</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span>-DENABLE_PORTBLAS_BACKEND<span class="o">=</span>ON<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>OFF<span class="w">  </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>OFF<span class="w">  </span><span class="se">\</span>
-<span class="w">         </span>-DTARGET_DOMAINS<span class="o">=</span>blas<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w"> </span><span class="se">\ </span><span class="c1"># required only for testing</span>
-<span class="w">         </span><span class="o">[</span>-DPORTBLAS_DIR<span class="o">=</span>&lt;path<span class="w"> </span>to<span class="w"> </span>portBLAS<span class="w"> </span>install<span class="w"> </span>directory&gt;<span class="o">]</span>
-cmake<span class="w"> </span>--build<span class="w"> </span>.
-./bin/test_main_blas_ct
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;
-</pre></div>
-</div>
-<p>portBLAS will be downloaded automatically if not found.
-By default, the portBLAS backend is not tuned for any specific device which
-will impact performance.
+<span id="build-for-portblas-dpcpp"></span><h4>Building for portBLAS<a class="headerlink" href="#building-for-portblas" title="Link to this heading">#</a></h4>
+<p><a class="reference external" href="https://github.com/codeplaysoftware/portBLAS">portBLAS</a> is
+enabled by setting <code class="docutils literal notranslate"><span class="pre">-DENABLE_PORTBLAS_BACKEND=True</span></code>.</p>
+<p>By default, the portBLAS backend is not tuned for any specific device.
+This tuning is required to achieve best performance.
 portBLAS can be tuned for a specific hardware target by adding compiler
 definitions in 2 ways:</p>
 <ol class="arabic simple">
 <li><p>Manually specify a tuning target with <code class="docutils literal notranslate"><span class="pre">-DPORTBLAS_TUNING_TARGET=&lt;target&gt;</span></code>.
 The list of portBLAS targets can be found
 <a class="reference external" href="https://github.com/codeplaysoftware/portBLAS#cmake-options">here</a>.
-This will automatically set <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> if needed.
-In case of <code class="docutils literal notranslate"><span class="pre">AMD_GPU</span></code> target, it is mandatory to set one or more device
-architectures by means of <code class="docutils literal notranslate"><span class="pre">HIP_TARGETS</span></code>, e.g., <code class="docutils literal notranslate"><span class="pre">-DHIP_TARGETS=gfx90a</span></code>.
-In case of <code class="docutils literal notranslate"><span class="pre">NVIDIA_GPU</span></code> target, it is possible to select a specific device
-architecture by means of <code class="docutils literal notranslate"><span class="pre">CUDA_TARGET</span></code>, e.g., <code class="docutils literal notranslate"><span class="pre">-DCUDA_TARGET=sm_80</span></code>.</p></li>
+This will automatically set <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> if needed.</p></li>
 <li><p>If one target is set via <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> the configuration step will
 try to automatically detect the portBLAS tuning target. One can manually
 specify <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> via <code class="docutils literal notranslate"><span class="pre">CMAKE_CXX_FLAGS</span></code>. See
 <a class="reference external" href="https://intel.github.io/llvm-docs/UsersManual.html">DPC++ User Manual</a>
 for more information on <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code>.</p></li>
 </ol>
+<p>portBLAS relies heavily on JIT compilation. This may cause time-outs on some
+systems. To avoid this issue, use ahead-of-time compilation through tuning
+targets or <code class="docutils literal notranslate"><span class="pre">sycl-targets</span></code>.</p>
 </section>
 <section id="building-for-portfft">
-<h3>Building for portFFT<a class="headerlink" href="#building-for-portfft" title="Link to this heading">#</a></h3>
-<p>Note the portFFT backend is experimental and currently only supports a
-subset of the operations and features.
-The portFFT backend uses the <a class="reference external" href="https://github.com/codeplaysoftware/portFFT">portFFT</a>
-project as a header-only library.</p>
-<ul class="simple">
-<li><p>On Linux*</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
-mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span>-DENABLE_PORTFFT_BACKEND<span class="o">=</span>ON<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>OFF<span class="w">  </span><span class="se">\</span>
-<span class="w">         </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>OFF<span class="w">  </span><span class="se">\</span>
-<span class="w">         </span>-DTARGET_DOMAINS<span class="o">=</span>dft<span class="w"> </span><span class="se">\</span>
-<span class="w">         </span><span class="o">[</span>-DPORTFFT_REGISTERS_PER_WI<span class="o">=</span><span class="m">128</span><span class="o">]</span><span class="w"> </span><span class="se">\ </span><span class="c1"># Example portFFT tuning parameter</span>
-<span class="w">         </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w"> </span><span class="se">\ </span><span class="c1"># required only for testing</span>
-<span class="w">         </span><span class="o">[</span>-DPORTFFT_DIR<span class="o">=</span>&lt;path<span class="w"> </span>to<span class="w"> </span>portFFT<span class="w"> </span>install<span class="w"> </span>directory&gt;<span class="o">]</span>
-cmake<span class="w"> </span>--build<span class="w"> </span>.
-./bin/test_main_dft_ct
-cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;
-</pre></div>
-</div>
-<p>portFFT will be downloaded automatically if not found.</p>
-<p>By default, the portFFT backend is not tuned for any specific device. The tuning flags are
-detailed in the <a class="reference external" href="https://github.com/codeplaysoftware/portFFT">portFFT</a> repository.
-The tuning parameters can be set at configuration time,
-with the above example showing how to set the tuning parameter
-<code class="docutils literal notranslate"><span class="pre">PORTFFT_REGISTERS_PER_WI</span></code>. Note that some tuning configurations may be incompatible
+<span id="build-for-portfft-dpcpp"></span><h4>Building for portFFT<a class="headerlink" href="#building-for-portfft" title="Link to this heading">#</a></h4>
+<p><a class="reference external" href="https://github.com/codeplaysoftware/portFFT">portFFT</a> is enabled by setting
+<code class="docutils literal notranslate"><span class="pre">-DENABLE_PORTFFT_BACKEND=True</span></code>.</p>
+<p>By default, the portFFT backend is not tuned for any specific device. The tuning
+flags are detailed in the <a class="reference external" href="https://github.com/codeplaysoftware/portFFT">portFFT</a> repository, and can set at
+configuration time. Note that some tuning configurations may be incompatible
 with some targets.</p>
 <p>The portFFT library is compiled using the same <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> as specified
 by the <code class="docutils literal notranslate"><span class="pre">CMAKE_CXX_FLAGS</span></code>. If none are found, it will compile for
-<code class="docutils literal notranslate"><span class="pre">-fsycl-targets=nvptx64-nvidia-cuda,spir64</span></code>. To enable HIP targets,
-<code class="docutils literal notranslate"><span class="pre">HIP_TARGETS</span></code> must be specified. See
-<a class="reference external" href="https://intel.github.io/llvm-docs/UsersManual.html">DPC++ User Manual</a>
-for more information on <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">-fsycl-targets=spir64</span></code>, and -if the compiler supports it-
+<code class="docutils literal notranslate"><span class="pre">nvptx64-nvidia-cuda</span></code>. To enable HIP targets, <code class="docutils literal notranslate"><span class="pre">HIP_TARGETS</span></code> must be
+specified. See <a class="reference external" href="https://intel.github.io/llvm-docs/UsersManual.html">DPC++ User Manual</a> for more information on
+<code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code>.</p>
 </section>
-<section id="build-options">
-<h3>Build Options<a class="headerlink" href="#build-options" title="Link to this heading">#</a></h3>
+</section>
+</section>
+<section id="additional-build-options">
+<span id="build-additional-options-dpcpp"></span><h2>Additional Build Options<a class="headerlink" href="#additional-build-options" title="Link to this heading">#</a></h2>
 <p>When building oneMKL the SYCL implementation can be specified by setting the
 <code class="docutils literal notranslate"><span class="pre">ONEMKL_SYCL_IMPLEMENTATION</span></code> option. Possible values are:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">dpc++</span></code> (default) for the
-<a class="reference external" href="https://software.intel.com/en-us/oneapi/dpc-compiler">Intel(R) oneAPI DPC++ Compiler</a>
-and for the
-<a class="reference external" href="https://github.com/intel/llvm">oneAPI DPC++ Compiler</a> compilers.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hipsycl</span></code> for the <a class="reference external" href="https://github.com/illuhad/hipSYCL">hipSYCL</a> SYCL implementation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dpc++</span></code> (default) for the <a class="reference external" href="https://software.intel.com/en-us/oneapi/dpc-compiler">Intel(R) oneAPI DPC++ Compiler</a> and for the <a class="reference external" href="https://github.com/intel/llvm">oneAPI
+DPC++ Compiler</a> compilers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hipsycl</span></code> for the <a class="reference external" href="https://github.com/illuhad/AdaptiveCpp">AdaptiveCpp</a>
+SYCL implementation.</p></li>
 </ul>
+<p>Please see <a class="reference internal" href="building_the_project_with_adaptivecpp.html#building-the-project-with-adaptivecpp"><span class="std std-ref">Building the Project with AdaptiveCpp</span></a> if using this option.</p>
 <p>The following table provides details of CMake options and their default values:</p>
 <table class="table">
 <thead>
@@ -870,104 +847,92 @@ and for the
 <td><p>True, False</p></td>
 <td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td><p>ENABLE_MKLCPU_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>True</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_MKLGPU_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>True</p></td>
-</tr>
-<tr class="row-odd"><td><p>ENABLE_CUBLAS_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_CUSOLVER_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-odd"><td><p>ENABLE_CUFFT_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_CURAND_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-odd"><td><p>ENABLE_NETLIB_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_ROCBLAS_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-odd"><td><p>ENABLE_ROCFFT_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_MKLCPU_THREAD_TBB</p></td>
-<td><p>True, False</p></td>
-<td><p>True</p></td>
-</tr>
-<tr class="row-odd"><td><p>ENABLE_PORTBLAS_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_PORTFFT_BACKEND</p></td>
-<td><p>True, False</p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-odd"><td><p>BUILD_FUNCTIONAL_TESTS</p></td>
-<td><p>True, False</p></td>
-<td><p>True</p></td>
-</tr>
-<tr class="row-even"><td><p>BUILD_EXAMPLES</p></td>
-<td><p>True, False</p></td>
-<td><p>True</p></td>
-</tr>
 <tr class="row-odd"><td><p>BUILD_DOC</p></td>
 <td><p>True, False</p></td>
 <td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p>TARGET_DOMAINS (list)</p></td>
-<td><p>blas, lapack, rng, dft</p></td>
-<td><p>All domains</p></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">build_functional_tests</span></code> and related CMake options affect all domains at a
-global scope.</p>
+<p>When building with <code class="docutils literal notranslate"><span class="pre">clang++</span></code> for AMD backends, you must additionally set
+<code class="docutils literal notranslate"><span class="pre">ONEAPI_DEVICE_SELECTOR</span></code> to <code class="docutils literal notranslate"><span class="pre">hip:gpu</span></code> and provide <code class="docutils literal notranslate"><span class="pre">-DHIP_TARGETS</span></code>
+according to the targeted hardware. This backend has only been tested for the
+<code class="docutils literal notranslate"><span class="pre">gfx90a</span></code> architecture (MI210) at the time of writing.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When building with hipSYCL, you must additionally provide
-<code class="docutils literal notranslate"><span class="pre">-DHIPSYCL_TARGETS</span></code> according to the targeted hardware. For the options,
-see the tables in the hipSYCL-specific sections.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When building with clang++ for AMD backends, you must additionally set
-<code class="docutils literal notranslate"><span class="pre">ONEAPI_DEVICE_SELECTOR</span></code> to <code class="docutils literal notranslate"><span class="pre">hip:gpu</span></code> and provide <code class="docutils literal notranslate"><span class="pre">-DHIP_TARGETS</span></code> according to
-the targeted hardware. This backend has only been tested for the <code class="docutils literal notranslate"><span class="pre">gfx90a</span></code>
-architecture (MI210) at the time of writing.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When building with <code class="docutils literal notranslate"><span class="pre">BUILD_FUNCTIONAL_TESTS=yes</span></code> (default option) only single CUDA backend can be built
+<p>When building with <code class="docutils literal notranslate"><span class="pre">BUILD_FUNCTIONAL_TESTS=True</span></code> (default option) only single CUDA backend can be built
 (<a class="reference external" href="https://github.com/oneapi-src/oneMKL/issues/270">#270</a>).</p>
 </div>
 </section>
+<section id="cmake-invocation-examples">
+<span id="build-invocation-examples-dpcpp"></span><h2>CMake invocation examples<a class="headerlink" href="#cmake-invocation-examples" title="Link to this heading">#</a></h2>
+<p>Build oneMKL with support for x86 CPU, Intel GPU, and Nvidia GPUs with tests
+disabled using the Ninja build system:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span><span class="nv">$ONEMKL_DIR</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-GNinja<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>clang++<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_C_COMPILER<span class="o">=</span>clang<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_CUFFT_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_CUBLAS_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_CUSOLVER_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_CURAND_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DBUILD_FUNCTIONAL_TESTS<span class="o">=</span>False
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">$ONEMKL_DIR</span></code> points at the oneMKL source directly. The x86 CPU (<code class="docutils literal notranslate"><span class="pre">MKLCPU</span></code>)
+and Intel GPU (<code class="docutils literal notranslate"><span class="pre">MKLGPU</span></code>) backends are enabled by default, but are disabled
+here. The backends for Nvidia GPUs must all be explicilty enabled. The tests are
+disabled, but the examples will still be built.</p>
+<p>Building oneMKL with support x86 CPU, Intel GPU, and AMD GPUs with tests
+disabled:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span><span class="nv">$ONEMKL_DIR</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>clang++<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_C_COMPILER<span class="o">=</span>clang<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_ROCFFT_BACKEND<span class="o">=</span>True<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_ROCBLAS_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_ROCSOLVER_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DHIP_TARGETS<span class="o">=</span>gfx90a<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DBUILD_FUNCTIONAL_TESTS<span class="o">=</span>False
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">$ONEMKL_DIR</span></code> points at the oneMKL source directly. The x86 CPU (<code class="docutils literal notranslate"><span class="pre">MKLCPU</span></code>)
+and Intel GPU (<code class="docutils literal notranslate"><span class="pre">MKLGPU</span></code>) backends are enabled by default, but are disabled
+here. The backends for AMD GPUs must all be explicilty enabled. The tests are
+disabled, but the examples will still be built.</p>
+<p>Build oneMKL for the DFT domain only with support for x86 CPU, Intel GPU, AMD
+GPU and Nvidia GPU with testing enabled:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span><span class="nv">$ONEMKL_DIR</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>icpx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_C_COMPILER<span class="o">=</span>icx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_ROCFFT_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_CUFFT_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DTARGET_DOMAINS<span class="o">=</span>dft<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DBUILD_EXAMPLES<span class="o">=</span>False
+</pre></div>
+</div>
+<p>Note that this is not a supported configuration, and requires Codeplay’s oneAPI
+for <a class="reference external" href="https://developer.codeplay.com/products/oneapi/amd/home/">AMD</a> and
+<a class="reference external" href="https://developer.codeplay.com/products/oneapi/nvidia/home/">Nvidia</a> GPU
+plugins. Like the above example, the MKLCPU and MKLGPU backends are enabled by
+default, with backends for Nvidia GPU and AMD GPU explicitly enabled.
+<code class="docutils literal notranslate"><span class="pre">-DTARGET_DOMAINS=dft</span></code> causes only DFT backends to be built. If this was not
+set, the backend libraries to enable the use of BLAS, LAPACK and RNG with MKLGPU
+and MKLCPU would also be enabled. The build of examples is disabled. Since
+functional testing was not disabled, tests would be built.</p>
 </section>
 <section id="project-cleanup">
-<span id="id9"></span><h2>Project Cleanup<a class="headerlink" href="#project-cleanup" title="Link to this heading">#</a></h2>
-<p>Most use-cases involve building the project without the need to cleanup the
-build directory. However, if you wish to cleanup the build directory, you can
-delete the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder and create a new one. If you wish to cleanup the
-build files but retain the build configuration, following commands will help
-you do so.</p>
+<span id="id6"></span><h2>Project Cleanup<a class="headerlink" href="#project-cleanup" title="Link to this heading">#</a></h2>
+<p>Most use-cases involve building the project without the need to clean up the
+build directory. However, if you wish to clean up the build directory, you can
+delete the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder and create a new one. If you wish to clean up the
+build files but retain the build configuration, following commands will help you
+do so.</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you use &quot;GNU/Unix Makefiles&quot; for building,</span>
 make<span class="w"> </span>clean
 
@@ -975,6 +940,44 @@ make<span class="w"> </span>clean
 ninja<span class="w"> </span>-t<span class="w"> </span>clean
 </pre></div>
 </div>
+</section>
+<section id="building-for-windows">
+<span id="build-for-windows-dpcpp"></span><h2>Building for Windows<a class="headerlink" href="#building-for-windows" title="Link to this heading">#</a></h2>
+<p>The Windows build is similar to the Linux build, albeit that <a class="reference external" href="https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#windows">fewer backends are
+supported</a>.
+Additionally, the Ninja build system must be used. For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inside &lt;path to onemkl&gt;</span>
+md<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span><span class="o">[</span>-DCMAKE_CXX_COMPILER<span class="o">=</span>&lt;path_to_icx_compiler&gt;<span class="se">\b</span>in<span class="se">\i</span>cx<span class="o">]</span><span class="w"> </span><span class="c1"># required only if icx is not found in environment variable PATH</span>
+<span class="w">                  </span><span class="o">[</span>-DCMAKE_C_COMPILER<span class="o">=</span>&lt;path_to_icx_compiler&gt;<span class="se">\b</span>in<span class="se">\i</span>cx<span class="o">]</span><span class="w">   </span><span class="c1"># required only if icx is not found in environment variable PATH</span>
+<span class="w">                  </span><span class="o">[</span>-DMKL_ROOT<span class="o">=</span>&lt;mkl_install_prefix&gt;<span class="o">]</span><span class="w">                     </span><span class="c1"># required only if environment variable MKLROOT is not set</span>
+<span class="w">                  </span><span class="o">[</span>-DREF_BLAS_ROOT<span class="o">=</span>&lt;reference_blas_install_prefix&gt;<span class="o">]</span><span class="w">     </span><span class="c1"># required only for testing</span>
+<span class="w">                  </span><span class="o">[</span>-DREF_LAPACK_ROOT<span class="o">=</span>&lt;reference_lapack_install_prefix&gt;<span class="o">]</span><span class="w"> </span><span class="c1"># required only for testing</span>
+ninja
+ctest
+cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="w"> </span>&lt;path_to_install_dir&gt;<span class="w"> </span><span class="c1"># required to have full package structure</span>
+</pre></div>
+</div>
+</section>
+<section id="build-faq">
+<span id="build-common-problems-dpcpp"></span><h2>Build FAQ<a class="headerlink" href="#build-faq" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>clangrt builtins lib not found</dt><dd><p>Encountered when trying to build oneMKL with some ROCm libraries. There are
+several possible solutions: * If building Open DPC++ from source, add
+<code class="docutils literal notranslate"><span class="pre">compiler-rt</span></code> to the external projects compile option:
+<code class="docutils literal notranslate"><span class="pre">--llvm-external-projects</span> <span class="pre">compiler-rt</span></code>. * The <em>clangrt</em> from ROCm can be
+used, depending on ROCm version: <code class="docutils literal notranslate"><span class="pre">export</span>
+<span class="pre">LIBRARY_PATH=/path/to/rocm-$rocm-version$/llvm/lib/clang/$clang-version$/lib/linux/:$LIBRARY_PATH</span></code></p>
+</dd>
+<dt>Could NOT find CBLAS (missing: CBLAS file)</dt><dd><p>Encountered when tests are enabled along with the BLAS domain. The tests
+require a reference BLAS implementation, but cannot find one. Either install
+or build a BLAS library and set <code class="docutils literal notranslate"><span class="pre">-DREF_BLAS_ROOT`</span></code> as described in
+<a class="reference internal" href="building_and_running_tests.html#building-and-running-tests"><span class="std std-ref">Building and Running Tests</span></a>. Alternatively, the tests can be disabled by
+setting <code class="docutils literal notranslate"><span class="pre">-DBUILD_FUNCTIONAL_TESTS=False</span></code>.</p>
+</dd>
+<dt>error: invalid target ID ‘’; format is a processor name followed by an optional colon-delimited list of features followed by an enable/disable sign (e.g.,’gfx908:sramecc+:xnack-‘)</dt><dd><p>The HIP_TARGET has not been set. Please see <a class="reference internal" href="#building-for-rocm">Building for ROCm</a>.</p>
+</dd>
+</dl>
 </section>
 </section>
 
@@ -999,11 +1002,11 @@ ninja<span class="w"> </span>-t<span class="w"> </span>clean
       </div>
     </a>
     <a class="right-next"
-       href="onemkl-datatypes.html"
+       href="building_the_project_with_adaptivecpp.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">oneMKL Defined Datatypes</p>
+        <p class="prev-next-title">Building the Project with AdaptiveCpp</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1023,22 +1026,27 @@ ninja<span class="w"> </span>-t<span class="w"> </span>clean
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-setup">Build Setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-setup-with-hipsycl">Build Setup with hipSYCL</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-with-cmake">Building with CMake</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-onemkl">Building for oneMKL</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda-with-hipsycl">Building for CUDA (with hipSYCL)</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda-with-clang">Building for CUDA (with clang++)</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm-with-hipsycl">Building for ROCm (with hipSYCL)</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm-with-clang">Building for ROCm (with clang++)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">Environment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-commands">Build Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#target-domains">TARGET_DOMAINS</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portblas">Building for portBLAS</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portfft">Building for portFFT</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-options">Build Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backends">Backends</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-intel-r-onemkl">Building for Intel(R) oneMKL</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda">Building for CUDA</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm">Building for ROCm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-sycl-backends-portblas-and-portfft">Pure SYCL backends: portBLAS and portFFT</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portblas">Building for portBLAS</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portfft">Building for portFFT</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-build-options">Additional Build Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cmake-invocation-examples">CMake invocation examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-cleanup">Project Cleanup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-windows">Building for Windows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-faq">Build FAQ</a></li>
 </ul>
   </nav></div>
 
