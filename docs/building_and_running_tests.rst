@@ -37,7 +37,7 @@ To run the tests, either run test binaries individually, or use `ctest` CMake te
 
 .. code-block:: bash
 
- # Run all tests
+  # Run all tests
   ctest
   # Run only Gpu specific tests
   ctest -R Gpu
