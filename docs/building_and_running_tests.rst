@@ -33,7 +33,7 @@ and ``-DREF_LAPACK_ROOT=/path/to/lapack/install``.
 
 You can re-run tests without re-building the entire project.
 
-To run the tests, either run test binaries individually, or use `ctest` CMake test driver program.
+To run the tests, either run test binaries individually, or use ``ctest`` CMake test driver program.
 
 .. code-block:: bash
 
