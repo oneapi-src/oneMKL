@@ -17,7 +17,7 @@ The example executable naming convention follows `example_<$domain>_<$routine>_<
   or `example_<$domain>_<$routine>` for run-time dispatching examples. 
   E.g. `example_blas_gemm_usm_mklcpu_cublas `  `example_blas_gemm_usm`
 
-## Running examples (blas)
+## Running examples
   
 ## blas
 
