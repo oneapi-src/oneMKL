@@ -353,33 +353,34 @@ Random number generator example with uniform distribution ran OK on MKLCPU and C
 
 ## dft
 
-Compile-time dispatching example with both mklcpu and cufft backend
+Compile-time dispatching example with MKLGPU backend
 
 ```none
-$./bin/example_dft_complex_fwd_usm_mklcpu_cufft
+$ ONEAPI_DEVICE_SELECTOR="level_zero:gpu" ./bin/example_dft_complex_fwd_buffer_mklgpu
 
 ########################################################################
-# Complex out-of-place forward transform for USM API's example:
+# Complex out-of-place forward transform for Buffer API's example:
 #
 # Using APIs:
 #   Compile-time dispatch API
-#   USM forward complex out-of-place
+#   Buffer forward complex out-of-place
 #
 # Using single precision (float) data type
 #
-# Running on both Intel CPU and NVIDIA GPU devices.
+# For Intel GPU with Intel MKLGPU backend.
 #
+# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
+# available devices
 ########################################################################
 
-Running DFT Complex forward out-of-place usm example
-Using compile-time dispatch API with MKLCPU and cuFFT.
+Running DFT Complex forward out-of-place buffer example
+Using compile-time dispatch API with MKLGPU.
 Running with single precision real data type on:
-	CPU device: 12th Gen Intel(R) Core(TM) i9-12900K
-	GPU device :NVIDIA RTX A4000
-DFT Complex USM example ran OK on MKLCPU and CUFFT
+	GPU device :Intel(R) UHD Graphics 750 [0x4c8a]
+DFT Complex USM example ran OK on MKLGPU
 ```
 
-Runtime dispatching example with MKLGPU, MKLCPU, cuFFT, rocFFT and portFFT backends:
+Runtime dispatching example with MKLGPU, cuFFT, rocFFT and portFFT backends:
 
 ```none
 $ ONEAPI_DEVICE_SELECTOR="level_zero:gpu" ./bin/example_dft_real_fwd_usm
@@ -407,33 +408,7 @@ DFT example ran OK
 ```
 
 ```none
-$ ONEAPI_DEVICE_SELECTOR="opencl:cpu" ./bin/example_dft_real_fwd_usm
-
-########################################################################
-# DFT complex in-place forward transform with USM API example:
-#
-# Using APIs:
-#   USM forward complex in-place
-#   Run-time dispatch
-#
-# Using single precision (float) data type
-#
-# Device will be selected during runtime.
-# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify
-# available devices
-#
-########################################################################
-
-Running DFT complex forward example on CPU device
-Device name is: 12th Gen Intel(R) Core(TM) i9-12900K
-Running with single precision real data type:
-DFT example run_time dispatch
-DFT example ran OK
-
-```
-
-```none
-$ ONEAPI_DEVICE_SELECTOR="cuda:gpu" ./bin/example_dft_real_fwd_usm
+$ ONEAPI_DEVICE_SELECTOR="level_zero:gpu" ./bin/example_dft_real_fwd_usm
 
 ########################################################################
 # DFT complex in-place forward transform with USM API example:
