@@ -550,8 +550,17 @@ cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </
 </div>
 <p>and then used in oneMKL by setting <code class="docutils literal notranslate"><span class="pre">-REF_BLAS_ROOT=/path/to/lapack/install</span></code>
 and <code class="docutils literal notranslate"><span class="pre">-DREF_LAPACK_ROOT=/path/to/lapack/install</span></code>.</p>
-<p>To run the tests, either use the CMake test driver, by running <code class="docutils literal notranslate"><span class="pre">ctest</span></code>, or run
-individual test binaries individually.</p>
+<p>You can re-run tests without re-building the entire project.</p>
+<p>To run the tests, either run test binaries individually, or use <code class="docutils literal notranslate"><span class="pre">ctest</span></code> CMake test driver program.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
+ctest
+<span class="c1"># Run only Gpu specific tests</span>
+ctest<span class="w"> </span>-R<span class="w"> </span>Gpu
+<span class="c1"># Exclude Cpu tests</span>
+ctest<span class="w"> </span>-E<span class="w"> </span>Cpu
+</pre></div>
+</div>
+<p>For more <code class="docutils literal notranslate"><span class="pre">ctest</span></code> options, refer to <a class="reference external" href="https://cmake.org/cmake/help/v3.13/manual/ctest.1.html">ctest manual page</a>.</p>
 <p>When running tests you may encounter the issue <code class="docutils literal notranslate"><span class="pre">BACKEND</span> <span class="pre">NOT</span> <span class="pre">FOUND</span> <span class="pre">EXCEPTION</span></code>,
 you may need to add your <code class="docutils literal notranslate"><span class="pre">&lt;oneMKL</span> <span class="pre">build</span> <span class="pre">directory&gt;/lib</span></code> to your
 <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code> on Linux.</p>
