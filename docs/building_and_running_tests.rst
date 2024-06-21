@@ -31,8 +31,20 @@ following:
 and then used in oneMKL by setting ``-REF_BLAS_ROOT=/path/to/lapack/install``
 and ``-DREF_LAPACK_ROOT=/path/to/lapack/install``.
 
-To run the tests, either use the CMake test driver, by running ``ctest``, or run
-individual test binaries individually.
+You can re-run tests without re-building the entire project.
+
+To run the tests, either run test binaries individually, or use ``ctest`` CMake test driver program.
+
+.. code-block:: bash
+
+  # Run all tests
+  ctest
+  # Run only Gpu specific tests
+  ctest -R Gpu
+  # Exclude Cpu tests
+  ctest -E Cpu
+
+For more ``ctest`` options, refer to `ctest manual page <https://cmake.org/cmake/help/v3.13/manual/ctest.1.html>`_.
 
 When running tests you may encounter the issue ``BACKEND NOT FOUND EXCEPTION``,
 you may need to add your ``<oneMKL build directory>/lib`` to your
