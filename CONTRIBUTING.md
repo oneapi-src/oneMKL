@@ -320,6 +320,6 @@ for (int i = 0; i < loop_size; i++) ...;
 
 ## Unit Tests
 
-oneMKL uses GoogleTest for functional testing.
+oneMKL uses GoogleTest for functional testing. For more information about how to build and run Unit Tests please see [Building and Running Tests](https://oneapi-src.github.io/oneMKL/building_and_running_tests.html).
 
 Be sure to extend the existing tests when fixing an issue, adding a new interface or new implementation under existing interfaces.
