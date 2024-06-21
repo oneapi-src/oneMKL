@@ -23,6 +23,8 @@ if (ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
   list(APPEND DFT_CT_SOURCES "complex_fwd_usm_mklcpu_cufft")
 endif()
 
+include(WarningsUtils)
+
 foreach(dft_ct_source ${DFT_CT_SOURCES})
   set(EXAMPLE_NAME example_${domain}_${dft_ct_source})
   add_executable(${EXAMPLE_NAME} ${dft_ct_source}.cpp)
@@ -40,6 +42,7 @@ endif()
 target_link_libraries(${EXAMPLE_NAME} PUBLIC
   ${ONEMKL_LIBRARIES_${domain}}
   ONEMKL::SYCL::SYCL
+  onemkl_warnings
   )
 
   # Register example as ctest
