@@ -25,6 +25,7 @@
 
 #include "oneapi/mkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
+#include "oneapi/mkl/exceptions.hpp"
 #include "../mkl_common/mkl_blas_backend.hpp"
 
 namespace oneapi {

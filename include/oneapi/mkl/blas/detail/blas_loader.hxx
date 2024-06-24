@@ -124,6 +124,27 @@ ONEMKL_EXPORT void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, tr
                               std::int64_t stride_b, sycl::half beta,
                               sycl::buffer<sycl::half, 1> &c, std::int64_t ldc,
                               std::int64_t stride_c, std::int64_t batch_size);
+ONEMKL_EXPORT void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa,
+                              transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                              float alpha, sycl::buffer<sycl::half, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, sycl::buffer<sycl::half, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, float beta,
+                              sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                              std::int64_t batch_size);
+ONEMKL_EXPORT void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa,
+                              transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                              float alpha, sycl::buffer<std::int8_t, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, sycl::buffer<std::int8_t, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, float beta,
+                              sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                              std::int64_t batch_size);
+ONEMKL_EXPORT void gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue, transpose transa,
+                              transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                              float alpha, sycl::buffer<std::int8_t, 1> &a, std::int64_t lda,
+                              std::int64_t stride_a, sycl::buffer<std::int8_t, 1> &b,
+                              std::int64_t ldb, std::int64_t stride_b, float beta,
+                              sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
+                              std::int64_t stride_c, std::int64_t batch_size);
 
 ONEMKL_EXPORT void syrk(oneapi::mkl::device libkey, sycl::queue &queue, uplo upper_lower,
                         transpose trans, std::int64_t n, std::int64_t k, float alpha,
@@ -1228,6 +1249,29 @@ ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &qu
                                          std::int64_t group_count, std::int64_t *group_size,
                                          const std::vector<sycl::event> &dependencies = {});
 ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue,
+                                     transpose *transa, transpose *transb, std::int64_t *m,
+                                     std::int64_t *n, std::int64_t *k, float *alpha,
+                                     const sycl::half **a, std::int64_t *lda, const sycl::half **b,
+                                     std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc,
+                                     std::int64_t group_count, std::int64_t *group_size,
+                                     const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue,
+                                     transpose *transa, transpose *transb, std::int64_t *m,
+                                     std::int64_t *n, std::int64_t *k, float *alpha,
+                                     const std::int8_t **a, std::int64_t *lda,
+                                     const std::int8_t **b, std::int64_t *ldb, float *beta,
+                                     float **c, std::int64_t *ldc, std::int64_t group_count,
+                                     std::int64_t *group_size,
+                                     const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue,
+                                     transpose *transa, transpose *transb, std::int64_t *m,
+                                     std::int64_t *n, std::int64_t *k, float *alpha,
+                                     const std::int8_t **a, std::int64_t *lda,
+                                     const std::int8_t **b, std::int64_t *ldb, float *beta,
+                                     std::int32_t **c, std::int64_t *ldc, std::int64_t group_count,
+                                     std::int64_t *group_size,
+                                     const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue,
                                          transpose transa, transpose transb, std::int64_t m,
                                          std::int64_t n, std::int64_t k, float alpha,
                                          const float *a, std::int64_t lda, std::int64_t stride_a,
@@ -1263,6 +1307,30 @@ ONEMKL_EXPORT sycl::event gemm_batch(
     std::int64_t lda, std::int64_t stride_a, const sycl::half *b, std::int64_t ldb,
     std::int64_t stride_b, sycl::half beta, sycl::half *c, std::int64_t ldc, std::int64_t stride_c,
     std::int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue,
+                                     transpose transa, transpose transb, std::int64_t m,
+                                     std::int64_t n, std::int64_t k, float alpha,
+                                     const sycl::half *a, std::int64_t lda, std::int64_t stride_a,
+                                     const sycl::half *b, std::int64_t ldb, std::int64_t stride_b,
+                                     float beta, float *c, std::int64_t ldc, std::int64_t stride_c,
+                                     std::int64_t batch_size,
+                                     const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue,
+                                     transpose transa, transpose transb, std::int64_t m,
+                                     std::int64_t n, std::int64_t k, float alpha,
+                                     const std::int8_t *a, std::int64_t lda, std::int64_t stride_a,
+                                     const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b,
+                                     float beta, float *c, std::int64_t ldc, std::int64_t stride_c,
+                                     std::int64_t batch_size,
+                                     const std::vector<sycl::event> &dependencies = {});
+ONEMKL_EXPORT sycl::event gemm_batch(oneapi::mkl::device libkey, sycl::queue &queue,
+                                     transpose transa, transpose transb, std::int64_t m,
+                                     std::int64_t n, std::int64_t k, float alpha,
+                                     const std::int8_t *a, std::int64_t lda, std::int64_t stride_a,
+                                     const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b,
+                                     float beta, std::int32_t *c, std::int64_t ldc,
+                                     std::int64_t stride_c, std::int64_t batch_size,
+                                     const std::vector<sycl::event> &dependencies = {});
 
 ONEMKL_EXPORT sycl::event syrk(oneapi::mkl::device libkey, sycl::queue &queue,
                                    uplo upper_lower, transpose trans, std::int64_t n,
