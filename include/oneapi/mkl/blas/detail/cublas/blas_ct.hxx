@@ -186,6 +186,39 @@ void gemm_batch(backend_selector<backend::cublas> selector, transpose transa, tr
                                                  ldc, stride_c, batch_size);
 }
 
+void gemm_batch(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
+                std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                sycl::buffer<sycl::half, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
+                sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size) {
+    oneapi::mkl::blas::cublas::MAJOR::gemm_batch(selector.get_queue(), transa, transb, m, n, k,
+                                                 alpha, a, lda, stride_a, b, ldb, stride_b, beta, c,
+                                                 ldc, stride_c, batch_size);
+}
+
+void gemm_batch(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
+                std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                sycl::buffer<std::int8_t, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                float beta, sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
+                std::int64_t batch_size) {
+    oneapi::mkl::blas::cublas::MAJOR::gemm_batch(selector.get_queue(), transa, transb, m, n, k,
+                                                 alpha, a, lda, stride_a, b, ldb, stride_b, beta, c,
+                                                 ldc, stride_c, batch_size);
+}
+
+void gemm_batch(backend_selector<backend::cublas> selector, transpose transa, transpose transb,
+                std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
+                sycl::buffer<std::int8_t, 1> &a, std::int64_t lda, std::int64_t stride_a,
+                sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
+                float beta, sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
+                std::int64_t stride_c, std::int64_t batch_size) {
+    oneapi::mkl::blas::cublas::MAJOR::gemm_batch(selector.get_queue(), transa, transb, m, n, k,
+                                                 alpha, a, lda, stride_a, b, ldb, stride_b, beta, c,
+                                                 ldc, stride_c, batch_size);
+}
+
 void syrk(backend_selector<backend::cublas> selector, uplo upper_lower, transpose trans,
           std::int64_t n, std::int64_t k, float alpha, sycl::buffer<float, 1> &a,
           std::int64_t lda, float beta, sycl::buffer<float, 1> &c, std::int64_t ldc) {
@@ -2670,6 +2703,42 @@ sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose *tr
     return done;
 }
 
+sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose *transa,
+                       transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k,
+                       float *alpha, const sycl::half **a, std::int64_t *lda, const sycl::half **b,
+                       std::int64_t *ldb, float *beta, float **c, std::int64_t *ldc,
+                       std::int64_t group_count, std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
+        selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+        group_count, group_size, dependencies);
+    return done;
+}
+
+sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose *transa,
+                       transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k,
+                       float *alpha, const std::int8_t **a, std::int64_t *lda,
+                       const std::int8_t **b, std::int64_t *ldb, float *beta, float **c,
+                       std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
+        selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+        group_count, group_size, dependencies);
+    return done;
+}
+
+sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose *transa,
+                       transpose *transb, std::int64_t *m, std::int64_t *n, std::int64_t *k,
+                       float *alpha, const std::int8_t **a, std::int64_t *lda,
+                       const std::int8_t **b, std::int64_t *ldb, float *beta, std::int32_t **c,
+                       std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
+        selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc,
+        group_count, group_size, dependencies);
+    return done;
+}
+
 sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose transa,
                            transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
                            float alpha, const float *a, std::int64_t lda, std::int64_t stride_a,
@@ -2731,6 +2800,42 @@ sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose tra
                            std::int64_t stride_b, sycl::half beta, sycl::half *c, std::int64_t ldc,
                            std::int64_t stride_c, std::int64_t batch_size,
                            const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
+        selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b,
+        beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose transa,
+                       transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                       float alpha, const sycl::half *a, std::int64_t lda, std::int64_t stride_a,
+                       const sycl::half *b, std::int64_t ldb, std::int64_t stride_b, float beta,
+                       float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
+        selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b,
+        beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose transa,
+                       transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                       float alpha, const std::int8_t *a, std::int64_t lda, std::int64_t stride_a,
+                       const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b, float beta,
+                       float *c, std::int64_t ldc, std::int64_t stride_c, std::int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies) {
+    auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
+        selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b,
+        beta, c, ldc, stride_c, batch_size, dependencies);
+    return done;
+}
+
+sycl::event gemm_batch(backend_selector<backend::cublas> selector, transpose transa,
+                       transpose transb, std::int64_t m, std::int64_t n, std::int64_t k,
+                       float alpha, const std::int8_t *a, std::int64_t lda, std::int64_t stride_a,
+                       const std::int8_t *b, std::int64_t ldb, std::int64_t stride_b, float beta,
+                       std::int32_t *c, std::int64_t ldc, std::int64_t stride_c,
+                       std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
     auto done = oneapi::mkl::blas::cublas::MAJOR::gemm_batch(
         selector.get_queue(), transa, transb, m, n, k, alpha, a, lda, stride_a, b, ldb, stride_b,
         beta, c, ldc, stride_c, batch_size, dependencies);
