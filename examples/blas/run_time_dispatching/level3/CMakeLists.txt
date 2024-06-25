@@ -40,6 +40,19 @@ endif()
 if(ENABLE_ROCBLAS_BACKEND)
   list(APPEND DEVICE_FILTERS "hip:gpu")
 endif()
+if(ENABLE_PORTBLAS_BACKEND)
+  if(PORTBLAS_TUNING_TARGET)
+    if(PORTBLAS_TUNING_TARGET MATCHES "INTEL_CPU")
+      list(APPEND DEVICE_FILTERS "opencl:cpu")
+    elseif(PORTBLAS_TUNING_TARGET MATCHES "_GPU")
+      list(APPEND DEVICE_FILTERS "*:gpu")
+    endif()
+  else()
+    # portBLAS default sycl-target is spir64, testing runtime on both supported
+    # devices.
+    list(APPEND DEVICE_FILTERS "opencl:cpu;level_zero:gpu")
+  endif()
+endif()
 
 message(STATUS "ONEAPI_DEVICE_SELECTOR will be set to the following value(s): [${DEVICE_FILTERS}] for run-time dispatching examples")
 
