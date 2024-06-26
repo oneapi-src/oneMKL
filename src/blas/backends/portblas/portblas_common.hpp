@@ -203,7 +203,7 @@ struct throw_if_unsupported_by_device {
             std::apply(fn, args);                                                               \
         }                                                                                       \
         catch (const std::runtime_error& e) {                                                   \
-            throw unimplemented("blas", "portBLAS operator not supported");                     \
+            throw unimplemented("blas", e.what());                                              \
         }                                                                                       \
     }                                                                                           \
     else {                                                                                      \
@@ -224,7 +224,7 @@ struct throw_if_unsupported_by_device {
             return std::apply(fn, args);                                          \
         }                                                                         \
         catch (const std::runtime_error& e) {                                     \
-            throw unimplemented("blas", "portBLAS operator not supported");       \
+            throw unimplemented("blas", e.what());                                \
         }                                                                         \
     }                                                                             \
     else {                                                                        \
