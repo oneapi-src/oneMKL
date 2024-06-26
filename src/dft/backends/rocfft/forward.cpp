@@ -94,7 +94,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
                 reinterpret_cast<fwd<descriptor_type> *>(detail::native_mem(ih, inout_acc)) +
                 offsets[0]);
             detail::execute_checked(func_name, plan, &inout_native, nullptr, info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
 }
@@ -134,7 +134,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
                                          offsets[0])
             };
             detail::execute_checked(func_name, plan, inout_native.data(), nullptr, info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
 }
@@ -167,7 +167,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descr
                 reinterpret_cast<bwd<descriptor_type> *>(detail::native_mem(ih, out_acc)) +
                 offsets[1]);
             detail::execute_checked(func_name, plan, &in_native, &out_native, info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
 }
@@ -213,7 +213,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
                                          offsets[1])
             };
             detail::execute_checked(func_name, plan, in_native.data(), out_native.data(), info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
 }
@@ -252,7 +252,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_
 
             void *inout_ptr = inout;
             detail::execute_checked(func_name, plan, &inout_ptr, nullptr, info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);
@@ -285,7 +285,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descript
 
             std::array<void *, 2> inout_native{ inout_re + offsets[0], inout_im + offsets[0] };
             detail::execute_checked(func_name, plan, inout_native.data(), nullptr, info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);
@@ -319,7 +319,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_
             void *in_ptr = in;
             void *out_ptr = out;
             detail::execute_checked(func_name, plan, &in_ptr, &out_ptr, info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);
@@ -351,7 +351,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descript
             std::array<void *, 2> in_native{ in_re + offsets[0], in_im + offsets[0] };
             std::array<void *, 2> out_native{ out_re + offsets[1], out_im + offsets[1] };
             detail::execute_checked(func_name, plan, in_native.data(), out_native.data(), info);
-            detail::sync_checked(func_name, stream);
+            
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);
