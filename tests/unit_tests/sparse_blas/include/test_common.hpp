@@ -238,7 +238,8 @@ intType generate_random_csr_matrix(const intType nrows, const intType ncols,
         const intType j_start = is_symmetric ? i : 0;
         for (intType j = j_start; j < ncols; j++) {
             const bool is_diag = require_diagonal && i == j;
-            if (is_diag || (rand_density(0.0, 1.0) <= density_val)) {
+            const bool force_last_nnz = nnz == 0 && i == nrows - 1 && j == ncols - 1;
+            if (force_last_nnz || is_diag || (rand_density(0.0, 1.0) <= density_val)) {
                 a.push_back(generate_data<fpType>(is_diag));
                 ja.push_back(j + indexing);
                 nnz++;
@@ -282,7 +283,8 @@ intType generate_random_coo_matrix(const intType nrows, const intType ncols,
         const intType j_start = is_symmetric ? i : 0;
         for (intType j = j_start; j < ncols; j++) {
             const bool is_diag = require_diagonal && i == j;
-            if (is_diag || (rand_density(0.0, 1.0) <= density_val)) {
+            const bool force_last_nnz = a.size() == 0 && i == nrows - 1 && j == ncols - 1;
+            if (force_last_nnz || is_diag || (rand_density(0.0, 1.0) <= density_val)) {
                 a.push_back(generate_data<fpType>(is_diag));
                 ia.push_back(i + indexing);
                 ja.push_back(j + indexing);
