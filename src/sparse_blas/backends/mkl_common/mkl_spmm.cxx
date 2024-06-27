@@ -63,8 +63,9 @@ void check_valid_spmm(const std::string function_name, sycl::queue &queue,
 #if BACKEND == gpu
     if (opA == oneapi::mkl::transpose::conjtrans &&
         internal_A_handle->has_matrix_property(oneapi::mkl::sparse::matrix_property::symmetric)) {
-        throw mkl::unimplemented("sparse_blas/mklgpu", function_name,
-                                 "spmm does not support conjtrans with the symmetric property.");
+        throw mkl::unimplemented(
+            "sparse_blas", function_name,
+            "The backend does not support spmm using conjtrans and the symmetric property.");
     }
 #else
     (void)opA;

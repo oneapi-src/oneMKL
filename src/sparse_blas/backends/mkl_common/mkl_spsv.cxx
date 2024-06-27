@@ -43,8 +43,8 @@ void check_valid_spsv(const std::string function_name, sycl::queue &queue,
     if (alg == oneapi::mkl::sparse::spsv_alg::no_optimize_alg &&
         !internal_A_handle->has_matrix_property(oneapi::mkl::sparse::matrix_property::sorted)) {
         throw mkl::unimplemented(
-            "sparse_blas/mkl", function_name,
-            "`no_optimize_alg` is not supported unless A_handle has the property `matrix_property::sorted`.");
+            "sparse_blas", function_name,
+            "The backend does not support `no_optimize_alg` unless A_handle has the property `matrix_property::sorted`.");
     }
 
     detail::check_all_containers_compatible(function_name, internal_A_handle, x_handle, y_handle);
