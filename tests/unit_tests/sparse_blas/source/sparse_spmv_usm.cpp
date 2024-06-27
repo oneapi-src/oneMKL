@@ -135,7 +135,7 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                 is_symmetric);
             if (!is_sorted) {
                 shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(),
-                                      a_host.data(), nnz, static_cast<std::size_t>(nrows_A));
+                                      a_host.data(), reset_nnz, static_cast<std::size_t>(nrows_A));
             }
             if (reset_nnz > nnz) {
                 ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());

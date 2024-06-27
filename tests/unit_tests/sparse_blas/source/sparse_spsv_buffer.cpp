@@ -107,7 +107,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
                 require_diagonal);
             if (!is_sorted) {
                 shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(),
-                                      a_host.data(), nnz, mu);
+                                      a_host.data(), reset_nnz, mu);
             }
             if (reset_nnz > nnz) {
                 ia_buf = make_buffer(ia_host);
