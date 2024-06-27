@@ -110,7 +110,7 @@ void test_helper_with_format(
     // Test int64 indices
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i64(dev, format, 27L, 13L, density_A_matrix, index_zero, transpose_val, fp_one,
-                         fp_one, default_alg, default_A_view, no_properties, no_reset_data),
+                         fp_zero, default_alg, default_A_view, no_properties, no_reset_data),
         num_passed, num_skipped);
     // Lower triangular
     oneapi::mkl::sparse::matrix_view triangular_A_view(
