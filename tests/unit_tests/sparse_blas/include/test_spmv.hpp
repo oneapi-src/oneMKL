@@ -215,8 +215,7 @@ void prepare_reference_spmv_data(sparse_matrix_format_t format, const intType *i
                                  fpType *y_ref) {
     std::size_t a_nrows_u = static_cast<std::size_t>(a_nrows);
     std::size_t a_ncols_u = static_cast<std::size_t>(a_ncols);
-    std::size_t opa_nrows = (opA == oneapi::mkl::transpose::nontrans) ? a_nrows_u : a_ncols_u;
-    std::size_t opa_ncols = (opA == oneapi::mkl::transpose::nontrans) ? a_ncols_u : a_nrows_u;
+    auto [opa_nrows, opa_ncols] = swap_if_transposed(opA, a_nrows_u, a_ncols_u);
     const std::size_t nnz = static_cast<std::size_t>(a_nnz);
     auto dense_opa =
         sparse_to_dense(format, ia, ja, a, a_nrows_u, a_ncols_u, nnz, indexing, opA, A_view);

@@ -39,10 +39,7 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     if (require_square_matrix(A_view, matrix_properties)) {
         ncols_A = nrows_A;
     }
-    std::size_t opa_nrows = static_cast<std::size_t>(
-        transpose_val == oneapi::mkl::transpose::nontrans ? nrows_A : ncols_A);
-    std::size_t opa_ncols = static_cast<std::size_t>(
-        transpose_val == oneapi::mkl::transpose::nontrans ? ncols_A : nrows_A);
+    auto [opa_nrows, opa_ncols] = swap_if_transposed<std::size_t>(transpose_val, nrows_A, ncols_A);
     intType indexing = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
     const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
                            matrix_properties.cend();

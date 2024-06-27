@@ -131,19 +131,29 @@ auto sparse_transpose_if_needed(const intType *ia, const intType *ja, const fpTy
     return std::make_tuple(iopa, jopa, opa);
 }
 
+/// Reduce the leading dimension to the minimum and transpose the matrix if needed
+/// The outputted matrix always uses row major layout
 template <typename fpType>
-auto dense_transpose_if_needed(const fpType *x, std::size_t outer_size, std::size_t inner_size,
-                               std::size_t ld, oneapi::mkl::transpose transpose_val) {
-    std::vector<fpType> opx;
-    if (transpose_val == oneapi::mkl::transpose::nontrans) {
-        opx.assign(x, x + outer_size * ld);
+auto extract_dense_matrix(const fpType *x, std::size_t nrows, std::size_t ncols, std::size_t ld,
+                          oneapi::mkl::transpose transpose_val,
+                          oneapi::mkl::layout dense_matrix_layout) {
+    const bool is_row_major = dense_matrix_layout == oneapi::mkl::layout::row_major;
+    const bool is_transposed = transpose_val != oneapi::mkl::transpose::nontrans;
+    const bool apply_conjugate = transpose_val == oneapi::mkl::transpose::conjtrans;
+    const bool swap_ld = is_row_major != is_transposed;
+    if (swap_ld && ncols > ld) {
+        throw std::runtime_error("Expected ncols <= ld");
     }
-    else {
-        opx.resize(outer_size * ld);
-        for (std::size_t i = 0; i < outer_size; ++i) {
-            for (std::size_t j = 0; j < inner_size; ++j) {
-                opx[i + j * ld] = x[i * ld + j];
-            }
+    if (!swap_ld && nrows > ld) {
+        throw std::runtime_error("Expected nrows <= ld");
+    }
+
+    // Copy with a default leading dimension and transpose if needed
+    std::vector<fpType> opx(nrows * ncols);
+    for (std::size_t i = 0; i < nrows; ++i) {
+        for (std::size_t j = 0; j < ncols; ++j) {
+            auto val = swap_ld ? x[i * ld + j] : x[j * ld + i];
+            opx[i * ncols + j] = opVal(val, apply_conjugate);
         }
     }
     return opx;

@@ -44,10 +44,8 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
         ldb = nrows_A;
         ldc = nrows_A;
     }
-    std::size_t opa_nrows = static_cast<std::size_t>(
-        transpose_A == oneapi::mkl::transpose::nontrans ? nrows_A : ncols_A);
-    std::size_t opa_ncols = static_cast<std::size_t>(
-        transpose_A == oneapi::mkl::transpose::nontrans ? ncols_A : nrows_A);
+    auto [opa_nrows, opa_ncols] = swap_if_transposed<std::size_t>(transpose_A, nrows_A, ncols_A);
+    auto [opb_nrows, opb_ncols] = swap_if_transposed<std::int64_t>(transpose_B, opa_ncols, ncols_C);
     intType indexing = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
     const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
                            matrix_properties.cend();
@@ -65,7 +63,7 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     // Input and output dense vectors
     std::vector<fpType> b_host, c_host;
     rand_matrix(b_host, dense_matrix_layout, opa_ncols, static_cast<std::size_t>(ncols_C),
-                static_cast<std::size_t>(ldb));
+                static_cast<std::size_t>(ldb), transpose_B);
     rand_matrix(c_host, dense_matrix_layout, opa_nrows, static_cast<std::size_t>(ncols_C),
                 static_cast<std::size_t>(ldc));
     std::vector<fpType> c_ref_host(c_host);
@@ -92,9 +90,8 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
         for (auto property : matrix_properties) {
             CALL_RT_OR_CT(oneapi::mkl::sparse::set_matrix_property, main_queue, A_handle, property);
         }
-        CALL_RT_OR_CT(oneapi::mkl::sparse::init_dense_matrix, main_queue, &B_handle,
-                      static_cast<std::int64_t>(opa_ncols), ncols_C, ldb, dense_matrix_layout,
-                      b_buf);
+        CALL_RT_OR_CT(oneapi::mkl::sparse::init_dense_matrix, main_queue, &B_handle, opb_nrows,
+                      opb_ncols, ldb, dense_matrix_layout, b_buf);
         CALL_RT_OR_CT(oneapi::mkl::sparse::init_dense_matrix, main_queue, &C_handle,
                       static_cast<std::int64_t>(opa_nrows), ncols_C, ldc, dense_matrix_layout,
                       c_buf);

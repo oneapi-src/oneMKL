@@ -259,8 +259,7 @@ void prepare_reference_spmm_data(sparse_matrix_format_t format, const intType *i
     std::size_t a_nrows_u = static_cast<std::size_t>(a_nrows);
     std::size_t a_ncols_u = static_cast<std::size_t>(a_ncols);
     std::size_t c_ncols_u = static_cast<std::size_t>(c_ncols);
-    std::size_t opa_nrows = (opA == oneapi::mkl::transpose::nontrans) ? a_nrows_u : a_ncols_u;
-    std::size_t opa_ncols = (opA == oneapi::mkl::transpose::nontrans) ? a_ncols_u : a_nrows_u;
+    auto [opa_nrows, opa_ncols] = swap_if_transposed(opA, a_nrows_u, a_ncols_u);
     const std::size_t nnz = static_cast<std::size_t>(a_nnz);
     const std::size_t ldb_u = static_cast<std::size_t>(ldb);
     const std::size_t ldc_u = static_cast<std::size_t>(ldc);
@@ -268,12 +267,8 @@ void prepare_reference_spmm_data(sparse_matrix_format_t format, const intType *i
     auto dense_opa =
         sparse_to_dense(format, ia, ja, a, a_nrows_u, a_ncols_u, nnz, indexing, opA, A_view);
 
-    std::size_t b_outer_size = static_cast<std::size_t>(opa_ncols);
-    std::size_t b_inner_size = c_ncols_u;
-    if (dense_matrix_layout == oneapi::mkl::layout::col_major) {
-        std::swap(b_outer_size, b_inner_size);
-    }
-    auto dense_opb = dense_transpose_if_needed(b, b_outer_size, b_inner_size, ldb_u, opB);
+    // dense_opb is always row major and not transposed
+    auto dense_opb = extract_dense_matrix(b, opa_ncols, c_ncols_u, ldb_u, opB, dense_matrix_layout);
 
     // Return the linear index to access a dense matrix from
     auto dense_linear_idx = [=](std::size_t row, std::size_t col, std::size_t ld) {
@@ -290,7 +285,7 @@ void prepare_reference_spmm_data(sparse_matrix_format_t format, const intType *i
         for (std::size_t col = 0; col < c_ncols_u; col++) {
             fpType acc = 0;
             for (std::size_t i = 0; i < opa_ncols; i++) {
-                acc += dense_opa[row * opa_ncols + i] * dense_opb[dense_linear_idx(i, col, ldb_u)];
+                acc += dense_opa[row * opa_ncols + i] * dense_opb[i * c_ncols_u + col];
             }
             fpType &c = c_ref[dense_linear_idx(row, col, ldc_u)];
             c = alpha * acc + beta * c;
