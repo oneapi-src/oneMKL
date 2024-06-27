@@ -63,101 +63,126 @@ void test_helper_with_format_with_transpose(
     fpType fp_one = set_fp_value<fpType>()(1.f, 0.f);
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
     oneapi::mkl::layout col_major = oneapi::mkl::layout::col_major;
-    int nrows_A = 4, ncols_A = 6, ncols_C = 5;
-    int ldb = transpose_A == oneapi::mkl::transpose::nontrans ? ncols_A : nrows_A;
-    int ldc = transpose_A == oneapi::mkl::transpose::nontrans ? nrows_A : ncols_A;
     oneapi::mkl::sparse::spmm_alg default_alg = oneapi::mkl::sparse::spmm_alg::default_alg;
     oneapi::mkl::sparse::matrix_view default_A_view;
     std::set<oneapi::mkl::sparse::matrix_property> no_properties;
     bool no_reset_data = false;
 
-    // Basic test
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc,
-                         default_alg, default_A_view, no_properties, no_reset_data),
-        num_passed, num_skipped);
-    // Reset data
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc,
-                         default_alg, default_A_view, no_properties, true),
-        num_passed, num_skipped);
-    // Test index_base 1
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix,
-                         oneapi::mkl::index_base::one, col_major, transpose_A, transpose_B, fp_one,
-                         fp_zero, ldb, ldc, default_alg, default_A_view, no_properties,
-                         no_reset_data),
-        num_passed, num_skipped);
-    // Test non-default alpha
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, set_fp_value<fpType>()(2.f, 1.5f),
-                         fp_zero, ldb, ldc, default_alg, default_A_view, no_properties,
-                         no_reset_data),
-        num_passed, num_skipped);
-    // Test non-default beta
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, fp_one,
-                         set_fp_value<fpType>()(3.2f, 1.f), ldb, ldc, default_alg, default_A_view,
-                         no_properties, no_reset_data),
-        num_passed, num_skipped);
-    // Test 0 alpha
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, fp_zero, fp_one, ldb, ldc,
-                         default_alg, default_A_view, no_properties, no_reset_data),
-        num_passed, num_skipped);
-    // Test 0 alpha and beta
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, fp_zero, fp_zero, ldb, ldc,
-                         default_alg, default_A_view, no_properties, no_reset_data),
-        num_passed, num_skipped);
-    // Test non-default ldb
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb + 5, ldc,
-                         default_alg, default_A_view, no_properties, no_reset_data),
-        num_passed, num_skipped);
-    // Test non-default ldc
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc + 6,
-                         default_alg, default_A_view, no_properties, no_reset_data),
-        num_passed, num_skipped);
-    // Test row major layout
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                         oneapi::mkl::layout::row_major, transpose_A, transpose_B, fp_one, fp_zero,
-                         ncols_C, ncols_C, default_alg, default_A_view, no_properties,
-                         no_reset_data),
-        num_passed, num_skipped);
-    // Test int64 indices
-    long long_nrows_A = 27, long_ncols_A = 13, long_ncols_C = 6;
-    long long_ldb = transpose_A == oneapi::mkl::transpose::nontrans ? long_ncols_A : long_nrows_A;
-    long long_ldc = transpose_A == oneapi::mkl::transpose::nontrans ? long_nrows_A : long_ncols_A;
-    EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i64(dev, format, long_nrows_A, long_ncols_A, long_ncols_C, density_A_matrix,
-                         index_zero, col_major, transpose_A, transpose_B, fp_one, fp_zero, long_ldb,
-                         long_ldc, default_alg, default_A_view, no_properties, no_reset_data),
-        num_passed, num_skipped);
-    // Test other algorithms
-    for (auto alg : non_default_algorithms) {
-        EXPECT_TRUE_OR_FUTURE_SKIP(
-            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
-                             col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc, alg,
-                             default_A_view, no_properties, no_reset_data),
-            num_passed, num_skipped);
-    }
-    // Test matrix properties
-    for (auto properties : test_matrix_properties) {
+    {
+        int m = 4, k = 6, n = 5;
+        int nrows_A = (transpose_A != oneapi::mkl::transpose::nontrans) ? k : m;
+        int ncols_A = (transpose_A != oneapi::mkl::transpose::nontrans) ? m : k;
+        int nrows_B = (transpose_B != oneapi::mkl::transpose::nontrans) ? n : k;
+        int ncols_B = (transpose_B != oneapi::mkl::transpose::nontrans) ? k : n;
+        int nrows_C = m;
+        int ncols_C = n;
+        int ldb = nrows_B;
+        int ldc = nrows_C;
+
+        // Basic test
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
                              col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc,
-                             default_alg, default_A_view, properties, no_reset_data),
+                             default_alg, default_A_view, no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Reset data
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc,
+                             default_alg, default_A_view, no_properties, true),
+            num_passed, num_skipped);
+        // Test index_base 1
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix,
+                             oneapi::mkl::index_base::one, col_major, transpose_A, transpose_B,
+                             fp_one, fp_zero, ldb, ldc, default_alg, default_A_view, no_properties,
+                             no_reset_data),
+            num_passed, num_skipped);
+        // Test non-default alpha
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, set_fp_value<fpType>()(2.f, 1.5f),
+                             fp_zero, ldb, ldc, default_alg, default_A_view, no_properties,
+                             no_reset_data),
+            num_passed, num_skipped);
+        // Test non-default beta
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, fp_one,
+                             set_fp_value<fpType>()(3.2f, 1.f), ldb, ldc, default_alg,
+                             default_A_view, no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Test 0 alpha
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, fp_zero, fp_one, ldb, ldc,
+                             default_alg, default_A_view, no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Test 0 alpha and beta
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, fp_zero, fp_zero, ldb, ldc,
+                             default_alg, default_A_view, no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Test non-default ldb
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb + 5, ldc,
+                             default_alg, default_A_view, no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Test non-default ldc
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc + 6,
+                             default_alg, default_A_view, no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Test row major layout
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             oneapi::mkl::layout::row_major, transpose_A, transpose_B, fp_one,
+                             fp_zero, ncols_B, ncols_C, default_alg, default_A_view, no_properties,
+                             no_reset_data),
+            num_passed, num_skipped);
+        // Test int64 indices
+        long long_nrows_A = 27, long_ncols_A = 13, long_ncols_C = 6;
+        auto [long_ldc, long_ldb] = swap_if_transposed(transpose_A, long_nrows_A, long_ncols_A);
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i64(dev, format, long_nrows_A, long_ncols_A, long_ncols_C,
+                             density_A_matrix, index_zero, col_major, transpose_A, transpose_B,
+                             fp_one, fp_zero, long_ldb, long_ldc, default_alg, default_A_view,
+                             no_properties, no_reset_data),
+            num_passed, num_skipped);
+        // Test other algorithms
+        for (auto alg : non_default_algorithms) {
+            EXPECT_TRUE_OR_FUTURE_SKIP(
+                test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix,
+                                 index_zero, col_major, transpose_A, transpose_B, fp_one, fp_zero,
+                                 ldb, ldc, alg, default_A_view, no_properties, no_reset_data),
+                num_passed, num_skipped);
+        }
+        // Test matrix properties
+        for (auto properties : test_matrix_properties) {
+            EXPECT_TRUE_OR_FUTURE_SKIP(
+                test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix,
+                                 index_zero, col_major, transpose_A, transpose_B, fp_one, fp_zero,
+                                 ldb, ldc, default_alg, default_A_view, properties, no_reset_data),
+                num_passed, num_skipped);
+        }
+    }
+    {
+        // Test different sizes
+        int m = 6, k = 2, n = 5;
+        int nrows_A = (transpose_A != oneapi::mkl::transpose::nontrans) ? k : m;
+        int ncols_A = (transpose_A != oneapi::mkl::transpose::nontrans) ? m : k;
+        int nrows_B = (transpose_B != oneapi::mkl::transpose::nontrans) ? n : k;
+        int nrows_C = m;
+        int ncols_C = n;
+        int ldb = nrows_B;
+        int ldc = nrows_C;
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, ncols_C, density_A_matrix, index_zero,
+                             col_major, transpose_A, transpose_B, fp_one, fp_zero, ldb, ldc,
+                             default_alg, default_A_view, no_properties, no_reset_data),
             num_passed, num_skipped);
     }
 }
