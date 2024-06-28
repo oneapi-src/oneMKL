@@ -45,6 +45,12 @@ void check_valid_spmm(const std::string function_name, sycl::queue &queue,
         detail::check_ptr_is_host_accessible("spmm", "alpha", queue, alpha);
         detail::check_ptr_is_host_accessible("spmm", "beta", queue, beta);
     }
+    if (detail::is_ptr_accessible_on_host(queue, alpha) !=
+        detail::is_ptr_accessible_on_host(queue, beta)) {
+        throw mkl::invalid_argument(
+            "sparse_blas", function_name,
+            "Alpha and beta must both be placed on host memory or device memory.");
+    }
     if (B_handle->dense_layout != C_handle->dense_layout) {
         throw mkl::invalid_argument("sparse_blas", function_name,
                                     "B and C matrices must used the same layout.");
@@ -138,8 +144,8 @@ sycl::event internal_spmm(sycl::queue &queue, oneapi::mkl::transpose opA,
                           oneapi::mkl::sparse::spmm_alg /*alg*/,
                           oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/,
                           const std::vector<sycl::event> &dependencies) {
-    T cast_alpha = *static_cast<const T *>(alpha);
-    T cast_beta = *static_cast<const T *>(beta);
+    T host_alpha = detail::get_scalar_on_host(queue, static_cast<const T *>(alpha));
+    T host_beta = detail::get_scalar_on_host(queue, static_cast<const T *>(beta));
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     auto layout = B_handle->dense_layout;
@@ -147,16 +153,16 @@ sycl::event internal_spmm(sycl::queue &queue, oneapi::mkl::transpose opA,
     auto ldb = B_handle->ld;
     auto ldc = C_handle->ld;
     if (internal_A_handle->all_use_buffer()) {
-        oneapi::mkl::sparse::gemm(queue, layout, opA, opB, cast_alpha,
+        oneapi::mkl::sparse::gemm(queue, layout, opA, opB, host_alpha,
                                   internal_A_handle->backend_handle, B_handle->get_buffer<T>(),
-                                  columns, ldb, cast_beta, C_handle->get_buffer<T>(), ldc);
+                                  columns, ldb, host_beta, C_handle->get_buffer<T>(), ldc);
         // Dependencies are not used for buffers
         return {};
     }
     else {
-        return oneapi::mkl::sparse::gemm(queue, layout, opA, opB, cast_alpha,
+        return oneapi::mkl::sparse::gemm(queue, layout, opA, opB, host_alpha,
                                          internal_A_handle->backend_handle,
-                                         B_handle->get_usm_ptr<T>(), columns, ldb, cast_beta,
+                                         B_handle->get_usm_ptr<T>(), columns, ldb, host_beta,
                                          C_handle->get_usm_ptr<T>(), ldc, dependencies);
     }
 }

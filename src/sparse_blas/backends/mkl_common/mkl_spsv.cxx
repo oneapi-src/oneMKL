@@ -124,18 +124,18 @@ sycl::event internal_spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::spsv_alg /*alg*/,
                           oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/,
                           const std::vector<sycl::event> &dependencies) {
-    T cast_alpha = *static_cast<const T *>(alpha);
+    T host_alpha = detail::get_scalar_on_host(queue, static_cast<const T *>(alpha));
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     if (internal_A_handle->all_use_buffer()) {
-        oneapi::mkl::sparse::trsv(queue, A_view.uplo_view, opA, A_view.diag_view, cast_alpha,
+        oneapi::mkl::sparse::trsv(queue, A_view.uplo_view, opA, A_view.diag_view, host_alpha,
                                   internal_A_handle->backend_handle, x_handle->get_buffer<T>(),
                                   y_handle->get_buffer<T>());
         // Dependencies are not used for buffers
         return {};
     }
     else {
-        return oneapi::mkl::sparse::trsv(queue, A_view.uplo_view, opA, A_view.diag_view, cast_alpha,
+        return oneapi::mkl::sparse::trsv(queue, A_view.uplo_view, opA, A_view.diag_view, host_alpha,
                                          internal_A_handle->backend_handle,
                                          x_handle->get_usm_ptr<T>(), y_handle->get_usm_ptr<T>(),
                                          dependencies);

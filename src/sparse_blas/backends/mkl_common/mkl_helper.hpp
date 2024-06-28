@@ -57,7 +57,7 @@ void check_ptr_is_host_accessible(const std::string &function_name, const std::s
 /// Return a scalar on the host from a pointer to host or device memory
 /// Used for USM functions
 template <typename T>
-inline T get_scalar(sycl::queue &queue, const T *host_or_device_ptr) {
+inline T get_scalar_on_host(sycl::queue &queue, const T *host_or_device_ptr) {
     if (is_ptr_accessible_on_host(queue, host_or_device_ptr)) {
         return *host_or_device_ptr;
     }

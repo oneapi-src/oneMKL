@@ -45,6 +45,12 @@ void check_valid_spmv(const std::string function_name, sycl::queue &queue,
         detail::check_ptr_is_host_accessible("spmv", "alpha", queue, alpha);
         detail::check_ptr_is_host_accessible("spmv", "beta", queue, beta);
     }
+    if (detail::is_ptr_accessible_on_host(queue, alpha) !=
+        detail::is_ptr_accessible_on_host(queue, beta)) {
+        throw mkl::invalid_argument(
+            "sparse_blas", function_name,
+            "Alpha and beta must both be placed on host memory or device memory.");
+    }
     if (A_view.type_view == oneapi::mkl::sparse::matrix_descr::diagonal) {
         throw mkl::invalid_argument("sparse_blas", function_name,
                                     "Matrix view's type cannot be diagonal.");
@@ -153,8 +159,8 @@ sycl::event internal_spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::spmv_alg /*alg*/,
                           oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/,
                           const std::vector<sycl::event> &dependencies) {
-    T cast_alpha = *static_cast<const T *>(alpha);
-    T cast_beta = *static_cast<const T *>(beta);
+    T host_alpha = detail::get_scalar_on_host(queue, static_cast<const T *>(alpha));
+    T host_beta = detail::get_scalar_on_host(queue, static_cast<const T *>(beta));
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     auto backend_handle = internal_A_handle->backend_handle;
@@ -162,16 +168,16 @@ sycl::event internal_spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const 
         auto x_buffer = x_handle->get_buffer<T>();
         auto y_buffer = y_handle->get_buffer<T>();
         if (A_view.type_view == matrix_descr::triangular) {
-            oneapi::mkl::sparse::trmv(queue, A_view.uplo_view, opA, A_view.diag_view, cast_alpha,
-                                      backend_handle, x_buffer, cast_beta, y_buffer);
+            oneapi::mkl::sparse::trmv(queue, A_view.uplo_view, opA, A_view.diag_view, host_alpha,
+                                      backend_handle, x_buffer, host_beta, y_buffer);
         }
         else if (A_view.type_view == matrix_descr::symmetric ||
                  A_view.type_view == matrix_descr::hermitian) {
-            oneapi::mkl::sparse::symv(queue, A_view.uplo_view, cast_alpha, backend_handle, x_buffer,
-                                      cast_beta, y_buffer);
+            oneapi::mkl::sparse::symv(queue, A_view.uplo_view, host_alpha, backend_handle, x_buffer,
+                                      host_beta, y_buffer);
         }
         else {
-            oneapi::mkl::sparse::gemv(queue, opA, cast_alpha, backend_handle, x_buffer, cast_beta,
+            oneapi::mkl::sparse::gemv(queue, opA, host_alpha, backend_handle, x_buffer, host_beta,
                                       y_buffer);
         }
         // Dependencies are not used for buffers
@@ -182,17 +188,17 @@ sycl::event internal_spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const 
         auto y_usm = y_handle->get_usm_ptr<T>();
         if (A_view.type_view == matrix_descr::triangular) {
             return oneapi::mkl::sparse::trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
-                                             cast_alpha, backend_handle, x_usm, cast_beta, y_usm,
+                                             host_alpha, backend_handle, x_usm, host_beta, y_usm,
                                              dependencies);
         }
         else if (A_view.type_view == matrix_descr::symmetric ||
                  A_view.type_view == matrix_descr::hermitian) {
-            return oneapi::mkl::sparse::symv(queue, A_view.uplo_view, cast_alpha, backend_handle,
-                                             x_usm, cast_beta, y_usm, dependencies);
+            return oneapi::mkl::sparse::symv(queue, A_view.uplo_view, host_alpha, backend_handle,
+                                             x_usm, host_beta, y_usm, dependencies);
         }
         else {
-            return oneapi::mkl::sparse::gemv(queue, opA, cast_alpha, backend_handle, x_usm,
-                                             cast_beta, y_usm, dependencies);
+            return oneapi::mkl::sparse::gemv(queue, opA, host_alpha, backend_handle, x_usm,
+                                             host_beta, y_usm, dependencies);
         }
     }
 }

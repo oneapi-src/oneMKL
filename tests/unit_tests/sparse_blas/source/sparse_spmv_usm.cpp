@@ -33,7 +33,7 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
               oneapi::mkl::transpose transpose_val, fpType alpha, fpType beta,
               oneapi::mkl::sparse::spmv_alg alg, oneapi::mkl::sparse::matrix_view A_view,
               const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties,
-              bool reset_data) {
+              bool reset_data, bool test_scalar_on_device) {
     sycl::queue main_queue(*dev, exception_handler_t());
 
     if (require_square_matrix(A_view, matrix_properties)) {
@@ -72,6 +72,8 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     auto a_usm_uptr = malloc_device_uptr<fpType>(main_queue, a_host.size());
     auto x_usm_uptr = malloc_device_uptr<fpType>(main_queue, x_host.size());
     auto y_usm_uptr = malloc_device_uptr<fpType>(main_queue, y_host.size());
+    auto alpha_usm_uptr = malloc_device_uptr<fpType>(main_queue, 1);
+    auto beta_usm_uptr = malloc_device_uptr<fpType>(main_queue, 1);
 
     intType *ia_usm = ia_usm_uptr.get();
     intType *ja_usm = ja_usm_uptr.get();
@@ -93,6 +95,16 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     spmv_dependencies.push_back(
         main_queue.memcpy(y_usm, y_host.data(), y_host.size() * sizeof(fpType)));
 
+    fpType *alpha_host_or_usm_ptr = &alpha;
+    fpType *beta_host_or_usm_ptr = &beta;
+    if (test_scalar_on_device) {
+        spmv_dependencies.push_back(
+            main_queue.memcpy(alpha_usm_uptr.get(), &alpha, sizeof(fpType)));
+        spmv_dependencies.push_back(main_queue.memcpy(beta_usm_uptr.get(), &beta, sizeof(fpType)));
+        alpha_host_or_usm_ptr = alpha_usm_uptr.get();
+        beta_host_or_usm_ptr = beta_usm_uptr.get();
+    }
+
     sycl::event ev_copy, ev_spmv;
     oneapi::mkl::sparse::matrix_handle_t A_handle = nullptr;
     oneapi::mkl::sparse::dense_vector_handle_t x_handle = nullptr;
@@ -113,18 +125,20 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
         CALL_RT_OR_CT(oneapi::mkl::sparse::init_spmv_descr, main_queue, &descr);
 
         std::size_t workspace_size = 0;
-        CALL_RT_OR_CT(oneapi::mkl::sparse::spmv_buffer_size, main_queue, transpose_val, &alpha,
-                      A_view, A_handle, x_handle, &beta, y_handle, alg, descr, workspace_size);
+        CALL_RT_OR_CT(oneapi::mkl::sparse::spmv_buffer_size, main_queue, transpose_val,
+                      alpha_host_or_usm_ptr, A_view, A_handle, x_handle, beta_host_or_usm_ptr,
+                      y_handle, alg, descr, workspace_size);
         workspace_usm = malloc_device_uptr<std::uint8_t>(main_queue, workspace_size);
 
         sycl::event ev_opt;
         CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::spmv_optimize, main_queue, transpose_val,
-                      &alpha, A_view, A_handle, x_handle, &beta, y_handle, alg, descr,
-                      workspace_usm.get(), mat_dependencies);
+                      alpha_host_or_usm_ptr, A_view, A_handle, x_handle, beta_host_or_usm_ptr,
+                      y_handle, alg, descr, workspace_usm.get(), mat_dependencies);
 
         spmv_dependencies.push_back(ev_opt);
-        CALL_RT_OR_CT(ev_spmv = oneapi::mkl::sparse::spmv, main_queue, transpose_val, &alpha,
-                      A_view, A_handle, x_handle, &beta, y_handle, alg, descr, spmv_dependencies);
+        CALL_RT_OR_CT(ev_spmv = oneapi::mkl::sparse::spmv, main_queue, transpose_val,
+                      alpha_host_or_usm_ptr, A_view, A_handle, x_handle, beta_host_or_usm_ptr,
+                      y_handle, alg, descr, spmv_dependencies);
 
         if (reset_data) {
             intType reset_nnz = generate_random_matrix<fpType, intType>(
@@ -157,19 +171,20 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                             ja_usm, a_usm);
 
             std::size_t workspace_size_2 = 0;
-            CALL_RT_OR_CT(oneapi::mkl::sparse::spmv_buffer_size, main_queue, transpose_val, &alpha,
-                          A_view, A_handle, x_handle, &beta, y_handle, alg, descr,
-                          workspace_size_2);
+            CALL_RT_OR_CT(oneapi::mkl::sparse::spmv_buffer_size, main_queue, transpose_val,
+                          alpha_host_or_usm_ptr, A_view, A_handle, x_handle, beta_host_or_usm_ptr,
+                          y_handle, alg, descr, workspace_size_2);
             if (workspace_size_2 > workspace_size) {
                 workspace_usm = malloc_device_uptr<std::uint8_t>(main_queue, workspace_size_2);
             }
 
             CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::spmv_optimize, main_queue, transpose_val,
-                          &alpha, A_view, A_handle, x_handle, &beta, y_handle, alg, descr,
-                          workspace_usm.get(), mat_dependencies);
+                          alpha_host_or_usm_ptr, A_view, A_handle, x_handle, beta_host_or_usm_ptr,
+                          y_handle, alg, descr, workspace_usm.get(), mat_dependencies);
 
-            CALL_RT_OR_CT(ev_spmv = oneapi::mkl::sparse::spmv, main_queue, transpose_val, &alpha,
-                          A_view, A_handle, x_handle, &beta, y_handle, alg, descr, { ev_opt });
+            CALL_RT_OR_CT(ev_spmv = oneapi::mkl::sparse::spmv, main_queue, transpose_val,
+                          alpha_host_or_usm_ptr, A_view, A_handle, x_handle, beta_host_or_usm_ptr,
+                          y_handle, alg, descr, { ev_opt });
         }
 
         ev_copy = main_queue.memcpy(y_host.data(), y_usm, y_host.size() * sizeof(fpType), ev_spmv);

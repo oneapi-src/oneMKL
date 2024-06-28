@@ -35,7 +35,11 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
               intType ldc, oneapi::mkl::sparse::spmm_alg alg,
               oneapi::mkl::sparse::matrix_view A_view,
               const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties,
-              bool reset_data) {
+              bool reset_data, bool test_scalar_on_device) {
+    if (test_scalar_on_device) {
+        // Scalars on the device is not planned to be supported with the buffer API
+        return 1;
+    }
     sycl::queue main_queue(*dev, exception_handler_t());
 
     if (require_square_matrix(A_view, matrix_properties)) {
