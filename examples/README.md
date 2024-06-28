@@ -3,7 +3,7 @@ oneAPI Math Kernel Library (oneMKL) Interfaces offers examples with the followin
 - blas: level3/gemm_usm  
 - rng: uniform_usm  
 - lapack: getrs_usm
-- dft: complex_fwd_buffer, real_fwd_usm
+- dft: complex_fwd_usm, real_fwd_usm
 - sparse_blas: sparse_gemv_usm
 
 Each routine has one run-time dispatching example and one compile-time dispatching example (which uses both mklcpu and cuda backends), located in `example/<$domain>/run_time_dispatching` and `example/<$domain>/compile_time_dispatching` subfolders, respectively.
@@ -11,7 +11,6 @@ Each routine has one run-time dispatching example and one compile-time dispatchi
 To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
 Compile_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and cuda backend is enabled, because the compile-time dispatching example runs on both mklcpu and cuda backends.
 Run_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`.
-All DFT examples require the mklgpu backend to be enabled.
 
 The example executable naming convention follows `example_<$domain>_<$routine>_<$backend>` for compile-time dispatching examples 
   or `example_<$domain>_<$routine>` for run-time dispatching examples. 
