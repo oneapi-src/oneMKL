@@ -67,7 +67,7 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose /*opA*/, const 
                       oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/,
                       std::size_t &temp_buffer_size) {
     // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
-    check_valid_spsv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
+    check_valid_spsv(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
     temp_buffer_size = 0;
 }
 
@@ -79,10 +79,10 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    oneapi::mkl::sparse::spsv_alg alg,
                    oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
-    check_valid_spsv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
+    check_valid_spsv(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (!internal_A_handle->all_use_buffer()) {
-        detail::throw_incompatible_container(__FUNCTION__);
+        detail::throw_incompatible_container(__func__);
     }
     if (alg == oneapi::mkl::sparse::spsv_alg::no_optimize_alg) {
         return;
@@ -102,10 +102,10 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::spsv_alg alg,
                           oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
-    check_valid_spsv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
+    check_valid_spsv(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (internal_A_handle->all_use_buffer()) {
-        detail::throw_incompatible_container(__FUNCTION__);
+        detail::throw_incompatible_container(__func__);
     }
     if (alg == oneapi::mkl::sparse::spsv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
@@ -149,7 +149,7 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                  oneapi::mkl::sparse::spsv_alg alg, oneapi::mkl::sparse::spsv_descr_t spsv_descr,
                  const std::vector<sycl::event> &dependencies) {
-    check_valid_spsv(__FUNCTION__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
+    check_valid_spsv(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha, alg);
     auto value_type = detail::get_internal_handle(A_handle)->get_value_type();
     DISPATCH_MKL_OPERATION("spsv", value_type, internal_spsv, queue, opA, alpha, A_view, A_handle,
                            x_handle, y_handle, alg, spsv_descr, dependencies);
