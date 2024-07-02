@@ -45,7 +45,8 @@ void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) {
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
+template <typename descriptor_type, typename data_type,
+          std::enable_if_t<detail::valid_ip_realreal_impl<descriptor_type, data_type>, bool> = true>
 void compute_forward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re,
                      sycl::buffer<data_type, 1> &inout_im) {
     static_assert(detail::valid_compute_arg<descriptor_type, data_type>::value,
@@ -114,12 +115,12 @@ sycl::event compute_forward(descriptor_type &desc, data_type *inout,
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
+template <typename descriptor_type, typename data_type,
+          std::enable_if_t<detail::valid_ip_realreal_impl<descriptor_type, data_type>, bool> = true>
 sycl::event compute_forward(descriptor_type &desc, data_type *inout_re, data_type *inout_im,
                             const std::vector<sycl::event> &dependencies = {}) {
     static_assert(detail::valid_compute_arg<descriptor_type, data_type>::value,
                   "unexpected type for data_type");
-
     using scalar_type = typename detail::descriptor_info<descriptor_type>::scalar_type;
     return get_commit(desc)->forward_ip_rr(desc, reinterpret_cast<scalar_type *>(inout_re),
                                            reinterpret_cast<scalar_type *>(inout_im), dependencies);
@@ -133,7 +134,6 @@ sycl::event compute_forward(descriptor_type &desc, input_type *in, output_type *
                   "unexpected type for input_type");
     static_assert(detail::valid_compute_arg<descriptor_type, output_type>::value,
                   "unexpected type for output_type");
-
     using fwd_type = typename detail::descriptor_info<descriptor_type>::forward_type;
     using bwd_type = typename detail::descriptor_info<descriptor_type>::backward_type;
     return get_commit(desc)->forward_op_cc(desc, reinterpret_cast<fwd_type *>(in),
