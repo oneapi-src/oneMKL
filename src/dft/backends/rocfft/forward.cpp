@@ -19,7 +19,6 @@
 
 #include <type_traits>
 
-#include <sycl/ext/adaptivecpp/custom_operation.hpp>
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else

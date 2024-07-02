@@ -17,7 +17,6 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include <sycl/ext/adaptivecpp/custom_operation.hpp>
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else

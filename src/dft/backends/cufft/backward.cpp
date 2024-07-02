@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 #if __has_include(<sycl/sycl.hpp>)
-#include <sycl/ext/adaptivecpp/custom_operation.hpp>
+#define SYCL_EXT_ACPP_ENQUEUE_CUSTOM_OPERATION 1
 #include <sycl/sycl.hpp>
 #else
 #include <CL/sycl.hpp>
