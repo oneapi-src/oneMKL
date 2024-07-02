@@ -87,15 +87,33 @@ struct descriptor_info<descriptor<precision::DOUBLE, domain::COMPLEX>> {
     using backward_type = std::complex<double>;
 };
 
+// Get the scalar type associated with a descriptor.
+template <class descriptor_t>
+using descriptor_scalar_t = typename descriptor_info<descriptor_t>::scalar_type;
+
+template <typename T>
+constexpr bool is_complex_dft = false;
+template <precision Prec>
+constexpr bool is_complex_dft<descriptor<Prec, domain::COMPLEX>> = true;
+
+template <typename T>
+constexpr bool is_complex = false;
+template <typename T>
+constexpr bool is_complex<std::complex<T>> = true;
+
 template <typename T, typename... Ts>
 using is_one_of = typename std::bool_constant<(std::is_same_v<T, Ts> || ...)>;
 
 template <typename descriptor_type, typename T>
 using valid_compute_arg = typename std::bool_constant<
-    (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, float> &&
+    (std::is_same_v<descriptor_scalar_t<descriptor_type>, float> &&
      is_one_of<T, float, sycl::float2, sycl::float4, std::complex<float>>::value) ||
-    (std::is_same_v<typename detail::descriptor_info<descriptor_type>::scalar_type, double> &&
+    (std::is_same_v<descriptor_scalar_t<descriptor_type>, double> &&
      is_one_of<T, double, sycl::double2, sycl::double4, std::complex<double>>::value)>;
+
+template <class descriptor_t, typename data_t>
+constexpr bool valid_ip_realreal_impl =
+    is_complex_dft<descriptor_t>&& std::is_same_v<descriptor_scalar_t<descriptor_t>, data_t>;
 
 // compute the range of a reinterpreted buffer
 template <typename In, typename Out>

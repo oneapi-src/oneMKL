@@ -44,7 +44,8 @@ void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout) 
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
+template <typename descriptor_type, typename data_type,
+          std::enable_if_t<detail::valid_ip_realreal_impl<descriptor_type, data_type>, bool> = true>
 void compute_backward(descriptor_type &desc, sycl::buffer<data_type, 1> &inout_re,
                       sycl::buffer<data_type, 1> &inout_im) {
     static_assert(detail::valid_compute_arg<descriptor_type, data_type>::value,
@@ -114,7 +115,8 @@ sycl::event compute_backward(descriptor_type &desc, data_type *inout,
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
-template <typename descriptor_type, typename data_type>
+template <typename descriptor_type, typename data_type,
+          std::enable_if_t<detail::valid_ip_realreal_impl<descriptor_type, data_type>, bool> = true>
 sycl::event compute_backward(descriptor_type &desc, data_type *inout_re, data_type *inout_im,
                              const std::vector<sycl::event> &dependencies = {}) {
     static_assert(detail::valid_compute_arg<descriptor_type, data_type>::value,
