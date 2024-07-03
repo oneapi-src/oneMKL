@@ -38,9 +38,8 @@ namespace oneapi::mkl::sparse::detail {
 template <typename T>
 inline bool is_ptr_accessible_on_host(sycl::queue &queue, const T *host_or_device_ptr) {
     auto alloc_type = sycl::get_pointer_type(host_or_device_ptr, queue.get_context());
-    // Note sycl::usm::alloc::host may not be accessible on the host according to SYCL specification.
-    // sycl::usm::alloc::unknown is returned if the pointer is not a USM allocation which is assumed to be a normal host pointer.
-    return alloc_type == sycl::usm::alloc::shared || alloc_type == sycl::usm::alloc::unknown;
+    return alloc_type == sycl::usm::alloc::host || alloc_type == sycl::usm::alloc::shared ||
+           alloc_type == sycl::usm::alloc::unknown;
 }
 
 /// Throw an exception if the scalar is not accessible in the host
