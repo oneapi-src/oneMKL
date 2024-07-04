@@ -394,7 +394,7 @@ public:
 
     std::int64_t get_plan_workspace_size_bytes(cufftHandle handle) {
         std::size_t size = 0;
-        cufftGetSize(*plans[0], &size);
+        cufftGetSize(handle, &size);
         std::int64_t padded_size = static_cast<int64_t>(size);
         return padded_size;
     }

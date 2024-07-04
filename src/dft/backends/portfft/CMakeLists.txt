@@ -36,7 +36,10 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
   set(TARGETS_LINK_OPTIONS -fsycl-unnamed-lambda)
 
   # spir64 must be last in the list due to a bug in dpcpp 2024.0.0
-  set(TARGETS_TRIPLES "nvptx64-nvidia-cuda,spir64")
+  set(TARGETS_TRIPLES "spir64")
+  if(dpcpp_supports_nvptx64)
+    set(TARGETS_TRIPLES nvptx64-nvidia-cuda,${TARGETS_TRIPLES})
+  endif()
 
   if (NOT (HIP_TARGETS STREQUAL ""))
     set(TARGETS_TRIPLES amdgcn-amd-amdhsa,${TARGETS_TRIPLES})
@@ -45,6 +48,8 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
   else()
     message(WARNING "Can't enable hip backend, HIP_TARGETS has not been set.")
   endif()
+  
+  message(STATUS "portFFT target triple set to ${TARGETS_TRIPLES}")
 
   list(APPEND TARGETS_COMPILE_OPTIONS -fsycl-targets=${TARGETS_TRIPLES})
   list(APPEND TARGETS_LINK_OPTIONS -fsycl-targets=${TARGETS_TRIPLES})

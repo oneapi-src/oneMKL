@@ -197,10 +197,10 @@ protected:
             auto uni_res2 = mcg59_impl::generate(this->state_);
 
             if constexpr (VecSize == 1) {
-                uni_res1 >>= 27;
-                uni_res2 >>= 27;
+                uni_res1 >>= UIntType(27);
+                uni_res2 >>= UIntType(27);
 
-                return (uni_res2 << 32) + uni_res1;
+                return (uni_res2 << UIntType(32)) + uni_res1;
             }
             else {
                 sycl::vec<std::uint64_t, VecSize> vec_out;

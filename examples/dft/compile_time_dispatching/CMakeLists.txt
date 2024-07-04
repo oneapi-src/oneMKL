@@ -18,31 +18,35 @@
 #===============================================================================
 
 #Build object from all sources
-set(DFTI_CT_BACKENDS "")
-
-if(ENABLE_MKLGPU_BACKEND)
-  list(APPEND DFTI_CT_BACKENDS "mklgpu")
-endif()
-
-if(ENABLE_MKLCPU_BACKEND)
-  list(APPEND DFTI_CT_BACKENDS "mklcpu")
+set(DFT_CT_SOURCES "")
+if (ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
+  list(APPEND DFT_CT_SOURCES "complex_fwd_usm_mklcpu_cufft")
 endif()
 
 include(WarningsUtils)
 
-foreach(dfti_backend ${DFTI_CT_BACKENDS})
-  set(EXAMPLE_NAME example_dft_complex_fwd_buffer_${dfti_backend})
-  add_executable(${EXAMPLE_NAME} complex_fwd_buffer_${dfti_backend}.cpp)
+foreach(dft_ct_source ${DFT_CT_SOURCES})
+  set(EXAMPLE_NAME example_${domain}_${dft_ct_source})
+  add_executable(${EXAMPLE_NAME} ${dft_ct_source}.cpp)
   target_include_directories(${EXAMPLE_NAME}
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-  add_dependencies(${EXAMPLE_NAME} onemkl_dft_${dfti_backend})
-  target_link_libraries(${EXAMPLE_NAME} PRIVATE ONEMKL::SYCL::SYCL onemkl_dft_${dfti_backend} onemkl_warnings)
+if(domain STREQUAL "dft" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
+  add_dependencies(${EXAMPLE_NAME} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
+  list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
+endif()
+
+target_link_libraries(${EXAMPLE_NAME} PUBLIC
+  ${ONEMKL_LIBRARIES_${domain}}
+  ONEMKL::SYCL::SYCL
+  onemkl_warnings
+  )
 
   # Register example as ctest
-  add_test(NAME dft/EXAMPLE/CT/complex_fwd_buffer_${dfti_backend} COMMAND ${EXAMPLE_NAME})
-endforeach(dfti_backend)
+  add_test(NAME dft/EXAMPLE/CT/${dft_ct_source} COMMAND ${EXAMPLE_NAME})
+
+endforeach(dft_ct_source)
 

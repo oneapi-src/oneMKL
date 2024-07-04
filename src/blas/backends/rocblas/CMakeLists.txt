@@ -39,6 +39,7 @@ add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
+          ${PROJECT_SOURCE_DIR}/src/include
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_BINARY_DIR}/bin
           ${ONEMKL_GENERATED_INCLUDE_PATH}

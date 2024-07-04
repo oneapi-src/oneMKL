@@ -744,6 +744,24 @@ void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t 
                 sycl::half beta, sycl::buffer<sycl::half, 1> &c, int64_t ldc, int64_t stride_c,
                 int64_t batch_size);
 
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, float alpha, sycl::buffer<sycl::half, 1> &a, int64_t lda,
+                int64_t stride_a, sycl::buffer<sycl::half, 1> &b, int64_t ldb, int64_t stride_b,
+                float beta, sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
+                int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, float alpha, sycl::buffer<std::int8_t, 1> &a, int64_t lda,
+                int64_t stride_a, sycl::buffer<std::int8_t, 1> &b, int64_t ldb, int64_t stride_b,
+                float beta, sycl::buffer<float, 1> &c, int64_t ldc, int64_t stride_c,
+                int64_t batch_size);
+
+void gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                int64_t k, float alpha, sycl::buffer<std::int8_t, 1> &a, int64_t lda,
+                int64_t stride_a, sycl::buffer<std::int8_t, 1> &b, int64_t ldb, int64_t stride_b,
+                float beta, sycl::buffer<std::int32_t, 1> &c, int64_t ldc, int64_t stride_c,
+                int64_t batch_size);
+
 void trsm_batch(sycl::queue &queue, side left_right, uplo upper_lower, transpose trans,
                 diag unit_diag, int64_t m, int64_t n, float alpha, sycl::buffer<float, 1> &a,
                 int64_t lda, int64_t stride_a, sycl::buffer<float, 1> &b, int64_t ldb,
@@ -1848,6 +1866,24 @@ sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb,
                        sycl::half **c, int64_t *ldc, int64_t group_count, int64_t *group_size,
                        const std::vector<sycl::event> &dependencies = {});
 
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                       int64_t *n, int64_t *k, float *alpha, const sycl::half **a, int64_t *lda,
+                       const sycl::half **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
+                       int64_t group_count, int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                       int64_t *n, int64_t *k, float *alpha, const std::int8_t **a, int64_t *lda,
+                       const std::int8_t **b, int64_t *ldb, float *beta, float **c, int64_t *ldc,
+                       int64_t group_count, int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose *transa, transpose *transb, int64_t *m,
+                       int64_t *n, int64_t *k, float *alpha, const std::int8_t **a, int64_t *lda,
+                       const std::int8_t **b, int64_t *ldb, float *beta, std::int32_t **c,
+                       int64_t *ldc, int64_t group_count, int64_t *group_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
 sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
                        int64_t k, float alpha, const float *a, int64_t lda, int64_t stride_a,
                        const float *b, int64_t ldb, int64_t stride_b, float beta, float *c,
@@ -1879,6 +1915,24 @@ sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, i
                        int64_t stride_a, const sycl::half *b, int64_t ldb, int64_t stride_b,
                        sycl::half beta, sycl::half *c, int64_t ldc, int64_t stride_c,
                        int64_t batch_size, const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                       int64_t k, float alpha, const sycl::half *a, int64_t lda, int64_t stride_a,
+                       const sycl::half *b, int64_t ldb, int64_t stride_b, float beta, float *c,
+                       int64_t ldc, int64_t stride_c, int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                       int64_t k, float alpha, const std::int8_t *a, int64_t lda, int64_t stride_a,
+                       const std::int8_t *b, int64_t ldb, int64_t stride_b, float beta, float *c,
+                       int64_t ldc, int64_t stride_c, int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
+
+sycl::event gemm_batch(sycl::queue &queue, transpose transa, transpose transb, int64_t m, int64_t n,
+                       int64_t k, float alpha, const std::int8_t *a, int64_t lda, int64_t stride_a,
+                       const std::int8_t *b, int64_t ldb, int64_t stride_b, float beta,
+                       std::int32_t *c, int64_t ldc, int64_t stride_c, int64_t batch_size,
+                       const std::vector<sycl::event> &dependencies = {});
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
                   int64_t n, int64_t k, float alpha, const float *a, int64_t lda, const float *b,
