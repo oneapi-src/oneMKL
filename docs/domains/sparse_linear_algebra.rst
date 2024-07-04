@@ -12,7 +12,7 @@ sparse domain.
 OneMKL Intel CPU and GPU backends
 ---------------------------------
 
-Known limitations as of Intel oneMKL product release 2024.1:
+Currently known limitations:
 
 - All operations' algorithms except ``no_optimize_alg`` map to the default
   algorithm.
