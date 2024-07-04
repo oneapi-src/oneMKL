@@ -29,5 +29,8 @@ Currently known limitations:
   ``oneapi::mkl::transpose::conjtrans`` and has the
   ``oneapi::mkl::sparse::matrix_property::symmetric`` property will throw an
   ``oneapi::mkl::unimplemented`` exception.
+- Using ``spsv`` on Intel GPU with a sparse matrix that is
+  ``oneapi::mkl::transpose::conjtrans`` and will throw an
+  ``oneapi::mkl::unimplemented`` exception.
 - Scalar parameters ``alpha`` and ``beta`` should be host pointers to prevent
   synchronizations and copies to the host.

@@ -67,7 +67,10 @@ void check_valid_spmm(const std::string function_name, sycl::queue &queue,
     }
 
 #if BACKEND == gpu
-    if (opA == oneapi::mkl::transpose::conjtrans &&
+    detail::data_type data_type = internal_A_handle->get_value_type();
+    if ((data_type == detail::data_type::complex_fp32 ||
+         data_type == detail::data_type::complex_fp64) &&
+        opA == oneapi::mkl::transpose::conjtrans &&
         internal_A_handle->has_matrix_property(oneapi::mkl::sparse::matrix_property::symmetric)) {
         throw mkl::unimplemented(
             "sparse_blas", function_name,
