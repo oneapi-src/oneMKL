@@ -868,7 +868,7 @@ according to the targeted hardware. This backend has only been tested for the
 </section>
 <section id="cmake-invocation-examples">
 <span id="build-invocation-examples-dpcpp"></span><h2>CMake invocation examples<a class="headerlink" href="#cmake-invocation-examples" title="Link to this heading">#</a></h2>
-<p>Build oneMKL with support for x86 CPU, Intel GPU, and Nvidia GPUs with tests
+<p>Build oneMKL with support for Nvidia GPUs with tests
 disabled using the Ninja build system:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span><span class="nv">$ONEMKL_DIR</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-GNinja<span class="w"> </span><span class="se">\</span>
@@ -887,7 +887,7 @@ disabled using the Ninja build system:</p>
 and Intel GPU (<code class="docutils literal notranslate"><span class="pre">MKLGPU</span></code>) backends are enabled by default, but are disabled
 here. The backends for Nvidia GPUs must all be explicilty enabled. The tests are
 disabled, but the examples will still be built.</p>
-<p>Building oneMKL with support x86 CPU, Intel GPU, and AMD GPUs with tests
+<p>Building oneMKL with support for AMD GPUs with tests
 disabled:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span><span class="nv">$ONEMKL_DIR</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>clang++<span class="w"> </span><span class="se">\</span>
@@ -919,7 +919,7 @@ GPU and Nvidia GPU with testing enabled:</p>
 <p>Note that this is not a supported configuration, and requires Codeplay’s oneAPI
 for <a class="reference external" href="https://developer.codeplay.com/products/oneapi/amd/home/">AMD</a> and
 <a class="reference external" href="https://developer.codeplay.com/products/oneapi/nvidia/home/">Nvidia</a> GPU
-plugins. Like the above example, the MKLCPU and MKLGPU backends are enabled by
+plugins. The MKLCPU and MKLGPU backends are enabled by
 default, with backends for Nvidia GPU and AMD GPU explicitly enabled.
 <code class="docutils literal notranslate"><span class="pre">-DTARGET_DOMAINS=dft</span></code> causes only DFT backends to be built. If this was not
 set, the backend libraries to enable the use of BLAS, LAPACK and RNG with MKLGPU
