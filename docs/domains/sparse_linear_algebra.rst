@@ -40,7 +40,7 @@ Currently known limitations:
 
 - Using ``spmv`` with a ``type_view`` other than ``matrix_descr::general`` will
   throw an ``oneapi::mkl::unimplemented`` exception.
-- The COO format require the indices to be sorted by row.
+- The COO format requires the indices to be sorted by row.
 
 
 Operation algorithms mapping
