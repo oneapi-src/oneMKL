@@ -38,7 +38,7 @@ namespace oneapi::mkl::dft::rocfft {
 namespace detail {
 //forward declaration
 template <dft::precision prec, dft::domain dom>
-std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom> *commit);
+std::array<std::int64_t, 2> get_offsets_bwd(dft::detail::commit_impl<prec, dom> *commit);
 
 template <dft::precision prec, dft::domain dom>
 rocfft_plan get_bwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
@@ -63,7 +63,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
@@ -100,7 +100,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     if (offsets[0] != offsets[1]) {
         throw oneapi::mkl::unimplemented(
@@ -141,7 +141,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
@@ -175,7 +175,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     queue.submit([&](sycl::handler &cgh) {
         auto in_re_acc = in_re.template get_access<sycl::access::mode::read_write>(cgh);
@@ -223,7 +223,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
@@ -261,7 +261,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     if (offsets[0] != offsets[1]) {
         throw oneapi::mkl::unimplemented(
@@ -296,7 +296,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     in += offsets[0];
     out += offsets[1];
@@ -330,7 +330,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
     auto queue = commit->get_queue();
     auto plan = detail::get_bwd_plan(commit);
     auto info = detail::get_bwd_info(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_bwd(commit);
 
     sycl::event sycl_event = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(deps);

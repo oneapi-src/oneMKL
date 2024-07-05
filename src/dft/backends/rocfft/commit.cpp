@@ -34,6 +34,8 @@
 #include "oneapi/mkl/dft/detail/rocfft/onemkl_dft_rocfft.hpp"
 #include "oneapi/mkl/dft/types.hpp"
 
+#include "../stride_helper.hpp"
+
 #include "rocfft_handle.hpp"
 
 #include <rocfft.h>
@@ -86,7 +88,7 @@ private:
     // The same is also true for "FORWARD_SCALE" and "BACKWARD_SCALE".
     // handles[0] is forward, handles[1] is backward
     std::array<rocfft_handle, 2> handles{};
-    std::array<std::int64_t, 2> offsets;
+    std::int64_t offset_fwd_in, offset_fwd_out, offset_bwd_in, offset_bwd_out;
 
 public:
     rocfft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -219,18 +221,18 @@ public:
             }
         }();
 
-        auto input_strides = config_values.input_strides;
-        auto output_strides = config_values.output_strides;
-        if (dom == dft::domain::COMPLEX && config_values.placement == config_value::INPLACE) {
-            output_strides = input_strides;
-        }
+        auto stride_api_choice = dft::detail::get_stride_api(config_values);
+        dft::detail::throw_on_invalid_stride_api("ROCFFT commit", stride_api_choice);
+        dft::detail::stride_vectors<size_t> stride_vecs(config_values, stride_api_choice);
 
         // while rocfft interface accepts offsets, it does not actually handle them
-        offsets[0] = input_strides[0];
-        offsets[1] = output_strides[0];
+        offset_fwd_in = stride_vecs.offset_fwd_in;
+        offset_fwd_out = stride_vecs.offset_fwd_out;
+        offset_bwd_in = stride_vecs.offset_bwd_in;
+        offset_bwd_out = stride_vecs.offset_bwd_out;
 
         auto func = __FUNCTION__;
-        auto check_strides = [&](const std::vector<std::int64_t>& strides) {
+        auto check_strides = [&](const auto& strides) {
             for (int i = 1; i <= dimensions; i++) {
                 for (int j = 1; j <= dimensions; j++) {
                     std::int64_t cplx_dim = config_values.dimensions[j - 1];
@@ -247,16 +249,15 @@ public:
                 }
             }
         };
-        check_strides(input_strides);
-        check_strides(output_strides);
+        // bwd_in/out alias fwd_in/out, so no need to check everything.
+        check_strides(stride_vecs.vec_a);
+        check_strides(stride_vecs.vec_b);
 
-        std::array<std::size_t, max_supported_dims> in_strides;
-        std::array<std::size_t, max_supported_dims> out_strides;
-
-        for (std::size_t i = 0; i != dimensions; ++i) {
-            in_strides[i] = input_strides[dimensions - i];
-            out_strides[i] = output_strides[dimensions - i];
-        }
+        // Reformat slides to conform to rocFFT API.
+        std::reverse(stride_vecs.vec_a.begin(), stride_vecs.vec_a.end());
+        stride_vecs.vec_a.pop_back(); // Offset is not included.
+        std::reverse(stride_vecs.vec_b.begin(), stride_vecs.vec_b.end());
+        stride_vecs.vec_b.pop_back(); // Offset is not included.
 
         rocfft_plan_description plan_desc;
         if (rocfft_plan_description_create(&plan_desc) != rocfft_status_success) {
@@ -274,12 +275,16 @@ public:
         std::unique_ptr<rocfft_plan_description_t, decltype(description_destroy)>
             description_destroyer(plan_desc, description_destroy);
 
-        std::array<std::size_t, 3> in_stride_indices{ 0, 1, 2 };
-        std::sort(&in_stride_indices[0], &in_stride_indices[dimensions],
-                  [&](std::size_t a, std::size_t b) { return in_strides[a] < in_strides[b]; });
-        std::array<std::size_t, 3> out_stride_indices{ 0, 1, 2 };
-        std::sort(&out_stride_indices[0], &out_stride_indices[dimensions],
-                  [&](std::size_t a, std::size_t b) { return out_strides[a] < out_strides[b]; });
+        std::array<std::size_t, 3> stride_a_indices{ 0, 1, 2 };
+        std::sort(&stride_a_indices[0], &stride_a_indices[dimensions],
+                  [&](std::size_t a, std::size_t b) {
+                      return stride_vecs.vec_a[a] < stride_vecs.vec_a[b];
+                  });
+        std::array<std::size_t, 3> stride_b_indices{ 0, 1, 2 };
+        std::sort(&stride_b_indices[0], &stride_b_indices[dimensions],
+                  [&](std::size_t a, std::size_t b) {
+                      return stride_vecs.vec_b[a] < stride_vecs.vec_b[b];
+                  });
         std::array<std::size_t, max_supported_dims> lengths_cplx = lengths;
         if (dom == dft::domain::REAL) {
             lengths_cplx[0] = lengths_cplx[0] / 2 + 1;
@@ -287,18 +292,23 @@ public:
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.
         // If the strides are invalid (too small to fit) then just don't bother creating the plan.
-        const bool valid_forward =
+        const bool vec_a_valid_as_reals =
             dimensions == 1 ||
-            (lengths_cplx[in_stride_indices[0]] <= in_strides[in_stride_indices[1]] &&
+            (lengths_cplx[stride_a_indices[0]] <= stride_vecs.vec_a[stride_a_indices[1]] &&
              (dimensions == 2 ||
-              lengths_cplx[in_stride_indices[0]] * lengths_cplx[in_stride_indices[1]] <=
-                  in_strides[in_stride_indices[2]]));
-        const bool valid_backward =
+              lengths_cplx[stride_a_indices[0]] * lengths_cplx[stride_a_indices[1]] <=
+                  stride_vecs.vec_a[stride_a_indices[2]]));
+        const bool vec_b_valid_as_reals =
             dimensions == 1 ||
-            (lengths_cplx[out_stride_indices[0]] <= out_strides[out_stride_indices[1]] &&
+            (lengths_cplx[stride_b_indices[0]] <= stride_vecs.vec_b[stride_b_indices[1]] &&
              (dimensions == 2 ||
-              lengths_cplx[out_stride_indices[0]] * lengths_cplx[out_stride_indices[1]] <=
-                  out_strides[out_stride_indices[2]]));
+              lengths_cplx[stride_b_indices[0]] * lengths_cplx[stride_b_indices[1]] <=
+                  stride_vecs.vec_b[stride_b_indices[2]]));
+        // Test if the stride vector being used as the fwd domain for each direction has valid strides for that use.
+        bool valid_forward =
+            stride_vecs.fwd_in == stride_vecs.vec_a && vec_a_valid_as_reals || vec_b_valid_as_reals;
+        bool valid_backward = stride_vecs.bwd_out == stride_vecs.vec_a && vec_a_valid_as_reals ||
+                              vec_b_valid_as_reals;
 
         if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
@@ -310,10 +320,10 @@ public:
                                                         nullptr, // in offsets
                                                         nullptr, // out offsets
                                                         dimensions,
-                                                        in_strides.data(), //in strides
+                                                        stride_vecs.fwd_in.data(), //in strides
                                                         fwd_distance, // in distance
                                                         dimensions,
-                                                        out_strides.data(), // out strides
+                                                        stride_vecs.fwd_out.data(), // out strides
                                                         bwd_distance // out distance
                 );
             if (res != rocfft_status_success) {
@@ -366,10 +376,10 @@ public:
                                                         nullptr, // in offsets
                                                         nullptr, // out offsets
                                                         dimensions,
-                                                        in_strides.data(), //in strides
+                                                        stride_vecs.bwd_in.data(), //in strides
                                                         bwd_distance, // in distance
                                                         dimensions,
-                                                        out_strides.data(), // out strides
+                                                        stride_vecs.bwd_out.data(), // out strides
                                                         fwd_distance // out distance
                 );
             if (res != rocfft_status_success) {
@@ -427,8 +437,12 @@ public:
         return handles.data();
     }
 
-    std::array<std::int64_t, 2> get_offsets() noexcept {
-        return offsets;
+    std::array<std::int64_t, 2> get_offsets_fwd() noexcept {
+        return { offset_fwd_in, offset_fwd_out };
+    }
+
+    std::array<std::int64_t, 2> get_offsets_bwd() noexcept {
+        return { offset_bwd_in, offset_bwd_out };
     }
 
     /** Get the requried worspace size for a rocfft plan. Implementation to be shared by internal and external workspace mechanisms.
@@ -586,20 +600,39 @@ create_commit(
 
 namespace detail {
 template <dft::precision prec, dft::domain dom>
-std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom>* commit) {
-    return static_cast<rocfft_commit<prec, dom>*>(commit)->get_offsets();
+std::array<std::int64_t, 2> get_offsets_fwd(dft::detail::commit_impl<prec, dom>* commit) {
+    return static_cast<rocfft_commit<prec, dom>*>(commit)->get_offsets_fwd();
 }
+
+template <dft::precision prec, dft::domain dom>
+std::array<std::int64_t, 2> get_offsets_bwd(dft::detail::commit_impl<prec, dom>* commit) {
+    return static_cast<rocfft_commit<prec, dom>*>(commit)->get_offsets_bwd();
+}
+
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
+get_offsets_fwd<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
+get_offsets_fwd<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
+get_offsets_fwd<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
+get_offsets_fwd<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
+    dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
+
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
+    dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
+    dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
+    dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
 
 } //namespace detail

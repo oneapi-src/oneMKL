@@ -66,8 +66,6 @@ inline constexpr dft::config_param to_mklgpu(dft::detail::config_param param) {
         case iparam::COMPLEX_STORAGE: return oparam::COMPLEX_STORAGE;
         case iparam::REAL_STORAGE: return oparam::REAL_STORAGE;
         case iparam::CONJUGATE_EVEN_STORAGE: return oparam::CONJUGATE_EVEN_STORAGE;
-        case iparam::INPUT_STRIDES: return oparam::INPUT_STRIDES;
-        case iparam::OUTPUT_STRIDES: return oparam::OUTPUT_STRIDES;
         case iparam::FWD_DISTANCE: return oparam::FWD_DISTANCE;
         case iparam::BWD_DISTANCE: return oparam::BWD_DISTANCE;
         case iparam::WORKSPACE: return oparam::WORKSPACE;

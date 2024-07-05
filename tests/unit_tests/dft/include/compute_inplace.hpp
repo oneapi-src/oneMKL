@@ -69,11 +69,11 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
     if (modified_strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES,
                              modified_strides_fwd.data());
     }
     if (modified_strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES,
                              modified_strides_bwd.data());
     }
     commit_descriptor(descriptor, sycl_queue);
@@ -99,27 +99,6 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
                     modified_strides_bwd, abs_error_margin, rel_error_margin, std::cout));
             }
         }
-
-        if (modified_strides_bwd.size()) {
-            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                 modified_strides_bwd.data());
-        }
-        else {
-            //for real case strides are always set at the top of the test
-            auto input_strides = get_default_strides(sizes);
-            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                 input_strides.data());
-        }
-        if (modified_strides_fwd.size()) {
-            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 modified_strides_fwd.data());
-        }
-        else {
-            auto output_strides = get_default_strides(sizes);
-            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 output_strides.data());
-        }
-        commit_descriptor(descriptor, sycl_queue);
 
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
                                            FwdInputType>(descriptor, inout_buf);
@@ -185,11 +164,11 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
     if (modified_strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES,
                              modified_strides_fwd.data());
     }
     if (modified_strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES,
                              modified_strides_bwd.data());
     }
     commit_descriptor(descriptor, sycl_queue);
@@ -214,25 +193,6 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
             out_host_ref.data() + ref_distance * i, sizes, modified_strides_bwd, abs_error_margin,
             rel_error_margin, std::cout));
     }
-
-    if (modified_strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                             modified_strides_bwd.data());
-    }
-    else {
-        //for real case strides are always set at the top of the test
-        auto input_strides = get_default_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, input_strides.data());
-    }
-    if (modified_strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                             modified_strides_fwd.data());
-    }
-    else {
-        auto output_strides = get_default_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, output_strides.data());
-    }
-    commit_descriptor(descriptor, sycl_queue);
 
     sycl::event done =
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
