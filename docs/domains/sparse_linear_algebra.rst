@@ -48,6 +48,23 @@ Currently known limitations:
   <https://docs.nvidia.com/cuda/cusparse/index.html#coordinate-coo>`_.
 
 
+rocSPARSE backend
+----------------
+
+Currently known limitations:
+
+- Using ``spmv`` with a ``type_view`` other than ``matrix_descr::general`` will
+  throw an ``oneapi::mkl::unimplemented`` exception.
+- The COO format requires the indices to be sorted by row then by column. It is
+  not required to set the property
+  ``oneapi::mkl::sparse::matrix_property::sorted`` to a sparse matrix handle.
+  See the `rocSPARSE documentation
+  <https://rocm.docs.amd.com/projects/rocSPARSE/en/latest/how-to/basics.html#coo-storage-format>`_.
+- The same sparse matrix handle cannot be reused for multiple ``spmm`` or
+  ``spmv`` operations. See `#332
+  <https://github.com/ROCm/rocSPARSE/issues/332>`_.
+
+
 Operation algorithms mapping
 ----------------------------
 
@@ -73,41 +90,50 @@ spmm
      - Default algorithm.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+       | rocSPARSE: ``rocsparse_spmm_alg_default``
    * - ``no_optimize_alg``
      - Default algorithm but may skip some optimizations. Useful only if an
        operation with the same configuration is run once.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+       | rocSPARSE: ``rocsparse_spmm_alg_default``
    * - ``coo_alg1``
      - Should provide best performance for COO format, small ``nnz`` and
        column-major layout.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG1``
+       | rocSPARSE: ``rocsparse_spmm_alg_coo_segmented``
    * - ``coo_alg2``
      - Should provide best performance for COO format and column-major layout.
        Produces deterministic results.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG2``
+       | rocSPARSE: ``rocsparse_spmm_alg_coo_atomic``
    * - ``coo_alg3``
      - Should provide best performance for COO format and large ``nnz``.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG3``
+       | rocSPARSE: ``rocsparse_spmm_alg_coo_segmented_atomic``
    * - ``coo_alg4``
      - Should provide best performance for COO format and row-major layout.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG4``
+       | rocSPARSE: none
    * - ``csr_alg1``
      - Should provide best performance for CSR format and column-major layout.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_CSR_ALG1``
+       | rocSPARSE: ``rocsparse_spmm_alg_csr``
    * - ``csr_alg2``
      - Should provide best performance for CSR format and row-major layout.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_CSR_ALG2``
+       | rocSPARSE: ``rocsparse_spmm_alg_csr_row_split``
    * - ``csr_alg3``
      - Deterministic algorithm for CSR format.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_CSR_ALG3``
+       | rocSPARSE: ``rocsparse_spmm_alg_csr_merge``
 
 
 spmv
@@ -124,31 +150,38 @@ spmv
      - Default algorithm.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMV_ALG_DEFAULT``
+       | rocSPARSE: ``rocsparse_spmv_alg_default``
    * - ``no_optimize_alg``
      - Default algorithm but may skip some optimizations. Useful only if an
        operation with the same configuration is run once.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+       | rocSPARSE: ``rocsparse_spmv_alg_default``
    * - ``coo_alg1``
      - Default algorithm for COO format.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMV_COO_ALG1``
+       | rocSPARSE: ``rocsparse_spmv_alg_coo``
    * - ``coo_alg2``
      - Deterministic algorithm for COO format.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMV_COO_ALG2``
+       | rocSPARSE: ``rocsparse_spmv_alg_coo_atomic``
    * - ``csr_alg1``
      - Default algorithm for CSR format.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMV_CSR_ALG1``
+       | rocSPARSE: ``rocsparse_spmv_alg_csr_adaptive``
    * - ``csr_alg2``
      - Deterministic algorithm for CSR format.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMV_CSR_ALG2``
+       | rocSPARSE: ``rocsparse_spmv_alg_csr_stream``
    * - ``csr_alg3``
      - LRB variant of the algorithm for CSR format.
      - | MKL: none
        | cuSPARSE: none
+       | rocSPARSE: ``rocsparse_spmv_alg_csr_lrb``
 
 
 spsv
@@ -165,8 +198,10 @@ spsv
      - Default algorithm.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+       | rocSPARSE: ``rocsparse_spsv_alg_default``
    * - ``no_optimize_alg``
      - Default algorithm but may skip some optimizations. Useful only if an
        operation with the same configuration is run once.
      - | MKL: none
        | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+       | rocSPARSE: ``rocsparse_spsv_alg_default``

@@ -63,62 +63,65 @@ void test_helper_with_format_with_transpose(
     oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
     oneapi::mkl::sparse::spmv_alg default_alg = oneapi::mkl::sparse::spmv_alg::default_alg;
     oneapi::mkl::sparse::matrix_view default_A_view;
-    std::set<oneapi::mkl::sparse::matrix_property> no_properties;
     bool no_reset_data = false;
     bool no_scalars_on_device = false;
+
+    // Queue is only used to get which matrix_property should be used for the tests.
+    sycl::queue properties_queue(*dev);
+    auto default_properties = get_default_matrix_properties(properties_queue, format);
 
     // Basic test
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, default_A_view, no_properties, no_reset_data,
-                         no_scalars_on_device),
+                         fp_one, fp_zero, default_alg, default_A_view, default_properties,
+                         no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Reset data
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, default_A_view, no_properties, true,
+                         fp_one, fp_zero, default_alg, default_A_view, default_properties, true,
                          no_scalars_on_device),
         num_passed, num_skipped);
     // Test alpha and beta on the device
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, default_A_view, no_properties, no_reset_data,
-                         true),
+                         fp_one, fp_zero, default_alg, default_A_view, default_properties,
+                         no_reset_data, true),
         num_passed, num_skipped);
     // Test index_base 1
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix,
                          oneapi::mkl::index_base::one, transpose_val, fp_one, fp_zero, default_alg,
-                         default_A_view, no_properties, no_reset_data, no_scalars_on_device),
+                         default_A_view, default_properties, no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Test non-default alpha
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
                          set_fp_value<fpType>()(2.f, 1.5f), fp_zero, default_alg, default_A_view,
-                         no_properties, no_reset_data, no_scalars_on_device),
+                         default_properties, no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Test non-default beta
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
                          fp_one, set_fp_value<fpType>()(3.2f, 1.f), default_alg, default_A_view,
-                         no_properties, no_reset_data, no_scalars_on_device),
+                         default_properties, no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Test 0 alpha
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_zero, fp_one, default_alg, default_A_view, no_properties, no_reset_data,
-                         no_scalars_on_device),
+                         fp_zero, fp_one, default_alg, default_A_view, default_properties,
+                         no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Test 0 alpha and beta
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_zero, fp_zero, default_alg, default_A_view, no_properties,
+                         fp_zero, fp_zero, default_alg, default_A_view, default_properties,
                          no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Test int64 indices
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i64(dev, format, 27L, 13L, density_A_matrix, index_zero, transpose_val, fp_one,
-                         fp_zero, default_alg, default_A_view, no_properties, no_reset_data,
+                         fp_zero, default_alg, default_A_view, default_properties, no_reset_data,
                          no_scalars_on_device),
         num_passed, num_skipped);
     // Lower triangular
@@ -126,14 +129,14 @@ void test_helper_with_format_with_transpose(
         oneapi::mkl::sparse::matrix_descr::triangular);
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, triangular_A_view, no_properties,
+                         fp_one, fp_zero, default_alg, triangular_A_view, default_properties,
                          no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Upper triangular
     triangular_A_view.uplo_view = oneapi::mkl::uplo::upper;
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, triangular_A_view, no_properties,
+                         fp_one, fp_zero, default_alg, triangular_A_view, default_properties,
                          no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Lower triangular unit diagonal
@@ -142,14 +145,14 @@ void test_helper_with_format_with_transpose(
     triangular_unit_A_view.diag_view = oneapi::mkl::diag::unit;
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, triangular_unit_A_view, no_properties,
+                         fp_one, fp_zero, default_alg, triangular_unit_A_view, default_properties,
                          no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     // Upper triangular unit diagonal
     triangular_A_view.uplo_view = oneapi::mkl::uplo::upper;
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero, transpose_val,
-                         fp_one, fp_zero, default_alg, triangular_unit_A_view, no_properties,
+                         fp_one, fp_zero, default_alg, triangular_unit_A_view, default_properties,
                          no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     if (transpose_val != oneapi::mkl::transpose::conjtrans) {
@@ -160,14 +163,14 @@ void test_helper_with_format_with_transpose(
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
                              transpose_val, fp_one, fp_zero, default_alg, symmetric_view,
-                             no_properties, no_reset_data, no_scalars_on_device),
+                             default_properties, no_reset_data, no_scalars_on_device),
             num_passed, num_skipped);
         // Upper symmetric
         symmetric_view.uplo_view = oneapi::mkl::uplo::upper;
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
                              transpose_val, fp_one, fp_zero, default_alg, symmetric_view,
-                             no_properties, no_reset_data, no_scalars_on_device),
+                             default_properties, no_reset_data, no_scalars_on_device),
             num_passed, num_skipped);
         // Lower hermitian
         oneapi::mkl::sparse::matrix_view hermitian_view(
@@ -175,26 +178,26 @@ void test_helper_with_format_with_transpose(
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
                              transpose_val, fp_one, fp_zero, default_alg, hermitian_view,
-                             no_properties, no_reset_data, no_scalars_on_device),
+                             default_properties, no_reset_data, no_scalars_on_device),
             num_passed, num_skipped);
         // Upper hermitian
         hermitian_view.uplo_view = oneapi::mkl::uplo::upper;
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
                              transpose_val, fp_one, fp_zero, default_alg, hermitian_view,
-                             no_properties, no_reset_data, no_scalars_on_device),
+                             default_properties, no_reset_data, no_scalars_on_device),
             num_passed, num_skipped);
     }
     // Test other algorithms
     for (auto alg : non_default_algorithms) {
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
-                             transpose_val, fp_one, fp_zero, alg, default_A_view, no_properties,
-                             no_reset_data, no_scalars_on_device),
+                             transpose_val, fp_one, fp_zero, alg, default_A_view,
+                             default_properties, no_reset_data, no_scalars_on_device),
             num_passed, num_skipped);
     }
     // Test matrix properties
-    for (auto properties : test_matrix_properties) {
+    for (auto properties : get_all_matrix_properties_combinations(properties_queue, format)) {
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
                              transpose_val, fp_one, fp_zero, default_alg, default_A_view,

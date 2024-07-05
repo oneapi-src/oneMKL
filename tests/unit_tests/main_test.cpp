@@ -129,7 +129,8 @@ int main(int argc, char** argv) {
 #endif
 #if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND) &&            \
     !defined(ENABLE_ROCSOLVER_BACKEND) && !defined(ENABLE_PORTBLAS_BACKEND_AMD_GPU) && \
-    !defined(ENABLE_ROCFFT_BACKEND) && !defined(ENABLE_PORTFFT_BACKEND)
+    !defined(ENABLE_ROCFFT_BACKEND) && !defined(ENABLE_PORTFFT_BACKEND) &&             \
+    !defined(ENABLE_ROCSPARSE_BACKEND)
                         if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif

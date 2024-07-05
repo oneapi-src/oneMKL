@@ -59,12 +59,28 @@ enum sparse_matrix_format_t {
     COO,
 };
 
-static std::vector<std::set<oneapi::mkl::sparse::matrix_property>> test_matrix_properties{
-    { oneapi::mkl::sparse::matrix_property::sorted },
-    { oneapi::mkl::sparse::matrix_property::symmetric },
-    { oneapi::mkl::sparse::matrix_property::sorted,
-      oneapi::mkl::sparse::matrix_property::symmetric }
-};
+inline std::set<oneapi::mkl::sparse::matrix_property> get_default_matrix_properties(
+    sycl::queue queue, sparse_matrix_format_t format) {
+    auto vendor_id = oneapi::mkl::get_device_id(queue);
+    if (vendor_id == oneapi::mkl::device::amdgpu && format == sparse_matrix_format_t::COO) {
+        return { oneapi::mkl::sparse::matrix_property::sorted };
+    }
+    return {};
+}
+
+/// Return the combinations of matrix_properties to test other than the default
+inline std::vector<std::set<oneapi::mkl::sparse::matrix_property>>
+get_all_matrix_properties_combinations(sycl::queue queue, sparse_matrix_format_t format) {
+    auto vendor_id = oneapi::mkl::get_device_id(queue);
+    if (vendor_id == oneapi::mkl::device::amdgpu && format == sparse_matrix_format_t::COO) {
+        return { { oneapi::mkl::sparse::matrix_property::sorted,
+                   oneapi::mkl::sparse::matrix_property::symmetric } };
+    }
+    return { { oneapi::mkl::sparse::matrix_property::sorted },
+             { oneapi::mkl::sparse::matrix_property::symmetric },
+             { oneapi::mkl::sparse::matrix_property::sorted,
+               oneapi::mkl::sparse::matrix_property::symmetric } };
+}
 
 void print_error_code(sycl::exception const &e);
 
@@ -216,9 +232,9 @@ template <typename fpType>
 fpType generate_data(bool is_diag) {
     rand_scalar<fpType> rand_data;
     if (is_diag) {
-        // Guarantee an amplitude >= 0.1
+        // Guarantee a large amplitude
         fpType sign = (std::rand() % 2) * 2 - 1;
-        return rand_data(0.1, 0.5) * sign;
+        return rand_data(10, 20) * sign;
     }
     return rand_data(-0.5, 0.5);
 }
@@ -426,6 +442,8 @@ void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
                      oneapi::mkl::sparse::matrix_handle_t smhandle, std::int64_t num_rows,
                      std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
                      ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
+    // Ensure to wait for previous operations to finish before resetting the data
+    queue.wait_and_throw();
     if (format == sparse_matrix_format_t::CSR) {
         CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_matrix_data, queue, smhandle, num_rows, num_cols,
                       nnz, index, rows, cols, vals);
