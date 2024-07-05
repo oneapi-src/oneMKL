@@ -76,10 +76,6 @@ public:
     inline void *get_mem(T *ptr) {
         return reinterpret_cast<void *>(ptr);
     }
-
-    void wait_stream(const sycl::queue &queue) {
-        cuStreamSynchronize(get_stream(queue));
-    }
 };
 
 } // namespace oneapi::mkl::sparse::cusparse
