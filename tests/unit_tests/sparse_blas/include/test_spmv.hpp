@@ -51,7 +51,7 @@
  * The test functions will use different sizes if the configuration implies a symmetric matrix.
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
-void test_helper_with_format(
+void test_helper_with_format_with_transpose(
     testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64, sycl::device *dev,
     sparse_matrix_format_t format,
     const std::vector<oneapi::mkl::sparse::spmv_alg> &non_default_algorithms,
@@ -153,20 +153,35 @@ void test_helper_with_format(
                          no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
     if (transpose_val != oneapi::mkl::transpose::conjtrans) {
-        // Lower symmetric or hermitian
+        // Do not test conjtrans with symmetric or hermitian views as no backend supports it.
+        // Lower symmetric
         oneapi::mkl::sparse::matrix_view symmetric_view(
-            complex_info<fpType>::is_complex ? oneapi::mkl::sparse::matrix_descr::hermitian
-                                             : oneapi::mkl::sparse::matrix_descr::symmetric);
+            oneapi::mkl::sparse::matrix_descr::symmetric);
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
                              transpose_val, fp_one, fp_zero, default_alg, symmetric_view,
                              no_properties, no_reset_data, no_scalars_on_device),
             num_passed, num_skipped);
-        // Upper symmetric or hermitian
+        // Upper symmetric
         symmetric_view.uplo_view = oneapi::mkl::uplo::upper;
         EXPECT_TRUE_OR_FUTURE_SKIP(
             test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
                              transpose_val, fp_one, fp_zero, default_alg, symmetric_view,
+                             no_properties, no_reset_data, no_scalars_on_device),
+            num_passed, num_skipped);
+        // Lower hermitian
+        oneapi::mkl::sparse::matrix_view hermitian_view(
+            oneapi::mkl::sparse::matrix_descr::hermitian);
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
+                             transpose_val, fp_one, fp_zero, default_alg, hermitian_view,
+                             no_properties, no_reset_data, no_scalars_on_device),
+            num_passed, num_skipped);
+        // Upper hermitian
+        hermitian_view.uplo_view = oneapi::mkl::uplo::upper;
+        EXPECT_TRUE_OR_FUTURE_SKIP(
+            test_functor_i32(dev, format, nrows_A, ncols_A, density_A_matrix, index_zero,
+                             transpose_val, fp_one, fp_zero, default_alg, hermitian_view,
                              no_properties, no_reset_data, no_scalars_on_device),
             num_passed, num_skipped);
     }
@@ -189,30 +204,56 @@ void test_helper_with_format(
 }
 
 /**
+ * Helper function to test combination of transpose vals.
+ *
+ * @tparam fpType Complex or scalar, single or double precision type
+ * @tparam testFunctorI32 Test functor for fpType and int32
+ * @tparam testFunctorI64 Test functor for fpType and int64
+ * @param dev Device to test
+ * @param format Sparse matrix format to use
+ * @param non_default_algorithms Algorithms compatible with the given format, other than default_alg
+ * @param num_passed Increase the number of configurations passed
+ * @param num_skipped Increase the number of configurations skipped
+ */
+template <typename fpType, typename testFunctorI32, typename testFunctorI64>
+void test_helper_with_format(
+    testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64, sycl::device *dev,
+    sparse_matrix_format_t format,
+    const std::vector<oneapi::mkl::sparse::spmv_alg> &non_default_algorithms, int &num_passed,
+    int &num_skipped) {
+    std::vector<oneapi::mkl::transpose> transpose_vals{ oneapi::mkl::transpose::nontrans,
+                                                        oneapi::mkl::transpose::trans,
+                                                        oneapi::mkl::transpose::conjtrans };
+    for (auto transpose_A : transpose_vals) {
+        test_helper_with_format_with_transpose<fpType>(test_functor_i32, test_functor_i64, dev,
+                                                       format, non_default_algorithms, transpose_A,
+                                                       num_passed, num_skipped);
+    }
+}
+
+/**
  * Helper function to test multiple sparse matrix format and choose valid algorithms.
  *
  * @tparam fpType Complex or scalar, single or double precision type
  * @tparam testFunctorI32 Test functor for fpType and int32
  * @tparam testFunctorI64 Test functor for fpType and int64
  * @param dev Device to test
- * @param transpose_val Transpose value for the input matrix
  * @param num_passed Increase the number of configurations passed
  * @param num_skipped Increase the number of configurations skipped
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64,
-                 sycl::device *dev, oneapi::mkl::transpose transpose_val, int &num_passed,
-                 int &num_skipped) {
+                 sycl::device *dev, int &num_passed, int &num_skipped) {
     test_helper_with_format<fpType>(
         test_functor_i32, test_functor_i64, dev, sparse_matrix_format_t::CSR,
         { oneapi::mkl::sparse::spmv_alg::no_optimize_alg, oneapi::mkl::sparse::spmv_alg::csr_alg1,
           oneapi::mkl::sparse::spmv_alg::csr_alg2, oneapi::mkl::sparse::spmv_alg::csr_alg3 },
-        transpose_val, num_passed, num_skipped);
+        num_passed, num_skipped);
     test_helper_with_format<fpType>(
         test_functor_i32, test_functor_i64, dev, sparse_matrix_format_t::COO,
         { oneapi::mkl::sparse::spmv_alg::no_optimize_alg, oneapi::mkl::sparse::spmv_alg::coo_alg1,
           oneapi::mkl::sparse::spmv_alg::coo_alg2 },
-        transpose_val, num_passed, num_skipped);
+        num_passed, num_skipped);
 }
 
 /// Compute spmv reference as a dense operation

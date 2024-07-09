@@ -205,7 +205,6 @@ void test_helper_with_format_with_transpose(
 
 /**
  * Helper function to test combination of transpose vals.
- * Only test \p conjtrans if \p fpType is complex.
  *
  * @tparam fpType Complex or scalar, single or double precision type
  * @tparam testFunctorI32 Test functor for fpType and int32
@@ -223,10 +222,8 @@ void test_helper_with_format(
     const std::vector<oneapi::mkl::sparse::spmm_alg> &non_default_algorithms, int &num_passed,
     int &num_skipped) {
     std::vector<oneapi::mkl::transpose> transpose_vals{ oneapi::mkl::transpose::nontrans,
-                                                        oneapi::mkl::transpose::trans };
-    if (complex_info<fpType>::is_complex) {
-        transpose_vals.push_back(oneapi::mkl::transpose::conjtrans);
-    }
+                                                        oneapi::mkl::transpose::trans,
+                                                        oneapi::mkl::transpose::conjtrans };
     for (auto transpose_A : transpose_vals) {
         for (auto transpose_B : transpose_vals) {
             test_helper_with_format_with_transpose<fpType>(

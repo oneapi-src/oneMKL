@@ -184,9 +184,7 @@ TEST_P(SparseSpmvBufferTests, RealSinglePrecision) {
     using fpType = float;
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
-    test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
+                        num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
@@ -199,9 +197,7 @@ TEST_P(SparseSpmvBufferTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(GetParam());
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
-    test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
+                        num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
@@ -213,11 +209,7 @@ TEST_P(SparseSpmvBufferTests, ComplexSinglePrecision) {
     using fpType = std::complex<float>;
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
-    test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
-    test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::conjtrans, num_passed, num_skipped);
+                        num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
@@ -230,11 +222,7 @@ TEST_P(SparseSpmvBufferTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(GetParam());
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
-    test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
-    test_helper<fpType>(test_spmv<fpType, int32_t>, test_spmv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::conjtrans, num_passed, num_skipped);
+                        num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
