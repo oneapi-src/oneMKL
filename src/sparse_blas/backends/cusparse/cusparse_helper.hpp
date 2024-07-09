@@ -101,11 +101,17 @@ inline cusparseIndexBase_t get_cuda_index_base(index_base index) {
     }
 }
 
-inline cusparseOperation_t get_cuda_operation(transpose op) {
+/// Return the CUDA transpose operation from a oneMKL type.
+/// Do not conjugate for real types to avoid an invalid argument.
+inline cusparseOperation_t get_cuda_operation(detail::data_type type, transpose op) {
     switch (op) {
         case transpose::nontrans: return CUSPARSE_OPERATION_NON_TRANSPOSE;
         case transpose::trans: return CUSPARSE_OPERATION_TRANSPOSE;
-        case transpose::conjtrans: return CUSPARSE_OPERATION_CONJUGATE_TRANSPOSE;
+        case transpose::conjtrans:
+            return (type == detail::data_type::complex_fp32 ||
+                    type == detail::data_type::complex_fp64)
+                       ? CUSPARSE_OPERATION_CONJUGATE_TRANSPOSE
+                       : CUSPARSE_OPERATION_TRANSPOSE;
         default:
             throw oneapi::mkl::invalid_argument(
                 "sparse_blas", "get_cuda_operation",

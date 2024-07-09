@@ -86,8 +86,9 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
         auto cu_a = A_handle->backend_handle;
         auto cu_x = x_handle->backend_handle;
         auto cu_y = y_handle->backend_handle;
-        auto cu_op = get_cuda_operation(opA);
-        auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+        auto type = A_handle->value_container.data_type;
+        auto cu_op = get_cuda_operation(type, opA);
+        auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spmv_alg(alg);
         set_pointer_mode(cu_handle, queue, alpha);
         auto status = cusparseSpMV_bufferSize(cu_handle, cu_op, alpha, cu_a, cu_x, beta, cu_y,
@@ -107,8 +108,9 @@ void spmv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
     auto cu_a = A_handle->backend_handle;
     auto cu_x = x_handle->backend_handle;
     auto cu_y = y_handle->backend_handle;
-    auto cu_op = get_cuda_operation(opA);
-    auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+    auto type = A_handle->value_container.data_type;
+    auto cu_op = get_cuda_operation(type, opA);
+    auto cu_type = get_cuda_value_type(type);
     auto cu_alg = get_cuda_spmv_alg(alg);
     auto status = cusparseSpMV_preprocess(cu_handle, cu_op, alpha, cu_a, cu_x, beta, cu_y, cu_type,
                                           cu_alg, workspace_ptr);
@@ -203,8 +205,9 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
             auto cu_a = A_handle->backend_handle;
             auto cu_x = x_handle->backend_handle;
             auto cu_y = y_handle->backend_handle;
-            auto cu_op = get_cuda_operation(opA);
-            auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+            auto type = A_handle->value_container.data_type;
+            auto cu_op = get_cuda_operation(type, opA);
+            auto cu_type = get_cuda_value_type(type);
             auto cu_alg = get_cuda_spmv_alg(alg);
             auto status = cusparseSpMV(cu_handle, cu_op, alpha, cu_a, cu_x, beta, cu_y, cu_type,
                                        cu_alg, workspace_ptr);
@@ -226,8 +229,9 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
             auto cu_a = A_handle->backend_handle;
             auto cu_x = x_handle->backend_handle;
             auto cu_y = y_handle->backend_handle;
-            auto cu_op = get_cuda_operation(opA);
-            auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+            auto type = A_handle->value_container.data_type;
+            auto cu_op = get_cuda_operation(type, opA);
+            auto cu_type = get_cuda_value_type(type);
             auto cu_alg = get_cuda_spmv_alg(alg);
             // Workaround issue with captured alpha and beta causing a segfault inside cuSPARSE
             // Copy alpha and beta locally in the largest data value type and use the local pointer

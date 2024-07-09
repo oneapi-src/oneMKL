@@ -72,9 +72,10 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
         auto cu_a = A_handle->backend_handle;
         auto cu_x = x_handle->backend_handle;
         auto cu_y = y_handle->backend_handle;
+        auto type = A_handle->value_container.data_type;
         set_matrix_attributes(__func__, cu_a, A_view);
-        auto cu_op = get_cuda_operation(opA);
-        auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+        auto cu_op = get_cuda_operation(type, opA);
+        auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spsv_alg(alg);
         auto cu_descr = spsv_descr->cu_descr;
         set_pointer_mode(cu_handle, queue, alpha);
@@ -96,9 +97,10 @@ void spsv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
     auto cu_a = A_handle->backend_handle;
     auto cu_x = x_handle->backend_handle;
     auto cu_y = y_handle->backend_handle;
+    auto type = A_handle->value_container.data_type;
     set_matrix_attributes("optimize_spsv", cu_a, A_view);
-    auto cu_op = get_cuda_operation(opA);
-    auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+    auto cu_op = get_cuda_operation(type, opA);
+    auto cu_type = get_cuda_value_type(type);
     auto cu_alg = get_cuda_spsv_alg(alg);
     auto cu_descr = spsv_descr->cu_descr;
     auto status = cusparseSpSV_analysis(cu_handle, cu_op, alpha, cu_a, cu_x, cu_y, cu_type, cu_alg,
@@ -173,9 +175,10 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         auto cu_a = A_handle->backend_handle;
         auto cu_x = x_handle->backend_handle;
         auto cu_y = y_handle->backend_handle;
+        auto type = A_handle->value_container.data_type;
         set_matrix_attributes(__func__, cu_a, A_view);
-        auto cu_op = get_cuda_operation(opA);
-        auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+        auto cu_op = get_cuda_operation(type, opA);
+        auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spsv_alg(alg);
         auto cu_descr = spsv_descr->cu_descr;
         set_pointer_mode(cu_handle, queue, alpha);

@@ -85,9 +85,10 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mk
         auto cu_a = A_handle->backend_handle;
         auto cu_b = B_handle->backend_handle;
         auto cu_c = C_handle->backend_handle;
-        auto cu_op_a = get_cuda_operation(opA);
-        auto cu_op_b = get_cuda_operation(opB);
-        auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+        auto type = A_handle->value_container.data_type;
+        auto cu_op_a = get_cuda_operation(type, opA);
+        auto cu_op_b = get_cuda_operation(type, opB);
+        auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spmm_alg(alg);
         set_pointer_mode(cu_handle, queue, alpha);
         auto status = cusparseSpMM_bufferSize(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta,
@@ -108,9 +109,10 @@ void spmm_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA,
     auto cu_a = A_handle->backend_handle;
     auto cu_b = B_handle->backend_handle;
     auto cu_c = C_handle->backend_handle;
-    auto cu_op_a = get_cuda_operation(opA);
-    auto cu_op_b = get_cuda_operation(opB);
-    auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+    auto type = A_handle->value_container.data_type;
+    auto cu_op_a = get_cuda_operation(type, opA);
+    auto cu_op_b = get_cuda_operation(type, opB);
+    auto cu_type = get_cuda_value_type(type);
     auto cu_alg = get_cuda_spmm_alg(alg);
     auto status = cusparseSpMM_preprocess(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta,
                                           cu_c, cu_type, cu_alg, workspace_ptr);
@@ -203,9 +205,10 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
             auto cu_a = A_handle->backend_handle;
             auto cu_b = B_handle->backend_handle;
             auto cu_c = C_handle->backend_handle;
-            auto cu_op_a = get_cuda_operation(opA);
-            auto cu_op_b = get_cuda_operation(opB);
-            auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+            auto type = A_handle->value_container.data_type;
+            auto cu_op_a = get_cuda_operation(type, opA);
+            auto cu_op_b = get_cuda_operation(type, opB);
+            auto cu_type = get_cuda_value_type(type);
             auto cu_alg = get_cuda_spmm_alg(alg);
             auto status = cusparseSpMM(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta, cu_c,
                                        cu_type, cu_alg, workspace_ptr);
@@ -227,9 +230,10 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
             auto cu_a = A_handle->backend_handle;
             auto cu_b = B_handle->backend_handle;
             auto cu_c = C_handle->backend_handle;
-            auto cu_op_a = get_cuda_operation(opA);
-            auto cu_op_b = get_cuda_operation(opB);
-            auto cu_type = get_cuda_value_type(A_handle->value_container.data_type);
+            auto type = A_handle->value_container.data_type;
+            auto cu_op_a = get_cuda_operation(type, opA);
+            auto cu_op_b = get_cuda_operation(type, opB);
+            auto cu_type = get_cuda_value_type(type);
             auto cu_alg = get_cuda_spmm_alg(alg);
             set_pointer_mode(cu_handle, queue, alpha);
             auto status = cusparseSpMM(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta, cu_c,
