@@ -56,8 +56,8 @@ class kernel_name {};
 template <typename Engine, typename Distr>
 class kernel_name_usm {};
 
-template <typename T, sycl::access_mode AccMode>
-T *get_raw_ptr(sycl::accessor<T, 1, AccMode> acc) {
+template <typename Acc>
+Acc::value_type* get_raw_ptr(Acc acc) {
 // Workaround for AdaptiveCPP, as they do not yet support the get_multi_ptr function
 #ifndef __HIPSYCL__
     return acc.template get_multi_ptr<sycl::access::decorated::no>().get_raw();
