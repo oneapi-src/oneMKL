@@ -525,7 +525,8 @@ Product | Supported Version | License
 - [About](https://oneapi-src.github.io/oneMKL/introduction.html)
 - Get Started
   - [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html)
-  - [Building the Project](https://oneapi-src.github.io/oneMKL/building_the_project.html)
+  - [Building the Project with DPC++](https://oneapi-src.github.io/oneMKL/building_the_project_with_dpcpp.html)
+  - [Building the Project with AdaptiveCpp](https://oneapi-src.github.io/oneMKL/building_the_project_with_adaptivecpp.html)
 - Developer Reference
   - [oneMKL Defined Datatypes](https://oneapi-src.github.io/oneMKL/onemkl-datatypes.html)
   - [Dense Linear Algebra](https://oneapi-src.github.io/oneMKL/domains/dense_linear_algebra.html)
