@@ -40,7 +40,7 @@ inline std::string data_type_to_str(data_type data_type) {
 }
 
 template <typename T>
-data_type get_data_type() {
+constexpr data_type get_data_type() {
     if constexpr (std::is_same_v<T, std::int32_t>) {
         return data_type::int32;
     }
