@@ -39,7 +39,7 @@
 #ifdef CALL_RT_API
 #define CALL_RT_OR_CT(FUNC, QUEUE, ...) FUNC(QUEUE, __VA_ARGS__)
 #else
-#define CALL_RT_OR_CT(FUNC, QUEUE, ...) TEST_RUN_CT_SELECT(QUEUE, FUNC, __VA_ARGS__);
+#define CALL_RT_OR_CT(FUNC, QUEUE, ...) TEST_RUN_SPARSE_CT_SELECT(QUEUE, FUNC, __VA_ARGS__);
 #endif
 
 template <typename T>
