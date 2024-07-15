@@ -463,6 +463,8 @@ clangrt builtins lib not found
     projects compile option: ``--llvm-external-projects compiler-rt``.
   * Manually set the variable ``HIP_CXX_COMPILER`` to HIP's toolkit ``clang++``
     path, for instance ``-DHIP_CXX_COMPILER=/opt/rocm/6.1.0/llvm/bin/clang++``.
+    oneMKL may fail to link if the clang versions of ``icpx`` and ``rocm`` are
+    not compatible.
 
 Could NOT find CBLAS (missing: CBLAS file)
   Encountered when tests are enabled along with the BLAS domain. The tests
