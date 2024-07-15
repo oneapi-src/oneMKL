@@ -36,5 +36,6 @@ else()
 endif()
 
 if(is_dpcpp)
+  message("is_dpcpp in unit_tests/moments")
   target_link_options(rng_device_moments_ct PUBLIC -fsycl -fsycl-device-code-split=per_kernel)
 endif()

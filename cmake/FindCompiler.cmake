@@ -17,12 +17,14 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
+message("1. FindCompiler.cmake")
 include_guard()
-
+message("2. FindCompiler.cmake")
 include(CheckCXXCompilerFlag)
 include(FindPackageHandleStandardArgs)
-
+message("3. FindCompiler.cmake")
 check_cxx_compiler_flag("-fsycl" is_dpcpp)
+message("is_dpcpp = ${is_dpcpp}")
 
 if(is_dpcpp)
   # Workaround for internal compiler error during linking if -fsycl is used
