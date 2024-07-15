@@ -195,29 +195,33 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
         detail::throw_incompatible_container(__func__);
     }
     fallback_alg_if_needed(alg, opA, opB);
+    auto compute_functor = [=](CusparseScopedContextHandler& sc, void* workspace_ptr) {
+        auto [cu_handle, cu_stream] = sc.get_handle_and_stream(queue);
+        auto cu_a = A_handle->backend_handle;
+        auto cu_b = B_handle->backend_handle;
+        auto cu_c = C_handle->backend_handle;
+        auto type = A_handle->value_container.data_type;
+        auto cu_op_a = get_cuda_operation(type, opA);
+        auto cu_op_b = get_cuda_operation(type, opB);
+        auto cu_type = get_cuda_value_type(type);
+        auto cu_alg = get_cuda_spmm_alg(alg);
+        set_pointer_mode(cu_handle, queue, alpha);
+        auto status = cusparseSpMM(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta, cu_c,
+                                   cu_type, cu_alg, workspace_ptr);
+        check_status(status, __func__);
+        CUDA_ERROR_FUNC(cuStreamSynchronize, cu_stream);
+    };
     if (A_handle->all_use_buffer() && spmm_descr->temp_buffer_size > 0) {
         // The accessor can only be bound to the cgh if the buffer size is
         // greater than 0
-        auto functor = [=](CusparseScopedContextHandler& sc,
-                           sycl::accessor<std::uint8_t> workspace_acc) {
-            auto [cu_handle, cu_stream] = sc.get_handle_and_stream(queue);
+        auto functor_buffer = [=](CusparseScopedContextHandler& sc,
+                                  sycl::accessor<std::uint8_t> workspace_acc) {
             auto workspace_ptr = sc.get_mem(workspace_acc);
-            auto cu_a = A_handle->backend_handle;
-            auto cu_b = B_handle->backend_handle;
-            auto cu_c = C_handle->backend_handle;
-            auto type = A_handle->value_container.data_type;
-            auto cu_op_a = get_cuda_operation(type, opA);
-            auto cu_op_b = get_cuda_operation(type, opB);
-            auto cu_type = get_cuda_value_type(type);
-            auto cu_alg = get_cuda_spmm_alg(alg);
-            auto status = cusparseSpMM(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta, cu_c,
-                                       cu_type, cu_alg, workspace_ptr);
-            check_status(status, __func__);
-            CUDA_ERROR_FUNC(cuStreamSynchronize, cu_stream);
+            compute_functor(sc, workspace_ptr);
         };
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
             spmm_descr->workspace.get_buffer<std::uint8_t>());
-        return dispatch_submit<true>(__func__, queue, dependencies, functor, A_handle,
+        return dispatch_submit<true>(__func__, queue, dependencies, functor_buffer, A_handle,
                                      workspace_placeholder_acc, B_handle, C_handle);
     }
     else {
@@ -225,23 +229,10 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
         // workspace accessor is needed, workspace_ptr will be a nullptr in the
         // latter case.
         auto workspace_ptr = spmm_descr->workspace.usm_ptr;
-        auto functor = [=](CusparseScopedContextHandler& sc) {
-            auto [cu_handle, cu_stream] = sc.get_handle_and_stream(queue);
-            auto cu_a = A_handle->backend_handle;
-            auto cu_b = B_handle->backend_handle;
-            auto cu_c = C_handle->backend_handle;
-            auto type = A_handle->value_container.data_type;
-            auto cu_op_a = get_cuda_operation(type, opA);
-            auto cu_op_b = get_cuda_operation(type, opB);
-            auto cu_type = get_cuda_value_type(type);
-            auto cu_alg = get_cuda_spmm_alg(alg);
-            set_pointer_mode(cu_handle, queue, alpha);
-            auto status = cusparseSpMM(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta, cu_c,
-                                       cu_type, cu_alg, workspace_ptr);
-            check_status(status, __func__);
-            CUDA_ERROR_FUNC(cuStreamSynchronize, cu_stream);
+        auto functor_usm = [=](CusparseScopedContextHandler& sc) {
+            compute_functor(sc, workspace_ptr);
         };
-        return dispatch_submit(__func__, queue, dependencies, functor, A_handle, B_handle,
+        return dispatch_submit(__func__, queue, dependencies, functor_usm, A_handle, B_handle,
                                C_handle);
     }
 }
