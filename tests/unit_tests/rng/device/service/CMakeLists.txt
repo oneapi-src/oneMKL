@@ -35,6 +35,6 @@ else()
   target_link_libraries(rng_device_service_ct PUBLIC ONEMKL::SYCL::SYCL)
 endif()
 
-if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+if(is_dpcpp)
   target_link_options(rng_device_service_ct PUBLIC -fsycl -fsycl-device-code-split=per_kernel)
 endif()

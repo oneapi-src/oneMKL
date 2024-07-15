@@ -59,7 +59,7 @@ foreach(rng_device_source ${RNG_DEVICE_SOURCES})
       ONEMKL::SYCL::SYCL
   )
 
-  if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+  if(is_dpcpp)
     target_link_options(example_${domain}_${rng_device_source} PUBLIC -fsycl -fsycl-device-code-split=per_kernel)
   endif()
 
