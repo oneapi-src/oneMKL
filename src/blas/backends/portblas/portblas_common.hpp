@@ -202,7 +202,7 @@ struct throw_if_unsupported_by_device {
         try {                                                                                   \
             std::apply(fn, args);                                                               \
         }                                                                                       \
-        catch (const std::runtime_error& e) {                                                   \
+        catch (const ::blas::unsupported_exception& e) {                                        \
             throw unimplemented("blas", e.what());                                              \
         }                                                                                       \
     }                                                                                           \
@@ -223,7 +223,7 @@ struct throw_if_unsupported_by_device {
         try {                                                                     \
             return std::apply(fn, args);                                          \
         }                                                                         \
-        catch (const std::runtime_error& e) {                                     \
+        catch (const ::blas::unsupported_exception& e) {                          \
             throw unimplemented("blas", e.what());                                \
         }                                                                         \
     }                                                                             \
