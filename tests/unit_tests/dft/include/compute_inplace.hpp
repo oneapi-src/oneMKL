@@ -91,7 +91,7 @@ int DFT_Test<precision, domain>::test_in_place_buffer() {
         oneapi::mkl::dft::compute_forward<descriptor_t, FwdInputType>(descriptor, inout_buf);
 
         {
-            auto acc_host = inout_buf.template get_host_access();
+            auto acc_host = inout_buf.get_host_access();
             auto ptr_host = reinterpret_cast<FwdOutputType*>(acc_host.get_pointer());
             for (std::int64_t i = 0; i < batches; i++) {
                 EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(
