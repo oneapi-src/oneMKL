@@ -70,7 +70,7 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             descriptor, fwd_buf, bwd_buf);
 
         {
-            auto acc_bwd = bwd_buf.template get_host_access();
+            auto acc_bwd = bwd_buf.get_host_access();
             auto bwd_ptr = acc_bwd.get_pointer();
             for (std::int64_t i = 0; i < batches; i++) {
                 EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(

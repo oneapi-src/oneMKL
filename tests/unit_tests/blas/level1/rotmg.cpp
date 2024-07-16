@@ -130,13 +130,13 @@ int test(device* dev, oneapi::mkl::layout layout) {
 
     int error_mag = 50;
 
-    auto d1_accessor = d1_buffer.template get_host_access(read_only);
+    auto d1_accessor = d1_buffer.get_host_access(read_only);
     bool good_d1 = check_equal(d1_accessor[0], d1_ref, error_mag, std::cout);
-    auto d2_accessor = d2_buffer.template get_host_access(read_only);
+    auto d2_accessor = d2_buffer.get_host_access(read_only);
     bool good_d2 = check_equal(d2_accessor[0], d2_ref, error_mag, std::cout);
-    auto x1_accessor = x1_buffer.template get_host_access(read_only);
+    auto x1_accessor = x1_buffer.get_host_access(read_only);
     bool good_x1 = check_equal(x1_accessor[0], x1_ref, error_mag, std::cout);
-    auto param_accessor = param_buffer.template get_host_access(read_only);
+    auto param_accessor = param_buffer.get_host_access(read_only);
 
     constexpr fp unit_matrix = -2;
     constexpr fp rescaled_matrix = -1;

@@ -127,8 +127,8 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
             descriptor, in_dev_re, in_dev_im, out_dev_re, out_dev_im);
 
         {
-            auto acc_out_re = out_dev_re.template get_host_access();
-            auto acc_out_im = out_dev_im.template get_host_access();
+            auto acc_out_re = out_dev_re.get_host_access();
+            auto acc_out_im = out_dev_im.get_host_access();
             std::vector<FwdOutputType> output_data(size_total, static_cast<FwdOutputType>(0));
             for (std::size_t i = 0; i < output_data.size(); ++i) {
                 output_data[i] = { acc_out_re[i], acc_out_im[i] };
@@ -143,8 +143,8 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
             descriptor, out_dev_re, out_dev_im, out_back_dev_re, out_back_dev_im);
 
         {
-            auto acc_back_out_re = out_back_dev_re.template get_host_access();
-            auto acc_back_out_im = out_back_dev_im.template get_host_access();
+            auto acc_back_out_re = out_back_dev_re.get_host_access();
+            auto acc_back_out_im = out_back_dev_im.get_host_access();
             std::vector<FwdInputType> output_data(size_total, static_cast<FwdInputType>(0));
             for (std::size_t i = 0; i < output_data.size(); ++i) {
                 output_data[i] = { acc_back_out_re[i], acc_back_out_im[i] };
