@@ -1,0 +1,5 @@
+{
+    "philox4x32x10" : ["std::uint64_t"],
+    "mrg32k3a" : ["std::uint32_t"],
+    "mcg59": ["std::uint64_t"]
+}

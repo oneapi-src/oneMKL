@@ -1,5 +1,5 @@
 ..
-  Copyright 2020 Intel Corporation
+  Copyright 2020-2022 Intel Corporation
 
 .. _create_backend_wrappers:
 
@@ -497,6 +497,299 @@ Update the following files to enable the new third-party library for unit tests:
      +           
      +  #ifdef ENABLE_NEWLIB_BACKEND
      +      devices.push_back(sycl::device(sycl::host_selector()));
+     +  #endif
+
+Now you can build and run functional testing for enabled third-party libraries (for more information see `Build with cmake <../README.md#building-with-cmake>`_).
+
+.. code-block:: bash
+
+    cd build/
+    cmake .. -DNEWLIB_ROOT=<path/to/newlib> \
+        -DENABLE_MKLCPU_BACKEND=OFF \
+        -DENABLE_MKLGPU_BACKEND=OFF \
+        -DENABLE_NEWLIB_BACKEND=ON  \
+        -DBUILD_FUNCTIONAL_TESTS=ON
+    cmake --build . -j4
+    ctest
+
+Instruction for integration to RNG
+==================================
+
+`1. Call Script create_backend.py`_
+
+`2. Add new device`_
+
+`3. Update Cmake Files`_
+
+`4. Update the Test System`_
+
+.. _generate_files:
+
+1. Call Script create_backend.py
+--------------------------------
+
+.. code-block:: bash
+
+    python scripts/rng/create_backend.py   <path>/oneMKL \             # Directory to oneMKL
+                                            newlib                     # Library name
+
+This script generates the follow files, which you should probably check and correct if it's necessary: 
+
+* ``include/oneapi/mkl/rng/detail/newlib/onemkl_rng_newlib.hpp``: header file with declaration of entry points to wrappers
+
+* ``src/rng/backends/newlib/mkl_rng_newlib_wrappers.cpp``: DPC++ wrappers for all functions from ``include/oneapi/mkl/blas/detail/newlib/onemkl_rng_newlib.hpp``
+
+* ``src/rng/backends/newlib/engine.cpp``: basic files for all engines from the list ``scripts/rng/engine_list.txt``
+
+You should probably fix these files to add your own implementations for engines if you have them
+
+* ``src/rng/backends/newlib/CMakeLists.txt``:  cmake config file to specify how to build the backend layer for the new third-party library
+
+* Also the script corrects some files. 
+
+  It adds the define to the ``include/oneapi/mkl/rng/engines.hpp``
+
+  .. code-block:: diff
+
+        #ifdef ENABLE_CURAND_BACKEND
+            mcg59(backend_selector<backend::curand> selector, std::uint64_t seed = default_seed)
+                    : pimpl_(curand::create_mcg59(selector.get_queue(), seed)) {}
+        #endif
+
+     +  #ifdef ENABLE_NEWLIB_BACKEND
+     +      mcg59(backend_selector<backend::newlib> selector, std::uint64_t seed = default_seed)
+     +              : pimpl_(newlib::create_mcg59(selector.get_queue(), seed)) {}
+     +  #endif
+
+
+  It adds #cmakedefine to the ``src/config.hpp.in``
+
+  .. code-block:: diff
+
+        #cmakedefine ENABLE_CURAND_BACKEND
+     +  #cmakedefine ENABLE_NEWLIB_BACKEND
+
+  It updates ``include/oneapi/mkl/detail/backends.hpp``
+
+  .. code-block:: diff
+
+     -  enum class backend { mklcpu, mklgpu, cublas, curand, netlib, unsupported };
+     +  enum class backend { mklcpu, mklgpu, cublas, curand, newlib, netlib, unsupported };
+
+  .. code-block:: diff
+     -  { backend::cublas, "cublas" }, { backend::curand, "curand" },
+     +  { backend::cublas, "cublas" }, { backend::newlib, "newlib" },
+     +  { backend::curand, "curand" },
+
+  And it updates ``/src/rng/backends/CMakeLists.txt``
+
+  .. code-block:: diff
+
+        if(ENABLE_CURAND_BACKEND AND UNIX)
+            add_subdirectory(curand)
+        endif()
+
+     +  if(ENABLE_NEWLIB_BACKEND)
+     +      add_subdirectory(newlib)
+     +  endif()
+
+.. _add_device:
+
+2. Add new device
+-----------------
+
+* Update ``include/oneapi/mkl/detail/get_device_id.hpp`` if it's needed
+
+  **Example**: changes for ``newdevice`` in the ``get_device_id.hpp`` file
+
+  .. code-block:: diff
+
+            #define NVIDIA_ID 4318
+         +  #define NEWDEVICE_ID 00000
+
+  .. code-block:: diff
+
+            else if (vendor_id == NVIDIA_ID)
+                device_id = device::nvidiagpu;
+         +  else if (vendor_id == NEWDEVICE_ID)
+         +      device_id = device::newdevice;
+
+* Update ``include/oneapi/mkl/detail/backends_table.hpp``
+
+  **Example**: changes for ``newdevice`` in the ``backends_table.hpp`` file
+
+  .. code-block:: diff
+
+            enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu };
+         +  enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu, newdevice };
+
+  .. code-block:: diff
+
+                { device::intelgpu,
+                    {
+            #ifdef ENABLE_MKLGPU_BACKEND
+                        LIB_NAME("rng_mklgpu")
+            #endif
+                    } },
+         +      { device::newdevice,
+         +          {
+         +  #ifdef ENABLE_NEWLIB_BACKEND
+         +              LIB_NAME("rng_newlib")
+         +  #endif
+         +          } },
+
+* Update ``include/oneapi/mkl/detail/backend_selector_predicates.hpp``
+
+  **Example**: changes for ``newdevice`` in the ``backend_selector_predicates.hpp`` file
+
+  .. code-block:: diff
+
+            enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu };
+         +  enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu, newdevice };
+
+  .. code-block:: diff
+  
+         +      template <>
+         +      inline void backend_selector_precondition<backend::newlib>(cl::sycl::queue& queue) {
+         +      #ifndef ONEMKL_DISABLE_PREDICATES
+         +          unsigned int vendor_id =
+         +              static_cast<unsigned int>(queue.get_device().get_info<cl::sycl::info::device::vendor_id>());
+         +          if (!(queue.get_device().is_gpu() && vendor_id == NEWDEVICE_ID)) {
+         +              throw unsupported_device("",
+         +                                      "backend_selector<backend::" + backend_map[backend::newlib] + ">",
+         +                                      queue.get_device());
+         +          }
+         +      #endif
+         +      }
+
+
+.. _update_build_system:
+
+3. Update Cmake Files
+---------------------
+Here is the list of files that should be updated to integrate the new wrappers for the third-party library to the oneMKL build system:
+
+* Add the new option ``ENABLE_XXX_BACKEND`` for the new third-party library to the top of the ``CMakeList.txt`` file.
+
+  **Example**: changes for ``newlib`` in the top of the ``CMakeList.txt`` file
+
+  .. code-block:: diff
+
+            option(ENABLE_MKLCPU_BACKEND "" ON)
+            option(ENABLE_MKLGPU_BACKEND "" ON)
+        +   option(ENABLE_NEWLIB_BACKEND "" ON)       
+
+* Create the ``cmake/FindXXX.cmake`` cmake config file to find the new third-party library and its dependencies.
+
+  **Example**: new config file ``cmake/FindNEWLIB.cmake`` for ``newlib``
+    
+  .. code-block:: cmake
+    
+        include_guard()
+        # Find library by name in NEWLIB_ROOT cmake variable or environment variable NEWLIBROOT
+        find_library(NEWLIB_LIBRARY NAMES newlib
+            HINTS ${NEWLIB_ROOT} $ENV{NEWLIBROOT}
+            PATH_SUFFIXES "lib")
+        # Make sure that the library was found
+        include(FindPackageHandleStandardArgs)
+        find_package_handle_standard_args(NEWLIB REQUIRED_VARS NEWLIB_LIBRARY)
+        # Set cmake target for the library
+        add_library(ONEMKL::NEWLIB::NEWLIB UNKNOWN IMPORTED)
+        set_target_properties(ONEMKL::NEWLIB::NEWLIB PROPERTIES
+            IMPORTED_LOCATION ${NEWLIB_LIBRARY})
+
+* You should manually update the generated config file ``src/rng/backends/newlib/CMakeList.txt`` with information about the new ``cmake/FindXXX.cmake`` file and instructions about how to link with the third-party library.
+  
+  **Example**: update the generated ``src/rng/backends/newlib/CMakeLists.txt`` file
+
+  .. code-block:: diff
+
+            # Add third-party library
+        -   # find_package(XXX REQUIRED)
+        +   find_package(NEWLIB REQUIRED)
+    
+  .. code-block:: diff
+
+            target_link_libraries(${LIB_OBJ}
+                PUBLIC ONEMKL::SYCL::SYCL
+        -       # Add third-party library to link with here
+        +       PUBLIC ONEMKL::NEWLIB::NEWLIB
+            )
+
+Now you can build the backend library for ``newlib`` to make sure the third-party library integration was completed successfully (for more information, see `Build with cmake <../README.md#building-with-cmake>`_)
+
+.. code-block:: bash
+
+    cd build/
+    cmake .. -DNEWLIB_ROOT=<path/to/newlib> \
+        -DENABLE_MKLCPU_BACKEND=OFF \
+        -DENABLE_MKLGPU_BACKEND=OFF \
+        -DENABLE_NEWLIB_BACKEND=ON \           # Enable new third-party library backend
+        -DBUILD_FUNCTIONAL_TESTS=OFF           # At this step we want build only
+    cmake --build . -j4
+
+.. _integrate_backend_to_test_system:
+
+4. Update the Test System
+-------------------------
+
+Update the following files to enable the new third-party library for unit tests:
+
+* ``tests/unit_tests/CMakeLists.txt``: add instructions about how to link tests with the new backend library
+
+  **Example**: add the ``newlib`` backend library
+
+  .. code-block:: diff
+    
+        if(ENABLE_MKLCPU_BACKEND)
+            add_dependencies(test_main_${domain}_ct onemkl_${domain}_mklcpu)
+            list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
+        endif()
+
+     +  if(ENABLE_NEWLIB_BACKEND)
+     +      add_dependencies(test_main_${domain}_ct onemkl_${domain}_newlib)
+     +      list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_newlib)
+     +  endif()
+
+* ``tests/unit_tests/include/test_helper.hpp``: add the helper function for the compile-time dispatching interface with the new backend, and specify the device for which it should be called
+
+  **Example**: add the helper function for the ``newlib`` compile-time dispatching interface with ``newdevice`` if it is the Host
+
+  .. code-block:: diff
+    
+        #ifdef ENABLE_MKLGPU_BACKEND
+            #define TEST_RUN_INTELGPU(q, func, args) \
+                func<oneapi::mkl::backend::mklgpu> args
+        #else
+            #define TEST_RUN_INTELGPU(q, func, args)
+        #endif
+         
+     +  #ifdef ENABLE_NEWLIB_BACKEND
+     +     #define TEST_RUN_NEWDEVICE(q, func, args) \
+     +         func<oneapi::mkl::backend::newbackend> args
+     +  #else
+     +      #define TEST_RUN_NEWDEVICE(q, func, args)
+     +  #endif
+ 
+  .. code-block:: diff
+ 
+        #define TEST_RUN_CT_SELECT(q, func, ...)         \
+            do {                                         \
+     +          if (q.is_host())                         \
+     +              TEST_RUN_NEWDEVICE(q, func, args);   \ 
+
+
+* ``tests/unit_tests/main_test.cpp``: add the targeted device to the vector of devices to test
+
+  **Example**: add the targeted device CPU for ``newlib``
+
+  .. code-block:: diff
+    
+                }
+            }
+     +           
+     +  #ifdef ENABLE_NEWLIB_BACKEND
+     +      devices.push_back(cl::sycl::device(cl::sycl::host_selector()));
      +  #endif
 
 Now you can build and run functional testing for enabled third-party libraries (for more information see `Build with cmake <../README.md#building-with-cmake>`_).

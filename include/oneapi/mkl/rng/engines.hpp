@@ -38,9 +38,11 @@
 #ifdef ENABLE_MKLCPU_BACKEND
 #include "oneapi/mkl/rng/detail/mklcpu/onemkl_rng_mklcpu.hpp"
 #endif
+
 #ifdef ENABLE_MKLGPU_BACKEND
 #include "oneapi/mkl/rng/detail/mklgpu/onemkl_rng_mklgpu.hpp"
 #endif
+
 #ifdef ENABLE_CURAND_BACKEND
 #include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
 #endif
