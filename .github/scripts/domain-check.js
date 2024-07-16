@@ -24,13 +24,32 @@ function matchesPattern(domain, filePaths) {
 
 // Return the list of files modified in the pull request
 async function prFiles(github, context) {
-  const response = await github.rest.pulls.listFiles({
-    owner: context.repo.owner,
-    repo: context.repo.repo,
-    pull_number: context.payload.pull_request.number,
-  });
-  const prFiles = response.data.map((file) => file.filename);
-  return prFiles;
+  let allFiles = [];
+  let page = 0;
+  let filesPerPage = 100; // GitHub's maximum per page
+
+  while (true) {
+    page++;
+    const response = await github.rest.pulls.listFiles({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: context.payload.pull_request.number,
+      per_page: filesPerPage,
+      page: page,
+    });
+
+    if (response.data.length === 0) {
+      break; // Exit the loop if no more files are returned
+    }
+
+    allFiles = allFiles.concat(response.data.map((file) => file.filename));
+
+    if (response.data.length < filesPerPage) {
+      break; // Exit the loop if last page
+    }
+  }
+
+  return allFiles;
 }
 
 // Called by pr.yml. See:
