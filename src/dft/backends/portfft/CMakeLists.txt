@@ -91,8 +91,13 @@ endif()
 target_link_libraries(${LIB_OBJ} PRIVATE onemkl_warnings)
 
 target_include_directories(${LIB_OBJ}
-  PRIVATE ${PROJECT_SOURCE_DIR}/include
-          ${PROJECT_SOURCE_DIR}/src
+  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+)
+target_include_directories(${LIB_NAME}
+  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+)
+target_include_directories(${LIB_OBJ}
+  PRIVATE ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
 )
 

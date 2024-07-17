@@ -30,19 +30,17 @@ foreach(dft_ct_source ${DFT_CT_SOURCES})
   add_executable(${EXAMPLE_NAME} ${dft_ct_source}.cpp)
   target_include_directories(${EXAMPLE_NAME}
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
-      PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-if(domain STREQUAL "dft" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
-  add_dependencies(${EXAMPLE_NAME} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
-  list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
-endif()
+  if(domain STREQUAL "dft" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
+    add_dependencies(${EXAMPLE_NAME} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
+  endif()
 
-target_link_libraries(${EXAMPLE_NAME} PUBLIC
-  ${ONEMKL_LIBRARIES_${domain}}
-  ONEMKL::SYCL::SYCL
-  onemkl_warnings
+  target_link_libraries(${EXAMPLE_NAME} PUBLIC
+    ${ONEMKL_LIBRARIES_${domain}}
+    onemkl_warnings
   )
 
   # Register example as ctest
