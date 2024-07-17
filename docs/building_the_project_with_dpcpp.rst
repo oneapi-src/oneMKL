@@ -341,7 +341,7 @@ The following table provides details of CMake options and their default values:
 CMake invocation examples
 ##########################
 
-Build oneMKL with support for x86 CPU, Intel GPU, and Nvidia GPUs with tests
+Build oneMKL with support for Nvidia GPUs with tests
 disabled using the Ninja build system:
 
 .. code-block:: bash
@@ -363,7 +363,7 @@ and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled
 here. The backends for Nvidia GPUs must all be explicilty enabled. The tests are
 disabled, but the examples will still be built.
 
-Building oneMKL with support x86 CPU, Intel GPU, and AMD GPUs with tests
+Building oneMKL with support for AMD GPUs with tests
 disabled:
 
 .. code-block:: bash
@@ -401,7 +401,7 @@ GPU and Nvidia GPU with testing enabled:
 Note that this is not a supported configuration, and requires Codeplay's oneAPI
 for `AMD <https://developer.codeplay.com/products/oneapi/amd/home/>`_ and
 `Nvidia <https://developer.codeplay.com/products/oneapi/nvidia/home/>`_ GPU
-plugins. Like the above example, the MKLCPU and MKLGPU backends are enabled by
+plugins. The MKLCPU and MKLGPU backends are enabled by
 default, with backends for Nvidia GPU and AMD GPU explicitly enabled.
 ``-DTARGET_DOMAINS=dft`` causes only DFT backends to be built. If this was not
 set, the backend libraries to enable the use of BLAS, LAPACK and RNG with MKLGPU

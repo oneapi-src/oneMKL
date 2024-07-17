@@ -184,7 +184,7 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                                 c_ref_host.data());
 
     // Compare the results of reference implementation and DPC++ implementation.
-    auto c_acc = c_buf.template get_host_access(sycl::read_only);
+    auto c_acc = c_buf.get_host_access(sycl::read_only);
     bool valid = check_equal_vector(c_acc, c_ref_host);
 
     return static_cast<int>(valid);

@@ -172,7 +172,7 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                                 A_view, y_ref_host.data());
 
     // Compare the results of reference implementation and DPC++ implementation.
-    auto y_acc = y_buf.template get_host_access(sycl::read_only);
+    auto y_acc = y_buf.get_host_access(sycl::read_only);
     bool valid = check_equal_vector(y_acc, y_ref_host);
 
     return static_cast<int>(valid);
