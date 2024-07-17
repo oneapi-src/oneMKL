@@ -199,7 +199,12 @@ struct throw_if_unsupported_by_device {
         auto fn = [](auto&&... targs) {                                                         \
             portBLASFunc(std::forward<decltype(targs)>(targs)...);                              \
         };                                                                                      \
-        std::apply(fn, args);                                                                   \
+        try {                                                                                   \
+            std::apply(fn, args);                                                               \
+        }                                                                                       \
+        catch (const ::blas::unsupported_exception& e) {                                        \
+            throw unimplemented("blas", e.what());                                              \
+        }                                                                                       \
     }                                                                                           \
     else {                                                                                      \
         throw unimplemented("blas", "portBLAS function");                                       \
@@ -215,7 +220,12 @@ struct throw_if_unsupported_by_device {
         auto fn = [](auto&&... targs) {                                           \
             return portblasFunc(std::forward<decltype(targs)>(targs)...).back();  \
         };                                                                        \
-        return std::apply(fn, args);                                              \
+        try {                                                                     \
+            return std::apply(fn, args);                                          \
+        }                                                                         \
+        catch (const ::blas::unsupported_exception& e) {                          \
+            throw unimplemented("blas", e.what());                                \
+        }                                                                         \
     }                                                                             \
     else {                                                                        \
         throw unimplemented("blas", "portBLAS function");                         \
