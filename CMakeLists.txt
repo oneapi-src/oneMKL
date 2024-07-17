@@ -23,8 +23,6 @@ cmake_minimum_required (VERSION 3.13)
 # Define build type
 set(DEFAULT_BUILD_TYPE "Release")
 
-message("==> CMakeLists.txt")
-
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE: None, set to ${DEFAULT_BUILD_TYPE} by default")
     set(CMAKE_BUILD_TYPE ${DEFAULT_BUILD_TYPE} CACHE STRING
