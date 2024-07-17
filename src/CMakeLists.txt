@@ -32,6 +32,13 @@ set(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU OFF CACHE INTERNAL "")
 # store path to CMAKE_CURRENT_BINARY_DIR to use it later (makes FetchContent_Declare workable)
 set(ONEMKL_GENERATED_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
+
+set(ONEMKL_INTERFACE_INCLUDE_DIRS
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
+
 # Build loader and backends for each domain
 add_custom_target(onemkl_backend_libs)
 foreach(domain ${TARGET_DOMAINS})
@@ -60,9 +67,7 @@ if(BUILD_SHARED_LIBS)
   add_dependencies(onemkl onemkl_backend_libs)
 
   target_include_directories(onemkl
-    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-           $<INSTALL_INTERFACE:include>
+    PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
   )
   set_target_properties(onemkl PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
