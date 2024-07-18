@@ -33,6 +33,7 @@
 #include "oneapi/mkl/dft/detail/commit_impl.hpp"
 
 #include "dft/backends/mklcpu/commit_derived_impl.hpp"
+#include "../stride_helper.hpp"
 #include "mkl_service.h"
 #include "mkl_dfti.h"
 
@@ -129,9 +130,23 @@ void commit_derived_impl<prec, dom>::set_value_item(mklcpu_desc_t hand, enum DFT
 template <dft::detail::precision prec, dft::detail::domain dom>
 void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle,
                                                const dft::detail::dft_values<prec, dom>& config) {
+    auto stride_choice = dft::detail::get_stride_api(config);
+    dft::detail::throw_on_invalid_stride_api("MKLCPU commit", stride_choice);
     for (auto dir : { DIR::fwd, DIR::bwd }) {
-        set_value_item(descHandle[dir], DFTI_INPUT_STRIDES, config.input_strides.data());
-        set_value_item(descHandle[dir], DFTI_OUTPUT_STRIDES, config.output_strides.data());
+        if (stride_choice == dft::detail::stride_api::IO_STRIDES) {
+            set_value_item(descHandle[dir], DFTI_INPUT_STRIDES, config.input_strides.data());
+            set_value_item(descHandle[dir], DFTI_OUTPUT_STRIDES, config.output_strides.data());
+        }
+        else { // Forward / backward strides
+            if (dir == DIR::fwd) {
+                set_value_item(descHandle[dir], DFTI_INPUT_STRIDES, config.fwd_strides.data());
+                set_value_item(descHandle[dir], DFTI_OUTPUT_STRIDES, config.bwd_strides.data());
+            }
+            else {
+                set_value_item(descHandle[dir], DFTI_INPUT_STRIDES, config.bwd_strides.data());
+                set_value_item(descHandle[dir], DFTI_OUTPUT_STRIDES, config.fwd_strides.data());
+            }
+        }
         set_value_item(descHandle[dir], DFTI_BACKWARD_SCALE, config.bwd_scale);
         set_value_item(descHandle[dir], DFTI_FORWARD_SCALE, config.fwd_scale);
         set_value_item(descHandle[dir], DFTI_NUMBER_OF_TRANSFORMS, config.number_of_transforms);

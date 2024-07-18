@@ -46,15 +46,14 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
     if (strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_fwd.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES, strides_fwd.data());
     }
     if (strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_bwd.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, strides_bwd.data());
     }
     else if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                             complex_strides.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, complex_strides.data());
     }
     commit_descriptor(descriptor, sycl_queue);
     std::vector<FwdInputType> fwd_data(
@@ -78,30 +77,6 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
                     strides_bwd, abs_error_margin, rel_error_margin, std::cout));
             }
         }
-
-        if (strides_bwd.size()) {
-            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_bwd.data());
-        }
-        else if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-            const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                 complex_strides.data());
-        }
-        else {
-            auto input_strides = get_default_strides(sizes);
-            descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
-                                 input_strides.data());
-        }
-        if (strides_fwd.size()) {
-            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 strides_fwd.data());
-        }
-        else {
-            auto output_strides = get_default_strides(sizes);
-            descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                                 output_strides.data());
-        }
-        commit_descriptor(descriptor, sycl_queue);
 
         oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
                                            FwdOutputType, FwdInputType>(descriptor, bwd_buf,
@@ -144,15 +119,14 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     descriptor.set_value(oneapi::mkl::dft::config_param::FWD_DISTANCE, forward_distance);
     descriptor.set_value(oneapi::mkl::dft::config_param::BWD_DISTANCE, backward_distance);
     if (strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_fwd.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES, strides_fwd.data());
     }
     if (strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_bwd.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, strides_bwd.data());
     }
     else if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
         const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
-                             complex_strides.data());
+        descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, complex_strides.data());
     }
     commit_descriptor(descriptor, sycl_queue);
 
@@ -175,26 +149,6 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
             bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
             strides_bwd, abs_error_margin, rel_error_margin, std::cout));
     }
-
-    if (strides_bwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, strides_bwd.data());
-    }
-    else if constexpr (domain == oneapi::mkl::dft::domain::REAL) {
-        const auto complex_strides = get_conjugate_even_complex_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, complex_strides.data());
-    }
-    else {
-        auto input_strides = get_default_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, input_strides.data());
-    }
-    if (strides_fwd.size()) {
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, strides_fwd.data());
-    }
-    else {
-        auto output_strides = get_default_strides(sizes);
-        descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES, output_strides.data());
-    }
-    commit_descriptor(descriptor, sycl_queue);
 
     oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>, FwdOutputType,
                                        FwdInputType>(descriptor, bwd.data(), fwd.data(),

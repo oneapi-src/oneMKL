@@ -74,8 +74,6 @@ inline constexpr DFTI_CONFIG_PARAM to_mklcpu(dft::detail::config_param param) {
         case iparam::COMPLEX_STORAGE: return DFTI_COMPLEX_STORAGE;
         case iparam::REAL_STORAGE: return DFTI_REAL_STORAGE;
         case iparam::CONJUGATE_EVEN_STORAGE: return DFTI_CONJUGATE_EVEN_STORAGE;
-        case iparam::INPUT_STRIDES: return DFTI_INPUT_STRIDES;
-        case iparam::OUTPUT_STRIDES: return DFTI_OUTPUT_STRIDES;
         case iparam::FWD_DISTANCE: return DFTI_FWD_DISTANCE;
         case iparam::BWD_DISTANCE: return DFTI_BWD_DISTANCE;
         case iparam::WORKSPACE: return DFTI_WORKSPACE;
