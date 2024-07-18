@@ -45,7 +45,7 @@ void check_ptr_is_host_accessible(const std::string &function_name, const std::s
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spmm_common(const std::string function_name, sycl::queue &queue,
+void check_valid_spmm_common(const std::string &function_name, sycl::queue &queue,
                              oneapi::mkl::sparse::matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
                              oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
@@ -82,7 +82,7 @@ void check_valid_spmm_common(const std::string function_name, sycl::queue &queue
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spmv_common(const std::string function_name, sycl::queue &queue,
+void check_valid_spmv_common(const std::string &function_name, sycl::queue &queue,
                              oneapi::mkl::transpose opA, oneapi::mkl::sparse::matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
                              oneapi::mkl::sparse::dense_vector_handle_t x_handle,
@@ -124,7 +124,7 @@ void check_valid_spmv_common(const std::string function_name, sycl::queue &queue
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spsv_common(const std::string function_name, sycl::queue &queue,
+void check_valid_spsv_common(const std::string &function_name, sycl::queue &queue,
                              oneapi::mkl::sparse::matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
                              oneapi::mkl::sparse::dense_vector_handle_t x_handle,

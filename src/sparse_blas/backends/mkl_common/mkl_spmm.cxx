@@ -29,7 +29,7 @@ sycl::event release_spmm_descr(sycl::queue &queue, oneapi::mkl::sparse::spmm_des
     return detail::collapse_dependencies(queue, dependencies);
 }
 
-void check_valid_spmm(const std::string function_name, sycl::queue &queue,
+void check_valid_spmm(const std::string &function_name, sycl::queue &queue,
                       oneapi::mkl::transpose opA, oneapi::mkl::sparse::matrix_view A_view,
                       oneapi::mkl::sparse::matrix_handle_t A_handle,
                       oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
