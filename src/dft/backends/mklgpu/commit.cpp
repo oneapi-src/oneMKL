@@ -33,6 +33,7 @@
 #include "oneapi/mkl/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
 
 #include "dft/backends/mklgpu/mklgpu_helpers.hpp"
+#include "../stride_helper.hpp"
 
 // MKLGPU header
 #include "oneapi/mkl/dfti.hpp"
@@ -90,14 +91,18 @@ public:
                 config_values.workspace_placement ==
                 oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
 
+        auto stride_choice = dft::detail::get_stride_api(config_values);
+        throw_on_invalid_stride_api("MKLGPU commit", stride_choice);
         // A separate descriptor for each direction may not be required.
-        bool one_descriptor = config_values.input_strides == config_values.output_strides;
+        bool one_descriptor = (stride_choice == dft::detail::stride_api::FB_STRIDES) ||
+                              (config_values.input_strides == config_values.output_strides);
         bool forward_good = true;
-	// Make sure that second is always pointing to something new if this is a recommit.
+        // Make sure that second is always pointing to something new if this is a recommit.
         handle.second = handle.first;
 
-        // Generate forward DFT descriptor.
-        set_value(*handle.first, config_values, true);
+        // Generate forward DFT descriptor. If using FWD/BWD_STRIDES API, only
+        // one descriptor is needed.
+        set_value(*handle.first, config_values, true, stride_choice);
         try {
             handle.first->commit(this->get_queue());
         }
@@ -114,7 +119,7 @@ public:
         // Generate backward DFT descriptor only if required.
         if (!one_descriptor) {
             handle.second = std::make_shared<mklgpu_descriptor_t>(config_values.dimensions);
-            set_value(*handle.second, config_values, false);
+            set_value(*handle.second, config_values, false, stride_choice);
             try {
                 handle.second->commit(this->get_queue());
             }
@@ -160,7 +165,7 @@ private:
     handle_t handle;
 
     void set_value(mklgpu_descriptor_t& desc, const dft::detail::dft_values<prec, dom>& config,
-                   bool assume_fwd_dft) {
+                   bool assume_fwd_dft, dft::detail::stride_api stride_choice) {
         using onemkl_param = dft::detail::config_param;
         using backend_param = dft::config_param;
 
@@ -181,17 +186,27 @@ private:
         desc.set_value(backend_param::PLACEMENT,
                        to_mklgpu<onemkl_param::PLACEMENT>(config.placement));
 
-        if (config.input_strides[0] != 0 || config.output_strides[0] != 0) {
-            throw mkl::unimplemented("dft/backends/mklgpu", "commit",
-                                     "MKLGPU does not support nonzero offsets.");
-        }
-        if (assume_fwd_dft) {
-            desc.set_value(backend_param::FWD_STRIDES, config.input_strides.data());
-            desc.set_value(backend_param::BWD_STRIDES, config.output_strides.data());
+        if (stride_choice == dft::detail::stride_api::FB_STRIDES) {
+            if (config.fwd_strides[0] != 0 || config.fwd_strides[0] != 0) {
+                throw mkl::unimplemented("dft/backends/mklgpu", "commit",
+                                         "MKLGPU does not support nonzero offsets.");
+            }
+            desc.set_value(backend_param::FWD_STRIDES, config.fwd_strides.data());
+            desc.set_value(backend_param::BWD_STRIDES, config.bwd_strides.data());
         }
         else {
-            desc.set_value(backend_param::FWD_STRIDES, config.output_strides.data());
-            desc.set_value(backend_param::BWD_STRIDES, config.input_strides.data());
+            if (config.input_strides[0] != 0 || config.output_strides[0] != 0) {
+                throw mkl::unimplemented("dft/backends/mklgpu", "commit",
+                                         "MKLGPU does not support nonzero offsets.");
+            }
+            if (assume_fwd_dft) {
+                desc.set_value(backend_param::FWD_STRIDES, config.input_strides.data());
+                desc.set_value(backend_param::BWD_STRIDES, config.output_strides.data());
+            }
+            else {
+                desc.set_value(backend_param::FWD_STRIDES, config.output_strides.data());
+                desc.set_value(backend_param::BWD_STRIDES, config.input_strides.data());
+            }
         }
         desc.set_value(backend_param::FWD_DISTANCE, config.fwd_dist);
         desc.set_value(backend_param::BWD_DISTANCE, config.bwd_dist);

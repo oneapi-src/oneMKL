@@ -30,16 +30,19 @@ namespace detail {
 
 // Compute the default strides. Modifies real_strides and complex_strides arguments.
 inline void compute_default_strides(const std::vector<std::int64_t>& dimensions,
-                                    std::vector<std::int64_t>& input_strides,
-                                    std::vector<std::int64_t>& output_strides) {
+                                    std::vector<std::int64_t>& fwd_strides,
+                                    std::vector<std::int64_t>& bwd_strides) {
     auto rank = dimensions.size();
     std::vector<std::int64_t> strides(rank + 1, 1);
     for (auto i = rank - 1; i > 0; --i) {
         strides[i] = strides[i + 1] * dimensions[i];
     }
     strides[0] = 0;
-    output_strides = strides;
-    input_strides = std::move(strides);
+    // Fwd/Bwd strides and Input/Output strides being the same by default means
+    // that we don't have to specify if we default to using fwd/bwd strides or
+    // input/output strides.
+    bwd_strides = strides;
+    fwd_strides = std::move(strides);
 }
 
 template <precision prec, domain dom>
@@ -69,10 +72,15 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
         case config_param::INPUT_STRIDES:
             detail::set_value<config_param::INPUT_STRIDES>(values_, va_arg(vl, std::int64_t*));
             break;
-        case config_param::OUTPUT_STRIDES: {
+        case config_param::OUTPUT_STRIDES:
             detail::set_value<config_param::OUTPUT_STRIDES>(values_, va_arg(vl, std::int64_t*));
             break;
-        }
+        case config_param::FWD_STRIDES:
+            detail::set_value<config_param::FWD_STRIDES>(values_, va_arg(vl, std::int64_t*));
+            break;
+        case config_param::BWD_STRIDES:
+            detail::set_value<config_param::BWD_STRIDES>(values_, va_arg(vl, std::int64_t*));
+            break;
         // VA arg promotes float args to double, so the following is always double:
         case config_param::FORWARD_SCALE:
             detail::set_value<config_param::FORWARD_SCALE>(values_,
@@ -142,8 +150,10 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) {
                                         "Invalid dimension value (negative or 0).");
         }
     }
+    compute_default_strides(dimensions, values_.fwd_strides, values_.bwd_strides);
     // Assume forward transform.
-    compute_default_strides(dimensions, values_.input_strides, values_.output_strides);
+    values_.input_strides = values_.fwd_strides;
+    values_.output_strides = values_.bwd_strides;
     values_.bwd_scale = real_t(1.0);
     values_.fwd_scale = real_t(1.0);
     values_.number_of_transforms = 1;
@@ -216,6 +226,14 @@ void descriptor<prec, dom>::get_value(config_param param, ...) const {
             break;
         case config_param::OUTPUT_STRIDES:
             std::copy(values_.output_strides.begin(), values_.output_strides.end(),
+                      va_arg(vl, std::int64_t*));
+            break;
+        case config_param::FWD_STRIDES:
+            std::copy(values_.fwd_strides.begin(), values_.fwd_strides.end(),
+                      va_arg(vl, std::int64_t*));
+            break;
+        case config_param::BWD_STRIDES:
+            std::copy(values_.bwd_strides.begin(), values_.bwd_strides.end(),
                       va_arg(vl, std::int64_t*));
             break;
         case config_param::FWD_DISTANCE: *va_arg(vl, std::int64_t*) = values_.fwd_dist; break;
