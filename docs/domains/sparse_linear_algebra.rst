@@ -40,7 +40,9 @@ Currently known limitations:
 
 - Using ``spmv`` with a ``type_view`` other than ``matrix_descr::general`` will
   throw an ``oneapi::mkl::unimplemented`` exception.
-- The COO format requires the indices to be sorted by row.
+- The COO format requires the indices to be sorted by row. See the `cuSPARSE
+  documentation
+  <https://docs.nvidia.com/cuda/cusparse/index.html#coordinate-coo>`_.
 
 
 Operation algorithms mapping
