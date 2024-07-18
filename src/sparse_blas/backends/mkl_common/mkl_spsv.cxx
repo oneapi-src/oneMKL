@@ -29,7 +29,7 @@ sycl::event release_spsv_descr(sycl::queue &queue, oneapi::mkl::sparse::spsv_des
     return detail::collapse_dependencies(queue, dependencies);
 }
 
-void check_valid_spsv(const std::string function_name, sycl::queue &queue,
+void check_valid_spsv(const std::string &function_name, sycl::queue &queue,
                       oneapi::mkl::transpose opA, oneapi::mkl::sparse::matrix_view A_view,
                       oneapi::mkl::sparse::matrix_handle_t A_handle,
                       oneapi::mkl::sparse::dense_vector_handle_t x_handle,
