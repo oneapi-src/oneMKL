@@ -18,10 +18,8 @@
 #===============================================================================
 
 include_guard()
-
 include(CheckCXXCompilerFlag)
 include(FindPackageHandleStandardArgs)
-
 check_cxx_compiler_flag("-fsycl" is_dpcpp)
 
 if(is_dpcpp)

@@ -20,7 +20,6 @@
 install(FILES FindCompiler.cmake
         DESTINATION "lib/cmake/${PROJECT_NAME}"
 )
-
 if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
   install(FILES mkl/MKLConfig.cmake
         DESTINATION "lib/cmake/${PROJECT_NAME}"
