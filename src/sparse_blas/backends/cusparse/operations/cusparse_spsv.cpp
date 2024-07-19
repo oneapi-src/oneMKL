@@ -128,18 +128,33 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
     // Ignore spsv_alg::no_optimize_alg as this step is mandatory for cuSPARSE
     // Copy the buffer to extend its lifetime until the descriptor is free'd.
     spsv_descr->workspace.set_buffer_untyped(workspace);
-    auto functor = [=](CusparseScopedContextHandler &sc,
-                       sycl::accessor<std::uint8_t> workspace_acc) {
-        auto cu_handle = sc.get_handle(queue);
-        auto workspace_ptr = sc.get_mem(workspace_acc);
-        spsv_optimize_impl(cu_handle, opA, alpha, A_view, A_handle, x_handle, y_handle, alg,
-                           spsv_descr, workspace_ptr, is_alpha_host_accessible);
-    };
 
-    sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-    auto event = dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
-                                 x_handle, y_handle);
-    event.wait_and_throw();
+    if (workspace.size() > 0) {
+        auto functor = [=](CusparseScopedContextHandler &sc,
+                           sycl::accessor<std::uint8_t> workspace_acc) {
+            auto cu_handle = sc.get_handle(queue);
+            auto workspace_ptr = sc.get_mem(workspace_acc);
+            spsv_optimize_impl(cu_handle, opA, alpha, A_view, A_handle, x_handle, y_handle, alg,
+                               spsv_descr, workspace_ptr, is_alpha_host_accessible);
+        };
+
+        // The accessor can only be bound to the cgh if the buffer size is
+        // greater than 0
+        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
+        auto event = dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
+                                     x_handle, y_handle);
+        event.wait_and_throw();
+    }
+    else {
+        auto functor = [=](CusparseScopedContextHandler &sc) {
+            auto cu_handle = sc.get_handle(queue);
+            spsv_optimize_impl(cu_handle, opA, alpha, A_view, A_handle, x_handle, y_handle, alg,
+                               spsv_descr, nullptr, is_alpha_host_accessible);
+        };
+
+        auto event = dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
+        event.wait_and_throw();
+    }
 }
 
 sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
