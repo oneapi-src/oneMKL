@@ -43,10 +43,10 @@ inline bool is_ptr_accessible_on_host(sycl::queue &queue, const T *host_or_devic
 }
 
 /// Throw an exception if the scalar is not accessible in the host
-template <typename T>
-void check_ptr_is_host_accessible(const std::string &function_name, const std::string &scalar_name,
-                                  sycl::queue &queue, const T *host_or_device_ptr) {
-    if (!is_ptr_accessible_on_host(queue, host_or_device_ptr)) {
+inline void check_ptr_is_host_accessible(const std::string &function_name,
+                                         const std::string &scalar_name,
+                                         bool is_ptr_accessible_on_host) {
+    if (!is_ptr_accessible_on_host) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
             "Scalar " + scalar_name + " must be accessible on the host for buffer functions.");
@@ -56,8 +56,9 @@ void check_ptr_is_host_accessible(const std::string &function_name, const std::s
 /// Return a scalar on the host from a pointer to host or device memory
 /// Used for USM functions
 template <typename T>
-inline T get_scalar_on_host(sycl::queue &queue, const T *host_or_device_ptr) {
-    if (is_ptr_accessible_on_host(queue, host_or_device_ptr)) {
+inline T get_scalar_on_host(sycl::queue &queue, const T *host_or_device_ptr,
+                            bool is_ptr_accessible_on_host) {
+    if (is_ptr_accessible_on_host) {
         return *host_or_device_ptr;
     }
     T scalar;

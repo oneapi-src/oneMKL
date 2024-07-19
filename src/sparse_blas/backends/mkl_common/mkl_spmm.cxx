@@ -29,12 +29,12 @@ sycl::event release_spmm_descr(sycl::queue &queue, oneapi::mkl::sparse::spmm_des
     return detail::collapse_dependencies(queue, dependencies);
 }
 
-void check_valid_spmm(const std::string &function_name, sycl::queue &queue,
-                      oneapi::mkl::transpose opA, oneapi::mkl::sparse::matrix_view A_view,
+void check_valid_spmm(const std::string &function_name, oneapi::mkl::transpose opA,
+                      oneapi::mkl::sparse::matrix_view A_view,
                       oneapi::mkl::sparse::matrix_handle_t A_handle,
                       oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
-                      oneapi::mkl::sparse::dense_matrix_handle_t C_handle, const void *alpha,
-                      const void *beta) {
+                      oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
+                      bool is_alpha_host_accessible, bool is_beta_host_accessible) {
     THROW_IF_NULLPTR(function_name, A_handle);
     THROW_IF_NULLPTR(function_name, B_handle);
     THROW_IF_NULLPTR(function_name, C_handle);
@@ -42,11 +42,10 @@ void check_valid_spmm(const std::string &function_name, sycl::queue &queue,
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     detail::check_all_containers_compatible(function_name, internal_A_handle, B_handle, C_handle);
     if (internal_A_handle->all_use_buffer()) {
-        detail::check_ptr_is_host_accessible("spmm", "alpha", queue, alpha);
-        detail::check_ptr_is_host_accessible("spmm", "beta", queue, beta);
+        detail::check_ptr_is_host_accessible("spmm", "alpha", is_alpha_host_accessible);
+        detail::check_ptr_is_host_accessible("spmm", "beta", is_beta_host_accessible);
     }
-    if (detail::is_ptr_accessible_on_host(queue, alpha) !=
-        detail::is_ptr_accessible_on_host(queue, beta)) {
+    if (is_alpha_host_accessible != is_beta_host_accessible) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
             "Alpha and beta must both be placed on host memory or device memory.");
@@ -91,7 +90,10 @@ void spmm_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA,
                       oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/,
                       std::size_t &temp_buffer_size) {
     // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
-    check_valid_spmm(__func__, queue, opA, A_view, A_handle, B_handle, C_handle, alpha, beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    check_valid_spmm(__func__, opA, A_view, A_handle, B_handle, C_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
     temp_buffer_size = 0;
 }
 
@@ -103,7 +105,10 @@ void spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::
                    oneapi::mkl::sparse::spmm_alg alg,
                    oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
-    check_valid_spmm(__func__, queue, opA, A_view, A_handle, B_handle, C_handle, alpha, beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    check_valid_spmm(__func__, opA, A_view, A_handle, B_handle, C_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (!internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
@@ -124,7 +129,10 @@ sycl::event spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
                           oneapi::mkl::sparse::spmm_alg alg,
                           oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
-    check_valid_spmm(__func__, queue, opA, A_view, A_handle, B_handle, C_handle, alpha, beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    check_valid_spmm(__func__, opA, A_view, A_handle, B_handle, C_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
@@ -138,17 +146,17 @@ sycl::event spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
 }
 
 template <typename T>
-sycl::event internal_spmm(sycl::queue &queue, oneapi::mkl::transpose opA,
-                          oneapi::mkl::transpose opB, const void *alpha,
-                          oneapi::mkl::sparse::matrix_view /*A_view*/,
-                          oneapi::mkl::sparse::matrix_handle_t A_handle,
-                          oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void *beta,
-                          oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                          oneapi::mkl::sparse::spmm_alg /*alg*/,
-                          oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/,
-                          const std::vector<sycl::event> &dependencies) {
-    T host_alpha = detail::get_scalar_on_host(queue, static_cast<const T *>(alpha));
-    T host_beta = detail::get_scalar_on_host(queue, static_cast<const T *>(beta));
+sycl::event internal_spmm(
+    sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB, const void *alpha,
+    oneapi::mkl::sparse::matrix_view /*A_view*/, oneapi::mkl::sparse::matrix_handle_t A_handle,
+    oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void *beta,
+    oneapi::mkl::sparse::dense_matrix_handle_t C_handle, oneapi::mkl::sparse::spmm_alg /*alg*/,
+    oneapi::mkl::sparse::spmm_descr_t /*spmm_descr*/, const std::vector<sycl::event> &dependencies,
+    bool is_alpha_host_accessible, bool is_beta_host_accessible) {
+    T host_alpha =
+        detail::get_scalar_on_host(queue, static_cast<const T *>(alpha), is_alpha_host_accessible);
+    T host_beta =
+        detail::get_scalar_on_host(queue, static_cast<const T *>(beta), is_beta_host_accessible);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     auto layout = B_handle->dense_layout;
@@ -177,8 +185,12 @@ sycl::event spmm(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
                  oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
                  oneapi::mkl::sparse::spmm_alg alg, oneapi::mkl::sparse::spmm_descr_t spmm_descr,
                  const std::vector<sycl::event> &dependencies) {
-    check_valid_spmm(__func__, queue, opA, A_view, A_handle, B_handle, C_handle, alpha, beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    check_valid_spmm(__func__, opA, A_view, A_handle, B_handle, C_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
     auto value_type = detail::get_internal_handle(A_handle)->get_value_type();
     DISPATCH_MKL_OPERATION("spmm", value_type, internal_spmm, queue, opA, opB, alpha, A_view,
-                           A_handle, B_handle, beta, C_handle, alg, spmm_descr, dependencies);
+                           A_handle, B_handle, beta, C_handle, alg, spmm_descr, dependencies,
+                           is_alpha_host_accessible, is_beta_host_accessible);
 }
