@@ -34,10 +34,10 @@
 namespace oneapi::mkl::sparse::detail {
 
 /// Throw an exception if the scalar is not accessible in the host
-template <typename T>
-void check_ptr_is_host_accessible(const std::string &function_name, const std::string &scalar_name,
-                                  sycl::queue queue, const T *host_or_device_ptr) {
-    if (!is_ptr_accessible_on_host(queue, host_or_device_ptr)) {
+inline void check_ptr_is_host_accessible(const std::string &function_name,
+                                         const std::string &scalar_name,
+                                         bool is_ptr_accessible_on_host) {
+    if (!is_ptr_accessible_on_host) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
             "Scalar " + scalar_name + " must be accessible on the host for buffer functions.");
@@ -45,22 +45,22 @@ void check_ptr_is_host_accessible(const std::string &function_name, const std::s
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spmm_common(const std::string &function_name, sycl::queue &queue,
+void check_valid_spmm_common(const std::string &function_name,
                              oneapi::mkl::sparse::matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
                              oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
-                             oneapi::mkl::sparse::dense_matrix_handle_t C_handle, const void *alpha,
-                             const void *beta) {
+                             oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
+                             bool is_alpha_host_accessible, bool is_beta_host_accessible) {
     THROW_IF_NULLPTR(function_name, internal_A_handle);
     THROW_IF_NULLPTR(function_name, B_handle);
     THROW_IF_NULLPTR(function_name, C_handle);
 
     check_all_containers_compatible(function_name, internal_A_handle, B_handle, C_handle);
     if (internal_A_handle->all_use_buffer()) {
-        check_ptr_is_host_accessible("spmm", "alpha", queue, alpha);
-        check_ptr_is_host_accessible("spmm", "beta", queue, beta);
+        check_ptr_is_host_accessible("spmm", "alpha", is_alpha_host_accessible);
+        check_ptr_is_host_accessible("spmm", "beta", is_beta_host_accessible);
     }
-    if (is_ptr_accessible_on_host(queue, alpha) != is_ptr_accessible_on_host(queue, beta)) {
+    if (is_alpha_host_accessible != is_beta_host_accessible) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
             "Alpha and beta must both be placed on host memory or device memory.");
@@ -82,22 +82,22 @@ void check_valid_spmm_common(const std::string &function_name, sycl::queue &queu
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spmv_common(const std::string &function_name, sycl::queue &queue,
-                             oneapi::mkl::transpose opA, oneapi::mkl::sparse::matrix_view A_view,
+void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::transpose opA,
+                             oneapi::mkl::sparse::matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
                              oneapi::mkl::sparse::dense_vector_handle_t x_handle,
-                             oneapi::mkl::sparse::dense_vector_handle_t y_handle, const void *alpha,
-                             const void *beta) {
+                             oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                             bool is_alpha_host_accessible, bool is_beta_host_accessible) {
     THROW_IF_NULLPTR(function_name, internal_A_handle);
     THROW_IF_NULLPTR(function_name, x_handle);
     THROW_IF_NULLPTR(function_name, y_handle);
 
     check_all_containers_compatible(function_name, internal_A_handle, x_handle, y_handle);
     if (internal_A_handle->all_use_buffer()) {
-        check_ptr_is_host_accessible("spmv", "alpha", queue, alpha);
-        check_ptr_is_host_accessible("spmv", "beta", queue, beta);
+        check_ptr_is_host_accessible("spmv", "alpha", is_alpha_host_accessible);
+        check_ptr_is_host_accessible("spmv", "beta", is_beta_host_accessible);
     }
-    if (is_ptr_accessible_on_host(queue, alpha) != is_ptr_accessible_on_host(queue, beta)) {
+    if (is_alpha_host_accessible != is_beta_host_accessible) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
             "Alpha and beta must both be placed on host memory or device memory.");
@@ -124,12 +124,12 @@ void check_valid_spmv_common(const std::string &function_name, sycl::queue &queu
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spsv_common(const std::string &function_name, sycl::queue &queue,
+void check_valid_spsv_common(const std::string &function_name,
                              oneapi::mkl::sparse::matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
                              oneapi::mkl::sparse::dense_vector_handle_t x_handle,
                              oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                             const void *alpha) {
+                             bool is_alpha_host_accessible) {
     THROW_IF_NULLPTR(function_name, internal_A_handle);
     THROW_IF_NULLPTR(function_name, x_handle);
     THROW_IF_NULLPTR(function_name, y_handle);
@@ -141,7 +141,7 @@ void check_valid_spsv_common(const std::string &function_name, sycl::queue &queu
     }
 
     if (internal_A_handle->all_use_buffer()) {
-        check_ptr_is_host_accessible("spsv", "alpha", queue, alpha);
+        check_ptr_is_host_accessible("spsv", "alpha", is_alpha_host_accessible);
     }
 }
 

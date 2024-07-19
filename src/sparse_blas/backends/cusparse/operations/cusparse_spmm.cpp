@@ -77,8 +77,10 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mk
                       oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
                       oneapi::mkl::sparse::spmm_alg alg,
                       oneapi::mkl::sparse::spmm_descr_t spmm_descr, std::size_t& temp_buffer_size) {
-    detail::check_valid_spmm_common(__func__, queue, A_view, A_handle, B_handle, C_handle, alpha,
-                                    beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    detail::check_valid_spmm_common(__func__, A_view, A_handle, B_handle, C_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
     fallback_alg_if_needed(alg, opA, opB);
     auto functor = [=, &temp_buffer_size](CusparseScopedContextHandler& sc) {
         auto cu_handle = sc.get_handle(queue);
@@ -90,7 +92,7 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mk
         auto cu_op_b = get_cuda_operation(type, opB);
         auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spmm_alg(alg);
-        set_pointer_mode(cu_handle, queue, alpha);
+        set_pointer_mode(cu_handle, is_alpha_host_accessible);
         auto status = cusparseSpMM_bufferSize(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta,
                                               cu_c, cu_type, cu_alg, &temp_buffer_size);
         check_status(status, __func__);
@@ -105,7 +107,8 @@ void spmm_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA,
                         oneapi::mkl::sparse::matrix_handle_t A_handle,
                         oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void* beta,
                         oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                        oneapi::mkl::sparse::spmm_alg alg, void* workspace_ptr) {
+                        oneapi::mkl::sparse::spmm_alg alg, void* workspace_ptr,
+                        bool is_alpha_host_accessible) {
     auto cu_a = A_handle->backend_handle;
     auto cu_b = B_handle->backend_handle;
     auto cu_c = C_handle->backend_handle;
@@ -114,6 +117,7 @@ void spmm_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA,
     auto cu_op_b = get_cuda_operation(type, opB);
     auto cu_type = get_cuda_value_type(type);
     auto cu_alg = get_cuda_spmm_alg(alg);
+    set_pointer_mode(cu_handle, is_alpha_host_accessible);
     auto status = cusparseSpMM_preprocess(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta,
                                           cu_c, cu_type, cu_alg, workspace_ptr);
     check_status(status, "optimize_spmm");
@@ -126,8 +130,10 @@ void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::
                    oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
                    oneapi::mkl::sparse::spmm_alg alg, oneapi::mkl::sparse::spmm_descr_t spmm_descr,
                    sycl::buffer<std::uint8_t, 1> workspace) {
-    detail::check_valid_spmm_common(__func__, queue, A_view, A_handle, B_handle, C_handle, alpha,
-                                    beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    detail::check_valid_spmm_common(__func__, A_view, A_handle, B_handle, C_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
     if (!A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
@@ -143,7 +149,7 @@ void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::
         auto cu_handle = sc.get_handle(queue);
         auto workspace_ptr = sc.get_mem(workspace_acc);
         spmm_optimize_impl(cu_handle, opA, opB, alpha, A_handle, B_handle, beta, C_handle, alg,
-                           workspace_ptr);
+                           workspace_ptr, is_alpha_host_accessible);
     };
 
     sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
@@ -161,8 +167,10 @@ sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
                           oneapi::mkl::sparse::spmm_alg alg,
                           oneapi::mkl::sparse::spmm_descr_t spmm_descr, void* workspace,
                           const std::vector<sycl::event>& dependencies) {
-    detail::check_valid_spmm_common(__func__, queue, A_view, A_handle, B_handle, C_handle, alpha,
-                                    beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    detail::check_valid_spmm_common(__func__, A_view, A_handle, B_handle, C_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
     if (A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
@@ -174,9 +182,8 @@ sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
     fallback_alg_if_needed(alg, opA, opB);
     auto functor = [=](CusparseScopedContextHandler& sc) {
         auto cu_handle = sc.get_handle(queue);
-        set_pointer_mode(cu_handle, queue, alpha);
         spmm_optimize_impl(cu_handle, opA, opB, alpha, A_handle, B_handle, beta, C_handle, alg,
-                           workspace);
+                           workspace, is_alpha_host_accessible);
     };
 
     return dispatch_submit(__func__, queue, dependencies, functor, A_handle, B_handle, C_handle);
@@ -189,8 +196,10 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
                  oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
                  oneapi::mkl::sparse::spmm_alg alg, oneapi::mkl::sparse::spmm_descr_t spmm_descr,
                  const std::vector<sycl::event>& dependencies) {
-    detail::check_valid_spmm_common(__func__, queue, A_view, A_handle, B_handle, C_handle, alpha,
-                                    beta);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    detail::check_valid_spmm_common(__func__, A_view, A_handle, B_handle, C_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
     if (A_handle->all_use_buffer() != spmm_descr->workspace.use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
@@ -205,7 +214,7 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
         auto cu_op_b = get_cuda_operation(type, opB);
         auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spmm_alg(alg);
-        set_pointer_mode(cu_handle, queue, alpha);
+        set_pointer_mode(cu_handle, is_alpha_host_accessible);
         auto status = cusparseSpMM(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta, cu_c,
                                    cu_type, cu_alg, workspace_ptr);
         check_status(status, __func__);

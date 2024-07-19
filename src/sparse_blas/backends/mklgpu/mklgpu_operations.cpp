@@ -27,6 +27,8 @@
 
 namespace oneapi::mkl::sparse::mklgpu {
 
+#include "sparse_blas/backends/mkl_common/mkl_spmm.cxx"
 #include "sparse_blas/backends/mkl_common/mkl_spmv.cxx"
+#include "sparse_blas/backends/mkl_common/mkl_spsv.cxx"
 
 } // namespace oneapi::mkl::sparse::mklgpu

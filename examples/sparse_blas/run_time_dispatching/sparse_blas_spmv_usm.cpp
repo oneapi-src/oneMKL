@@ -148,8 +148,10 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &dev) {
     // Create and initialize dense vector handles
     oneapi::mkl::sparse::dense_vector_handle_t x_handle = nullptr;
     oneapi::mkl::sparse::dense_vector_handle_t y_handle = nullptr;
-    oneapi::mkl::sparse::init_dense_vector(main_queue, &x_handle, static_cast<std::int64_t>(sizevec), x);
-    oneapi::mkl::sparse::init_dense_vector(main_queue, &y_handle, static_cast<std::int64_t>(sizevec), y);
+    oneapi::mkl::sparse::init_dense_vector(main_queue, &x_handle,
+                                           static_cast<std::int64_t>(sizevec), x);
+    oneapi::mkl::sparse::init_dense_vector(main_queue, &y_handle,
+                                           static_cast<std::int64_t>(sizevec), y);
 
     // Create operation descriptor
     oneapi::mkl::sparse::spmv_descr_t descr = nullptr;

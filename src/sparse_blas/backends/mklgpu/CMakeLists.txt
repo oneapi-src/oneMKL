@@ -25,9 +25,7 @@ include(WarningsUtils)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   mklgpu_handles.cpp
-  mklgpu_spmm.cpp
-  mklgpu_spmv.cpp
-  mklgpu_spsv.cpp
+  mklgpu_operations.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklgpu_wrappers.cpp>
 )
 add_dependencies(onemkl_backend_libs_sparse_blas ${LIB_NAME})

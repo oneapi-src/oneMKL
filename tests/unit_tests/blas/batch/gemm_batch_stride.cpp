@@ -223,7 +223,7 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t batch_size) {
     for (size_t i = 0; i < C_ref.size(); ++i) {
         C_cast_ref[i] = C_ref[i];
     }
-    auto C_accessor = C_buffer.template get_host_access(read_only);
+    auto C_accessor = C_buffer.get_host_access(read_only);
     bool good = check_almost_equal_matrix(C_accessor, C_cast_ref, oneapi::mkl::layout::col_major,
                                           stride_c * batch_size, 1, stride_c * batch_size,
                                           error_mag, std::cout);

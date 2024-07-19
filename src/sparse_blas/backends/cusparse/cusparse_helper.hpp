@@ -154,13 +154,10 @@ inline void set_matrix_attributes(const std::string& func_name, cusparseSpMatDes
 
 /**
  * cuSPARSE requires to set the pointer mode for scalars parameters (typically alpha and beta).
- * This seems needed only for compute functions which dereference the pointer.
  */
-template <typename fpType>
-void set_pointer_mode(cusparseHandle_t cu_handle, sycl::queue queue, fpType* ptr) {
-    cusparseSetPointerMode(cu_handle, detail::is_ptr_accessible_on_host(queue, ptr)
-                                          ? CUSPARSE_POINTER_MODE_HOST
-                                          : CUSPARSE_POINTER_MODE_DEVICE);
+inline void set_pointer_mode(cusparseHandle_t cu_handle, bool is_ptr_host_accessible) {
+    cusparseSetPointerMode(cu_handle, is_ptr_host_accessible ? CUSPARSE_POINTER_MODE_HOST
+                                                             : CUSPARSE_POINTER_MODE_DEVICE);
 }
 
 } // namespace oneapi::mkl::sparse::cusparse

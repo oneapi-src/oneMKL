@@ -66,7 +66,9 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
                       oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                       oneapi::mkl::sparse::spsv_alg alg,
                       oneapi::mkl::sparse::spsv_descr_t spsv_descr, std::size_t &temp_buffer_size) {
-    detail::check_valid_spsv_common(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    detail::check_valid_spsv_common(__func__, A_view, A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible);
     auto functor = [=, &temp_buffer_size](CusparseScopedContextHandler &sc) {
         auto cu_handle = sc.get_handle(queue);
         auto cu_a = A_handle->backend_handle;
@@ -78,7 +80,7 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
         auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spsv_alg(alg);
         auto cu_descr = spsv_descr->cu_descr;
-        set_pointer_mode(cu_handle, queue, alpha);
+        set_pointer_mode(cu_handle, is_alpha_host_accessible);
         auto status = cusparseSpSV_bufferSize(cu_handle, cu_op, alpha, cu_a, cu_x, cu_y, cu_type,
                                               cu_alg, cu_descr, &temp_buffer_size);
         check_status(status, __func__);
@@ -93,7 +95,8 @@ void spsv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
                         oneapi::mkl::sparse::dense_vector_handle_t x_handle,
                         oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                         oneapi::mkl::sparse::spsv_alg alg,
-                        oneapi::mkl::sparse::spsv_descr_t spsv_descr, void *workspace_ptr) {
+                        oneapi::mkl::sparse::spsv_descr_t spsv_descr, void *workspace_ptr,
+                        bool is_alpha_host_accessible) {
     auto cu_a = A_handle->backend_handle;
     auto cu_x = x_handle->backend_handle;
     auto cu_y = y_handle->backend_handle;
@@ -103,6 +106,7 @@ void spsv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
     auto cu_type = get_cuda_value_type(type);
     auto cu_alg = get_cuda_spsv_alg(alg);
     auto cu_descr = spsv_descr->cu_descr;
+    set_pointer_mode(cu_handle, is_alpha_host_accessible);
     auto status = cusparseSpSV_analysis(cu_handle, cu_op, alpha, cu_a, cu_x, cu_y, cu_type, cu_alg,
                                         cu_descr, workspace_ptr);
     check_status(status, "optimize_spsv");
@@ -115,7 +119,9 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                    oneapi::mkl::sparse::spsv_alg alg, oneapi::mkl::sparse::spsv_descr_t spsv_descr,
                    sycl::buffer<std::uint8_t, 1> workspace) {
-    detail::check_valid_spsv_common(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    detail::check_valid_spsv_common(__func__, A_view, A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible);
     if (!A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
@@ -127,7 +133,7 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         auto cu_handle = sc.get_handle(queue);
         auto workspace_ptr = sc.get_mem(workspace_acc);
         spsv_optimize_impl(cu_handle, opA, alpha, A_view, A_handle, x_handle, y_handle, alg,
-                           spsv_descr, workspace_ptr);
+                           spsv_descr, workspace_ptr, is_alpha_host_accessible);
     };
 
     sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
@@ -144,16 +150,17 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::spsv_alg alg,
                           oneapi::mkl::sparse::spsv_descr_t spsv_descr, void *workspace,
                           const std::vector<sycl::event> &dependencies) {
-    detail::check_valid_spsv_common(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    detail::check_valid_spsv_common(__func__, A_view, A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible);
     if (A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
     // Ignore spsv_alg::no_optimize_alg as this step is mandatory for cuSPARSE
     auto functor = [=](CusparseScopedContextHandler &sc) {
         auto cu_handle = sc.get_handle(queue);
-        set_pointer_mode(cu_handle, queue, alpha);
         spsv_optimize_impl(cu_handle, opA, alpha, A_view, A_handle, x_handle, y_handle, alg,
-                           spsv_descr, workspace);
+                           spsv_descr, workspace, is_alpha_host_accessible);
     };
 
     return dispatch_submit(__func__, queue, dependencies, functor, A_handle, x_handle, y_handle);
@@ -166,7 +173,9 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                  oneapi::mkl::sparse::spsv_alg alg, oneapi::mkl::sparse::spsv_descr_t spsv_descr,
                  const std::vector<sycl::event> &dependencies) {
-    detail::check_valid_spsv_common(__func__, queue, A_view, A_handle, x_handle, y_handle, alpha);
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    detail::check_valid_spsv_common(__func__, A_view, A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible);
     if (A_handle->all_use_buffer() != spsv_descr->workspace.use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
@@ -181,7 +190,7 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spsv_alg(alg);
         auto cu_descr = spsv_descr->cu_descr;
-        set_pointer_mode(cu_handle, queue, alpha);
+        set_pointer_mode(cu_handle, is_alpha_host_accessible);
         auto status = cusparseSpSV_solve(cu_handle, cu_op, alpha, cu_a, cu_x, cu_y, cu_type, cu_alg,
                                          cu_descr);
         check_status(status, __func__);
