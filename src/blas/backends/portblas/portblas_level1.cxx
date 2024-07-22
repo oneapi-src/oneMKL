@@ -370,6 +370,11 @@ sycl::event rotmg(sycl::queue &queue, real_t *d1, real_t *d2, real_t *x1, real_t
                   const std::vector<sycl::event> &dependencies) {
     auto y_d =
         (real_t *)sycl::malloc_device(sizeof(real_t), queue.get_device(), queue.get_context());
+    // This memcpy requires a wait to enforce synchronization. This is due to workaround
+    // a bug present in OpenCL backend that shows up with portBLAS implementation.
+    // Otherwise event dependencies works fine.
+    // The issue has been reported to intel/llvm project here:
+    // https://github.com/intel/llvm/issues/14623
     queue.memcpy(y_d, &y1, sizeof(real_t), dependencies).wait();
     auto rotmg_event = std::invoke([&]() -> sycl::event {
         CALL_PORTBLAS_USM_FN(::blas::_rotmg, queue, d1, d2, x1, y_d, param);
