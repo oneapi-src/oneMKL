@@ -19,7 +19,7 @@
 *
 **************************************************************************/
 
-#include "rocblas_scope_handle_hipsycl.hpp"
+#include "rocblas_scope_handle_adaptivecpp.hpp"
 
 namespace oneapi {
 namespace mkl {

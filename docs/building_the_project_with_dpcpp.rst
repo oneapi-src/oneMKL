@@ -305,7 +305,7 @@ When building oneMKL the SYCL implementation can be specified by setting the
 * ``dpc++`` (default) for the `Intel(R) oneAPI DPC++ Compiler
   <https://software.intel.com/en-us/oneapi/dpc-compiler>`_ and for the `oneAPI
   DPC++ Compiler <https://github.com/intel/llvm>`_ compilers.
-* ``hipsycl`` for the `AdaptiveCpp <https://github.com/illuhad/AdaptiveCpp>`_
+* ``AdaptiveCpp`` for the `AdaptiveCpp <https://github.com/illuhad/AdaptiveCpp>`_
   SYCL implementation.
 Please see :ref:`building_the_project_with_adaptivecpp` if using this option.
 

@@ -28,7 +28,7 @@
 #include <CL/sycl.hpp>
 #endif
 #include "oneapi/mkl/types.hpp"
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
 #include "rocblas_scope_handle.hpp"
 #if __has_include(<sycl/detail/pi.hpp>)
 #include <sycl/detail/pi.hpp>
@@ -36,7 +36,7 @@
 #include <CL/sycl/detail/pi.hpp>
 #endif
 #else
-#include "rocblas_scope_handle_hipsycl.hpp"
+#include "rocblas_scope_handle_adaptivecpp.hpp"
 
 #endif
 namespace oneapi {
@@ -44,10 +44,10 @@ namespace mkl {
 namespace blas {
 namespace rocblas {
 
-#ifdef __HIPSYCL__
+#ifdef __ADAPTIVECPP__
 template <typename H, typename F>
 static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
-    cgh.hipSYCL_enqueue_custom_operation([f, queue](sycl::interop_handle ih) {
+    cgh.AdaptiveCpp_enqueue_custom_operation([f, queue](sycl::interop_handle ih) {
         auto sc = RocblasScopedContextHandler(queue, ih);
         f(sc);
     });

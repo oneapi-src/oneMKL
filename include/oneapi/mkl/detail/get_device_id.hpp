@@ -31,7 +31,7 @@
 
 #define INTEL_ID  32902
 #define NVIDIA_ID 4318
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
 #define AMD_ID 4098
 #else
 #define AMD_ID 1022
@@ -44,7 +44,7 @@ inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
     oneapi::mkl::device device_id;
     if (queue.get_device().is_cpu())
         device_id = device::x86cpu;
-#ifdef __HIPSYCL__
+#ifdef __ADAPTIVECPP__
     else if (queue.is_host())
         device_id = device::x86cpu;
 #endif

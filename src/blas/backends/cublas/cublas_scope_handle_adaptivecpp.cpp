@@ -16,7 +16,7 @@
 *  limitations under the License.
 *
 **************************************************************************/
-#include "cublas_scope_handle_hipsycl.hpp"
+#include "cublas_scope_handle_adaptivecpp.hpp"
 #include "cublas_handle.hpp"
 
 namespace oneapi {

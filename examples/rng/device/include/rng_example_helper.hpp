@@ -30,7 +30,7 @@ struct has_member_code_meta<T, std::void_t<decltype(std::declval<T>().get_multi_
 template <typename T, typename std::enable_if<has_member_code_meta<T>::value>::type* = nullptr>
 auto get_multi_ptr(T acc) {
 // Workaround for AdaptiveCPP, as they do not yet support the get_multi_ptr function
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
     return acc.get_multi_ptr();
 #else
     return acc.get_pointer();
@@ -40,7 +40,7 @@ auto get_multi_ptr(T acc) {
 template <typename T, typename std::enable_if<!has_member_code_meta<T>::value>::type* = nullptr>
 auto get_multi_ptr(T acc) {
 // Workaround for AdaptiveCPP, as they do not yet support the get_multi_ptr function
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
     return acc.template get_multi_ptr<sycl::access::decorated::yes>();
 #else
     return acc.get_pointer();

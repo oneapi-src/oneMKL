@@ -40,7 +40,7 @@ inline void backend_selector_precondition(sycl::queue&) {}
 template <>
 inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-#ifdef __HIPSYCL__
+#ifdef __ADAPTIVECPP__
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
 #else
     if (!queue.get_device().is_cpu()) {
@@ -55,7 +55,7 @@ inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 template <>
 inline void backend_selector_precondition<backend::mklcpu>(sycl::queue& queue) {
 #ifndef ONEMKL_DISABLE_PREDICATES
-#ifdef __HIPSYCL__
+#ifdef __ADAPTIVECPP__
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
 #else
     if (!queue.get_device().is_cpu()) {

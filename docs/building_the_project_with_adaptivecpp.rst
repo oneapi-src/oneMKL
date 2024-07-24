@@ -35,13 +35,13 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
 
   # Inside <path to onemkl>
   mkdir build && cd build
-  cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl    \ # Indicate that AdaptiveCpp is being used.
-          -DENABLE_MKLGPU_BACKEND=False            \ # MKLGPU backend is not supported by AdaptiveCpp
-          -DENABLE_<BACKEND_NAME>_BACKEND=True     \ # Enable backend(s) (optional)
-          -DENABLE_<BACKEND_NAME_2>_BACKEND=True   \ # Multiple backends can be enabled at once.
-          -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906 \ # Set target architectures depending on supported devices.
-          -DBUILD_FUNCTIONAL_TESTS=False           \ # See section *Building the tests* for more on building tests. True by default.
-          -DBUILD_EXAMPLES=False                   # Optional: True by default.
+  cmake .. -DONEMKL_SYCL_IMPLEMENTATION=adaptivecpp \ # Indicate that AdaptiveCpp is being used.
+          -DENABLE_MKLGPU_BACKEND=False             \ # MKLGPU backend is not supported by AdaptiveCpp
+          -DENABLE_<BACKEND_NAME>_BACKEND=True      \ # Enable backend(s) (optional)
+          -DENABLE_<BACKEND_NAME_2>_BACKEND=True    \ # Multiple backends can be enabled at once.
+          -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906  \ # Set target architectures depending on supported devices.
+          -DBUILD_FUNCTIONAL_TESTS=False            \ # See section *Building the tests* for more on building tests. True by default.
+          -DBUILD_EXAMPLES=False                    # Optional: True by default.
   cmake --build .
   cmake --install . --prefix <path_to_install_dir> # required to have full package structure
 
