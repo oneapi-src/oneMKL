@@ -177,7 +177,7 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
         spsv_optimize_impl(cu_handle, opA, alpha, A_view, A_handle, x_handle, y_handle, alg,
                            spsv_descr, workspace, is_alpha_host_accessible);
     };
-
+    // No need to store the workspace USM pointer as the backend stores it already
     return dispatch_submit(__func__, queue, dependencies, functor, A_handle, x_handle, y_handle);
 }
 
