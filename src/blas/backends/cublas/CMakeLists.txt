@@ -40,7 +40,6 @@ target_include_directories(${LIB_OBJ}
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
-#if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl" OR
 if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "adpativecpp")
     target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
           -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
