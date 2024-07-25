@@ -227,7 +227,7 @@ void rand_matrix(std::vector<fpType> &m, oneapi::mkl::layout layout_val, std::si
 }
 
 /// Generate random value in the range [-0.5, 0.5]
-/// The amplitude is guaranteed to be >= 0.1 if is_diag is true
+/// The amplitude is guaranteed to be >= 10 if is_diag is true
 template <typename fpType>
 fpType generate_data(bool is_diag) {
     rand_scalar<fpType> rand_data;
