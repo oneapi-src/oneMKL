@@ -145,6 +145,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
                                       a_host.data(), reset_nnz, mu);
             }
             if (reset_nnz > nnz) {
+                // Wait before freeing usm pointers
+                ev_spsv.wait_and_throw();
                 ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());
                 ja_usm_uptr = malloc_device_uptr<intType>(main_queue, ja_host.size());
                 a_usm_uptr = malloc_device_uptr<fpType>(main_queue, a_host.size());
