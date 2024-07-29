@@ -444,8 +444,6 @@ void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
                      oneapi::mkl::sparse::matrix_handle_t smhandle, std::int64_t num_rows,
                      std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
                      ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
-    // Ensure to wait for previous operations to finish before resetting the data
-    queue.wait_and_throw();
     if (format == sparse_matrix_format_t::CSR) {
         CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_matrix_data, queue, smhandle, num_rows, num_cols,
                       nnz, index, rows, cols, vals);
