@@ -87,7 +87,7 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
     check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
                      is_beta_host_accessible);
     auto functor = [=, &temp_buffer_size](RocsparseScopedContextHandler &sc) {
-        auto roc_handle = sc.get_handle(queue);
+        auto [roc_handle, roc_stream] = sc.get_handle_and_stream(queue);
         auto roc_a = A_handle->backend_handle;
         auto roc_x = x_handle->backend_handle;
         auto roc_y = y_handle->backend_handle;
@@ -99,6 +99,7 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
             rocsparse_spmv(roc_handle, roc_op, alpha, roc_a, roc_x, beta, roc_y, roc_type, roc_alg,
                            rocsparse_spmv_stage_buffer_size, &temp_buffer_size, nullptr);
         check_status(status, __func__);
+        HIP_ERROR_FUNC(hipStreamSynchronize, roc_stream);
     };
     auto event = dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     event.wait_and_throw();

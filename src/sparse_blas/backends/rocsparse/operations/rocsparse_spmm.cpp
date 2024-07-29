@@ -83,7 +83,7 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mk
     A_handle->throw_if_already_used(__func__);
     fallback_alg_if_needed(alg, opA, opB);
     auto functor = [=, &temp_buffer_size](RocsparseScopedContextHandler& sc) {
-        auto roc_handle = sc.get_handle(queue);
+        auto [roc_handle, roc_stream] = sc.get_handle_and_stream(queue);
         auto roc_a = A_handle->backend_handle;
         auto roc_b = B_handle->backend_handle;
         auto roc_c = C_handle->backend_handle;
@@ -96,6 +96,7 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mk
                                      roc_c, roc_type, roc_alg, rocsparse_spmm_stage_buffer_size,
                                      &temp_buffer_size, nullptr);
         check_status(status, __func__);
+        HIP_ERROR_FUNC(hipStreamSynchronize, roc_stream);
     };
     auto event = dispatch_submit(__func__, queue, functor, A_handle, B_handle, C_handle);
     event.wait_and_throw();

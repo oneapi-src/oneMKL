@@ -64,7 +64,7 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
                                     is_alpha_host_accessible);
     A_handle->throw_if_already_used(__func__);
     auto functor = [=, &temp_buffer_size](RocsparseScopedContextHandler &sc) {
-        auto roc_handle = sc.get_handle(queue);
+        auto [roc_handle, roc_stream] = sc.get_handle_and_stream(queue);
         auto roc_a = A_handle->backend_handle;
         auto roc_x = x_handle->backend_handle;
         auto roc_y = y_handle->backend_handle;
@@ -77,6 +77,7 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
             rocsparse_spsv(roc_handle, roc_op, alpha, roc_a, roc_x, roc_y, roc_type, roc_alg,
                            rocsparse_spsv_stage_buffer_size, &temp_buffer_size, nullptr);
         check_status(status, __func__);
+        HIP_ERROR_FUNC(hipStreamSynchronize, roc_stream);
     };
     auto event = dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     event.wait_and_throw();
