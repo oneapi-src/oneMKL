@@ -62,7 +62,8 @@ enum sparse_matrix_format_t {
 inline std::set<oneapi::mkl::sparse::matrix_property> get_default_matrix_properties(
     sycl::queue queue, sparse_matrix_format_t format) {
     auto vendor_id = oneapi::mkl::get_device_id(queue);
-    if (vendor_id == oneapi::mkl::device::amdgpu && format == sparse_matrix_format_t::COO) {
+    if (vendor_id == oneapi::mkl::device::amdgpu &&
+        (format == sparse_matrix_format_t::COO || format == sparse_matrix_format_t::CSR)) {
         return { oneapi::mkl::sparse::matrix_property::sorted };
     }
     return {};
@@ -72,7 +73,8 @@ inline std::set<oneapi::mkl::sparse::matrix_property> get_default_matrix_propert
 inline std::vector<std::set<oneapi::mkl::sparse::matrix_property>>
 get_all_matrix_properties_combinations(sycl::queue queue, sparse_matrix_format_t format) {
     auto vendor_id = oneapi::mkl::get_device_id(queue);
-    if (vendor_id == oneapi::mkl::device::amdgpu && format == sparse_matrix_format_t::COO) {
+    if (vendor_id == oneapi::mkl::device::amdgpu &&
+        (format == sparse_matrix_format_t::COO || format == sparse_matrix_format_t::CSR)) {
         return { { oneapi::mkl::sparse::matrix_property::sorted,
                    oneapi::mkl::sparse::matrix_property::symmetric } };
     }

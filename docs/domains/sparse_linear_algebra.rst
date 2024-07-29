@@ -58,8 +58,13 @@ Currently known limitations:
 - The COO format requires the indices to be sorted by row then by column. It is
   not required to set the property
   ``oneapi::mkl::sparse::matrix_property::sorted`` to a sparse matrix handle.
-  See the `rocSPARSE documentation
+  See the `rocSPARSE COO documentation
   <https://rocm.docs.amd.com/projects/rocSPARSE/en/latest/how-to/basics.html#coo-storage-format>`_.
+- The CSR format requires the column indices to be sorted within each row. It is
+  not required to set the property
+  ``oneapi::mkl::sparse::matrix_property::sorted`` to a sparse matrix handle.
+  See the `rocSPARSE CSR documentation
+  <https://rocm.docs.amd.com/projects/rocSPARSE/en/latest/how-to/basics.html#csr-storage-format>`_.
 - The same sparse matrix handle cannot be reused for multiple ``spmm`` or
   ``spmv`` operations. See `#332
   <https://github.com/ROCm/rocSPARSE/issues/332>`_.
