@@ -28,11 +28,11 @@
 #include <sycl/backend/cuda.hpp>
 #endif
 #include <sycl/context.hpp>
-#include <sycl/detail/pi.hpp>
+#include <sycl/detail/ur.hpp>
 #else
 #include <CL/sycl/backend/cuda.hpp>
 #include <CL/sycl/context.hpp>
-#include <CL/sycl/detail/pi.hpp>
+#include <CL/sycl/detail/ur.hpp>
 #endif
 #include <atomic>
 #include <memory>
@@ -77,7 +77,7 @@ class CublasScopedContextHandler {
     sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handle &ih;
-    static thread_local cublas_handle<pi_context> handle_helper;
+    static thread_local cublas_handle<ur_context_handle_t> handle_helper;
     CUstream get_stream(const sycl::queue &queue);
     sycl::context get_context(const sycl::queue &queue);
 

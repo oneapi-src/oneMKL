@@ -35,8 +35,8 @@ namespace cusolver {
  * takes place if no other element in the container has a key equivalent to
  * the one being emplaced (keys in a map container are unique).
  */
-thread_local cusolver_handle<pi_context> CusolverScopedContextHandler::handle_helper =
-    cusolver_handle<pi_context>{};
+thread_local cusolver_handle<ur_context_handle_t> CusolverScopedContextHandler::handle_helper =
+    cusolver_handle<ur_context_handle_t>{};
 
 CusolverScopedContextHandler::CusolverScopedContextHandler(sycl::queue queue,
                                                            sycl::interop_handle &ih)
@@ -93,7 +93,7 @@ cusolverDnHandle_t CusolverScopedContextHandler::get_handle(const sycl::queue &q
     CUresult cuErr;
     CUcontext desired;
     CUDA_ERROR_FUNC(cuDevicePrimaryCtxRetain, cuErr, &desired, cudaDevice);
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(desired);
+    auto piPlacedContext_ = reinterpret_cast<ur_context_handle_t>(desired);
     CUstream streamId = get_stream(queue);
     cusolverStatus_t err;
     auto it = handle_helper.cusolver_handle_mapper_.find(piPlacedContext_);

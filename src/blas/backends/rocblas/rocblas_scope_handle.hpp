@@ -43,7 +43,7 @@ class RocblasScopedContextHandler {
     sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handle &interop_h;
-    static thread_local rocblas_handle_container<pi_context> handle_helper;
+    static thread_local rocblas_handle_container<ur_context_handle_t> handle_helper;
     sycl::context get_context(const sycl::queue &queue);
     hipStream_t get_stream(const sycl::queue &queue);
 

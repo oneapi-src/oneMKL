@@ -35,8 +35,8 @@ namespace cublas {
  * takes place if no other element in the container has a key equivalent to
  * the one being emplaced (keys in a map container are unique).
  */
-thread_local cublas_handle<pi_context> CublasScopedContextHandler::handle_helper =
-    cublas_handle<pi_context>{};
+thread_local cublas_handle<ur_context_handle_t> CublasScopedContextHandler::handle_helper =
+    cublas_handle<ur_context_handle_t>{};
 
 CublasScopedContextHandler::CublasScopedContextHandler(sycl::queue queue, sycl::interop_handle &ih)
         : ih(ih),
@@ -92,7 +92,7 @@ cublasHandle_t CublasScopedContextHandler::get_handle(const sycl::queue &queue) 
     CUresult cuErr;
     CUcontext desired;
     CUDA_ERROR_FUNC(cuDevicePrimaryCtxRetain, cuErr, &desired, cudaDevice);
-    auto piPlacedContext_ = reinterpret_cast<pi_context>(desired);
+    auto piPlacedContext_ = reinterpret_cast<ur_context_handle_t>(desired);
     CUstream streamId = get_stream(queue);
     cublasStatus_t err;
     auto it = handle_helper.cublas_handle_mapper_.find(piPlacedContext_);

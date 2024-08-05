@@ -32,10 +32,10 @@
 #include "oneapi/mkl/types.hpp"
 #ifndef __HIPSYCL__
 #include "cublas_scope_handle.hpp"
-#if __has_include(<sycl/detail/pi.hpp>)
-#include <sycl/detail/pi.hpp>
+#if __has_include(<sycl/detail/ur.hpp>)
+#include <sycl/detail/ur.hpp>
 #else
-#include <CL/sycl/detail/pi.hpp>
+#include <CL/sycl/detail/ur.hpp>
 #endif
 #else
 #include "cublas_scope_handle_hipsycl.hpp"
