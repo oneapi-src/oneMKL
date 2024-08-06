@@ -35,7 +35,7 @@
 #if __has_include(<sycl/detail/ur.hpp>)
 #include <sycl/detail/ur.hpp>
 #else
-#include <CL/sycl/detail/ur.hpp>
+#include <CL/sycl/detail/pi.hpp>
 #endif
 
 namespace oneapi {

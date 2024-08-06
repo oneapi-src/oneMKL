@@ -32,7 +32,7 @@
 #else
 #include <CL/sycl/backend/cuda.hpp>
 #include <CL/sycl/context.hpp>
-#include <CL/sycl/detail/ur.hpp>
+#include <CL/sycl/detail/pi.hpp>
 #endif
 #include <atomic>
 #include <memory>
