@@ -30,15 +30,22 @@
 #include "oneapi/mkl/types.hpp"
 #ifndef __HIPSYCL__
 #include "rocblas_scope_handle.hpp"
+#else
+#include "rocblas_scope_handle_hipsycl.hpp"
+#endif
+
+// After Plugin Interface removal in DPC++ ur.hpp is the new include
 #if __has_include(<sycl/detail/ur.hpp>)
 #include <sycl/detail/ur.hpp>
+#ifndef _PI_INTERFACE_REMOVED_
+#define _PI_INTERFACE_REMOVED_
+#endif
+#elif __has_include(<sycl/detail/pi.hpp>)
+#include <sycl/detail/pi.hpp>
 #else
 #include <CL/sycl/detail/pi.hpp>
 #endif
-#else
-#include "rocblas_scope_handle_hipsycl.hpp"
 
-#endif
 namespace oneapi {
 namespace mkl {
 namespace blas {

@@ -43,7 +43,11 @@ class RocsolverScopedContextHandler {
     sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handle &ih;
+#ifdef _PI_INTERFACE_REMOVED_
     static thread_local rocsolver_handle<ur_context_handle_t> handle_helper;
+#else
+    static thread_local rocsolver_handle<pi_context> handle_helper;
+#endif
     hipStream_t get_stream(const sycl::queue &queue);
     sycl::context get_context(const sycl::queue &queue);
 
