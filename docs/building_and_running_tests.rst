@@ -46,6 +46,3 @@ To run the tests, either run test binaries individually, or use ``ctest`` CMake 
 
 For more ``ctest`` options, refer to `ctest manual page <https://cmake.org/cmake/help/v3.13/manual/ctest.1.html>`_.
 
-When running tests you may encounter the issue ``BACKEND NOT FOUND EXCEPTION``,
-you may need to add your ``<oneMKL build directory>/lib`` to your
-``LD_LIBRARY_PATH`` on Linux.
