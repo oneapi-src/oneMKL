@@ -28,21 +28,28 @@ namespace mkl {
 namespace dft {
 namespace detail {
 
-// Compute the default strides. Modifies real_strides and complex_strides arguments.
+// Compute the default strides. Modifies real_strides and complex_strides arguments
+template <domain dom>
 inline void compute_default_strides(const std::vector<std::int64_t>& dimensions,
                                     std::vector<std::int64_t>& fwd_strides,
                                     std::vector<std::int64_t>& bwd_strides) {
-    auto rank = dimensions.size();
-    std::vector<std::int64_t> strides(rank + 1, 1);
-    for (auto i = rank - 1; i > 0; --i) {
-        strides[i] = strides[i + 1] * dimensions[i];
+    const auto rank = dimensions.size();
+    fwd_strides = std::vector<std::int64_t>(rank + 1, 1);
+    fwd_strides[0] = 0;
+    bwd_strides = fwd_strides;
+    if (rank == 1) {
+        return;
     }
-    strides[0] = 0;
-    // Fwd/Bwd strides and Input/Output strides being the same by default means
-    // that we don't have to specify if we default to using fwd/bwd strides or
-    // input/output strides.
-    bwd_strides = strides;
-    fwd_strides = std::move(strides);
+
+    bwd_strides[rank - 1] =
+        dom == domain::COMPLEX ? dimensions[rank - 1] : (dimensions[rank - 1] / 2) + 1;
+    fwd_strides[rank - 1] =
+        dom == domain::COMPLEX ? dimensions[rank - 1] : 2 * bwd_strides[rank - 1];
+    for (auto i = rank - 1; i > 1; --i) {
+        // Can't start at rank - 2 with unsigned type and minimum value of rank being 1.
+        bwd_strides[i - 1] = bwd_strides[i] * dimensions[i - 1];
+        fwd_strides[i - 1] = fwd_strides[i] * dimensions[i - 1];
+    }
 }
 
 template <precision prec, domain dom>
@@ -69,12 +76,15 @@ void descriptor<prec, dom>::set_value(config_param param, ...) {
         case config_param::PRECISION:
             throw mkl::invalid_argument("DFT", "set_value", "Read-only parameter.");
             break;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         case config_param::INPUT_STRIDES:
             detail::set_value<config_param::INPUT_STRIDES>(values_, va_arg(vl, std::int64_t*));
             break;
         case config_param::OUTPUT_STRIDES:
             detail::set_value<config_param::OUTPUT_STRIDES>(values_, va_arg(vl, std::int64_t*));
             break;
+#pragma clang diagnostic pop
         case config_param::FWD_STRIDES:
             detail::set_value<config_param::FWD_STRIDES>(values_, va_arg(vl, std::int64_t*));
             break;
@@ -150,10 +160,9 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) {
                                         "Invalid dimension value (negative or 0).");
         }
     }
-    compute_default_strides(dimensions, values_.fwd_strides, values_.bwd_strides);
-    // Assume forward transform.
-    values_.input_strides = values_.fwd_strides;
-    values_.output_strides = values_.bwd_strides;
+    compute_default_strides<dom>(dimensions, values_.fwd_strides, values_.bwd_strides);
+    values_.input_strides = std::vector<std::int64_t>(dimensions.size() + 1, 0);
+    values_.output_strides = std::vector<std::int64_t>(dimensions.size() + 1, 0);
     values_.bwd_scale = real_t(1.0);
     values_.fwd_scale = real_t(1.0);
     values_.number_of_transforms = 1;
@@ -220,6 +229,8 @@ void descriptor<prec, dom>::get_value(config_param param, ...) const {
             *va_arg(vl, config_value*) = values_.conj_even_storage;
             break;
         case config_param::PLACEMENT: *va_arg(vl, config_value*) = values_.placement; break;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         case config_param::INPUT_STRIDES:
             std::copy(values_.input_strides.begin(), values_.input_strides.end(),
                       va_arg(vl, std::int64_t*));
@@ -228,6 +239,7 @@ void descriptor<prec, dom>::get_value(config_param param, ...) const {
             std::copy(values_.output_strides.begin(), values_.output_strides.end(),
                       va_arg(vl, std::int64_t*));
             break;
+#pragma clang diagnostic pop
         case config_param::FWD_STRIDES:
             std::copy(values_.fwd_strides.begin(), values_.fwd_strides.end(),
                       va_arg(vl, std::int64_t*));

@@ -289,26 +289,34 @@ public:
         if (dom == dft::domain::REAL) {
             lengths_cplx[0] = lengths_cplx[0] / 2 + 1;
         }
-        // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
+        // When creating real-complex descriptions with INPUT/OUTPUT_STRIDES,
+        // the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.
         // If the strides are invalid (too small to fit) then just don't bother creating the plan.
-        const bool vec_a_valid_as_reals =
-            dimensions == 1 ||
-            (lengths_cplx[stride_a_indices[0]] <= stride_vecs.vec_a[stride_a_indices[1]] &&
-             (dimensions == 2 ||
-              lengths_cplx[stride_a_indices[0]] * lengths_cplx[stride_a_indices[1]] <=
-                  stride_vecs.vec_a[stride_a_indices[2]]));
-        const bool vec_b_valid_as_reals =
-            dimensions == 1 ||
-            (lengths_cplx[stride_b_indices[0]] <= stride_vecs.vec_b[stride_b_indices[1]] &&
-             (dimensions == 2 ||
-              lengths_cplx[stride_b_indices[0]] * lengths_cplx[stride_b_indices[1]] <=
-                  stride_vecs.vec_b[stride_b_indices[2]]));
-        // Test if the stride vector being used as the fwd domain for each direction has valid strides for that use.
-        bool valid_forward =
-            stride_vecs.fwd_in == stride_vecs.vec_a && vec_a_valid_as_reals || vec_b_valid_as_reals;
-        bool valid_backward = stride_vecs.bwd_out == stride_vecs.vec_a && vec_a_valid_as_reals ||
-                              vec_b_valid_as_reals;
+        auto are_strides_smaller_than_lengths = [=](auto& svec, auto& sindices,
+                                                    auto& domain_lengths) {
+            return dimensions == 1 ||
+                   (domain_lengths[sindices[0]] <= svec[sindices[1]] &&
+                    (dimensions == 2 || domain_lengths[sindices[0]] * domain_lengths[sindices[1]] <=
+                                            svec[sindices[2]]));
+        };
+
+        const bool vec_a_valid_as_fwd_domain =
+            are_strides_smaller_than_lengths(stride_vecs.vec_a, stride_a_indices, lengths);
+        const bool vec_b_valid_as_fwd_domain =
+            are_strides_smaller_than_lengths(stride_vecs.vec_b, stride_b_indices, lengths);
+        const bool vec_a_valid_as_bwd_domain =
+            are_strides_smaller_than_lengths(stride_vecs.vec_a, stride_a_indices, lengths_cplx);
+        const bool vec_b_valid_as_bwd_domain =
+            are_strides_smaller_than_lengths(stride_vecs.vec_b, stride_b_indices, lengths_cplx);
+
+        // Test if the stride vector being used as the fwd/bwd domain for each direction has valid strides for that use.
+        bool valid_forward = (stride_vecs.fwd_in == stride_vecs.vec_a &&
+                              vec_a_valid_as_fwd_domain && vec_b_valid_as_bwd_domain) ||
+                             (vec_b_valid_as_fwd_domain && vec_a_valid_as_bwd_domain);
+        bool valid_backward = (stride_vecs.bwd_in == stride_vecs.vec_a &&
+                               vec_a_valid_as_bwd_domain && vec_b_valid_as_fwd_domain) ||
+                              (vec_b_valid_as_bwd_domain && vec_a_valid_as_fwd_domain);
 
         if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
