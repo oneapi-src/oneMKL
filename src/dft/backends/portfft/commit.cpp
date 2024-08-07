@@ -130,8 +130,7 @@ public:
         bwd_desc.forward_offset = static_cast<std::size_t>(stride_vecs.offset_bwd_out);
         bwd_desc.backward_offset = static_cast<std::size_t>(stride_vecs.offset_bwd_in);
         bwd_desc.forward_strides = { stride_vecs.bwd_out.cbegin() + 1, stride_vecs.bwd_out.cend() };
-        bwd_desc.backward_strides = { stride_vecs.bwd_in.cbegin() + 1,
-                                      stride_vecs.bwd_in.cend() };
+        bwd_desc.backward_strides = { stride_vecs.bwd_in.cbegin() + 1, stride_vecs.bwd_in.cend() };
         bwd_desc.forward_distance = static_cast<std::size_t>(config_values.fwd_dist);
         bwd_desc.backward_distance = static_cast<std::size_t>(config_values.bwd_dist);
 
