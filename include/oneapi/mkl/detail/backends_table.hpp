@@ -40,7 +40,7 @@
 namespace oneapi {
 namespace mkl {
 
-enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu, amdgpu };
+enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu, amdgpu, generic_device };
 enum class domain : uint16_t { blas, dft, lapack, rng, sparse_blas };
 
 static std::map<domain, std::map<device, std::vector<const char*>>> libraries = {
@@ -81,6 +81,12 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
               LIB_NAME("blas_cublas"),
 #endif
 #ifdef ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU
+              LIB_NAME("blas_portblas"),
+#endif
+          } },
+        { device::generic_device,
+          {
+#ifdef ENABLE_PORTBLAS_BACKEND_GENERIC_DEVICE
               LIB_NAME("blas_portblas"),
 #endif
           } } } },

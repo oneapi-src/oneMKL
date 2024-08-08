@@ -62,7 +62,7 @@ oneMKL is part of the [UXL Foundation](http://www.uxlfoundation.org).
         </tr>
         <tr>
             <td align="center"><a href="https://github.com/codeplaysoftware/portBLAS"> portBLAS </a></td>
-            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
+            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU, Other SYCL devices (unsupported)</td>
         </tr>
         <tr>
             <td align="center"><a href="https://github.com/codeplaysoftware/portFFT"> portFFT </a></td>
@@ -172,7 +172,7 @@ Supported compilers include:
     </thead>
     <tbody>
         <tr>
-            <td rowspan=9 align="center">BLAS</td>
+            <td rowspan=10 align="center">BLAS</td>
             <td rowspan=3 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</br>AdaptiveCpp</td>
@@ -219,6 +219,12 @@ Supported compilers include:
         <tr>
             <td align="center">portBLAS</td>
             <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=1 align="center">Other SYCL devices (unsupported)</td>
+            <td align="center">portBLAS</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -405,6 +411,7 @@ Supported compilers include:
     - Intel(R) Data Center GPU Max Series
     - NVIDIA(R) A100 (Linux* only)
     - AMD(R) GPUs see [here](https://github.com/RadeonOpenCompute/ROCm#hardware-and-software-support) tested on AMD Vega 20 (gfx906)
+    - Other SYCL devices can be used, but are not supported
     
 ---
 ### Supported Operating Systems
