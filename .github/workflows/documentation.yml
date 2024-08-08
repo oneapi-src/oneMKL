@@ -8,6 +8,9 @@ on:
     paths:
       - 'docs/**'
   pull_request:
+    branches:
+      - '*'
+      - '!rfcs'
     paths:
       - 'docs/**'
   workflow_dispatch:
