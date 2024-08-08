@@ -9,7 +9,7 @@ application.
 * If your application requires Intel GPU, use
   `Intel(R) oneAPI DPC++ Compiler <https://software.intel.com/en-us/oneapi/dpc-compiler>`_ ``icpx`` on Linux or ``icx`` on Windows.
 * If your Linux application requires NVIDIA GPU, build ``clang++`` from the latest source of
-  `oneAPI DPC++ Compiler <https://github.com/intel/llvm>`_ with `support for NVIDIA CUDA <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md#build-dpc-toolchain-with-support-for-nvidia-cuda>`_ or use ``AdaptiveCpp`` from the `AdaptiveCpp repository <https://github.com/AdaptiveCpp/AdaptiveCpp>`_ (except for LAPACK domain).
+  `oneAPI DPC++ Compiler <https://github.com/intel/llvm>`_ with `support for NVIDIA CUDA <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md#build-dpc-toolchain-with-support-for-nvidia-cuda>`_ or use ``AdaptiveCpp`` from the `AdaptiveCpp repository <https://github.com/AdaptiveCpp/AdaptiveCpp>`_ (except for LAPACK or DFT domains).
 * If your Linux application requires AMD GPU, build ``clang++`` from the latest source of `oneAPI DPC++ Compiler <https://github.com/intel/llvm>`_ with `support for HIP AMD <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md#build-dpc-toolchain-with-support-for-hip-amd>`_ or use ``AdaptiveCpp``.
 * If no Intel GPU, NVIDIA GPU, or AMD GPU is required, on Linux you can use
   `Intel(R) oneAPI DPC++ Compiler <https://software.intel.com/en-us/oneapi/dpc-compiler>`_
