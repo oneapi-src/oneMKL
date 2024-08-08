@@ -39,7 +39,7 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
           -DENABLE_MKLGPU_BACKEND=False             \ # MKLGPU backend is not supported by AdaptiveCpp
           -DENABLE_<BACKEND_NAME>_BACKEND=True      \ # Enable backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True    \ # Multiple backends can be enabled at once.
-          -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906  \ # Set target architectures depending on supported devices.
+          -DACPP_TARGETS=omp\;hip:gfx90a,gfx906     \ # Set target architectures depending on supported devices.
           -DBUILD_FUNCTIONAL_TESTS=False            \ # See section *Building the tests* for more on building tests. True by default.
           -DBUILD_EXAMPLES=False                    # Optional: True by default.
   cmake --build .
