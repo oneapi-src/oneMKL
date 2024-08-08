@@ -60,6 +60,9 @@ option(ENABLE_CUFFT_BACKEND "Enable the cuFFT backend for the DFT interface" OFF
 option(ENABLE_ROCFFT_BACKEND "Enable the rocFFT backend for the DFT interface" OFF)
 option(ENABLE_PORTFFT_BACKEND "Enable the portFFT DFT backend for the DFT interface. Cannot be used with other DFT backends." OFF)
 
+# Generic devices
+option(ENABLE_GENERIC_DEVICE "Enable generic devices. Requires the portBLAS backend." OFF)
+
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 set(HIP_TARGETS "" CACHE STRING "Target HIP architectures")
 
@@ -121,6 +124,11 @@ if (ENABLE_PORTFFT_BACKEND
 		OR ENABLE_ROCFFT_BACKEND
 		OR ENABLE_CUFFT_BACKEND))
 	message(FATAL_ERROR "ENABLE_PORTFFT_BACKEND cannot be enabled at the same time as other DFT backends.")
+endif()
+
+if(ENABLE_GENERIC_DEVICE
+  AND NOT ENABLE_PORTBLAS_BACKEND)
+  message(FATAL_ERROR "ENABLE_GENERIC_DEVICE requires that the portBLAS backend is enabled.")
 endif()
 
 # Define required CXX compilers before project
