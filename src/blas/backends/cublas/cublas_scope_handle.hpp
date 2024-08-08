@@ -91,7 +91,7 @@ class CublasScopedContextHandler {
 #ifdef _PI_INTERFACE_REMOVED_
     static thread_local cublas_handle<ur_context_handle_t> handle_helper;
 #else
-    static thread_local cublas_handle<pi_xontext> handle_helper;
+    static thread_local cublas_handle<pi_context> handle_helper;
 #endif
     CUstream get_stream(const sycl::queue &queue);
     sycl::context get_context(const sycl::queue &queue);
