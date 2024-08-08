@@ -31,7 +31,7 @@ set(SOURCES rocblas_level1.cpp
                 rocblas_batch.cpp 
                 rocblas_extensions.cpp
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:rocblas_scope_handle.cpp >
-                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},adpativecpp>:rocblas_scope_handle_adaptivecpp.cpp >
+                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},adaptivecpp>:rocblas_scope_handle_adaptivecpp.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: rocblas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
