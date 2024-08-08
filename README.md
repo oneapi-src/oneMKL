@@ -26,12 +26,14 @@ e.g. link for this README in your fork will be
 ```
 https://github.com/<USERNAME>/oneMKL/blob/rfcs/README.md
 ```
-2. Assign all affected [teams](https://github.com/oneapi-src/oneMKL/blob/develop/README.md#contributing) and individual contributors as reviewers to the PR
-3. Organize offline review or an architecture meeting in order to collect feedback
+2. Assign all affected [teams](https://github.com/oneapi-src/oneMKL/blob/develop/README.md#contributing) and individual
+contributors as reviewers to the PR.
+3. Add `RFC` label to the PR to trigger slack notification in [#onemkl](https://uxlfoundation.slack.com/archives/onemkl) channel.
+4. Organize offline review or an architecture meeting in order to collect feedback.
     * It's recommended to keep all feedback as part of PR review, so it also
 will be documented in one place
-4. If changes affect API defined by [oneMKL specification](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/) the design document must be reviewed by [UXL Foundation Math SIG](https://github.com/uxlfoundation/foundation/tree/main/math) and contributed to [oneAPI specification](https://github.com/uxlfoundation/oneAPI-spec) and only after it the proposed changes can be implemented in this project.
-5. Merge PR when it has all required approvals
+5. If changes affect API defined by [oneMKL specification](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/) the design document must be reviewed by [UXL Foundation Math SIG](https://github.com/uxlfoundation/foundation/tree/main/math) and contributed to [oneAPI specification](https://github.com/uxlfoundation/oneAPI-spec) and only after it the proposed changes can be implemented in this project.
+6. Merge PR when it has all required approvals
     * It's recommended to add PR number to the commit message, so it will be easy
 to find the design discussion
     * It's recommended to update the preview document link in the PR to the merged
