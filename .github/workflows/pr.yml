@@ -7,7 +7,7 @@ on:
     branches: develop
   pull_request:
     branches: 
-      -'*'
+      -'**'
       -'!rfcs'
   workflow_dispatch:
 
