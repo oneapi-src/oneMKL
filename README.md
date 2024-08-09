@@ -29,7 +29,7 @@ e.g. link for this README in your fork will be
 2. Assign all affected [teams](https://github.com/oneapi-src/oneMKL/blob/develop/README.md#contributing) and individual
 contributors as reviewers to the PR.
 3. Add `RFC` label to the PR to trigger slack notification in [#onemkl](https://uxlfoundation.slack.com/archives/onemkl) channel.
-4. Organize offline review or an architecture meeting in order to collect feedback.
+4. Organize offline review or/and bring the RFC to [Math SIG forum](https://lists.uxlfoundation.org/g/Math-SIG), [UXL Foundation Open Source Working Group](https://lists.uxlfoundation.org/g/open-source-wg), or any other related forums in order to collect feedback.
     * It's recommended to keep all feedback as part of PR review, so it also
 will be documented in one place
 5. If changes affect API defined by [oneMKL specification](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/) the design document must be reviewed by [UXL Foundation Math SIG](https://github.com/uxlfoundation/foundation/tree/main/math) and contributed to [oneAPI specification](https://github.com/uxlfoundation/oneAPI-spec) and only after it the proposed changes can be implemented in this project.
