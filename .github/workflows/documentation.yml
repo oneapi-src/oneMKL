@@ -9,7 +9,7 @@ on:
       - 'docs/**'
   pull_request:
     branches:
-      - '*'
+      - '**'
       - '!rfcs'
     paths:
       - 'docs/**'
