@@ -3,12 +3,14 @@
 ### Revision
 
 
-|Date       |Revision| Comments                                                                 |
-|-----------|--------|--------------------------------------------------------------------------|
-|  YYYYMMDD |  1.0   | Initial version                                                          |
-|  YYYYMMDD |  X.Y   |                                                                          |
+|Date       |Revision | Comments                                                                 |
+|-----------|---------|--------------------------------------------------------------------------|
+|  YYYYMMDD |  1.0    | Initial version                                                          |
+|  YYYYMMDD |  X.Y*   |                                                                          |
 
-
+\* *where **X** indicates revision version that breaks backward compatibility with the previous revision
+in numerous significant ways, and **Y** indicates revision version that may extend or improve the design document,
+but the changes have minimal impact, if any, on backward compatibility.*
 
 ## Motivation
 
