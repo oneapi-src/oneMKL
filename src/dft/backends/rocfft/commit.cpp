@@ -297,8 +297,8 @@ public:
                                                     auto& domain_lengths) {
             return dimensions == 1 ||
                    (domain_lengths[sindices[0]] <= svec[sindices[1]] &&
-                    (dimensions == 2 || domain_lengths[sindices[0]] * domain_lengths[sindices[1]] <=
-                                            svec[sindices[2]]));
+                    (dimensions == 2 ||
+                     svec[sindices[1]] * domain_lengths[sindices[1]] <= svec[sindices[2]]));
         };
 
         const bool vec_a_valid_as_fwd_domain =
