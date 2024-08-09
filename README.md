@@ -23,9 +23,9 @@ long lines make it hard to read the document in the raw format
 1. Add new design document as a PR to this repository
     * Please add a link to preview document in the PR description,
 e.g. link for this README in your fork will be
-```
-https://github.com/<USERNAME>/oneMKL/blob/rfcs/README.md
-```
+        ```
+        https://github.com/<USERNAME>/oneMKL/blob/rfcs/README.md
+        ```
 2. Assign all affected [teams](https://github.com/oneapi-src/oneMKL/blob/develop/README.md#contributing) and individual
 contributors as reviewers to the PR.
 3. Add `RFC` label to the PR to trigger slack notification in [#onemkl](https://uxlfoundation.slack.com/archives/onemkl) channel.
@@ -39,7 +39,7 @@ to find the design discussion
     * It's recommended to update the preview document link in the PR to the merged
 one because initial link to the local fork/branch will stop working after local branch removal,
 e.g. link for this README will be 
-```
-https://github.com/oneapi-src/oneMKL/blob/rfcs/README.md
-```
+        ```
+        https://github.com/oneapi-src/oneMKL/blob/rfcs/README.md
+        ```
 
