@@ -963,11 +963,15 @@ cmake<span class="w"> </span>--install<span class="w"> </span>.<span class="w"> 
 <span id="build-common-problems-dpcpp"></span><h2>Build FAQ<a class="headerlink" href="#build-faq" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>clangrt builtins lib not found</dt><dd><p>Encountered when trying to build oneMKL with some ROCm libraries. There are
-several possible solutions: * If building Open DPC++ from source, add
-<code class="docutils literal notranslate"><span class="pre">compiler-rt</span></code> to the external projects compile option:
-<code class="docutils literal notranslate"><span class="pre">--llvm-external-projects</span> <span class="pre">compiler-rt</span></code>. * The <em>clangrt</em> from ROCm can be
-used, depending on ROCm version: <code class="docutils literal notranslate"><span class="pre">export</span>
-<span class="pre">LIBRARY_PATH=/path/to/rocm-$rocm-version$/llvm/lib/clang/$clang-version$/lib/linux/:$LIBRARY_PATH</span></code></p>
+several possible solutions:</p>
+<ul class="simple">
+<li><p>If building Open DPC++ from source, add <code class="docutils literal notranslate"><span class="pre">compiler-rt</span></code> to the external
+projects compile option: <code class="docutils literal notranslate"><span class="pre">--llvm-external-projects</span> <span class="pre">compiler-rt</span></code>.</p></li>
+<li><p>Manually set the variable <code class="docutils literal notranslate"><span class="pre">HIP_CXX_COMPILER</span></code> to HIP’s toolkit <code class="docutils literal notranslate"><span class="pre">clang++</span></code>
+path, for instance <code class="docutils literal notranslate"><span class="pre">-DHIP_CXX_COMPILER=/opt/rocm/6.1.0/llvm/bin/clang++</span></code>.
+oneMKL may fail to link if the clang versions of <code class="docutils literal notranslate"><span class="pre">icpx</span></code> and <code class="docutils literal notranslate"><span class="pre">rocm</span></code> are
+not compatible.</p></li>
+</ul>
 </dd>
 <dt>Could NOT find CBLAS (missing: CBLAS file)</dt><dd><p>Encountered when tests are enabled along with the BLAS domain. The tests
 require a reference BLAS implementation, but cannot find one. Either install
