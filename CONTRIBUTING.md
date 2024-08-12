@@ -7,7 +7,7 @@ For how to enable a new third-party library, see the [guidelines](docs/create_ne
 
 Before sending your pull requests, ensure that you follow this checklist:
 
-* If you are contributing a new interface, refer to the [library functionality guidelines](CONTRIBUTING.md#library-functionality-guidelines). It is strongly advised that you first open an [RFC PR](CONTRIBUTING.md#RFC-process) with a detailed explanation of the expected use cases.
+* If you are contributing a new interface, refer to the [library functionality guidelines](CONTRIBUTING.md#library-functionality-guidelines). It is strongly advised that you first open an [RFC PR](CONTRIBUTING.md#Request-for-comments-process) with a detailed explanation of the expected use cases.
 
 * Ensure that your code includes proper documentation.
 
@@ -29,10 +29,10 @@ oneMKL focuses on the following criteria:
 
 3. *Complexity*: Functionality that is not trivial to implement directly or by combining existing primitives.
 
-For the new API to become a part of the open source project, it should be accepted as part of [oneMKL spec](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html).
+For the new API to become a part of the open source project, it should be accepted as part of [oneMKL spec](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/).
 
 
-### RFC Process
+### Request for Comments Process
 
 For changes impacting the public API or any significant changes in the library, such as adding new backend or changes to the architecture,
 please follow the [RFC process](https://github.com/oneapi-src/oneMKL/tree/rfcs).
