@@ -123,12 +123,7 @@ template <std::int32_t VecSize>
 static inline sycl::vec<std::uint64_t, VecSize> generate(
     engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state) {
     sycl::vec<std::uint64_t, VecSize> res(state.s);
-#ifndef __ADAPTIVECPP__
     res = custom_mod(mcg59_vector_a<VecSize>::vector_a * res);
-#else
-    // a workaround for AdaptiveCpp (hipSYCL)
-    res = custom_mod(select_vector_a_mcg59<VecSize>() * res);
-#endif
     state.s = custom_mod(mcg59_param::a * res[VecSize - 1]);
     return res;
 }
