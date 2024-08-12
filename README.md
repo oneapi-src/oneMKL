@@ -572,12 +572,12 @@ Distributed under the Apache license 2.0. See [LICENSE](LICENSE) for more inform
 ### oneMKL
 
 **Q: What is the difference between the following oneMKL items?**
-   - The [oneAPI Specification for oneMKL](https://spec.oneapi.com/versions/latest/index.html)
+   - The [oneAPI Specification for oneMKL](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/)
    - The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/oneapi-src/oneMKL) Project
    - The [Intel(R) oneAPI Math Kernel Library (oneMKL)](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html) Product
 
 **A:**
-- The [oneAPI Specification for oneMKL](https://spec.oneapi.com/versions/latest/index.html) defines the DPC++ interfaces for performance math library functions. The oneMKL specification can evolve faster and more frequently than implementations of the specification.
+- The [oneAPI Specification for oneMKL](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/) defines the DPC++ interfaces for performance math library functions. The oneMKL specification can evolve faster and more frequently than implementations of the specification.
 
 - The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/oneapi-src/oneMKL) Project is an open source implementation of the specification. The project goal is to demonstrate how the DPC++ interfaces documented in the oneMKL specification can be implemented for any math library and work for any target hardware. While the implementation provided here may not yet be the full implementation of the specification, the goal is to build it out over time. We encourage the community to contribute to this project and help to extend support to multiple hardware targets and other math libraries.
 
