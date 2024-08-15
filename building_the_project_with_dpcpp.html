@@ -583,7 +583,7 @@ for Windows</a> for building on Windows):</p>
 mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
 cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_CXX_COMPILER<span class="o">=</span><span class="nv">$CXX_COMPILER</span><span class="w">    </span><span class="se">\ </span><span class="c1"># Should be icpx or clang++</span>
 <span class="w">        </span>-DCMAKE_C_COMPILER<span class="o">=</span><span class="nv">$C_COMPILER</span><span class="w">         </span><span class="se">\ </span><span class="c1"># Should be icx or clang</span>
-<span class="w">        </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">          </span><span class="se">\ </span><span class="c1"># Optional: The MKLCPU backend is True by default.</span>
+<span class="w">        </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w">          </span><span class="se">\ </span><span class="c1"># Optional: The MKLCPU backend is True by default.</span>
 <span class="w">        </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w">          </span><span class="se">\ </span><span class="c1"># Optional: The MKLGPU backend is True by default.</span>
 <span class="w">        </span>-DENABLE_&lt;BACKEND_NAME&gt;_BACKEND<span class="o">=</span>True<span class="w">   </span><span class="se">\ </span><span class="c1"># Enable any other backend(s) (optional)</span>
 <span class="w">        </span>-DENABLE_&lt;BACKEND_NAME_2&gt;_BACKEND<span class="o">=</span>True<span class="w"> </span><span class="se">\ </span><span class="c1"># Multiple backends can be enabled at once.</span>

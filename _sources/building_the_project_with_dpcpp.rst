@@ -44,7 +44,7 @@ for Windows`_ for building on Windows):
   mkdir build && cd build
   cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER    \ # Should be icpx or clang++
           -DCMAKE_C_COMPILER=$C_COMPILER         \ # Should be icx or clang
-          -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLCPU backend is True by default.
+          -DENABLE_MKLCPU_BACKEND=False          \ # Optional: The MKLCPU backend is True by default.
           -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLGPU backend is True by default.
           -DENABLE_<BACKEND_NAME>_BACKEND=True   \ # Enable any other backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True \ # Multiple backends can be enabled at once.
