@@ -173,7 +173,7 @@ public:
             if (a_min - stride_vecs.vec_a.begin() != b_min - stride_vecs.vec_b.begin()) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires that if ordered by stride length, the order of strides is the same for input and output strides!");
+                    "cufft requires that if ordered by stride length, the order of strides is the same for input/output or fwd/bwd strides!");
             }
         }
         const int a_stride = static_cast<int>(*a_min);

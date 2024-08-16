@@ -140,7 +140,7 @@ static void set_and_get_io_strides() {
 
     descriptor.get_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                          input_strides_before_set.data());
-    EXPECT_EQ(default_strides_value, input_strides_before_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), input_strides_before_set);
     descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, input_strides_value.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                          input_strides_after_set.data());
@@ -154,7 +154,7 @@ static void set_and_get_io_strides() {
     std::vector<std::int64_t> output_strides_after_set(strides_size);
     descriptor.get_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                          output_strides_before_set.data());
-    EXPECT_EQ(default_strides_value, output_strides_before_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), output_strides_before_set);
     descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                          output_strides_value.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
@@ -176,23 +176,27 @@ static void set_and_get_fwd_bwd_strides() {
     const std::int64_t default_stride_d2 = default_3d_lengths[2];
     const std::int64_t default_stride_d3 = 1;
 
-    std::vector<std::int64_t> default_strides_value{ 0, default_stride_d1, default_stride_d2,
-                                                     default_stride_d3 };
-
-    std::vector<std::int64_t> fwd_strides_value;
-    std::vector<std::int64_t> bwd_strides_value;
+    std::vector<std::int64_t> fwd_strides_default_value;
+    std::vector<std::int64_t> bwd_strides_default_value;
     if constexpr (domain == oneapi::mkl::dft::domain::COMPLEX) {
-        fwd_strides_value = { 50, default_stride_d1 * 2, default_stride_d2 * 2,
-                              default_stride_d3 * 2 };
-        bwd_strides_value = { 50, default_stride_d1 * 2, default_stride_d2 * 2,
-                              default_stride_d3 * 2 };
+        fwd_strides_default_value = { 0, default_stride_d1, default_stride_d2, default_stride_d3 };
+        bwd_strides_default_value = { 0, default_stride_d1, default_stride_d2, default_stride_d3 };
     }
     else {
-        fwd_strides_value = { 0, default_3d_lengths[1] * (default_3d_lengths[2] / 2 + 1) * 2,
-                              (default_3d_lengths[2] / 2 + 1) * 2, 1 };
-        bwd_strides_value = { 0, default_3d_lengths[1] * (default_3d_lengths[2] / 2 + 1),
-                              (default_3d_lengths[2] / 2 + 1), 1 };
+        fwd_strides_default_value = { 0,
+                                      default_3d_lengths[1] * (default_3d_lengths[2] / 2 + 1) * 2,
+                                      (default_3d_lengths[2] / 2 + 1) * 2, 1 };
+        bwd_strides_default_value = { 0, default_3d_lengths[1] * (default_3d_lengths[2] / 2 + 1),
+                                      (default_3d_lengths[2] / 2 + 1), 1 };
     }
+    auto fwd_strides_new_value = fwd_strides_default_value;
+    auto bwd_strides_new_value = bwd_strides_default_value;
+    for (auto i = 0UL; i < fwd_strides_new_value.size(); ++i) {
+        fwd_strides_new_value[i] *= 4;
+        bwd_strides_new_value[i] *= 4;
+    }
+    fwd_strides_new_value[0] = 50;
+    bwd_strides_new_value[0] = 50;
 
     std::vector<std::int64_t> fwd_strides_before_set(strides_size);
     std::vector<std::int64_t> fwd_strides_after_set(strides_size);
@@ -201,14 +205,14 @@ static void set_and_get_fwd_bwd_strides() {
 
     descriptor.get_value(oneapi::mkl::dft::config_param::FWD_STRIDES,
                          fwd_strides_before_set.data());
-    EXPECT_EQ(default_strides_value, fwd_strides_before_set);
-    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES, fwd_strides_value.data());
+    EXPECT_EQ(fwd_strides_default_value, fwd_strides_before_set);
+    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES, fwd_strides_new_value.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::FWD_STRIDES, fwd_strides_after_set.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                          input_strides_after_set.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                          output_strides_after_set.data());
-    EXPECT_EQ(fwd_strides_value, fwd_strides_after_set);
+    EXPECT_EQ(fwd_strides_new_value, fwd_strides_after_set);
     EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), input_strides_after_set);
     EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), output_strides_after_set);
 
@@ -216,10 +220,10 @@ static void set_and_get_fwd_bwd_strides() {
     std::vector<std::int64_t> bwd_strides_after_set(strides_size);
     descriptor.get_value(oneapi::mkl::dft::config_param::BWD_STRIDES,
                          bwd_strides_before_set.data());
-    EXPECT_EQ(default_strides_value, bwd_strides_before_set);
-    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, bwd_strides_value.data());
+    EXPECT_EQ(bwd_strides_default_value, bwd_strides_before_set);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, bwd_strides_new_value.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::BWD_STRIDES, bwd_strides_after_set.data());
-    EXPECT_EQ(bwd_strides_value, bwd_strides_after_set);
+    EXPECT_EQ(bwd_strides_new_value, bwd_strides_after_set);
 }
 #pragma clang diagnostic pop
 

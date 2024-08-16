@@ -22,9 +22,7 @@
 
 #include "../descriptor.cxx"
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
+namespace oneapi::mkl::dft::detail {
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::commit(sycl::queue &queue) {
@@ -41,6 +39,4 @@ template void descriptor<precision::SINGLE, domain::REAL>::commit(sycl::queue &)
 template void descriptor<precision::DOUBLE, domain::COMPLEX>::commit(sycl::queue &);
 template void descriptor<precision::DOUBLE, domain::REAL>::commit(sycl::queue &);
 
-} //namespace dft
-} //namespace mkl
-} //namespace oneapi
+} //namespace oneapi::mkl::dft::detail
