@@ -40,7 +40,7 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
           -DENABLE_<BACKEND_NAME>_BACKEND=True     \ # Enable backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True   \ # Multiple backends can be enabled at once.
           -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906 \ # Set target architectures depending on supported devices.
-          -DBUILD_FUNCTIONAL_TESTS=False           \ # See section *Building the tests* for more on building tests. True by default.
+          -DBUILD_FUNCTIONAL_TESTS=False           \ # See page *Building and Running Tests* for more on building tests. False by default.
           -DBUILD_EXAMPLES=False                   # Optional: True by default.
   cmake --build .
   cmake --install . --prefix <path_to_install_dir> # required to have full package structure
@@ -61,11 +61,11 @@ If a backend library supports multiple domains (i.e. BLAS, RNG), it may be
 desirable to only enable selected domains. For this, the ``TARGET_DOMAINS``
 variable should be set. For further details, see :ref:`_build_target_domains`.
 
-By default, the library also additionally builds examples and tests. These can
-be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and
-``BUILD_EXAMPLES`` to False. Building the functional tests may require additional
-external libraries. See the section :ref:`building_and_running_tests` for more
-information.
+By default, the library builds examples. These can be disabled by setting the
+parameter ``BUILD_EXAMPLES`` to ``False``. Tests are disabled by default, but
+can be enabled by setting ``BUILD_FUNCTIONAL_TESTS`` to ``True``. Building the
+functional tests requires additional external libraries for the BLAS and LAPACK
+domains. See the section :ref:`building_and_running_tests` for more information.
 
 The most important supported build options are:
 
@@ -98,7 +98,7 @@ The most important supported build options are:
      - True      
    * - BUILD_FUNCTIONAL_TESTS
      - True, False
-     - True      
+     - False      
    * - BUILD_EXAMPLES
      - True, False
      - True      

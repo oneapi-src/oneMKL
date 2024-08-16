@@ -48,7 +48,7 @@ for Windows`_ for building on Windows):
           -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLGPU backend is True by default.
           -DENABLE_<BACKEND_NAME>_BACKEND=True   \ # Enable any other backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True \ # Multiple backends can be enabled at once.
-          -DBUILD_FUNCTIONAL_TESTS=False         \ # See page *Building and Running Tests* for more on building tests. True by default.
+          -DBUILD_FUNCTIONAL_TESTS=False         \ # See page *Building and Running Tests* for more on building tests. False by default.
           -DBUILD_EXAMPLES=False                   # Optional: True by default.
   cmake --build .
   cmake --install . --prefix <path_to_install_dir>  # required to have full package structure
@@ -72,11 +72,11 @@ If a backend library supports multiple domains (i.e., BLAS, LAPACK, DFT, RNG,
 sparse BLAS), it may be desirable to only enable selected domains. For this, the
 ``TARGET_DOMAINS`` variable should be set. See the section `TARGET_DOMAINS`_.
 
-By default, the library also additionally builds examples and tests. These can
-be disabled by setting the parameters ``BUILD_FUNCTIONAL_TESTS`` and
-``BUILD_EXAMPLES`` to ``False``. Building the functional tests requires
-additional external libraries for the BLAS and LAPACK domains. See the section
-:ref:`building_and_running_tests` for more information.
+By default, the library builds examples. These can be disabled by setting the
+parameter ``BUILD_EXAMPLES`` to ``False``. Tests are disabled by default, but
+can be enabled by setting ``BUILD_FUNCTIONAL_TESTS`` to ``True``. Building the
+functional tests requires additional external libraries for the BLAS and LAPACK
+domains. See the section :ref:`building_and_running_tests` for more information.
 
 The most important supported build options are:
 
@@ -130,7 +130,7 @@ The most important supported build options are:
      - False      
    * - BUILD_FUNCTIONAL_TESTS
      - True, False
-     - True      
+     - False      
    * - BUILD_EXAMPLES
      - True, False
      - True      
@@ -355,8 +355,7 @@ disabled using the Ninja build system:
       -DENABLE_CUFFT_BACKEND=True \
       -DENABLE_CUBLAS_BACKEND=True \
       -DENABLE_CUSOLVER_BACKEND=True \
-      -DENABLE_CURAND_BACKEND=True \
-      -DBUILD_FUNCTIONAL_TESTS=False
+      -DENABLE_CURAND_BACKEND=True
 
 ``$ONEMKL_DIR`` points at the oneMKL source directly. The x86 CPU (``MKLCPU``)
 and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled
@@ -376,8 +375,7 @@ disabled:
       -DENABLE_ROCFFT_BACKEND=True  \ 
       -DENABLE_ROCBLAS_BACKEND=True \
       -DENABLE_ROCSOLVER_BACKEND=True \ 
-      -DHIP_TARGETS=gfx90a \
-      -DBUILD_FUNCTIONAL_TESTS=False
+      -DHIP_TARGETS=gfx90a
 
 ``$ONEMKL_DIR`` points at the oneMKL source directly. The x86 CPU (``MKLCPU``)
 and Intel GPU (``MKLGPU``) backends are enabled by default, but are disabled
@@ -396,6 +394,7 @@ GPU and Nvidia GPU with testing enabled:
       -DENABLE_ROCFFT_BACKEND=True \
       -DENABLE_CUFFT_BACKEND=True \
       -DTARGET_DOMAINS=dft \
+      -DBUILD_FUNCTIONAL_TESTS=True \
       -DBUILD_EXAMPLES=False
 
 Note that this is not a supported configuration, and requires Codeplay's oneAPI

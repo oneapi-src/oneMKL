@@ -64,7 +64,7 @@ set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 set(HIP_TARGETS "" CACHE STRING "Target HIP architectures")
 
 ## Testing
-option(BUILD_FUNCTIONAL_TESTS "" ON)
+option(BUILD_FUNCTIONAL_TESTS "" OFF)
 
 ## Examples
 option(BUILD_EXAMPLES "" ON)

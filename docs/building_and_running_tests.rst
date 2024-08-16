@@ -3,7 +3,7 @@
 Building and Running Tests
 ==========================
 
-The functional tests are enabled by default, and can be enabled/disabled
+The functional tests are disabled by default, and can be enabled/disabled
 with the CMake build parameter ``-DBUILD_FUNCTIONAL_TESTS=True/False``. Only
 the tests relevant to the enabled backends and target domains will be built.
 
