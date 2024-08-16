@@ -63,7 +63,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
 #if __has_include(<sycl/backend/cuda.hpp>)
 #include <sycl/backend/cuda.hpp>
 #else

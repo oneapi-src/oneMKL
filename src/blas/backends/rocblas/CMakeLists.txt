@@ -31,7 +31,7 @@ set(SOURCES rocblas_level1.cpp
                 rocblas_batch.cpp 
                 rocblas_extensions.cpp
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:rocblas_scope_handle.cpp >
-                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},hipsycl>:rocblas_scope_handle_hipsycl.cpp >
+                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},adaptivecpp>:rocblas_scope_handle_adaptivecpp.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: rocblas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
@@ -45,7 +45,7 @@ target_include_directories(${LIB_OBJ}
           ${ONEMKL_GENERATED_INCLUDE_PATH}
 )
 
-if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "adaptivecpp")
     target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
     target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
         -fsycl-targets=amdgcn-amd-amdhsa -fsycl-unnamed-lambda

@@ -54,9 +54,9 @@ constexpr sycl::vec<uint64_t, VecSize> select_vector_a_mcg59() {
               UINT64_C(0x58145D06A37D795) });
 }
 
-// hipSYCL (AdaptiveCpp) doesn't support constexpr sycl::vec constructor
-// that's why in case of hipSYCL backend sycl::vec is created as a local variable
-#ifndef __HIPSYCL__
+// AdaptiveCpp (hipSYCL) doesn't support constexpr sycl::vec constructor
+// that's why in case of AdaptiveCpp backend sycl::vec is created as a local variable
+#ifndef __ADAPTIVECPP__
 template <std::int32_t VecSize>
 struct mcg59_vector_a {
     static constexpr sycl::vec<std::uint64_t, VecSize> vector_a =
@@ -123,12 +123,7 @@ template <std::int32_t VecSize>
 static inline sycl::vec<std::uint64_t, VecSize> generate(
     engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state) {
     sycl::vec<std::uint64_t, VecSize> res(state.s);
-#ifndef __HIPSYCL__
     res = custom_mod(mcg59_vector_a<VecSize>::vector_a * res);
-#else
-    // a workaround for hipSYCL (AdaptiveCpp)
-    res = custom_mod(select_vector_a_mcg59<VecSize>() * res);
-#endif
     state.s = custom_mod(mcg59_param::a * res[VecSize - 1]);
     return res;
 }

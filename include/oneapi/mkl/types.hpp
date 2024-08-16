@@ -20,7 +20,7 @@
 #ifndef _ONEMKL_TYPES_HPP_
 #define _ONEMKL_TYPES_HPP_
 
-#ifdef __HIPSYCL__
+#ifdef __ADAPTIVECPP__
 #include "oneapi/mkl/bfloat16.hpp"
 #endif
 
@@ -33,7 +33,7 @@
 namespace oneapi {
 namespace mkl {
 
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
 using bfloat16 = sycl::ext::oneapi::bfloat16;
 #endif
 

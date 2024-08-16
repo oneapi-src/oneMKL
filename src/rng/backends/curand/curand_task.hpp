@@ -13,10 +13,10 @@ namespace oneapi {
 namespace mkl {
 namespace rng {
 namespace curand {
-#ifdef __HIPSYCL__
+#ifdef __ADAPTIVECPP__
 template <typename H, typename A, typename E, typename F>
 static inline void host_task_internal(H &cgh, A acc, E e, F f) {
-    cgh.hipSYCL_enqueue_custom_operation([=](sycl::interop_handle ih) {
+    cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
         curandStatus_t status;
         CURAND_CALL(curandSetStream, status, e, ih.get_native_queue<sycl::backend::cuda>());
         auto r_ptr =
@@ -27,7 +27,7 @@ static inline void host_task_internal(H &cgh, A acc, E e, F f) {
 
 template <typename H, typename E, typename F>
 static inline void host_task_internal(H &cgh, E e, F f) {
-    cgh.hipSYCL_enqueue_custom_operation([=](sycl::interop_handle ih) {
+    cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
         curandStatus_t status;
         CURAND_CALL(curandSetStream, status, e, ih.get_native_queue<sycl::backend::cuda>());
         f(ih);

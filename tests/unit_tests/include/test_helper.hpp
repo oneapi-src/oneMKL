@@ -176,7 +176,7 @@
 #define TEST_RUN_PORTFFT_SELECT(q, func, ...)
 #endif
 
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
 #define CHECK_HOST_OR_CPU(q) q.get_device().is_cpu()
 #else
 #define CHECK_HOST_OR_CPU(q) q.is_host() || q.get_device().is_cpu()

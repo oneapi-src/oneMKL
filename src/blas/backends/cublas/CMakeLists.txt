@@ -26,7 +26,7 @@ set(SOURCES cublas_level1.cpp
                 cublas_batch.cpp 
                 cublas_extensions.cpp 
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:cublas_scope_handle.cpp >
-                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},hipsycl>:cublas_scope_handle_hipsycl.cpp >
+                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},adaptivecpp>:cublas_scope_handle_adaptivecpp.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: cublas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
@@ -40,7 +40,7 @@ target_include_directories(${LIB_OBJ}
 )
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
-if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "adaptivecpp")
     target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
           -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
     target_link_options(ONEMKL::SYCL::SYCL INTERFACE

@@ -59,7 +59,7 @@
 find_package(CUDA 10.0 REQUIRED)
 get_filename_component(SYCL_BINARY_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
 
-if (NOT (ONEMKL_SYCL_IMPLEMENTATION STREQUAL "hipsycl"))
+if (NOT (ONEMKL_SYCL_IMPLEMENTATION STREQUAL "adaptivecpp"))
 # the OpenCL include file from cuda is opencl 1.1 and it is not compatible with DPC++
 # the OpenCL include headers 1.2 onward is required. This is used to bypass NVIDIA OpenCL headers
 find_path(OPENCL_INCLUDE_DIR CL/cl.h OpenCL/cl.h 
@@ -76,7 +76,7 @@ find_package(Threads REQUIRED)
 
 include(FindPackageHandleStandardArgs)
 
-if (ONEMKL_SYCL_IMPLEMENTATION STREQUAL "hipsycl")
+if (ONEMKL_SYCL_IMPLEMENTATION STREQUAL "adaptivecpp")
 find_package_handle_standard_args(cuRAND
     REQUIRED_VARS
 	CUDA_TOOLKIT_INCLUDE

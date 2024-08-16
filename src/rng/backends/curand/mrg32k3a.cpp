@@ -61,7 +61,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#ifndef __HIPSYCL__
+#ifndef __ADAPTIVECPP__
 #if __has_include(<sycl/context.hpp>)
 #if __SYCL_COMPILER_VERSION <= 20220930
 #include <sycl/backend/cuda.hpp>
