@@ -18,7 +18,6 @@
 *******************************************************************************/
 
 #if __has_include(<sycl/sycl.hpp>)
-#define SYCL_EXT_ACPP_ENQUEUE_CUSTOM_OPERATION 1
 #include <sycl/sycl.hpp>
 #else
 #include <CL/sycl.hpp>
@@ -72,7 +71,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
-        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
+        detail::cufft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             auto inout_native = reinterpret_cast<fwd<descriptor_type> *>(
@@ -118,7 +117,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
-        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
+        detail::cufft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             auto in_native = reinterpret_cast<void *>(
@@ -172,7 +171,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
         cgh.depends_on(dependencies);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
+        detail::cufft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(
@@ -218,7 +217,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
         cgh.depends_on(dependencies);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        cgh.AdaptiveCpp_enqueue_custom_operation([=](sycl::interop_handle ih) {
+        detail::cufft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
             detail::cufft_execute<detail::Direction::Backward, fwd<descriptor_type>>(

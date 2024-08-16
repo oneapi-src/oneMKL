@@ -20,6 +20,8 @@
 #ifndef _ONEMKL_DFT_SRC_CUFFT_EXECUTE_HPP_
 #define _ONEMKL_DFT_SRC_CUFFT_EXECUTE_HPP_
 
+#define SYCL_EXT_ACPP_ENQUEUE_CUSTOM_OPERATION
+
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
@@ -125,12 +127,16 @@ void cufft_execute(const std::string &func, CUstream stream, cufftHandle plan, v
             }
         }
     }
-
-    // auto result = cuStreamSynchronize(stream);
-    // if (result != CUDA_SUCCESS) {
-    //     throw oneapi::mkl::exception("dft/backends/cufft", func,
-    //                                  "cuStreamSynchronize returned " + std::to_string(result));
-    // }
+#ifndef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+    // If not using the enqueue native extension, the host task must wait on the
+    // asynchronous operation to complete. Otherwise it report the operation
+    // as complete early.
+    auto result = cuStreamSynchronize(stream);
+    if (result != CUDA_SUCCESS) {
+        throw oneapi::mkl::exception("dft/backends/cufft", func,
+                                     "cuStreamSynchronize returned " + std::to_string(result));
+    }
+#endif
 }
 
 inline CUstream setup_stream(const std::string &func, sycl::interop_handle ih, cufftHandle plan) {
@@ -141,6 +147,27 @@ inline CUstream setup_stream(const std::string &func, sycl::interop_handle ih, c
                                      "cufftSetStream returned " + std::to_string(result));
     }
     return stream;
+}
+
+
+/** Wrap interop API to launch interop host task.
+ * 
+ * @tparam HandlerT The command group handler type
+ * @tparam FnT The body of the enqueued task
+ *
+ * Either uses host task interop API, or enqueue native command extension.
+ * This extension avoids host synchronization after 
+ * the CUDA call is complete.
+ */
+template <typename HandlerT, typename FnT>
+static inline void cufft_enqueue_task(HandlerT&& cgh, FnT&& f) {
+#ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih){
+#else
+    cgh.host_task([=](sycl::interop_handle ih){
+#endif
+        f(std::move(ih));
+    });
 }
 
 } // namespace oneapi::mkl::dft::cufft::detail
