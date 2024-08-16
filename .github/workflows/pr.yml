@@ -75,7 +75,7 @@ jobs:
       if: steps.domain_check.outputs.result == 'true'
       run: |
         source /opt/intel/oneapi/setvars.sh
-        cmake -DTARGET_DOMAINS=${{ matrix.domain }} -DENABLE_MKLGPU_BACKEND=OFF -DBUILD_FUNCTIONAL_TESTS=ON -DCMAKE_VERBOSE_MAKEFILE=on ${{ matrix.build_options }} -B build
+        cmake -DTARGET_DOMAINS=${{ matrix.domain }} -DENABLE_MKLGPU_BACKEND=OFF -DBUILD_FUNCTIONAL_TESTS=ON -DCMAKE_VERBOSE_MAKEFILE=ON ${{ matrix.build_options }} -B build
         cmake --build build ${PARALLEL}
     - name: Run tests
       if: steps.domain_check.outputs.result == 'true'
