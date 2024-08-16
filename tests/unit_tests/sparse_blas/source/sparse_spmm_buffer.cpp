@@ -134,7 +134,7 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                 copy_host_to_buffer(main_queue, a_host, a_buf);
             }
             nnz = reset_nnz;
-            fill_buffer_to_0(main_queue, c_buf);
+            copy_host_to_buffer(main_queue, c_ref_host, c_buf);
             set_matrix_data(main_queue, format, A_handle, nrows_A, ncols_A, nnz, index, ia_buf,
                             ja_buf, a_buf);
 

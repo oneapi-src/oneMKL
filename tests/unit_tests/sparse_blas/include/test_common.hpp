@@ -113,15 +113,6 @@ void copy_host_to_buffer(sycl::queue queue, const std::vector<T> &src, sycl::buf
     });
 }
 
-template <typename T>
-void fill_buffer_to_0(sycl::queue queue, sycl::buffer<T, 1> dst) {
-    queue.submit([&](sycl::handler &cgh) {
-        auto dst_acc = dst.template get_access<sycl::access::mode::discard_write>(
-            cgh, sycl::range<1>(dst.size()));
-        cgh.fill(dst_acc, T(0));
-    });
-}
-
 template <typename OutT, typename XT, typename YT>
 std::pair<OutT, OutT> swap_if_cond(bool swap, XT x, YT y) {
     if (swap) {

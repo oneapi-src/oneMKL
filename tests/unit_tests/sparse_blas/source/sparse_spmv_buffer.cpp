@@ -123,7 +123,7 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                 copy_host_to_buffer(main_queue, ja_host, ja_buf);
                 copy_host_to_buffer(main_queue, a_host, a_buf);
             }
-            fill_buffer_to_0(main_queue, y_buf);
+            copy_host_to_buffer(main_queue, y_ref_host, y_buf);
             nnz = reset_nnz;
             set_matrix_data(main_queue, format, A_handle, nrows_A, ncols_A, nnz, index, ia_buf,
                             ja_buf, a_buf);
