@@ -52,9 +52,8 @@ void check_valid_spsv(const std::string &function_name, oneapi::mkl::transpose o
     if ((data_type == detail::data_type::complex_fp32 ||
          data_type == detail::data_type::complex_fp64) &&
         opA == oneapi::mkl::transpose::conjtrans) {
-        throw mkl::unimplemented(
-            "sparse_blas", function_name,
-            "The backend does not support spsv using conjtrans.");
+        throw mkl::unimplemented("sparse_blas", function_name,
+                                 "The backend does not support spsv using conjtrans.");
     }
 #else
     (void)opA;
@@ -106,7 +105,7 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
     }
     internal_A_handle->can_be_reset = false;
     oneapi::mkl::sparse::optimize_trsv(queue, A_view.uplo_view, opA, A_view.diag_view,
-                                                    internal_A_handle->backend_handle);
+                                       internal_A_handle->backend_handle);
 }
 
 sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,

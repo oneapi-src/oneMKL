@@ -109,7 +109,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
     internal_A_handle->can_be_reset = false;
     if (A_view.type_view == matrix_descr::triangular) {
         oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
-                                                   internal_A_handle->backend_handle);
+                                           internal_A_handle->backend_handle);
     }
     else if (A_view.type_view == matrix_descr::symmetric ||
              A_view.type_view == matrix_descr::hermitian) {

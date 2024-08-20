@@ -407,7 +407,7 @@ void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
 
 template <typename... HandlesT>
 inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> dependencies,
-                         HandlesT &&...handles) {
+                         HandlesT &&... handles) {
     // Fold expression so that handles expands to each value one after the other.
     (
         [&] {
@@ -436,12 +436,12 @@ inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> depe
 }
 
 template <typename... HandlesT>
-inline void free_handles(sycl::queue &queue, HandlesT &&...handles) {
+inline void free_handles(sycl::queue &queue, HandlesT &&... handles) {
     free_handles(queue, {}, handles...);
 }
 
 template <typename... HandlesT>
-inline void wait_and_free_handles(sycl::queue &queue, HandlesT &&...handles) {
+inline void wait_and_free_handles(sycl::queue &queue, HandlesT &&... handles) {
     queue.wait();
     free_handles(queue, handles...);
 }
