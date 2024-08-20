@@ -106,10 +106,9 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return;
     }
-    sycl::event event;
     internal_A_handle->can_be_reset = false;
     if (A_view.type_view == matrix_descr::triangular) {
-        event = oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
+        oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
                                                    internal_A_handle->backend_handle);
     }
     else if (A_view.type_view == matrix_descr::symmetric ||
@@ -118,10 +117,8 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         return;
     }
     else {
-        event = oneapi::mkl::sparse::optimize_gemv(queue, opA, internal_A_handle->backend_handle);
+        oneapi::mkl::sparse::optimize_gemv(queue, opA, internal_A_handle->backend_handle);
     }
-    // spmv_optimize is not asynchronous for buffers as the backend optimize functions don't take buffers.
-    event.wait_and_throw();
 }
 
 sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
