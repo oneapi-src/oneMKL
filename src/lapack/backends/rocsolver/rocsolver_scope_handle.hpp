@@ -33,6 +33,18 @@
 #include "rocsolver_helper.hpp"
 #include "rocsolver_handle.hpp"
 
+// After Plugin Interface removal in DPC++ ur.hpp is the new include
+#if __has_include(<sycl/detail/ur.hpp>)
+#include <sycl/detail/ur.hpp>
+#ifndef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#define ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#endif
+#elif __has_include(<sycl/detail/pi.hpp>)
+#include <sycl/detail/pi.hpp>
+#else
+#include <CL/sycl/detail/pi.hpp>
+#endif
+
 namespace oneapi {
 namespace mkl {
 namespace lapack {
@@ -43,7 +55,11 @@ class RocsolverScopedContextHandler {
     sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handle &ih;
+#ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+    static thread_local rocsolver_handle<ur_context_handle_t> handle_helper;
+#else
     static thread_local rocsolver_handle<pi_context> handle_helper;
+#endif
     hipStream_t get_stream(const sycl::queue &queue);
     sycl::context get_context(const sycl::queue &queue);
 
