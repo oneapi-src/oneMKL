@@ -259,12 +259,15 @@ public:
         std::reverse(stride_vecs.vec_b.begin(), stride_vecs.vec_b.end());
         stride_vecs.vec_b.pop_back(); // Offset is not included.
 
-        rocfft_plan_description plan_desc;
-        if (rocfft_plan_description_create(&plan_desc) != rocfft_status_success) {
+        rocfft_plan_description plan_desc_fwd, plan_desc_bwd; // Can't reuse with ROCm 6 due to bug.
+        if (rocfft_plan_description_create(&plan_desc_fwd) != rocfft_status_success) {
             throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
                                  "Failed to create plan description.");
         }
-
+        if (rocfft_plan_description_create(&plan_desc_bwd) != rocfft_status_success) {
+            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                                 "Failed to create plan description.");
+        }
         // plan_description can be destroyed afted plan_create
         auto description_destroy = [](rocfft_plan_description p) {
             if (rocfft_plan_description_destroy(p) != rocfft_status_success) {
@@ -273,7 +276,9 @@ public:
             }
         };
         std::unique_ptr<rocfft_plan_description_t, decltype(description_destroy)>
-            description_destroyer(plan_desc, description_destroy);
+            description_destroyer_fwd(plan_desc_fwd, description_destroy);
+        std::unique_ptr<rocfft_plan_description_t, decltype(description_destroy)>
+            description_destroyer_bwd(plan_desc_bwd, description_destroy);
 
         std::array<std::size_t, 3> stride_a_indices{ 0, 1, 2 };
         std::sort(&stride_a_indices[0], &stride_a_indices[dimensions],
@@ -324,7 +329,7 @@ public:
 
         if (valid_forward) {
             auto res =
-                rocfft_plan_description_set_data_layout(plan_desc, fwd_array_ty, bwd_array_ty,
+                rocfft_plan_description_set_data_layout(plan_desc_fwd, fwd_array_ty, bwd_array_ty,
                                                         nullptr, // in offsets
                                                         nullptr, // out offsets
                                                         dimensions,
@@ -339,7 +344,7 @@ public:
                                      "Failed to set forward data layout.");
             }
 
-            if (rocfft_plan_description_set_scale_factor(plan_desc, config_values.fwd_scale) !=
+            if (rocfft_plan_description_set_scale_factor(plan_desc_fwd, config_values.fwd_scale) !=
                 rocfft_status_success) {
                 throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to set forward scale factor.");
@@ -347,7 +352,7 @@ public:
 
             rocfft_plan fwd_plan;
             res = rocfft_plan_create(&fwd_plan, placement, fwd_type, precision, dimensions,
-                                     lengths.data(), number_of_transforms, plan_desc);
+                                     lengths.data(), number_of_transforms, plan_desc_fwd);
 
             if (res != rocfft_status_success) {
                 throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
@@ -380,7 +385,7 @@ public:
 
         if (valid_backward) {
             auto res =
-                rocfft_plan_description_set_data_layout(plan_desc, bwd_array_ty, fwd_array_ty,
+                rocfft_plan_description_set_data_layout(plan_desc_bwd, bwd_array_ty, fwd_array_ty,
                                                         nullptr, // in offsets
                                                         nullptr, // out offsets
                                                         dimensions,
@@ -395,7 +400,7 @@ public:
                                      "Failed to set backward data layout.");
             }
 
-            if (rocfft_plan_description_set_scale_factor(plan_desc, config_values.bwd_scale) !=
+            if (rocfft_plan_description_set_scale_factor(plan_desc_bwd, config_values.bwd_scale) !=
                 rocfft_status_success) {
                 throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to set backward scale factor.");
@@ -403,7 +408,7 @@ public:
 
             rocfft_plan bwd_plan;
             res = rocfft_plan_create(&bwd_plan, placement, bwd_type, precision, dimensions,
-                                     lengths.data(), number_of_transforms, plan_desc);
+                                     lengths.data(), number_of_transforms, plan_desc_bwd);
             if (res != rocfft_status_success) {
                 throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to create backward rocFFT plan.");
