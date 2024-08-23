@@ -131,15 +131,6 @@ void copy_host_to_buffer(sycl::queue queue, const std::vector<T> &src, sycl::buf
     });
 }
 
-template <typename T>
-void fill_buffer_to_0(sycl::queue queue, sycl::buffer<T, 1> dst) {
-    queue.submit([&](sycl::handler &cgh) {
-        auto dst_acc = dst.template get_access<sycl::access::mode::discard_write>(
-            cgh, sycl::range<1>(dst.size()));
-        cgh.fill(dst_acc, T(0));
-    });
-}
-
 template <typename OutT, typename XT, typename YT>
 std::pair<OutT, OutT> swap_if_cond(bool swap, XT x, YT y) {
     if (swap) {
@@ -460,7 +451,7 @@ void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
 
 template <typename... HandlesT>
 inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> dependencies,
-                         HandlesT &&...handles) {
+                         HandlesT &&... handles) {
     // Fold expression so that handles expands to each value one after the other.
     (
         [&] {
@@ -489,12 +480,12 @@ inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> depe
 }
 
 template <typename... HandlesT>
-inline void free_handles(sycl::queue &queue, HandlesT &&...handles) {
+inline void free_handles(sycl::queue &queue, HandlesT &&... handles) {
     free_handles(queue, {}, handles...);
 }
 
 template <typename... HandlesT>
-inline void wait_and_free_handles(sycl::queue &queue, HandlesT &&...handles) {
+inline void wait_and_free_handles(sycl::queue &queue, HandlesT &&... handles) {
     queue.wait();
     free_handles(queue, handles...);
 }

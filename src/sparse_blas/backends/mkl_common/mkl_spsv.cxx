@@ -93,10 +93,8 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         return;
     }
     internal_A_handle->can_be_reset = false;
-    auto event = oneapi::mkl::sparse::optimize_trsv(queue, A_view.uplo_view, opA, A_view.diag_view,
-                                                    internal_A_handle->backend_handle);
-    // spsv_optimize is not asynchronous for buffers as the backend optimize functions don't take buffers.
-    event.wait_and_throw();
+    oneapi::mkl::sparse::optimize_trsv(queue, A_view.uplo_view, opA, A_view.diag_view,
+                                       internal_A_handle->backend_handle);
 }
 
 sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
