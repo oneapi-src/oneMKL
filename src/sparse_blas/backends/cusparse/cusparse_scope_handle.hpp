@@ -29,6 +29,11 @@
 #include <CL/sycl.hpp>
 #endif
 
+// After Plugin Interface removal in DPC++ ur.hpp is the new include
+#if __has_include(<sycl/detail/ur.hpp>) && !defined(ONEAPI_ONEMKL_PI_INTERFACE_REMOVED)
+#define ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#endif
+
 #include <thread>
 
 #include "cusparse_error.hpp"
@@ -42,7 +47,12 @@ class CusparseScopedContextHandler {
     sycl::context *placedContext_;
     sycl::interop_handle &ih;
     bool needToRecover_;
+
+#ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+    static thread_local cusparse_global_handle<ur_context_handle_t> handle_helper;
+#else
     static thread_local cusparse_global_handle<pi_context> handle_helper;
+#endif
 
     CUstream get_stream(const sycl::queue &queue);
     sycl::context get_context(const sycl::queue &queue);

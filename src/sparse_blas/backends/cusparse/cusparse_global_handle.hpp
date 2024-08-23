@@ -22,7 +22,7 @@
 
 /**
  * @file Similar to blas_handle.hpp
- * Provides a map from a pi_context (or equivalent) to a cusparseHandle_t.
+ * Provides a map from a ur_context_handle_t (or equivalent) to a cusparseHandle_t.
  * @see cusparse_scope_handle.hpp
 */
 

@@ -32,8 +32,13 @@ namespace oneapi::mkl::sparse::cusparse {
  * takes place if no other element in the container has a key equivalent to
  * the one being emplaced (keys in a map container are unique).
  */
+#ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+thread_local cusparse_global_handle<ur_context_handle_t> CusparseScopedContextHandler::handle_helper =
+    cusparse_global_handle<ur_context_handle_t>{};
+#else
 thread_local cusparse_global_handle<pi_context> CusparseScopedContextHandler::handle_helper =
     cusparse_global_handle<pi_context>{};
+#endif
 
 CusparseScopedContextHandler::CusparseScopedContextHandler(sycl::queue queue,
                                                            sycl::interop_handle &ih)
@@ -87,7 +92,11 @@ std::pair<cusparseHandle_t, CUstream> CusparseScopedContextHandler::get_handle_a
     auto cudaDevice = ih.get_native_device<sycl::backend::ext_oneapi_cuda>();
     CUcontext desired;
     CUDA_ERROR_FUNC(cuDevicePrimaryCtxRetain, &desired, cudaDevice);
+#ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+    auto piPlacedContext_ = reinterpret_cast<ur_context_handle_t>(desired);
+#else
     auto piPlacedContext_ = reinterpret_cast<pi_context>(desired);
+#endif
     CUstream streamId = get_stream(queue);
     auto it = handle_helper.cusparse_global_handle_mapper_.find(piPlacedContext_);
     if (it != handle_helper.cusparse_global_handle_mapper_.end()) {
