@@ -34,6 +34,8 @@
 #include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
 #include "oneapi/mkl/dft/types.hpp"
 
+#include "../stride_helper.hpp"
+
 #include <cufft.h>
 #include <cuda.h>
 
@@ -50,7 +52,7 @@ private:
     // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
     // plans[0] is forward, plans[1] is backward
     std::array<std::optional<cufftHandle>, 2> plans = { std::nullopt, std::nullopt };
-    std::array<std::int64_t, 2> offsets;
+    std::int64_t offset_fwd_in, offset_fwd_out, offset_bwd_in, offset_bwd_out;
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
@@ -147,126 +149,107 @@ public:
         std::array<int, max_supported_dims> n_copy;
         std::copy(config_values.dimensions.begin(), config_values.dimensions.end(), n_copy.data());
         const int rank = static_cast<int>(config_values.dimensions.size());
+
+        auto stride_api_choice = dft::detail::get_stride_api(config_values);
+        dft::detail::throw_on_invalid_stride_api("CUFFT commit", stride_api_choice);
+        dft::detail::stride_vectors<int> stride_vecs(config_values, stride_api_choice);
+        offset_fwd_in = stride_vecs.offset_fwd_in;
+        offset_fwd_out = stride_vecs.offset_fwd_out;
+        offset_bwd_in = stride_vecs.offset_bwd_in;
+        offset_bwd_out = stride_vecs.offset_bwd_out;
+
         // cufft ignores the first value in inembed and onembed, so there is no harm in putting offset there
-        std::vector<int> inembed{ config_values.input_strides.begin(),
-                                  config_values.input_strides.end() };
-        std::vector<int> onembed{ config_values.output_strides.begin(),
-                                  config_values.output_strides.end() };
-        auto i_min = std::min_element(inembed.begin() + 1, inembed.end());
-        auto o_min = std::min_element(onembed.begin() + 1, onembed.end());
+        auto a_min = std::min_element(stride_vecs.vec_a.begin() + 1, stride_vecs.vec_a.end());
+        auto b_min = std::min_element(stride_vecs.vec_b.begin() + 1, stride_vecs.vec_b.end());
         if constexpr (dom == dft::domain::REAL) {
-            if (i_min != inembed.begin() + rank) {
+            if ((a_min != stride_vecs.vec_a.begin() + rank) ||
+                (b_min != stride_vecs.vec_b.begin() + rank)) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires the last input stride to be the the smallest one for real transforms!");
-            }
-            if (o_min != onembed.begin() + rank) {
-                throw mkl::unimplemented(
-                    "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires the last output stride to be the the smallest one for real transforms!");
+                    "cufft requires the last stride to be the the smallest one for real transforms!");
             }
         }
         else {
-            if (config_values.placement == config_value::INPLACE) {
-                onembed = inembed;
-            }
-            else if (o_min - onembed.begin() != i_min - inembed.begin()) {
+            if (a_min - stride_vecs.vec_a.begin() != b_min - stride_vecs.vec_b.begin()) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires that if ordered by stride length, the order of strides is the same for input and output strides!");
+                    "cufft requires that if ordered by stride length, the order of strides is the same for input/output or fwd/bwd strides!");
             }
         }
-        const int istride = static_cast<int>(*i_min);
-        const int ostride = static_cast<int>(*o_min);
-        inembed.erase(i_min);
-        onembed.erase(o_min);
-        if (o_min - onembed.begin() != rank) {
+        const int a_stride = static_cast<int>(*a_min);
+        const int b_stride = static_cast<int>(*b_min);
+        stride_vecs.vec_a.erase(a_min);
+        stride_vecs.vec_b.erase(b_min);
+        int fwd_istride = a_stride;
+        int fwd_ostride = b_stride;
+        int bwd_istride =
+            stride_api_choice == dft::detail::stride_api::FB_STRIDES ? b_stride : a_stride;
+        int bwd_ostride =
+            stride_api_choice == dft::detail::stride_api::FB_STRIDES ? a_stride : b_stride;
+        if (a_min - stride_vecs.vec_a.begin() != rank) {
             // swap dimensions to have the last one have the smallest stride
-            std::swap(n_copy[o_min - onembed.begin() - 1], n_copy[rank - 1]);
+            std::swap(n_copy[a_min - stride_vecs.vec_a.begin() - 1], n_copy[rank - 1]);
         }
         for (int i = 1; i < rank; i++) {
-            if (inembed[i] % istride != 0) {
+            if ((stride_vecs.vec_a[i] % a_stride != 0) || (stride_vecs.vec_b[i] % b_stride != 0)) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires an input stride to be divisible by all smaller input strides!");
+                    "cufft requires a stride to be divisible by all smaller strides!");
             }
-            inembed[i] /= istride;
-            if (onembed[i] % ostride != 0) {
-                throw mkl::unimplemented(
-                    "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires an output stride to be divisible by all smaller output strides!");
-            }
-            onembed[i] /= ostride;
+            stride_vecs.vec_a[i] /= a_stride;
+            stride_vecs.vec_b[i] /= b_stride;
         }
         if (rank > 2) {
-            if (inembed[1] > inembed[2] && onembed[1] < onembed[2]) {
+            if (stride_vecs.vec_a[1] > stride_vecs.vec_a[2] &&
+                stride_vecs.vec_b[1] < stride_vecs.vec_b[2]) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires that if ordered by stride length, the order of strides is the same for input and output strides!");
             }
-            else if (inembed[1] < inembed[2] && onembed[1] < onembed[2]) {
+            else if (stride_vecs.vec_a[1] < stride_vecs.vec_a[2] &&
+                     stride_vecs.vec_b[1] < stride_vecs.vec_b[2]) {
                 // swap dimensions to have the first one have the biggest stride
-                std::swap(inembed[1], inembed[2]);
-                std::swap(onembed[1], onembed[2]);
+                std::swap(stride_vecs.vec_a[1], stride_vecs.vec_a[2]);
+                std::swap(stride_vecs.vec_b[1], stride_vecs.vec_b[2]);
                 std::swap(n_copy[0], n_copy[1]);
             }
-            if (inembed[1] % inembed[2] != 0) {
+            if ((stride_vecs.vec_a[1] % stride_vecs.vec_a[2] != 0) ||
+                (stride_vecs.vec_b[1] % stride_vecs.vec_b[2] != 0)) {
                 throw mkl::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires an input stride to be divisible by all smaller input strides!");
+                    "cufft requires a stride to be divisible by all smaller strides!");
             }
-            if (onembed[1] % onembed[2] != 0) {
-                throw mkl::unimplemented(
-                    "dft/backends/cufft", __FUNCTION__,
-                    "cufft requires an output stride to be divisible by all smaller output strides!");
-            }
-            inembed[1] /= inembed[2];
-            onembed[1] /= onembed[2];
+            stride_vecs.vec_a[1] /= stride_vecs.vec_a[2];
+            stride_vecs.vec_b[1] /= stride_vecs.vec_b[2];
         }
-        offsets[0] = config_values.input_strides[0];
-        offsets[1] = config_values.output_strides[0];
         const int batch = static_cast<int>(config_values.number_of_transforms);
         const int fwd_dist = static_cast<int>(config_values.fwd_dist);
         const int bwd_dist = static_cast<int>(config_values.bwd_dist);
 
         // When creating real-complex descriptions, the strides will always be wrong for one of the directions.
         // This is because the least significant dimension is symmetric.
-        // If the strides are invalid (too small to fit) then just don't bother creating the plan.
-        bool valid_forward = true;
-        bool valid_backward = true;
-        if (rank > 1) {
-            if (dom == dft::domain::REAL) {
-                valid_forward = (n_copy[rank - 1] <= inembed[rank - 1] &&
-                                 (n_copy[rank - 1] / 2 + 1) <= onembed[rank - 1]);
-                valid_backward = (n_copy[rank - 1] <= onembed[rank - 1] &&
-                                  (n_copy[rank - 1] / 2 + 1) <= inembed[rank - 1]);
+        // If the strides are invalid (too small to fit) then just don't bother creating the plan
+        auto check_stride_validity = [&](auto strides_fwd, auto strides_bwd) {
+            int inner_nfwd = n_copy[rank - 1]; // inner dimensions of DFT
+            // Complex data is stored conjugate even for real domains
+            int inner_nbwd = dom == dft::domain::REAL ? inner_nfwd / 2 + 1 : inner_nfwd;
+            int inner_sfwd = strides_fwd.back(); // inner strides of DFT
+            int inner_sbwd = strides_bwd.back();
+            bool valid = true;
+            for (int r = 1; r < rank; ++r) {
+                valid = valid && (inner_nfwd <= inner_sfwd) && (inner_nbwd <= inner_sbwd);
+                inner_nfwd *= n_copy[rank - r - 1];
+                inner_nbwd *= n_copy[rank - r - 1];
+                inner_sfwd *= strides_fwd[rank - r - 1];
+                inner_sbwd *= strides_bwd[rank - r - 1];
             }
-            else {
-                valid_forward = valid_backward = (n_copy[rank - 1] <= inembed[rank - 1] &&
-                                                  n_copy[rank - 1] <= onembed[rank - 1]);
-            }
-            if (rank > 2) {
-                if (dom == dft::domain::REAL) {
-                    valid_forward =
-                        valid_forward && (n_copy[rank - 1] * n_copy[rank - 2] <=
-                                              inembed[rank - 1] * inembed[rank - 2] &&
-                                          (n_copy[rank - 1] / 2 + 1) * n_copy[rank - 2] <=
-                                              onembed[rank - 1] * onembed[rank - 2]);
-                    valid_backward =
-                        valid_backward && (n_copy[rank - 1] * n_copy[rank - 2] <=
-                                               onembed[rank - 1] * onembed[rank - 2] &&
-                                           (n_copy[rank - 1] / 2 + 1) * n_copy[rank - 2] <=
-                                               inembed[rank - 1] * inembed[rank - 2]);
-                }
-                else {
-                    valid_forward = valid_backward =
-                        valid_forward && (n_copy[rank - 1] * n_copy[rank - 2] <=
-                                              inembed[rank - 1] * inembed[rank - 2] &&
-                                          n_copy[rank - 1] * n_copy[rank - 2] <=
-                                              onembed[rank - 1] * onembed[rank - 2]);
-                }
-            }
-        }
+            return valid;
+        };
+
+        bool valid_forward = check_stride_validity(stride_vecs.fwd_in, stride_vecs.fwd_out);
+        bool valid_backward = stride_api_choice == dft::detail::stride_api::FB_STRIDES
+                                  ? valid_forward
+                                  : check_stride_validity(stride_vecs.bwd_out, stride_vecs.bwd_in);
 
         if (!valid_forward && !valid_backward) {
             throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
@@ -282,11 +265,11 @@ public:
             res = cufftPlanMany(&fwd_plan, // plan
                                 rank, // rank
                                 n_copy.data(), // n
-                                inembed.data(), // inembed
-                                istride, // istride
+                                stride_vecs.fwd_in.data(), // inembed
+                                fwd_istride, // istride
                                 fwd_dist, // idist
-                                onembed.data(), // onembed
-                                ostride, // ostride
+                                stride_vecs.fwd_out.data(), // onembed
+                                fwd_ostride, // ostride
                                 bwd_dist, // odist
                                 fwd_type, // type
                                 batch // batch
@@ -311,11 +294,11 @@ public:
             res = cufftPlanMany(&bwd_plan, // plan
                                 rank, // rank
                                 n_copy.data(), // n
-                                inembed.data(), // inembed
-                                istride, // istride
+                                stride_vecs.bwd_in.data(), // inembed
+                                bwd_istride, // istride
                                 bwd_dist, // idist
-                                onembed.data(), // onembed
-                                ostride, // ostride
+                                stride_vecs.bwd_out.data(), // onembed
+                                bwd_ostride, // ostride
                                 fwd_dist, // odist
                                 bwd_type, // type
                                 batch // batch
@@ -347,8 +330,12 @@ public:
         return plans.data();
     }
 
-    std::array<std::int64_t, 2> get_offsets() noexcept {
-        return offsets;
+    std::array<std::int64_t, 2> get_offsets_fwd() noexcept {
+        return { offset_fwd_in, offset_fwd_out };
+    }
+
+    std::array<std::int64_t, 2> get_offsets_bwd() noexcept {
+        return { offset_bwd_in, offset_bwd_out };
     }
 
     virtual void set_workspace(scalar_type* usm_workspace) override {
@@ -436,22 +423,40 @@ create_commit(
 
 namespace detail {
 template <dft::precision prec, dft::domain dom>
-std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom>* commit) {
-    return static_cast<cufft_commit<prec, dom>*>(commit)->get_offsets();
+std::array<std::int64_t, 2> get_offsets_fwd(dft::detail::commit_impl<prec, dom>* commit) {
+    return static_cast<cufft_commit<prec, dom>*>(commit)->get_offsets_fwd();
 }
+
+template <dft::precision prec, dft::domain dom>
+std::array<std::int64_t, 2> get_offsets_bwd(dft::detail::commit_impl<prec, dom>* commit) {
+    return static_cast<cufft_commit<prec, dom>*>(commit)->get_offsets_bwd();
+}
+
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
+get_offsets_fwd<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
+get_offsets_fwd<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
+get_offsets_fwd<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
 template std::array<std::int64_t, 2>
-get_offsets<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
+get_offsets_fwd<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
 
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::SINGLE, dft::detail::domain::REAL>(
+    dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::REAL>*);
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>(
+    dft::detail::commit_impl<dft::detail::precision::SINGLE, dft::detail::domain::COMPLEX>*);
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>(
+    dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>*);
+template std::array<std::int64_t, 2>
+get_offsets_bwd<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
+    dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
 } //namespace detail
 
 } // namespace oneapi::mkl::dft::cufft

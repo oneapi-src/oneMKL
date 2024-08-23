@@ -39,7 +39,7 @@ namespace oneapi::mkl::dft::cufft {
 namespace detail {
 //forward declaration
 template <dft::precision prec, dft::domain dom>
-std::array<std::int64_t, 2> get_offsets(dft::detail::commit_impl<prec, dom> *commit);
+std::array<std::int64_t, 2> get_offsets_fwd(dft::detail::commit_impl<prec, dom> *commit);
 
 template <dft::precision prec, dft::domain dom>
 cufftHandle get_fwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
@@ -59,7 +59,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc,
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_fwd_plan(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_fwd(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {
@@ -104,7 +104,7 @@ ONEMKL_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descr
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_fwd_plan(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_fwd(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {
@@ -158,7 +158,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_fwd_plan(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_fwd(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {
@@ -205,7 +205,7 @@ ONEMKL_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_
     auto commit = detail::checked_get_commit(desc);
     auto queue = commit->get_queue();
     auto plan = detail::get_fwd_plan(commit);
-    auto offsets = detail::get_offsets(commit);
+    auto offsets = detail::get_offsets_fwd(commit);
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {

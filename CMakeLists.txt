@@ -191,7 +191,7 @@ else()
   endif()
 endif()
 
-project(oneMKL VERSION 0.2.0 LANGUAGES CXX)
+project(oneMKL VERSION 0.5.0 LANGUAGES CXX)
 
 # Override default CXX compile/link lines for Windows after project
 if(WIN32 AND ONEMKL_SYCL_IMPLEMENTATION STREQUAL "dpc++")

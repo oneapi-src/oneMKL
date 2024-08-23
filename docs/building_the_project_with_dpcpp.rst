@@ -44,7 +44,7 @@ for Windows`_ for building on Windows):
   mkdir build && cd build
   cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER    \ # Should be icpx or clang++
           -DCMAKE_C_COMPILER=$C_COMPILER         \ # Should be icx or clang
-          -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLCPU backend is True by default.
+          -DENABLE_MKLCPU_BACKEND=False          \ # Optional: The MKLCPU backend is True by default.
           -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLGPU backend is True by default.
           -DENABLE_<BACKEND_NAME>_BACKEND=True   \ # Enable any other backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True \ # Multiple backends can be enabled at once.
@@ -471,6 +471,8 @@ clangrt builtins lib not found
     projects compile option: ``--llvm-external-projects compiler-rt``.
   * Manually set the variable ``HIP_CXX_COMPILER`` to HIP's toolkit ``clang++``
     path, for instance ``-DHIP_CXX_COMPILER=/opt/rocm/6.1.0/llvm/bin/clang++``.
+    oneMKL may fail to link if the clang versions of ``icpx`` and ``rocm`` are
+    not compatible.
 
 Could NOT find CBLAS (missing: CBLAS file)
   Encountered when tests are enabled along with the BLAS domain. The tests

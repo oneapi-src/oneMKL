@@ -35,6 +35,8 @@
 #include "oneapi/mkl/dft/detail/portfft/onemkl_dft_portfft.hpp"
 #include "oneapi/mkl/dft/types.hpp"
 
+#include "../stride_helper.hpp"
+
 #include "portfft_helper.hpp"
 
 // alias to avoid ambiguity
@@ -87,6 +89,10 @@ public:
                                      "portFFT does not supported transposed output");
         }
 
+        auto stride_api_choice = dft::detail::get_stride_api(config_values);
+        dft::detail::throw_on_invalid_stride_api("portFFT commit", stride_api_choice);
+        dft::detail::stride_vectors<std::int64_t> stride_vecs(config_values, stride_api_choice);
+
         // forward descriptor
         pfft::descriptor<scalar_type, domain> fwd_desc(
             { config_values.dimensions.cbegin(), config_values.dimensions.cend() });
@@ -100,12 +106,11 @@ public:
         fwd_desc.placement = config_values.placement == config_value::INPLACE
                                  ? pfft::placement::IN_PLACE
                                  : pfft::placement::OUT_OF_PLACE;
-        fwd_desc.forward_offset = static_cast<std::size_t>(config_values.input_strides[0]);
-        fwd_desc.backward_offset = static_cast<std::size_t>(config_values.output_strides[0]);
-        fwd_desc.forward_strides = { config_values.input_strides.cbegin() + 1,
-                                     config_values.input_strides.cend() };
-        fwd_desc.backward_strides = { config_values.output_strides.cbegin() + 1,
-                                      config_values.output_strides.cend() };
+        fwd_desc.forward_offset = static_cast<std::size_t>(stride_vecs.offset_fwd_in);
+        fwd_desc.backward_offset = static_cast<std::size_t>(stride_vecs.offset_fwd_out);
+        fwd_desc.forward_strides = { stride_vecs.fwd_in.cbegin() + 1, stride_vecs.fwd_in.cend() };
+        fwd_desc.backward_strides = { stride_vecs.fwd_out.cbegin() + 1,
+                                      stride_vecs.fwd_out.cend() };
         fwd_desc.forward_distance = static_cast<std::size_t>(config_values.fwd_dist);
         fwd_desc.backward_distance = static_cast<std::size_t>(config_values.bwd_dist);
 
@@ -122,12 +127,10 @@ public:
         bwd_desc.placement = config_values.placement == config_value::INPLACE
                                  ? pfft::placement::IN_PLACE
                                  : pfft::placement::OUT_OF_PLACE;
-        bwd_desc.forward_offset = static_cast<std::size_t>(config_values.output_strides[0]);
-        bwd_desc.backward_offset = static_cast<std::size_t>(config_values.input_strides[0]);
-        bwd_desc.forward_strides = { config_values.output_strides.cbegin() + 1,
-                                     config_values.output_strides.cend() };
-        bwd_desc.backward_strides = { config_values.input_strides.cbegin() + 1,
-                                      config_values.input_strides.cend() };
+        bwd_desc.forward_offset = static_cast<std::size_t>(stride_vecs.offset_bwd_out);
+        bwd_desc.backward_offset = static_cast<std::size_t>(stride_vecs.offset_bwd_in);
+        bwd_desc.forward_strides = { stride_vecs.bwd_out.cbegin() + 1, stride_vecs.bwd_out.cend() };
+        bwd_desc.backward_strides = { stride_vecs.bwd_in.cbegin() + 1, stride_vecs.bwd_in.cend() };
         bwd_desc.forward_distance = static_cast<std::size_t>(config_values.fwd_dist);
         bwd_desc.backward_distance = static_cast<std::size_t>(config_values.bwd_dist);
 

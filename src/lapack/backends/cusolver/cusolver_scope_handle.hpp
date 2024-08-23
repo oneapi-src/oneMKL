@@ -28,11 +28,9 @@
 #include <sycl/backend/cuda.hpp>
 #endif
 #include <sycl/context.hpp>
-#include <sycl/detail/pi.hpp>
 #else
 #include <CL/sycl/backend/cuda.hpp>
 #include <CL/sycl/context.hpp>
-#include <CL/sycl/detail/pi.hpp>
 #endif
 #include <atomic>
 #include <memory>
@@ -40,6 +38,18 @@
 #include <unordered_map>
 #include "cusolver_helper.hpp"
 #include "cusolver_handle.hpp"
+
+// After Plugin Interface removal in DPC++ ur.hpp is the new include
+#if __has_include(<sycl/detail/ur.hpp>)
+#include <sycl/detail/ur.hpp>
+#ifndef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#define ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#endif
+#elif __has_include(<sycl/detail/pi.hpp>)
+#include <sycl/detail/pi.hpp>
+#else
+#include <CL/sycl/detail/pi.hpp>
+#endif
 
 namespace oneapi {
 namespace mkl {
@@ -82,7 +92,11 @@ class CusolverScopedContextHandler {
     sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handle &ih;
+#ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+    static thread_local cusolver_handle<ur_context_handle_t> handle_helper;
+#else
     static thread_local cusolver_handle<pi_context> handle_helper;
+#endif
     CUstream get_stream(const sycl::queue &queue);
     sycl::context get_context(const sycl::queue &queue);
 
