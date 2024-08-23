@@ -148,8 +148,8 @@ enum class config_param {
 
     PLACEMENT,
 
-    INPUT_STRIDES,
-    OUTPUT_STRIDES,
+    INPUT_STRIDES [[deprecated("Use FWD/BWD_STRIDES")]],
+    OUTPUT_STRIDES [[deprecated("Use FWD/BWD_STRIDES")]],
 
     FWD_DISTANCE,
     BWD_DISTANCE,
@@ -160,7 +160,10 @@ enum class config_param {
     ORDERING,
     TRANSPOSE,
     PACKED_FORMAT,
-    COMMIT_STATUS
+    COMMIT_STATUS,
+
+    FWD_STRIDES,
+    BWD_STRIDES
 };
 
 enum class config_value {
@@ -204,6 +207,8 @@ private:
 public:
     std::vector<std::int64_t> input_strides;
     std::vector<std::int64_t> output_strides;
+    std::vector<std::int64_t> fwd_strides;
+    std::vector<std::int64_t> bwd_strides;
     real_t bwd_scale;
     real_t fwd_scale;
     std::int64_t number_of_transforms;

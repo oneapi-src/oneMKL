@@ -30,6 +30,19 @@ namespace mkl {
 namespace dft {
 namespace detail {
 
+/** Helper: sets both input vectors to zeros.
+ *  Used for enforcing consistency when using FWD/BWD_STRIDES and
+ *  INPUT/OUTPUT_STRIDES.
+ */
+static void reset_strides_to_zero(std::vector<std::int64_t>& v1, std::vector<std::int64_t>& v2) {
+    for (auto& v : v1) {
+        v = 0;
+    }
+    for (auto& v : v2) {
+        v = 0;
+    }
+}
+
 /// Helper to get real type from precision.
 template <precision Prec>
 struct real_helper;
@@ -84,6 +97,8 @@ PARAM_TYPE_HELPER(config_param::ORDERING, config_value)
 PARAM_TYPE_HELPER(config_param::TRANSPOSE, bool)
 PARAM_TYPE_HELPER(config_param::PACKED_FORMAT, config_value)
 PARAM_TYPE_HELPER(config_param::COMMIT_STATUS, config_value)
+PARAM_TYPE_HELPER(config_param::FWD_STRIDES, std::int64_t*)
+PARAM_TYPE_HELPER(config_param::BWD_STRIDES, std::int64_t*)
 #undef PARAM_TYPE_HELPER
 
 /** Set a value in dft_values, throwing on invalid args.
@@ -159,18 +174,23 @@ void set_value(dft_values<prec, dom>& vals,
                                         "Placement must be inplace or not inplace.");
         }
     }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     else if constexpr (Param == config_param::INPUT_STRIDES) {
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
+        reset_strides_to_zero(vals.fwd_strides, vals.bwd_strides);
         std::copy(set_val, set_val + vals.dimensions.size() + 1, vals.input_strides.begin());
     }
     else if constexpr (Param == config_param::OUTPUT_STRIDES) {
         if (set_val == nullptr) {
             throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
         }
+        reset_strides_to_zero(vals.fwd_strides, vals.bwd_strides);
         std::copy(set_val, set_val + vals.dimensions.size() + 1, vals.output_strides.begin());
     }
+#pragma clang diagnostic pop
     else if constexpr (Param == config_param::FWD_DISTANCE) {
         vals.fwd_dist = set_val;
     }
@@ -217,6 +237,20 @@ void set_value(dft_values<prec, dom>& vals,
         else {
             throw mkl::invalid_argument("DFT", "set_value", "Packed format must be CCE.");
         }
+    }
+    else if constexpr (Param == config_param::FWD_STRIDES) {
+        if (set_val == nullptr) {
+            throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
+        }
+        reset_strides_to_zero(vals.input_strides, vals.output_strides);
+        std::copy(set_val, set_val + vals.dimensions.size() + 1, vals.fwd_strides.begin());
+    }
+    else if constexpr (Param == config_param::BWD_STRIDES) {
+        if (set_val == nullptr) {
+            throw mkl::invalid_argument("DFT", "set_value", "Given nullptr.");
+        }
+        reset_strides_to_zero(vals.input_strides, vals.output_strides);
+        std::copy(set_val, set_val + vals.dimensions.size() + 1, vals.bwd_strides.begin());
     }
 }
 

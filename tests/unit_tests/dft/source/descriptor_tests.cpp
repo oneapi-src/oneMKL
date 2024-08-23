@@ -98,8 +98,11 @@ static void set_and_get_lengths() {
     }
 }
 
+// Test for deprecated functionality
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
-static void set_and_get_strides() {
+static void set_and_get_io_strides() {
     oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_3d_lengths };
 
     EXPECT_THROW(descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, nullptr),
@@ -132,26 +135,97 @@ static void set_and_get_strides() {
 
     std::vector<std::int64_t> input_strides_before_set(strides_size);
     std::vector<std::int64_t> input_strides_after_set(strides_size);
+    std::vector<std::int64_t> fwd_strides_after_set(strides_size, -1);
+    std::vector<std::int64_t> bwd_strides_after_set(strides_size, -1);
 
     descriptor.get_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                          input_strides_before_set.data());
-    EXPECT_EQ(default_strides_value, input_strides_before_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), input_strides_before_set);
     descriptor.set_value(oneapi::mkl::dft::config_param::INPUT_STRIDES, input_strides_value.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
                          input_strides_after_set.data());
+    descriptor.get_value(oneapi::mkl::dft::config_param::FWD_STRIDES, fwd_strides_after_set.data());
+    descriptor.get_value(oneapi::mkl::dft::config_param::BWD_STRIDES, bwd_strides_after_set.data());
     EXPECT_EQ(input_strides_value, input_strides_after_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), fwd_strides_after_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), bwd_strides_after_set);
 
     std::vector<std::int64_t> output_strides_before_set(strides_size);
     std::vector<std::int64_t> output_strides_after_set(strides_size);
     descriptor.get_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                          output_strides_before_set.data());
-    EXPECT_EQ(default_strides_value, output_strides_before_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), output_strides_before_set);
     descriptor.set_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                          output_strides_value.data());
     descriptor.get_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
                          output_strides_after_set.data());
     EXPECT_EQ(output_strides_value, output_strides_after_set);
 }
+
+template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
+static void set_and_get_fwd_bwd_strides() {
+    oneapi::mkl::dft::descriptor<precision, domain> descriptor{ default_3d_lengths };
+
+    EXPECT_THROW(descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES, nullptr),
+                 oneapi::mkl::invalid_argument);
+    EXPECT_THROW(descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, nullptr),
+                 oneapi::mkl::invalid_argument);
+
+    constexpr std::int64_t strides_size = 4;
+    const std::int64_t default_stride_d1 = default_3d_lengths[2] * default_3d_lengths[1];
+    const std::int64_t default_stride_d2 = default_3d_lengths[2];
+    const std::int64_t default_stride_d3 = 1;
+
+    std::vector<std::int64_t> fwd_strides_default_value;
+    std::vector<std::int64_t> bwd_strides_default_value;
+    if constexpr (domain == oneapi::mkl::dft::domain::COMPLEX) {
+        fwd_strides_default_value = { 0, default_stride_d1, default_stride_d2, default_stride_d3 };
+        bwd_strides_default_value = { 0, default_stride_d1, default_stride_d2, default_stride_d3 };
+    }
+    else {
+        fwd_strides_default_value = { 0,
+                                      default_3d_lengths[1] * (default_3d_lengths[2] / 2 + 1) * 2,
+                                      (default_3d_lengths[2] / 2 + 1) * 2, 1 };
+        bwd_strides_default_value = { 0, default_3d_lengths[1] * (default_3d_lengths[2] / 2 + 1),
+                                      (default_3d_lengths[2] / 2 + 1), 1 };
+    }
+    auto fwd_strides_new_value = fwd_strides_default_value;
+    auto bwd_strides_new_value = bwd_strides_default_value;
+    for (auto i = 0UL; i < fwd_strides_new_value.size(); ++i) {
+        fwd_strides_new_value[i] *= 4;
+        bwd_strides_new_value[i] *= 4;
+    }
+    fwd_strides_new_value[0] = 50;
+    bwd_strides_new_value[0] = 50;
+
+    std::vector<std::int64_t> fwd_strides_before_set(strides_size);
+    std::vector<std::int64_t> fwd_strides_after_set(strides_size);
+    std::vector<std::int64_t> input_strides_after_set(strides_size, -1);
+    std::vector<std::int64_t> output_strides_after_set(strides_size, -1);
+
+    descriptor.get_value(oneapi::mkl::dft::config_param::FWD_STRIDES,
+                         fwd_strides_before_set.data());
+    EXPECT_EQ(fwd_strides_default_value, fwd_strides_before_set);
+    descriptor.set_value(oneapi::mkl::dft::config_param::FWD_STRIDES, fwd_strides_new_value.data());
+    descriptor.get_value(oneapi::mkl::dft::config_param::FWD_STRIDES, fwd_strides_after_set.data());
+    descriptor.get_value(oneapi::mkl::dft::config_param::INPUT_STRIDES,
+                         input_strides_after_set.data());
+    descriptor.get_value(oneapi::mkl::dft::config_param::OUTPUT_STRIDES,
+                         output_strides_after_set.data());
+    EXPECT_EQ(fwd_strides_new_value, fwd_strides_after_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), input_strides_after_set);
+    EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), output_strides_after_set);
+
+    std::vector<std::int64_t> bwd_strides_before_set(strides_size);
+    std::vector<std::int64_t> bwd_strides_after_set(strides_size);
+    descriptor.get_value(oneapi::mkl::dft::config_param::BWD_STRIDES,
+                         bwd_strides_before_set.data());
+    EXPECT_EQ(bwd_strides_default_value, bwd_strides_before_set);
+    descriptor.set_value(oneapi::mkl::dft::config_param::BWD_STRIDES, bwd_strides_new_value.data());
+    descriptor.get_value(oneapi::mkl::dft::config_param::BWD_STRIDES, bwd_strides_after_set.data());
+    EXPECT_EQ(bwd_strides_new_value, bwd_strides_after_set);
+}
+#pragma clang diagnostic pop
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 static void set_and_get_values() {
@@ -453,8 +527,11 @@ inline void recommit_values(sycl::queue& sycl_queue) {
           std::make_pair(config_param::CONJUGATE_EVEN_STORAGE, config_value::COMPLEX_COMPLEX) },
         { std::make_pair(config_param::PLACEMENT, config_value::NOT_INPLACE),
           std::make_pair(config_param::NUMBER_OF_TRANSFORMS, std::int64_t{ 5 }),
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
           std::make_pair(config_param::INPUT_STRIDES, strides.data()),
           std::make_pair(config_param::OUTPUT_STRIDES, strides.data()),
+#pragma clang diagnostic pop
           std::make_pair(config_param::FWD_DISTANCE, std::int64_t{ 60 }),
           std::make_pair(config_param::BWD_DISTANCE, std::int64_t{ 70 }) },
         { std::make_pair(config_param::WORKSPACE, config_value::ALLOW),
@@ -600,7 +677,8 @@ static int test_move() {
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 static int test_getter_setter() {
     set_and_get_lengths<precision, domain>();
-    set_and_get_strides<precision, domain>();
+    set_and_get_io_strides<precision, domain>();
+    set_and_get_fwd_bwd_strides<precision, domain>();
     set_and_get_values<precision, domain>();
     get_readonly_values<precision, domain>();
     set_readonly_values<precision, domain>();
