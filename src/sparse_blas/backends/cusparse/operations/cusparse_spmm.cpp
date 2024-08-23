@@ -153,9 +153,8 @@ void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::
     };
 
     sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-    auto event = dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
+    dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
                                  B_handle, C_handle);
-    event.wait_and_throw();
 }
 
 sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
