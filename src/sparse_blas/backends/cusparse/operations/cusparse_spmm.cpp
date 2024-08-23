@@ -230,9 +230,8 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
         };
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
             spmm_descr->workspace.get_buffer<std::uint8_t>());
-        return dispatch_submit_native_ext(__func__, queue, functor_buffer,
-                                                A_handle, workspace_placeholder_acc, B_handle,
-                                                C_handle);
+        return dispatch_submit_native_ext(__func__, queue, functor_buffer, A_handle,
+                                          workspace_placeholder_acc, B_handle, C_handle);
     }
     else {
         // The same dispatch_submit can be used for USM or buffers if no
