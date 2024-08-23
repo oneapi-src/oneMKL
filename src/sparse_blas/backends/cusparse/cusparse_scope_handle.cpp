@@ -33,8 +33,8 @@ namespace oneapi::mkl::sparse::cusparse {
  * the one being emplaced (keys in a map container are unique).
  */
 #ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
-thread_local cusparse_global_handle<ur_context_handle_t> CusparseScopedContextHandler::handle_helper =
-    cusparse_global_handle<ur_context_handle_t>{};
+thread_local cusparse_global_handle<ur_context_handle_t>
+    CusparseScopedContextHandler::handle_helper = cusparse_global_handle<ur_context_handle_t>{};
 #else
 thread_local cusparse_global_handle<pi_context> CusparseScopedContextHandler::handle_helper =
     cusparse_global_handle<pi_context>{};

@@ -210,32 +210,31 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
     if (A_handle->all_use_buffer() != spmv_descr->workspace.use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
-    auto compute_functor =
-        [=](CusparseScopedContextHandler &sc, void *workspace_ptr) {
-            auto [cu_handle, cu_stream] = sc.get_handle_and_stream(queue);
-            auto cu_a = A_handle->backend_handle;
-            auto cu_x = x_handle->backend_handle;
-            auto cu_y = y_handle->backend_handle;
-            auto type = A_handle->value_container.data_type;
-            auto cu_op = get_cuda_operation(type, opA);
-            auto cu_type = get_cuda_value_type(type);
-            auto cu_alg = get_cuda_spmv_alg(alg);
-            // Workaround issue with captured alpha and beta causing a segfault inside cuSPARSE
-            // Copy alpha and beta locally in the largest data value type and use the local pointer
-            cuDoubleComplex local_alpha, local_beta;
-            const void *alpha_ptr = alpha, *beta_ptr = beta;
-            if (is_alpha_host_accessible) {
-                local_alpha = *reinterpret_cast<const cuDoubleComplex *>(alpha_ptr);
-                local_beta = *reinterpret_cast<const cuDoubleComplex *>(beta_ptr);
-                alpha_ptr = &local_alpha;
-                beta_ptr = &local_beta;
-            }
-            set_pointer_mode(cu_handle, is_alpha_host_accessible);
-            auto status = cusparseSpMV(cu_handle, cu_op, alpha_ptr, cu_a, cu_x, beta_ptr, cu_y,
-                                       cu_type, cu_alg, workspace_ptr);
-            check_status(status, __func__);
-            CUDA_ERROR_FUNC(cuStreamSynchronize, cu_stream);
-        };
+    auto compute_functor = [=](CusparseScopedContextHandler &sc, void *workspace_ptr) {
+        auto [cu_handle, cu_stream] = sc.get_handle_and_stream(queue);
+        auto cu_a = A_handle->backend_handle;
+        auto cu_x = x_handle->backend_handle;
+        auto cu_y = y_handle->backend_handle;
+        auto type = A_handle->value_container.data_type;
+        auto cu_op = get_cuda_operation(type, opA);
+        auto cu_type = get_cuda_value_type(type);
+        auto cu_alg = get_cuda_spmv_alg(alg);
+        // Workaround issue with captured alpha and beta causing a segfault inside cuSPARSE
+        // Copy alpha and beta locally in the largest data value type and use the local pointer
+        cuDoubleComplex local_alpha, local_beta;
+        const void *alpha_ptr = alpha, *beta_ptr = beta;
+        if (is_alpha_host_accessible) {
+            local_alpha = *reinterpret_cast<const cuDoubleComplex *>(alpha_ptr);
+            local_beta = *reinterpret_cast<const cuDoubleComplex *>(beta_ptr);
+            alpha_ptr = &local_alpha;
+            beta_ptr = &local_beta;
+        }
+        set_pointer_mode(cu_handle, is_alpha_host_accessible);
+        auto status = cusparseSpMV(cu_handle, cu_op, alpha_ptr, cu_a, cu_x, beta_ptr, cu_y, cu_type,
+                                   cu_alg, workspace_ptr);
+        check_status(status, __func__);
+        CUDA_ERROR_FUNC(cuStreamSynchronize, cu_stream);
+    };
     if (A_handle->all_use_buffer() && spmv_descr->temp_buffer_size > 0) {
         // The accessor can only be bound to the cgh if the buffer size is
         // greater than 0
