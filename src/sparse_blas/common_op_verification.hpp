@@ -82,7 +82,7 @@ void check_valid_spmm_common(const std::string &function_name,
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::transpose opA,
+void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::transpose /*opA*/,
                              oneapi::mkl::sparse::matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
                              oneapi::mkl::sparse::dense_vector_handle_t x_handle,
