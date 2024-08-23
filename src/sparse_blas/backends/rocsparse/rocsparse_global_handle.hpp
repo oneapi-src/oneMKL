@@ -22,7 +22,7 @@
 
 /**
  * @file Similar to blas_handle.hpp
- * Provides a map from a pi_context (or equivalent) to a rocsparse_handle.
+ * Provides a map from a ur_context_handle_t (or equivalent) to a rocsparse_handle.
  * @see rocsparse_scope_handle.hpp
 */
 

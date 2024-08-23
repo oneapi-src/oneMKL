@@ -29,6 +29,11 @@
 #include <CL/sycl.hpp>
 #endif
 
+// After Plugin Interface removal in DPC++ ur.hpp is the new include
+#if __has_include(<sycl/detail/ur.hpp>) && !defined(ONEAPI_ONEMKL_PI_INTERFACE_REMOVED)
+#define ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#endif
+
 #include <thread>
 
 #include "rocsparse_error.hpp"
@@ -52,7 +57,11 @@ class RocsparseScopedContextHandler {
     sycl::context *placedContext_;
     sycl::interop_handle &ih;
     bool needToRecover_;
+#ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+    static thread_local rocsparse_handle_container<ur_context_handle_t> handle_helper;
+#else
     static thread_local rocsparse_handle_container<pi_context> handle_helper;
+#endif
 
 public:
     RocsparseScopedContextHandler(sycl::queue queue, sycl::interop_handle &ih);
