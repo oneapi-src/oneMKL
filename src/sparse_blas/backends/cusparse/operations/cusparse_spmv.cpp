@@ -142,7 +142,6 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         return;
     }
 
-    sycl::event event;
     if (spmv_descr->temp_buffer_size > 0) {
         auto functor = [=](CusparseScopedContextHandler &sc,
                            sycl::accessor<std::uint8_t> workspace_acc) {
@@ -155,7 +154,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         // The accessor can only be bound to the cgh if the buffer size is
         // greater than 0
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-        event = dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
+         dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
                                 x_handle, y_handle);
     }
     else {
@@ -164,9 +163,8 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
             spmv_optimize_impl(cu_handle, opA, alpha, A_handle, x_handle, beta, y_handle, alg,
                                nullptr, is_alpha_host_accessible);
         };
-        event = dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
+        dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     }
-    event.wait_and_throw();
 }
 
 sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
