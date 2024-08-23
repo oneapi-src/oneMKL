@@ -135,9 +135,8 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         // The accessor can only be bound to the cgh if the buffer size is
         // greater than 0
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-        auto event = dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
+        dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
                                      x_handle, y_handle);
-        event.wait_and_throw();
     }
     else {
         auto functor = [=](RocsparseScopedContextHandler &sc) {
@@ -146,8 +145,7 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                                buffer_size, nullptr, is_alpha_host_accessible);
         };
 
-        auto event = dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
-        event.wait_and_throw();
+        dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     }
 }
 
