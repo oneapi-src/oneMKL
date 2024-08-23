@@ -141,8 +141,8 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         // The accessor can only be bound to the cgh if the buffer size is
         // greater than 0
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-        dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
-                                     x_handle, y_handle);
+        dispatch_submit_native_ext(__func__, queue, functor, A_handle, workspace_placeholder_acc,
+                                   x_handle, y_handle);
     }
     else {
         auto functor = [=](CusparseScopedContextHandler &sc) {
@@ -151,7 +151,7 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                                spsv_descr, nullptr, is_alpha_host_accessible);
         };
 
-        dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
+        dispatch_submit_native_ext(__func__, queue, functor, A_handle, x_handle, y_handle);
     }
 }
 
@@ -176,7 +176,8 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                            spsv_descr, workspace, is_alpha_host_accessible);
     };
     // No need to store the workspace USM pointer as the backend stores it already
-    return dispatch_submit(__func__, queue, dependencies, functor, A_handle, x_handle, y_handle);
+    return dispatch_submit_native_ext(__func__, queue, dependencies, functor, A_handle, x_handle,
+                                      y_handle);
 }
 
 sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -209,9 +210,8 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         check_status(status, __func__);
         CUDA_ERROR_FUNC(cuStreamSynchronize, cu_stream);
     };
-    auto event =
-        dispatch_submit(__func__, queue, dependencies, functor, A_handle, x_handle, y_handle);
-    return event;
+    return dispatch_submit_native_ext(__func__, queue, dependencies, functor, A_handle, x_handle,
+                                      y_handle);
 }
 
 } // namespace oneapi::mkl::sparse::cusparse

@@ -89,32 +89,81 @@ void submit_host_task_with_acc(sycl::handler &cgh, sycl::queue &queue, Functor f
     });
 }
 
-/// Helper submit functions to capture all accessors from the generic containers \p other_containers and ensure the dependencies of buffers are respected.
-/// The accessors are not directly used as the underlying data pointer has already been captured in previous functions.
-/// \p workspace_placeholder_acc is a placeholder accessor that will be bound to the cgh if not empty and given to the functor as a last argument
-template <bool UseWorkspace, typename Functor, typename... Ts>
-sycl::event dispatch_submit(const std::string &function_name, sycl::queue queue,
-                            const std::vector<sycl::event> &dependencies, Functor functor,
-                            matrix_handle_t sm_handle,
-                            sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc,
-                            Ts... other_containers) {
+template <typename Functor, typename... CaptureOnlyAcc>
+void submit_native_command_ext(sycl::handler &cgh, sycl::queue &queue, Functor functor,
+                               CaptureOnlyAcc... capture_only_accessors) {
+    // Only capture the accessors to ensure the dependencies are properly handled
+    // The accessors's pointer have already been set to the native container types in previous functions
+    cgh.ext_codeplay_enqueue_native_command(
+        [functor, queue, capture_only_accessors...](sycl::interop_handle ih) {
+            auto unused = std::make_tuple(capture_only_accessors...);
+            (void)unused;
+            auto sc = CusparseScopedContextHandler(queue, ih);
+            functor(sc);
+        });
+}
+
+template <typename Functor, typename... CaptureOnlyAcc>
+void submit_native_command_ext_with_acc(sycl::handler &cgh, sycl::queue &queue, Functor functor,
+                                        sycl::accessor<std::uint8_t> workspace_placeholder_acc,
+                                        CaptureOnlyAcc... capture_only_accessors) {
+    // Only capture the accessors to ensure the dependencies are properly handled
+    // The accessors's pointer have already been set to the native container types in previous functions
+    cgh.require(workspace_placeholder_acc);
+    cgh.ext_codeplay_enqueue_native_command([functor, queue, workspace_placeholder_acc,
+                                             capture_only_accessors...](sycl::interop_handle ih) {
+        auto unused = std::make_tuple(capture_only_accessors...);
+        (void)unused;
+        auto sc = CusparseScopedContextHandler(queue, ih);
+        functor(sc, workspace_placeholder_acc);
+    });
+}
+
+/// Helper submit functions to capture all accessors from the generic containers
+/// \p other_containers and ensure the dependencies of buffers are respected.
+/// The accessors are not directly used as the underlying data pointer has
+/// already been captured in previous functions.
+/// \p workspace_placeholder_acc is a placeholder accessor that will be bound to
+/// the cgh if not empty and given to the functor as a last argument.
+/// \p UseWorkspace must be true to use the placeholder accessor.
+/// \p UseEnqueueNativeCommandExt controls whether host_task are used or the
+/// extension ext_codeplay_enqueue_native_command is used to launch tasks. The
+/// extension should only be used for asynchronous functions using native
+/// backend's functions.
+template <bool UseWorkspace, bool UseEnqueueNativeCommandExt, typename Functor, typename... Ts>
+sycl::event dispatch_submit_impl(const std::string &function_name, sycl::queue queue,
+                                 const std::vector<sycl::event> &dependencies, Functor functor,
+                                 matrix_handle_t sm_handle,
+                                 sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc,
+                                 Ts... other_containers) {
     if (sm_handle->all_use_buffer()) {
         detail::data_type value_type = sm_handle->get_value_type();
         detail::data_type int_type = sm_handle->get_int_type();
 
-#define ONEMKL_CUSPARSE_SUBMIT(FP_TYPE, INT_TYPE)                                              \
-    return queue.submit([&](sycl::handler &cgh) {                                              \
-        cgh.depends_on(dependencies);                                                          \
-        auto fp_accs = get_fp_accessors<FP_TYPE>(cgh, sm_handle, other_containers...);         \
-        auto int_accs = get_int_accessors<INT_TYPE>(cgh, sm_handle);                           \
-        if constexpr (UseWorkspace) {                                                          \
-            submit_host_task_with_acc(cgh, queue, functor, workspace_placeholder_acc, fp_accs, \
-                                      int_accs);                                               \
-        }                                                                                      \
-        else {                                                                                 \
-            (void)workspace_placeholder_acc;                                                   \
-            submit_host_task(cgh, queue, functor, fp_accs, int_accs);                          \
-        }                                                                                      \
+#define ONEMKL_CUSPARSE_SUBMIT(FP_TYPE, INT_TYPE)                                                  \
+    return queue.submit([&](sycl::handler &cgh) {                                                  \
+        cgh.depends_on(dependencies);                                                              \
+        auto fp_accs = get_fp_accessors<FP_TYPE>(cgh, sm_handle, other_containers...);             \
+        auto int_accs = get_int_accessors<INT_TYPE>(cgh, sm_handle);                               \
+        if constexpr (UseWorkspace) {                                                              \
+            if constexpr (UseEnqueueNativeCommandExt) {                                            \
+                submit_native_command_ext_with_acc(cgh, queue, functor, workspace_placeholder_acc, \
+                                                   fp_accs, int_accs);                             \
+            }                                                                                      \
+            else {                                                                                 \
+                submit_host_task_with_acc(cgh, queue, functor, workspace_placeholder_acc, fp_accs, \
+                                          int_accs);                                               \
+            }                                                                                      \
+        }                                                                                          \
+        else {                                                                                     \
+            (void)workspace_placeholder_acc;                                                       \
+            if constexpr (UseEnqueueNativeCommandExt) {                                            \
+                submit_native_command_ext(cgh, queue, functor, fp_accs, int_accs);                 \
+            }                                                                                      \
+            else {                                                                                 \
+                submit_host_task(cgh, queue, functor, fp_accs, int_accs);                          \
+            }                                                                                      \
+        }                                                                                          \
     })
 #define ONEMKL_CUSPARSE_SUBMIT_INT(FP_TYPE)            \
     if (int_type == detail::data_type::int32) {        \
@@ -148,7 +197,12 @@ sycl::event dispatch_submit(const std::string &function_name, sycl::queue queue,
         if constexpr (!UseWorkspace) {
             return queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(dependencies);
-                submit_host_task(cgh, queue, functor);
+                if constexpr (UseEnqueueNativeCommandExt) {
+                    submit_native_command_ext(cgh, queue, functor);
+                }
+                else {
+                    submit_host_task(cgh, queue, functor);
+                }
             });
         }
         else {
@@ -158,28 +212,86 @@ sycl::event dispatch_submit(const std::string &function_name, sycl::queue queue,
     }
 }
 
+/// Helper function for dispatch_submit_impl
 template <typename Functor, typename... Ts>
 sycl::event dispatch_submit(const std::string &function_name, sycl::queue queue, Functor functor,
                             matrix_handle_t sm_handle,
                             sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc,
                             Ts... other_containers) {
-    return dispatch_submit<true>(function_name, queue, {}, functor, sm_handle,
-                                 workspace_placeholder_acc, other_containers...);
+    constexpr bool UseWorkspace = true;
+    constexpr bool UseEnqueueNativeCommandExt = false;
+    return dispatch_submit_impl<UseWorkspace, UseEnqueueNativeCommandExt>(
+        function_name, queue, {}, functor, sm_handle, workspace_placeholder_acc,
+        other_containers...);
 }
 
+/// Helper function for dispatch_submit_impl
 template <typename Functor, typename... Ts>
 sycl::event dispatch_submit(const std::string &function_name, sycl::queue queue,
                             const std::vector<sycl::event> &dependencies, Functor functor,
                             matrix_handle_t sm_handle, Ts... other_containers) {
-    return dispatch_submit<false>(function_name, queue, dependencies, functor, sm_handle, {},
-                                  other_containers...);
+    constexpr bool UseWorkspace = false;
+    constexpr bool UseEnqueueNativeCommandExt = false;
+    return dispatch_submit_impl<UseWorkspace, UseEnqueueNativeCommandExt>(
+        function_name, queue, dependencies, functor, sm_handle, {}, other_containers...);
 }
 
+/// Helper function for dispatch_submit_impl
 template <typename Functor, typename... Ts>
 sycl::event dispatch_submit(const std::string &function_name, sycl::queue queue, Functor functor,
                             matrix_handle_t sm_handle, Ts... other_containers) {
-    return dispatch_submit<false>(function_name, queue, {}, functor, sm_handle, {},
-                                  other_containers...);
+    constexpr bool UseWorkspace = false;
+    constexpr bool UseEnqueueNativeCommandExt = false;
+    return dispatch_submit_impl<UseWorkspace, UseEnqueueNativeCommandExt>(
+        function_name, queue, {}, functor, sm_handle, {}, other_containers...);
+}
+
+/// Helper function for dispatch_submit_impl
+template <typename Functor, typename... Ts>
+sycl::event dispatch_submit_native_ext(const std::string &function_name, sycl::queue queue,
+                                       Functor functor, matrix_handle_t sm_handle,
+                                       sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc,
+                                       Ts... other_containers) {
+    constexpr bool UseWorkspace = true;
+#ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+    constexpr bool UseEnqueueNativeCommandExt = true;
+#else
+    constexpr bool UseEnqueueNativeCommandExt = false;
+#endif
+    return dispatch_submit_impl<UseWorkspace, UseEnqueueNativeCommandExt>(
+        function_name, queue, {}, functor, sm_handle, workspace_placeholder_acc,
+        other_containers...);
+}
+
+/// Helper function for dispatch_submit_impl
+template <typename Functor, typename... Ts>
+sycl::event dispatch_submit_native_ext(const std::string &function_name, sycl::queue queue,
+                                       const std::vector<sycl::event> &dependencies,
+                                       Functor functor, matrix_handle_t sm_handle,
+                                       Ts... other_containers) {
+    constexpr bool UseWorkspace = false;
+#ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+    constexpr bool UseEnqueueNativeCommandExt = true;
+#else
+    constexpr bool UseEnqueueNativeCommandExt = false;
+#endif
+    return dispatch_submit_impl<UseWorkspace, UseEnqueueNativeCommandExt>(
+        function_name, queue, dependencies, functor, sm_handle, {}, other_containers...);
+}
+
+/// Helper function for dispatch_submit_impl
+template <typename Functor, typename... Ts>
+sycl::event dispatch_submit_native_ext(const std::string &function_name, sycl::queue queue,
+                                       Functor functor, matrix_handle_t sm_handle,
+                                       Ts... other_containers) {
+    constexpr bool UseWorkspace = false;
+#ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+    constexpr bool UseEnqueueNativeCommandExt = true;
+#else
+    constexpr bool UseEnqueueNativeCommandExt = false;
+#endif
+    return dispatch_submit_impl<UseWorkspace, UseEnqueueNativeCommandExt>(
+        function_name, queue, {}, functor, sm_handle, {}, other_containers...);
 }
 
 } // namespace oneapi::mkl::sparse::cusparse
