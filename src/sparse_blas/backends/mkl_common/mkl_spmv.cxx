@@ -29,6 +29,24 @@ sycl::event release_spmv_descr(sycl::queue &queue, oneapi::mkl::sparse::spmv_des
     return detail::collapse_dependencies(queue, dependencies);
 }
 
+void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose opA,
+                      oneapi::mkl::sparse::matrix_view A_view,
+                      oneapi::mkl::sparse::matrix_handle_t A_handle,
+                      oneapi::mkl::sparse::dense_vector_handle_t x_handle,
+                      oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                      bool is_alpha_host_accessible, bool is_beta_host_accessible) {
+    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
+
+    if ((A_view.type_view == oneapi::mkl::sparse::matrix_descr::symmetric ||
+         A_view.type_view == oneapi::mkl::sparse::matrix_descr::hermitian) &&
+        opA == oneapi::mkl::transpose::conjtrans) {
+        throw mkl::unimplemented(
+            "sparse_blas", function_name,
+            "The backend does not support Symmetric or Hermitian matrix with `conjtrans`.");
+    }
+}
+
 void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
                       oneapi::mkl::sparse::matrix_view A_view,
                       oneapi::mkl::sparse::matrix_handle_t A_handle,
@@ -41,8 +59,8 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
     temp_buffer_size = 0;
 }
 
@@ -57,8 +75,8 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
     if (!internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
@@ -94,8 +112,8 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
     if (internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
@@ -183,8 +201,8 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
     auto value_type = internal_A_handle->get_value_type();
     DISPATCH_MKL_OPERATION("spmv", value_type, internal_spmv, queue, opA, alpha, A_view, A_handle,
                            x_handle, beta, y_handle, alg, spmv_descr, dependencies,

@@ -113,14 +113,6 @@ void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::tran
             "sparse_blas", function_name,
             "`unit` diag_view can only be used with a triangular type_view.");
     }
-
-    if ((A_view.type_view == oneapi::mkl::sparse::matrix_descr::symmetric ||
-         A_view.type_view == oneapi::mkl::sparse::matrix_descr::hermitian) &&
-        opA == oneapi::mkl::transpose::conjtrans) {
-        throw mkl::invalid_argument(
-            "sparse_blas", function_name,
-            "Symmetric or Hermitian matrix cannot be conjugated with `conjtrans`.");
-    }
 }
 
 template <typename InternalSparseMatHandleT>
