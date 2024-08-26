@@ -17,17 +17,20 @@
 *
 **************************************************************************/
 
-#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
-#include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
-#include "sparse_blas/macros.hpp"
-#include "sparse_blas/matrix_view_comparison.hpp"
+#ifndef _ONEMKL_SRC_SPARSE_BLAS_MATRIX_VIEW_COMPARISON_HPP_
+#define _ONEMKL_SRC_SPARSE_BLAS_MATRIX_VIEW_COMPARISON_HPP_
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+#include "oneapi/mkl/sparse_blas/matrix_view.hpp"
 
-#define BACKEND mklcpu
+inline bool operator==(const oneapi::mkl::sparse::matrix_view& lhs,
+                       const oneapi::mkl::sparse::matrix_view& rhs) {
+    return lhs.type_view == rhs.type_view && lhs.uplo_view == rhs.uplo_view &&
+           lhs.diag_view == rhs.diag_view;
+}
 
-#include "sparse_blas/backends/mkl_common/mkl_spmm.cxx"
-#include "sparse_blas/backends/mkl_common/mkl_spmv.cxx"
-#include "sparse_blas/backends/mkl_common/mkl_spsv.cxx"
+inline bool operator!=(const oneapi::mkl::sparse::matrix_view& lhs,
+                       const oneapi::mkl::sparse::matrix_view& rhs) {
+    return !(lhs == rhs);
+}
 
-#undef BACKEND
+#endif // _ONEMKL_SRC_SPARSE_BLAS_MATRIX_VIEW_COMPARISON_HPP_

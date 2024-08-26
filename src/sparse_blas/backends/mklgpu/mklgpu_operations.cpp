@@ -17,16 +17,17 @@
 *
 **************************************************************************/
 
+#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
 #include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
 #include "sparse_blas/macros.hpp"
-#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
+#include "sparse_blas/matrix_view_comparison.hpp"
 
 #include "oneapi/mkl/sparse_blas/detail/mklgpu/onemkl_sparse_blas_mklgpu.hpp"
 
-namespace oneapi::mkl::sparse::mklgpu {
+#define BACKEND mklgpu
 
 #include "sparse_blas/backends/mkl_common/mkl_spmm.cxx"
 #include "sparse_blas/backends/mkl_common/mkl_spmv.cxx"
 #include "sparse_blas/backends/mkl_common/mkl_spsv.cxx"
 
-} // namespace oneapi::mkl::sparse::mklgpu
+#undef BACKEND
