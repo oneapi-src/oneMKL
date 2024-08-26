@@ -114,4 +114,13 @@
                                  std::string(#PTR) + " must not be nullptr."); \
     }
 
+#define CHECK_DESCR_MATCH(descr, argument, optimize_func_name)                                    \
+    do {                                                                                          \
+        if (descr->last_optimized_##argument != argument) {                                       \
+            throw mkl::invalid_argument(                                                          \
+                "sparse_blas", __func__,                                                          \
+                #argument " argument must match with the previous call to " #optimize_func_name); \
+        }                                                                                         \
+    } while (0)
+
 #endif // _ONEMKL_SPARSE_BLAS_MACROS_HPP_
