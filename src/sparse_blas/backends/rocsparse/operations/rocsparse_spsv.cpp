@@ -135,8 +135,8 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         // The accessor can only be bound to the cgh if the buffer size is
         // greater than 0
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-        dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc,
-                                     x_handle, y_handle);
+        dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc, x_handle,
+                        y_handle);
     }
     else {
         auto functor = [=](RocsparseScopedContextHandler &sc) {
@@ -219,7 +219,7 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         };
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
             spsv_descr->workspace.get_buffer<std::uint8_t>());
-        return dispatch_submit<true>(__func__, queue, dependencies, functor_buffer, A_handle,
+        return dispatch_submit_native_ext(__func__, queue, dependencies, functor_buffer, A_handle,
                                      workspace_placeholder_acc, x_handle, y_handle);
     }
     else {
@@ -230,7 +230,7 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         auto functor_usm = [=](RocsparseScopedContextHandler &sc) {
             compute_functor(sc, workspace_ptr);
         };
-        return dispatch_submit(__func__, queue, dependencies, functor_usm, A_handle, x_handle,
+        return dispatch_submit_native_ext(__func__, queue, dependencies, functor_usm, A_handle, x_handle,
                                y_handle);
     }
 }
