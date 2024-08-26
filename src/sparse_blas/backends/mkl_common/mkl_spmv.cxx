@@ -65,9 +65,9 @@ void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose o
     if ((A_view.type_view == oneapi::mkl::sparse::matrix_descr::symmetric ||
          A_view.type_view == oneapi::mkl::sparse::matrix_descr::hermitian) &&
         opA == oneapi::mkl::transpose::conjtrans) {
-        throw mkl::invalid_argument(
+        throw mkl::unimplemented(
             "sparse_blas", function_name,
-            "Symmetric or Hermitian matrix cannot be conjugated with `conjtrans`.");
+            "The backend does not support Symmetric or Hermitian matrix with `conjtrans`.");
     }
 }
 

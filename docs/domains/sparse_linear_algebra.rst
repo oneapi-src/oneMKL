@@ -29,6 +29,10 @@ Currently known limitations:
   ``oneapi::mkl::transpose::conjtrans`` and has the
   ``oneapi::mkl::sparse::matrix_property::symmetric`` property will throw an
   ``oneapi::mkl::unimplemented`` exception.
+- Using ``spmv`` with a sparse matrix that is
+  ``oneapi::mkl::transpose::conjtrans`` with a ``type_view``
+  ``matrix_descr::symmetric`` or ``matrix_descr::hermitian`` will throw an
+  ``oneapi::mkl::unimplemented`` exception.
 - Using ``spsv`` on Intel GPU with a sparse matrix that is
   ``oneapi::mkl::transpose::conjtrans`` and will throw an
   ``oneapi::mkl::unimplemented`` exception.
