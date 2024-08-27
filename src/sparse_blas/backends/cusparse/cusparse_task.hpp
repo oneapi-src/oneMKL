@@ -91,6 +91,7 @@ void submit_host_task_with_acc(sycl::handler &cgh, sycl::queue &queue, Functor f
 
 template <typename Functor, typename... CaptureOnlyAcc>
 void submit_native_command_ext(sycl::handler &cgh, sycl::queue &queue, Functor functor,
+                               const std::vector<sycl::event> &dependencies,
                                CaptureOnlyAcc... capture_only_accessors) {
     // Only capture the accessors to ensure the dependencies are properly handled
     // The accessors's pointer have already been set to the native container types in previous functions
@@ -100,15 +101,31 @@ void submit_native_command_ext(sycl::handler &cgh, sycl::queue &queue, Functor f
             auto unused = std::make_tuple(capture_only_accessors...);
             (void)unused;
             auto sc = CusparseScopedContextHandler(queue, ih);
+            // The functor using ext_codeplay_enqueue_native_command need to
+            // explicitly wait on the events for the SPARSE domain. The
+            // extension ext_codeplay_enqueue_native_command is used to launch
+            // the compute operation which depends on the previous optimize
+            // step. In cuSPARSE the optimize step is synchronous but it is
+            // asynchronous in oneMKL Interface. The optimize step may not use
+            // the CUDA stream which would make it impossible for
+            // ext_codeplay_enqueue_native_command to automatically ensure it
+            // has completed before the compute function starts. These waits are
+            // used to ensure the optimize step has completed before starting
+            // the computation.
+            for (auto event : dependencies) {
+                event.wait();
+            }
             functor(sc);
         });
 #else
+    (void)dependencies;
     submit_host_task(cgh, queue, functor, capture_only_accessors...);
 #endif
 }
 
 template <typename Functor, typename... CaptureOnlyAcc>
 void submit_native_command_ext_with_acc(sycl::handler &cgh, sycl::queue &queue, Functor functor,
+                                        const std::vector<sycl::event> &dependencies,
                                         sycl::accessor<std::uint8_t> workspace_placeholder_acc,
                                         CaptureOnlyAcc... capture_only_accessors) {
     // Only capture the accessors to ensure the dependencies are properly handled
@@ -121,9 +138,24 @@ void submit_native_command_ext_with_acc(sycl::handler &cgh, sycl::queue &queue, 
         auto unused = std::make_tuple(capture_only_accessors...);
         (void)unused;
         auto sc = CusparseScopedContextHandler(queue, ih);
+        // The functor using ext_codeplay_enqueue_native_command need to
+        // explicitly wait on the events for the SPARSE domain. The
+        // extension ext_codeplay_enqueue_native_command is used to launch
+        // the compute operation which depends on the previous optimize
+        // step. In cuSPARSE the optimize step is synchronous but it is
+        // asynchronous in oneMKL Interface. The optimize step may not use
+        // the CUDA stream which would make it impossible for
+        // ext_codeplay_enqueue_native_command to automatically ensure it
+        // has completed before the compute function starts. These waits are
+        // used to ensure the optimize step has completed before starting
+        // the computation.
+        for (auto event : dependencies) {
+            event.wait();
+        }
         functor(sc, workspace_placeholder_acc);
     });
 #else
+    (void)dependencies;
     submit_host_task_with_acc(cgh, queue, functor, workspace_placeholder_acc,
                               capture_only_accessors...);
 #endif
@@ -157,8 +189,8 @@ sycl::event dispatch_submit_impl(const std::string &function_name, sycl::queue q
         auto int_accs = get_int_accessors<INT_TYPE>(cgh, sm_handle);                               \
         if constexpr (UseWorkspace) {                                                              \
             if constexpr (UseEnqueueNativeCommandExt) {                                            \
-                submit_native_command_ext_with_acc(cgh, queue, functor, workspace_placeholder_acc, \
-                                                   fp_accs, int_accs);                             \
+                submit_native_command_ext_with_acc(cgh, queue, functor, dependencies,              \
+                                                   workspace_placeholder_acc, fp_accs, int_accs);  \
             }                                                                                      \
             else {                                                                                 \
                 submit_host_task_with_acc(cgh, queue, functor, workspace_placeholder_acc, fp_accs, \
@@ -168,7 +200,7 @@ sycl::event dispatch_submit_impl(const std::string &function_name, sycl::queue q
         else {                                                                                     \
             (void)workspace_placeholder_acc;                                                       \
             if constexpr (UseEnqueueNativeCommandExt) {                                            \
-                submit_native_command_ext(cgh, queue, functor, fp_accs, int_accs);                 \
+                submit_native_command_ext(cgh, queue, functor, dependencies, fp_accs, int_accs);   \
             }                                                                                      \
             else {                                                                                 \
                 submit_host_task(cgh, queue, functor, fp_accs, int_accs);                          \
@@ -208,7 +240,7 @@ sycl::event dispatch_submit_impl(const std::string &function_name, sycl::queue q
             return queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(dependencies);
                 if constexpr (UseEnqueueNativeCommandExt) {
-                    submit_native_command_ext(cgh, queue, functor);
+                    submit_native_command_ext(cgh, queue, functor, dependencies);
                 }
                 else {
                     submit_host_task(cgh, queue, functor);
