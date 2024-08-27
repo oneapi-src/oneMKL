@@ -118,12 +118,12 @@ void spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::
                    oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
                    oneapi::mkl::sparse::spmm_alg alg, oneapi::mkl::sparse::spmm_descr_t spmm_descr,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
-    common_spmm_optimize(queue, opA, opB, alpha, A_view, A_handle, B_handle, beta, C_handle, alg,
-                         spmm_descr);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (!internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spmm_optimize(queue, opA, opB, alpha, A_view, A_handle, B_handle, beta, C_handle, alg,
+                         spmm_descr);
     if (alg == oneapi::mkl::sparse::spmm_alg::no_optimize_alg) {
         return;
     }
@@ -140,12 +140,12 @@ sycl::event spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
                           oneapi::mkl::sparse::spmm_alg alg,
                           oneapi::mkl::sparse::spmm_descr_t spmm_descr, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
-    common_spmm_optimize(queue, opA, opB, alpha, A_view, A_handle, B_handle, beta, C_handle, alg,
-                         spmm_descr);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spmm_optimize(queue, opA, opB, alpha, A_view, A_handle, B_handle, beta, C_handle, alg,
+                         spmm_descr);
     if (alg == oneapi::mkl::sparse::spmm_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
