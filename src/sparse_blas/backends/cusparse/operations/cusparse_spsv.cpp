@@ -55,13 +55,14 @@ void init_spsv_descr(sycl::queue & /*queue*/, spsv_descr_t *p_spsv_descr) {
 
 sycl::event release_spsv_descr(sycl::queue &queue, spsv_descr_t spsv_descr,
                                const std::vector<sycl::event> &dependencies) {
-    return queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(dependencies);
-        cgh.host_task([=]() {
-            CUSPARSE_ERR_FUNC(cusparseSpSV_destroyDescr, spsv_descr->cu_descr);
-            delete spsv_descr;
-        });
-    });
+    // Use dispatch_submit to ensure the backend's descriptor is kept alive as long as the buffers are used
+    auto functor = [=](CusparseScopedContextHandler &) {
+        CUSPARSE_ERR_FUNC(cusparseSpSV_destroyDescr, spsv_descr->cu_descr);
+        delete spsv_descr;
+    };
+    return dispatch_submit(__func__, queue, dependencies, functor,
+                           spsv_descr->last_optimized_A_handle, spsv_descr->last_optimized_x_handle,
+                           spsv_descr->last_optimized_y_handle);
 }
 
 inline auto get_cuda_spsv_alg(spsv_alg /*alg*/) {

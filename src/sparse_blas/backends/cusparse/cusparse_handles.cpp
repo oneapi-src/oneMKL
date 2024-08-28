@@ -122,13 +122,12 @@ FOR_EACH_FP_TYPE(INSTANTIATE_DENSE_VECTOR_FUNCS);
 
 sycl::event release_dense_vector(sycl::queue &queue, dense_vector_handle_t dvhandle,
                                  const std::vector<sycl::event> &dependencies) {
-    return queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(dependencies);
-        cgh.host_task([=]() {
-            CUSPARSE_ERR_FUNC(cusparseDestroyDnVec, dvhandle->backend_handle);
-            delete dvhandle;
-        });
-    });
+    // Use dispatch_submit_impl_fp to ensure the backend's handle is kept alive as long as the buffer is used
+    auto functor = [=](CusparseScopedContextHandler &) {
+        CUSPARSE_ERR_FUNC(cusparseDestroyDnVec, dvhandle->backend_handle);
+        delete dvhandle;
+    };
+    return dispatch_submit_impl_fp(__func__, queue, dependencies, functor, dvhandle);
 }
 
 // Dense matrix
@@ -239,13 +238,12 @@ FOR_EACH_FP_TYPE(INSTANTIATE_DENSE_MATRIX_FUNCS);
 
 sycl::event release_dense_matrix(sycl::queue &queue, dense_matrix_handle_t dmhandle,
                                  const std::vector<sycl::event> &dependencies) {
-    return queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(dependencies);
-        cgh.host_task([=]() {
-            CUSPARSE_ERR_FUNC(cusparseDestroyDnMat, dmhandle->backend_handle);
-            delete dmhandle;
-        });
-    });
+    // Use dispatch_submit_impl_fp to ensure the backend's handle is kept alive as long as the buffer is used
+    auto functor = [=](CusparseScopedContextHandler &) {
+        CUSPARSE_ERR_FUNC(cusparseDestroyDnMat, dmhandle->backend_handle);
+        delete dmhandle;
+    };
+    return dispatch_submit_impl_fp(__func__, queue, dependencies, functor, dmhandle);
 }
 
 // COO matrix
@@ -503,13 +501,12 @@ FOR_EACH_FP_AND_INT_TYPE(INSTANTIATE_CSR_MATRIX_FUNCS);
 
 sycl::event release_sparse_matrix(sycl::queue &queue, matrix_handle_t smhandle,
                                   const std::vector<sycl::event> &dependencies) {
-    return queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(dependencies);
-        cgh.host_task([=]() {
-            CUSPARSE_ERR_FUNC(cusparseDestroySpMat, smhandle->backend_handle);
-            delete smhandle;
-        });
-    });
+    // Use dispatch_submit to ensure the backend's handle is kept alive as long as the buffers are used
+    auto functor = [=](CusparseScopedContextHandler &) {
+        CUSPARSE_ERR_FUNC(cusparseDestroySpMat, smhandle->backend_handle);
+        delete smhandle;
+    };
+    return dispatch_submit(__func__, queue, dependencies, functor, smhandle);
 }
 
 // Matrix property
