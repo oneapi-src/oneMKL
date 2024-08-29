@@ -43,11 +43,11 @@ target_include_directories(${LIB_OBJ}
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
 
 if (${CMAKE_VERSION} VERSION_LESS "3.17.0")
-  find_package(CUDA 12.5 REQUIRED)
+  find_package(CUDA 12.2 REQUIRED)
   target_include_directories(${LIB_OBJ} PRIVATE ${CUDA_INCLUDE_DIRS})
   target_link_libraries(${LIB_OBJ} PUBLIC cuda rt ${CUDA_cusparse_LIBRARY})
 else()
-  find_package(CUDAToolkit 12.5 REQUIRED)
+  find_package(CUDAToolkit 12.2 REQUIRED)
   target_link_libraries(${LIB_OBJ} PRIVATE CUDA::cusparse CUDA::cudart CUDA::cuda_driver)
 endif()
 

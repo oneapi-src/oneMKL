@@ -137,6 +137,8 @@ inline void common_spmv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_
     spmv_descr->last_optimized_alg = alg;
 }
 
+#if CUSPARSE_VERSION >= 12300
+// cusparseSpMV_preprocess was added in cuSPARSE 12.3.0.142 (CUDA 12.4)
 void spmv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, const void *alpha,
                         oneapi::mkl::sparse::matrix_handle_t A_handle,
                         oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
@@ -155,6 +157,7 @@ void spmv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
                                           cu_alg, workspace_ptr);
     check_status(status, "optimize_spmv");
 }
+#endif
 
 void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
                    oneapi::mkl::sparse::matrix_view A_view,
@@ -176,6 +179,10 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         return;
     }
 
+#if CUSPARSE_VERSION < 12300
+    // cusparseSpMV_preprocess was added in cuSPARSE 12.3.0.142 (CUDA 12.4)
+    return;
+#else
     if (spmv_descr->temp_buffer_size > 0) {
         auto functor = [=](CusparseScopedContextHandler &sc,
                            sycl::accessor<std::uint8_t> workspace_acc) {
@@ -199,6 +206,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         };
         dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     }
+#endif
 }
 
 sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -220,13 +228,18 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
+
+#if CUSPARSE_VERSION < 12300
+    // cusparseSpMV_preprocess was added in cuSPARSE 12.3.0.142 (CUDA 12.4)
+    return detail::collapse_dependencies(queue, dependencies);
+#else
     auto functor = [=](CusparseScopedContextHandler &sc) {
         auto cu_handle = sc.get_handle(queue);
         spmv_optimize_impl(cu_handle, opA, alpha, A_handle, x_handle, beta, y_handle, alg,
                            workspace, is_alpha_host_accessible);
     };
-
     return dispatch_submit(__func__, queue, dependencies, functor, A_handle, x_handle, y_handle);
+#endif
 }
 
 sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
