@@ -70,10 +70,9 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
                       oneapi::mkl::sparse::spmv_alg /*alg*/,
                       oneapi::mkl::sparse::spmv_descr_t spmv_descr, std::size_t &temp_buffer_size) {
     // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle,
                      is_alpha_host_accessible, is_beta_host_accessible);
     temp_buffer_size = 0;
     spmv_descr->buffer_size_called = true;
@@ -89,8 +88,7 @@ inline void common_spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
                                  oneapi::mkl::sparse::spmv_descr_t spmv_descr) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
-    check_valid_spmv(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle,
                      is_alpha_host_accessible, is_beta_host_accessible);
     if (!spmv_descr->buffer_size_called) {
         throw mkl::uninitialized(
@@ -235,10 +233,9 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                  oneapi::mkl::sparse::spmv_alg alg, oneapi::mkl::sparse::spmv_descr_t spmv_descr,
                  const std::vector<sycl::event> &dependencies) {
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle,
                      is_alpha_host_accessible, is_beta_host_accessible);
 
     if (!spmv_descr->optimized_called) {
@@ -253,7 +250,7 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
     CHECK_DESCR_MATCH(spmv_descr, y_handle, "spmv_optimize");
     CHECK_DESCR_MATCH(spmv_descr, alg, "spmv_optimize");
 
-    auto value_type = internal_A_handle->get_value_type();
+    auto value_type = detail::get_internal_handle(A_handle)->get_value_type();
     DISPATCH_MKL_OPERATION("spmv", value_type, internal_spmv, queue, opA, alpha, A_view, A_handle,
                            x_handle, beta, y_handle, alg, spmv_descr, dependencies,
                            is_alpha_host_accessible, is_beta_host_accessible);
