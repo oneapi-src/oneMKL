@@ -274,7 +274,6 @@ public:
                     }
                     return true;
                 };
-                std::printf("hello\n");
                 if (!stride_checker(stride_vecs.vec_a, stride_vecs.vec_b))
                     throw oneapi::mkl::unimplemented(
                         "DFT", func,
