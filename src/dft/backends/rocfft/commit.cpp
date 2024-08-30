@@ -39,6 +39,7 @@
 #include "rocfft_handle.hpp"
 
 #include <rocfft.h>
+#include <rocfft-version.h>
 #include <hip/hip_runtime_api.h>
 
 namespace oneapi::mkl::dft::rocfft {
@@ -258,6 +259,28 @@ public:
         stride_vecs.vec_a.pop_back(); // Offset is not included.
         std::reverse(stride_vecs.vec_b.begin(), stride_vecs.vec_b.end());
         stride_vecs.vec_b.pop_back(); // Offset is not included.
+
+        // This workaround is needed due to a confirmed issue in rocFFT from version
+        // 1.0.23 to 1.0.30. Those rocFFT version correspond to rocm version from
+        // 5.6.0 to 6.3.0.
+        // Link to rocFFT issue: https://github.com/ROCm/rocFFT/issues/507
+        if constexpr (rocfft_version_major == 1 && rocfft_version_minor == 0 &&
+                      (rocfft_version_patch > 22 && rocfft_version_patch < 31)) {
+            if (dom == dft::domain::COMPLEX && dimensions > 2) {
+                auto stride_checker = [&](const auto& a, const auto& b) {
+                    for (ulong i = 0; i < dimensions; ++i) {
+                        if (a[i] != b[i])
+                            return false;
+                    }
+                    return true;
+                };
+                std::printf("hello\n");
+                if (!stride_checker(stride_vecs.vec_a, stride_vecs.vec_b))
+                    throw oneapi::mkl::unimplemented(
+                        "DFT", func,
+                        "due to a bug in rocfft version in use, it requires fwd and bwd stride to be the same for COMPLEX out_of_place computations");
+            }
+        }
 
         rocfft_plan_description plan_desc_fwd, plan_desc_bwd; // Can't reuse with ROCm 6 due to bug.
         if (rocfft_plan_description_create(&plan_desc_fwd) != rocfft_status_success) {

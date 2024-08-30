@@ -49,6 +49,14 @@ find_package(HIP REQUIRED)
 # Require the minimum rocFFT version matching with ROCm 5.4.3.
 find_package(rocfft 1.0.21 REQUIRED)
 
+if (${rocfft_VERSION_MAJOR} EQUAL "1" AND ${rocfft_VERSION_MINOR} EQUAL "0"
+    AND ((${rocfft_VERSION_PATCH} GREATER "22")
+    AND (${rocfft_VERSION_PATCH} LESS "31")  ))
+    message(WARNING "Due to a bug in rocFFT some tests fail with the version in\
+      use. If possible use a version greater of 1.0.30 or less of 1.0.23.
+      Current rocFFT version ${rocfft_VERSION}")
+endif()
+
 target_link_libraries(${LIB_OBJ} PRIVATE hip::host roc::rocfft)
 
 # Allow to compile for different ROCm versions. See the README for the supported
@@ -62,6 +70,7 @@ find_path(
   NO_DEFAULT_PATH
   REQUIRED
 )
+
 target_include_directories(${LIB_OBJ} PRIVATE ${rocfft_EXTRA_INCLUDE_DIR})
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
