@@ -266,15 +266,9 @@ public:
         // Link to rocFFT issue: https://github.com/ROCm/rocFFT/issues/507
         if constexpr (rocfft_version_major == 1 && rocfft_version_minor == 0 &&
                       (rocfft_version_patch > 22 && rocfft_version_patch < 31)) {
-            if (dom == dft::domain::COMPLEX && dimensions > 2) {
-                auto stride_checker = [&](const auto& a, const auto& b) {
-                    for (ulong i = 0; i < dimensions; ++i) {
-                        if (a[i] != b[i])
-                            return false;
-                    }
-                    return true;
-                };
-                if (!stride_checker(stride_vecs.vec_a, stride_vecs.vec_b))
+            if (dom == dft::domain::COMPLEX &&
+                config_values.placement == dft::config_value::NOT_INPLACE && dimensions > 2) {
+                if (stride_vecs.vec_a != stride_vecs.vec_b)
                     throw oneapi::mkl::unimplemented(
                         "DFT", func,
                         "due to a bug in rocfft version in use, it requires fwd and bwd stride to be the same for COMPLEX out_of_place computations");
