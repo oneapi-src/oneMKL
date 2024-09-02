@@ -110,9 +110,8 @@ inline void common_spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
     check_valid_spsv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
                      alg);
     if (!spsv_descr->buffer_size_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spsv_buffer_size must be called with the same arguments before spsv_optimize.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spsv_buffer_size must be called before spsv_optimize.");
     }
     spsv_descr->optimized_called = true;
     spsv_descr->last_optimized_opA = opA;
@@ -205,9 +204,8 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                      alg);
 
     if (!spsv_descr->optimized_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spsv_optimize must be called with the same arguments before spsv.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spsv_optimize must be called before spsv.");
     }
     CHECK_DESCR_MATCH(spsv_descr, opA, "spsv_optimize");
     CHECK_DESCR_MATCH(spsv_descr, A_view, "spsv_optimize");
