@@ -62,7 +62,6 @@ find_path(
   NO_DEFAULT_PATH
   REQUIRED
 )
-
 target_include_directories(${LIB_OBJ} PRIVATE ${rocfft_EXTRA_INCLUDE_DIR})
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
