@@ -20,7 +20,7 @@
 #define _ONEMKL_SPARSE_BLAS_BACKENDS_CUSPARSE_SCOPE_HANDLE_HPP_
 
 /**
- * @file Similar to cusparse_scope_handle.hpp
+ * @file Similar to cublas_scope_handle.hpp
 */
 
 #if __has_include(<sycl/sycl.hpp>)
