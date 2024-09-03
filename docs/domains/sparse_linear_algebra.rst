@@ -69,8 +69,9 @@ Currently known limitations:
   ``oneapi::mkl::sparse::matrix_property::sorted`` to a sparse matrix handle.
   See the `rocSPARSE CSR documentation
   <https://rocm.docs.amd.com/projects/rocSPARSE/en/latest/how-to/basics.html#csr-storage-format>`_.
-- The same sparse matrix handle cannot be reused for multiple ``spmm`` or
-  ``spmv`` operations. See `#332
+- The same sparse matrix handle cannot be reused for multiple operations
+  ``spmm``, ``spmv``, or ``spsv``. Doing so will throw an
+  ``oneapi::mkl::unimplemented`` exception. See `#332
   <https://github.com/ROCm/rocSPARSE/issues/332>`_.
 
 

@@ -25,6 +25,7 @@
 #include "sparse_blas/backends/rocsparse/rocsparse_handles.hpp"
 #include "sparse_blas/common_op_verification.hpp"
 #include "sparse_blas/macros.hpp"
+#include "sparse_blas/matrix_view_comparison.hpp"
 #include "sparse_blas/sycl_helper.hpp"
 
 namespace oneapi::mkl::sparse {
@@ -33,6 +34,14 @@ namespace oneapi::mkl::sparse {
 struct spmv_descr {
     detail::generic_container workspace;
     std::size_t temp_buffer_size = 0;
+    bool buffer_size_called = false;
+    bool optimized_called = false;
+    oneapi::mkl::transpose last_optimized_opA;
+    oneapi::mkl::sparse::matrix_view last_optimized_A_view;
+    oneapi::mkl::sparse::matrix_handle_t last_optimized_A_handle;
+    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_x_handle;
+    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_y_handle;
+    oneapi::mkl::sparse::spmv_alg last_optimized_alg;
 };
 
 } // namespace oneapi::mkl::sparse
@@ -104,6 +113,31 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
     auto event = dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     event.wait_and_throw();
     spmv_descr->temp_buffer_size = temp_buffer_size;
+    spmv_descr->buffer_size_called = true;
+}
+
+inline void common_spmv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_accessible,
+                                 oneapi::mkl::sparse::matrix_view A_view,
+                                 oneapi::mkl::sparse::matrix_handle_t A_handle,
+                                 oneapi::mkl::sparse::dense_vector_handle_t x_handle,
+                                 bool is_beta_host_accessible,
+                                 oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                                 oneapi::mkl::sparse::spmv_alg alg,
+                                 oneapi::mkl::sparse::spmv_descr_t spmv_descr) {
+    check_valid_spmv("spmv_optimize", opA, A_view, A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
+    if (!spmv_descr->buffer_size_called) {
+        throw mkl::uninitialized(
+            "sparse_blas", "spmv_optimize",
+            "spmv_buffer_size must be called with the same arguments before spmv_optimize.");
+    }
+    spmv_descr->optimized_called = true;
+    spmv_descr->last_optimized_opA = opA;
+    spmv_descr->last_optimized_A_view = A_view;
+    spmv_descr->last_optimized_A_handle = A_handle;
+    spmv_descr->last_optimized_x_handle = x_handle;
+    spmv_descr->last_optimized_y_handle = y_handle;
+    spmv_descr->last_optimized_alg = alg;
 }
 
 void spmv_optimize_impl(rocsparse_handle roc_handle, oneapi::mkl::transpose opA, const void *alpha,
@@ -135,11 +169,11 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    sycl::buffer<std::uint8_t, 1> workspace) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
-                     is_beta_host_accessible);
     if (!A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spmv_optimize(opA, is_alpha_host_accessible, A_view, A_handle, x_handle,
+                         is_beta_host_accessible, y_handle, alg, spmv_descr);
     // Copy the buffer to extend its lifetime until the descriptor is free'd.
     spmv_descr->workspace.set_buffer_untyped(workspace);
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
@@ -182,11 +216,11 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           const std::vector<sycl::event> &dependencies) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
-                     is_beta_host_accessible);
     if (A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spmv_optimize(opA, is_alpha_host_accessible, A_view, A_handle, x_handle,
+                         is_beta_host_accessible, y_handle, alg, spmv_descr);
     spmv_descr->workspace.usm_ptr = workspace;
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
@@ -210,11 +244,24 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                  const std::vector<sycl::event> &dependencies) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
-                     is_beta_host_accessible);
     if (A_handle->all_use_buffer() != spmv_descr->workspace.use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
+
+    if (!spmv_descr->optimized_called) {
+        throw mkl::uninitialized(
+            "sparse_blas", __func__,
+            "spmv_optimize must be called with the same arguments before spmv.");
+    }
+    CHECK_DESCR_MATCH(spmv_descr, opA, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, A_view, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, A_handle, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, x_handle, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, y_handle, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, alg, "spmv_optimize");
+
     A_handle->mark_used();
     auto &buffer_size = spmv_descr->temp_buffer_size;
     auto compute_functor = [=, &buffer_size](RocsparseScopedContextHandler &sc,
@@ -231,7 +278,9 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
             rocsparse_spmv(roc_handle, roc_op, alpha, roc_a, roc_x, beta, roc_y, roc_type, roc_alg,
                            rocsparse_spmv_stage_compute, &buffer_size, workspace_ptr);
         check_status(status, __func__);
+#ifndef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
         HIP_ERROR_FUNC(hipStreamSynchronize, roc_stream);
+#endif
     };
     if (A_handle->all_use_buffer() && buffer_size > 0) {
         // The accessor can only be bound to the cgh if the buffer size is
