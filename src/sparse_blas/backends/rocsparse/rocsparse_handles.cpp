@@ -68,8 +68,8 @@ void init_dense_vector(sycl::queue &queue, dense_vector_handle_t *p_dvhandle, st
 }
 
 template <typename fpType>
-void set_dense_vector_data(sycl::queue &queue, oneapi::mkl::sparse::dense_vector_handle_t dvhandle,
-                           std::int64_t size, sycl::buffer<fpType, 1> val) {
+void set_dense_vector_data(sycl::queue &queue, dense_vector_handle_t dvhandle, std::int64_t size,
+                           sycl::buffer<fpType, 1> val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dvhandle, true);
     auto event = queue.submit([&](sycl::handler &cgh) {
         auto acc = val.template get_access<sycl::access::mode::read_write>(cgh);
@@ -94,8 +94,8 @@ void set_dense_vector_data(sycl::queue &queue, oneapi::mkl::sparse::dense_vector
 }
 
 template <typename fpType>
-void set_dense_vector_data(sycl::queue &queue, oneapi::mkl::sparse::dense_vector_handle_t dvhandle,
-                           std::int64_t size, fpType *val) {
+void set_dense_vector_data(sycl::queue &queue, dense_vector_handle_t dvhandle, std::int64_t size,
+                           fpType *val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dvhandle, false);
     auto event = queue.submit([&](sycl::handler &cgh) {
         submit_host_task(cgh, queue, [=](RocsparseScopedContextHandler &sc) {
@@ -173,7 +173,7 @@ void init_dense_matrix(sycl::queue &queue, dense_matrix_handle_t *p_dmhandle, st
 }
 
 template <typename fpType>
-void set_dense_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::dense_matrix_handle_t dmhandle,
+void set_dense_matrix_data(sycl::queue &queue, dense_matrix_handle_t dmhandle,
                            std::int64_t num_rows, std::int64_t num_cols, std::int64_t ld,
                            oneapi::mkl::layout dense_layout, sycl::buffer<fpType, 1> val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dmhandle, true);
@@ -206,7 +206,7 @@ void set_dense_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::dense_matrix
 }
 
 template <typename fpType>
-void set_dense_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::dense_matrix_handle_t dmhandle,
+void set_dense_matrix_data(sycl::queue &queue, dense_matrix_handle_t dmhandle,
                            std::int64_t num_rows, std::int64_t num_cols, std::int64_t ld,
                            oneapi::mkl::layout dense_layout, fpType *val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dmhandle, false);
@@ -252,10 +252,10 @@ sycl::event release_dense_matrix(sycl::queue &queue, dense_matrix_handle_t dmhan
 
 // COO matrix
 template <typename fpType, typename intType>
-void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p_smhandle,
-                     std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                     oneapi::mkl::index_base index, sycl::buffer<intType, 1> row_ind,
-                     sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
+void init_coo_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64_t num_rows,
+                     std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                     sycl::buffer<intType, 1> row_ind, sycl::buffer<intType, 1> col_ind,
+                     sycl::buffer<fpType, 1> val) {
     auto event = queue.submit([&](sycl::handler &cgh) {
         auto row_acc = row_ind.template get_access<sycl::access::mode::read_write>(cgh);
         auto col_acc = col_ind.template get_access<sycl::access::mode::read_write>(cgh);
@@ -270,18 +270,17 @@ void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
             ROCSPARSE_ERR_FUNC(rocsparse_create_coo_descr, &roc_smhandle, num_rows, num_cols, nnz,
                                sc.get_mem(row_acc), sc.get_mem(col_acc), sc.get_mem(val_acc),
                                roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new oneapi::mkl::sparse::matrix_handle(
-                roc_smhandle, row_ind, col_ind, val, num_rows, num_cols, nnz, index);
+            *p_smhandle = new matrix_handle(roc_smhandle, row_ind, col_ind, val, num_rows, num_cols,
+                                            nnz, index);
         });
     });
     event.wait_and_throw();
 }
 
 template <typename fpType, typename intType>
-void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p_smhandle,
-                     std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                     oneapi::mkl::index_base index, intType *row_ind, intType *col_ind,
-                     fpType *val) {
+void init_coo_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64_t num_rows,
+                     std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                     intType *row_ind, intType *col_ind, fpType *val) {
     auto event = queue.submit([&](sycl::handler &cgh) {
         submit_host_task(cgh, queue, [=](RocsparseScopedContextHandler &sc) {
             // Ensure that a rocsparse handle is created before any other rocSPARSE function is called.
@@ -293,18 +292,18 @@ void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
             ROCSPARSE_ERR_FUNC(rocsparse_create_coo_descr, &roc_smhandle, num_rows, num_cols, nnz,
                                sc.get_mem(row_ind), sc.get_mem(col_ind), sc.get_mem(val),
                                roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new oneapi::mkl::sparse::matrix_handle(
-                roc_smhandle, row_ind, col_ind, val, num_rows, num_cols, nnz, index);
+            *p_smhandle = new matrix_handle(roc_smhandle, row_ind, col_ind, val, num_rows, num_cols,
+                                            nnz, index);
         });
     });
     event.wait_and_throw();
 }
 
 template <typename fpType, typename intType>
-void set_coo_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t smhandle,
-                         std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                         oneapi::mkl::index_base index, sycl::buffer<intType, 1> row_ind,
-                         sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
+void set_coo_matrix_data(sycl::queue &queue, matrix_handle_t smhandle, std::int64_t num_rows,
+                         std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                         sycl::buffer<intType, 1> row_ind, sycl::buffer<intType, 1> col_ind,
+                         sycl::buffer<fpType, 1> val) {
     detail::check_can_reset_sparse_handle<fpType, intType>(__func__, smhandle, true);
     auto event = queue.submit([&](sycl::handler &cgh) {
         auto row_acc = row_ind.template get_access<sycl::access::mode::read_write>(cgh);
@@ -341,10 +340,9 @@ void set_coo_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_
 }
 
 template <typename fpType, typename intType>
-void set_coo_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t smhandle,
-                         std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                         oneapi::mkl::index_base index, intType *row_ind, intType *col_ind,
-                         fpType *val) {
+void set_coo_matrix_data(sycl::queue &queue, matrix_handle_t smhandle, std::int64_t num_rows,
+                         std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                         intType *row_ind, intType *col_ind, fpType *val) {
     detail::check_can_reset_sparse_handle<fpType, intType>(__func__, smhandle, false);
     auto event = queue.submit([&](sycl::handler &cgh) {
         submit_host_task(cgh, queue, [=](RocsparseScopedContextHandler &sc) {
@@ -380,10 +378,10 @@ FOR_EACH_FP_AND_INT_TYPE(INSTANTIATE_COO_MATRIX_FUNCS);
 
 // CSR matrix
 template <typename fpType, typename intType>
-void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p_smhandle,
-                     std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                     oneapi::mkl::index_base index, sycl::buffer<intType, 1> row_ptr,
-                     sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
+void init_csr_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64_t num_rows,
+                     std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                     sycl::buffer<intType, 1> row_ptr, sycl::buffer<intType, 1> col_ind,
+                     sycl::buffer<fpType, 1> val) {
     auto event = queue.submit([&](sycl::handler &cgh) {
         auto row_acc = row_ptr.template get_access<sycl::access::mode::read_write>(cgh);
         auto col_acc = col_ind.template get_access<sycl::access::mode::read_write>(cgh);
@@ -398,18 +396,17 @@ void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
             ROCSPARSE_ERR_FUNC(rocsparse_create_csr_descr, &roc_smhandle, num_rows, num_cols, nnz,
                                sc.get_mem(row_acc), sc.get_mem(col_acc), sc.get_mem(val_acc),
                                roc_index_type, roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new oneapi::mkl::sparse::matrix_handle(
-                roc_smhandle, row_ptr, col_ind, val, num_rows, num_cols, nnz, index);
+            *p_smhandle = new matrix_handle(roc_smhandle, row_ptr, col_ind, val, num_rows, num_cols,
+                                            nnz, index);
         });
     });
     event.wait_and_throw();
 }
 
 template <typename fpType, typename intType>
-void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p_smhandle,
-                     std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                     oneapi::mkl::index_base index, intType *row_ptr, intType *col_ind,
-                     fpType *val) {
+void init_csr_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64_t num_rows,
+                     std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                     intType *row_ptr, intType *col_ind, fpType *val) {
     auto event = queue.submit([&](sycl::handler &cgh) {
         submit_host_task(cgh, queue, [=](RocsparseScopedContextHandler &sc) {
             // Ensure that a rocsparse handle is created before any other rocSPARSE function is called.
@@ -421,18 +418,18 @@ void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
             ROCSPARSE_ERR_FUNC(rocsparse_create_csr_descr, &roc_smhandle, num_rows, num_cols, nnz,
                                sc.get_mem(row_ptr), sc.get_mem(col_ind), sc.get_mem(val),
                                roc_index_type, roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new oneapi::mkl::sparse::matrix_handle(
-                roc_smhandle, row_ptr, col_ind, val, num_rows, num_cols, nnz, index);
+            *p_smhandle = new matrix_handle(roc_smhandle, row_ptr, col_ind, val, num_rows, num_cols,
+                                            nnz, index);
         });
     });
     event.wait_and_throw();
 }
 
 template <typename fpType, typename intType>
-void set_csr_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t smhandle,
-                         std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                         oneapi::mkl::index_base index, sycl::buffer<intType, 1> row_ptr,
-                         sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
+void set_csr_matrix_data(sycl::queue &queue, matrix_handle_t smhandle, std::int64_t num_rows,
+                         std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                         sycl::buffer<intType, 1> row_ptr, sycl::buffer<intType, 1> col_ind,
+                         sycl::buffer<fpType, 1> val) {
     detail::check_can_reset_sparse_handle<fpType, intType>(__func__, smhandle, true);
     auto event = queue.submit([&](sycl::handler &cgh) {
         auto row_acc = row_ptr.template get_access<sycl::access::mode::read_write>(cgh);
@@ -469,10 +466,9 @@ void set_csr_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_
 }
 
 template <typename fpType, typename intType>
-void set_csr_matrix_data(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t smhandle,
-                         std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                         oneapi::mkl::index_base index, intType *row_ptr, intType *col_ind,
-                         fpType *val) {
+void set_csr_matrix_data(sycl::queue &queue, matrix_handle_t smhandle, std::int64_t num_rows,
+                         std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                         intType *row_ptr, intType *col_ind, fpType *val) {
     detail::check_can_reset_sparse_handle<fpType, intType>(__func__, smhandle, false);
     auto event = queue.submit([&](sycl::handler &cgh) {
         submit_host_task(cgh, queue, [=](RocsparseScopedContextHandler &sc) {
