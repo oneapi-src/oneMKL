@@ -72,8 +72,8 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
     // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle,
-                     is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
     temp_buffer_size = 0;
     spmv_descr->buffer_size_called = true;
 }

@@ -107,10 +107,10 @@ inline void common_spsv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_
                                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                                  oneapi::mkl::sparse::spsv_alg alg,
                                  oneapi::mkl::sparse::spsv_descr_t spsv_descr) {
-    detail::check_valid_spsv_common(__func__, A_view, A_handle, x_handle, y_handle,
+    detail::check_valid_spsv_common("spsv_optimize", A_view, A_handle, x_handle, y_handle,
                                     is_alpha_host_accessible);
     if (!spsv_descr->buffer_size_called) {
-        throw mkl::uninitialized("sparse_blas", __func__,
+        throw mkl::uninitialized("sparse_blas", "spsv_optimize",
                                  "spsv_buffer_size must be called before spsv_optimize.");
     }
     spsv_descr->optimized_called = true;
