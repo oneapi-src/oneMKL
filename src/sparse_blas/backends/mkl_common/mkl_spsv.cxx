@@ -17,16 +17,30 @@
 *
 **************************************************************************/
 
-// The operation descriptor is not needed as long as the backend does not have an equivalent type and does not support external workspace.
-using spsv_descr = void *;
+namespace oneapi::mkl::sparse {
+
+struct spsv_descr {
+    bool buffer_size_called = false;
+    bool optimized_called = false;
+    oneapi::mkl::transpose last_optimized_opA;
+    oneapi::mkl::sparse::matrix_view last_optimized_A_view;
+    oneapi::mkl::sparse::matrix_handle_t last_optimized_A_handle;
+    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_x_handle;
+    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_y_handle;
+    oneapi::mkl::sparse::spsv_alg last_optimized_alg;
+};
+
+} // namespace oneapi::mkl::sparse
+
+namespace oneapi::mkl::sparse::BACKEND {
 
 void init_spsv_descr(sycl::queue & /*queue*/, oneapi::mkl::sparse::spsv_descr_t *p_spsv_descr) {
-    *p_spsv_descr = nullptr;
+    *p_spsv_descr = new spsv_descr();
 }
 
-sycl::event release_spsv_descr(sycl::queue &queue, oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/,
+sycl::event release_spsv_descr(sycl::queue &queue, oneapi::mkl::sparse::spsv_descr_t spsv_descr,
                                const std::vector<sycl::event> &dependencies) {
-    return detail::collapse_dependencies(queue, dependencies);
+    return detail::submit_release(queue, spsv_descr, dependencies);
 }
 
 void check_valid_spsv(const std::string &function_name, oneapi::mkl::transpose opA,
@@ -65,13 +79,36 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
                       oneapi::mkl::sparse::dense_vector_handle_t x_handle,
                       oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                       oneapi::mkl::sparse::spsv_alg alg,
-                      oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/,
-                      std::size_t &temp_buffer_size) {
+                      oneapi::mkl::sparse::spsv_descr_t spsv_descr, std::size_t &temp_buffer_size) {
     // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     check_valid_spsv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
                      alg);
     temp_buffer_size = 0;
+    spsv_descr->buffer_size_called = true;
+}
+
+inline void common_spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+                                 oneapi::mkl::sparse::matrix_view A_view,
+                                 oneapi::mkl::sparse::matrix_handle_t A_handle,
+                                 oneapi::mkl::sparse::dense_vector_handle_t x_handle,
+                                 oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                                 oneapi::mkl::sparse::spsv_alg alg,
+                                 oneapi::mkl::sparse::spsv_descr_t spsv_descr) {
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    check_valid_spsv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
+                     alg);
+    if (!spsv_descr->buffer_size_called) {
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spsv_buffer_size must be called before spsv_optimize.");
+    }
+    spsv_descr->optimized_called = true;
+    spsv_descr->last_optimized_opA = opA;
+    spsv_descr->last_optimized_A_view = A_view;
+    spsv_descr->last_optimized_A_handle = A_handle;
+    spsv_descr->last_optimized_x_handle = x_handle;
+    spsv_descr->last_optimized_y_handle = y_handle;
+    spsv_descr->last_optimized_alg = alg;
 }
 
 void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -79,16 +116,13 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    oneapi::mkl::sparse::matrix_handle_t A_handle,
                    oneapi::mkl::sparse::dense_vector_handle_t x_handle,
                    oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                   oneapi::mkl::sparse::spsv_alg alg,
-                   oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/,
+                   oneapi::mkl::sparse::spsv_alg alg, oneapi::mkl::sparse::spsv_descr_t spsv_descr,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
-    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
-    check_valid_spsv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
-                     alg);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (!internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spsv_optimize(queue, opA, alpha, A_view, A_handle, x_handle, y_handle, alg, spsv_descr);
     if (alg == oneapi::mkl::sparse::spsv_alg::no_optimize_alg) {
         return;
     }
@@ -103,15 +137,13 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::dense_vector_handle_t x_handle,
                           oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                           oneapi::mkl::sparse::spsv_alg alg,
-                          oneapi::mkl::sparse::spsv_descr_t /*spsv_descr*/, void * /*workspace*/,
+                          oneapi::mkl::sparse::spsv_descr_t spsv_descr, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
-    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
-    check_valid_spsv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
-                     alg);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     if (internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spsv_optimize(queue, opA, alpha, A_view, A_handle, x_handle, y_handle, alg, spsv_descr);
     if (alg == oneapi::mkl::sparse::spsv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
@@ -159,8 +191,22 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     check_valid_spsv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
                      alg);
+
+    if (!spsv_descr->optimized_called) {
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spsv_optimize must be called before spsv.");
+    }
+    CHECK_DESCR_MATCH(spsv_descr, opA, "spsv_optimize");
+    CHECK_DESCR_MATCH(spsv_descr, A_view, "spsv_optimize");
+    CHECK_DESCR_MATCH(spsv_descr, A_handle, "spsv_optimize");
+    CHECK_DESCR_MATCH(spsv_descr, x_handle, "spsv_optimize");
+    CHECK_DESCR_MATCH(spsv_descr, y_handle, "spsv_optimize");
+    CHECK_DESCR_MATCH(spsv_descr, alg, "spsv_optimize");
+
     auto value_type = detail::get_internal_handle(A_handle)->get_value_type();
     DISPATCH_MKL_OPERATION("spsv", value_type, internal_spsv, queue, opA, alpha, A_view, A_handle,
                            x_handle, y_handle, alg, spsv_descr, dependencies,
                            is_alpha_host_accessible);
 }
+
+} // namespace oneapi::mkl::sparse::BACKEND

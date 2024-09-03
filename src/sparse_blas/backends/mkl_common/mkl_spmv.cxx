@@ -17,16 +17,49 @@
 *
 **************************************************************************/
 
-// The operation descriptor is not needed as long as the backend does not have an equivalent type and does not support external workspace.
-using spmv_descr = void *;
+namespace oneapi::mkl::sparse {
+
+struct spmv_descr {
+    bool buffer_size_called = false;
+    bool optimized_called = false;
+    oneapi::mkl::transpose last_optimized_opA;
+    oneapi::mkl::sparse::matrix_view last_optimized_A_view;
+    oneapi::mkl::sparse::matrix_handle_t last_optimized_A_handle;
+    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_x_handle;
+    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_y_handle;
+    oneapi::mkl::sparse::spmv_alg last_optimized_alg;
+};
+
+} // namespace oneapi::mkl::sparse
+
+namespace oneapi::mkl::sparse::BACKEND {
 
 void init_spmv_descr(sycl::queue & /*queue*/, oneapi::mkl::sparse::spmv_descr_t *p_spmv_descr) {
-    *p_spmv_descr = nullptr;
+    *p_spmv_descr = new spmv_descr();
 }
 
-sycl::event release_spmv_descr(sycl::queue &queue, oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/,
+sycl::event release_spmv_descr(sycl::queue &queue, oneapi::mkl::sparse::spmv_descr_t spmv_descr,
                                const std::vector<sycl::event> &dependencies) {
-    return detail::collapse_dependencies(queue, dependencies);
+    return detail::submit_release(queue, spmv_descr, dependencies);
+}
+
+void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose opA,
+                      oneapi::mkl::sparse::matrix_view A_view,
+                      oneapi::mkl::sparse::matrix_handle_t A_handle,
+                      oneapi::mkl::sparse::dense_vector_handle_t x_handle,
+                      oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                      bool is_alpha_host_accessible, bool is_beta_host_accessible) {
+    auto internal_A_handle = detail::get_internal_handle(A_handle);
+    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
+
+    if ((A_view.type_view == oneapi::mkl::sparse::matrix_descr::symmetric ||
+         A_view.type_view == oneapi::mkl::sparse::matrix_descr::hermitian) &&
+        opA == oneapi::mkl::transpose::conjtrans) {
+        throw mkl::unimplemented(
+            "sparse_blas", function_name,
+            "The backend does not support Symmetric or Hermitian matrix with `conjtrans`.");
+    }
 }
 
 void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -35,15 +68,39 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
                       oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
                       oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                       oneapi::mkl::sparse::spmv_alg /*alg*/,
-                      oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/,
-                      std::size_t &temp_buffer_size) {
+                      oneapi::mkl::sparse::spmv_descr_t spmv_descr, std::size_t &temp_buffer_size) {
     // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
     temp_buffer_size = 0;
+    spmv_descr->buffer_size_called = true;
+}
+
+inline void common_spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+                                 oneapi::mkl::sparse::matrix_view A_view,
+                                 oneapi::mkl::sparse::matrix_handle_t A_handle,
+                                 oneapi::mkl::sparse::dense_vector_handle_t x_handle,
+                                 const void *beta,
+                                 oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                                 oneapi::mkl::sparse::spmv_alg alg,
+                                 oneapi::mkl::sparse::spmv_descr_t spmv_descr) {
+    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
+    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
+    if (!spmv_descr->buffer_size_called) {
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmv_buffer_size must be called before spmv_optimize.");
+    }
+    spmv_descr->optimized_called = true;
+    spmv_descr->last_optimized_opA = opA;
+    spmv_descr->last_optimized_A_view = A_view;
+    spmv_descr->last_optimized_A_handle = A_handle;
+    spmv_descr->last_optimized_x_handle = x_handle;
+    spmv_descr->last_optimized_y_handle = y_handle;
+    spmv_descr->last_optimized_alg = alg;
 }
 
 void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -51,17 +108,14 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                    oneapi::mkl::sparse::matrix_handle_t A_handle,
                    oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
                    oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                   oneapi::mkl::sparse::spmv_alg alg,
-                   oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/,
+                   oneapi::mkl::sparse::spmv_alg alg, oneapi::mkl::sparse::spmv_descr_t spmv_descr,
                    sycl::buffer<std::uint8_t, 1> /*workspace*/) {
     auto internal_A_handle = detail::get_internal_handle(A_handle);
-    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
-    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
     if (!internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spmv_optimize(queue, opA, alpha, A_view, A_handle, x_handle, beta, y_handle, alg,
+                         spmv_descr);
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return;
     }
@@ -86,16 +140,14 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                           oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
                           oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                           oneapi::mkl::sparse::spmv_alg alg,
-                          oneapi::mkl::sparse::spmv_descr_t /*spmv_descr*/, void * /*workspace*/,
+                          oneapi::mkl::sparse::spmv_descr_t spmv_descr, void * /*workspace*/,
                           const std::vector<sycl::event> &dependencies) {
     auto internal_A_handle = detail::get_internal_handle(A_handle);
-    bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
-    bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
     if (internal_A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
+    common_spmv_optimize(queue, opA, alpha, A_view, A_handle, x_handle, beta, y_handle, alg,
+                         spmv_descr);
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
@@ -177,13 +229,26 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                  oneapi::mkl::sparse::spmv_alg alg, oneapi::mkl::sparse::spmv_descr_t spmv_descr,
                  const std::vector<sycl::event> &dependencies) {
-    auto internal_A_handle = detail::get_internal_handle(A_handle);
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible, is_beta_host_accessible);
-    auto value_type = internal_A_handle->get_value_type();
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
+
+    if (!spmv_descr->optimized_called) {
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmv_optimize must be called before spmv.");
+    }
+    CHECK_DESCR_MATCH(spmv_descr, opA, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, A_view, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, A_handle, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, x_handle, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, y_handle, "spmv_optimize");
+    CHECK_DESCR_MATCH(spmv_descr, alg, "spmv_optimize");
+
+    auto value_type = detail::get_internal_handle(A_handle)->get_value_type();
     DISPATCH_MKL_OPERATION("spmv", value_type, internal_spmv, queue, opA, alpha, A_view, A_handle,
                            x_handle, beta, y_handle, alg, spmv_descr, dependencies,
                            is_alpha_host_accessible, is_beta_host_accessible);
 }
+
+} // namespace oneapi::mkl::sparse::BACKEND
