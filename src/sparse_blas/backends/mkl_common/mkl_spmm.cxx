@@ -97,9 +97,8 @@ inline void common_spmm_optimize(
     check_valid_spmm(__func__, opA, A_view, A_handle, B_handle, C_handle, is_alpha_host_accessible,
                      is_beta_host_accessible);
     if (!spmm_descr->buffer_size_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spmm_buffer_size must be called with the same arguments before spmm_optimize.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmm_buffer_size must be called before spmm_optimize.");
     }
     spmm_descr->optimized_called = true;
     spmm_descr->last_optimized_opA = opA;
@@ -200,9 +199,8 @@ sycl::event spmm(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
                      is_beta_host_accessible);
 
     if (!spmm_descr->optimized_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spmm_optimize must be called with the same arguments before spmm.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmm_optimize must be called before spmm.");
     }
     CHECK_DESCR_MATCH(spmm_descr, opA, "spmm_optimize");
     CHECK_DESCR_MATCH(spmm_descr, opB, "spmm_optimize");

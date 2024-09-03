@@ -124,9 +124,8 @@ inline void common_spmv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_
     check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
                      is_beta_host_accessible);
     if (!spmv_descr->buffer_size_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spmv_buffer_size must be called with the same arguments before spmv_optimize.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmv_buffer_size must be called before spmv_optimize.");
     }
     spmv_descr->optimized_called = true;
     spmv_descr->last_optimized_opA = opA;
@@ -258,9 +257,8 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
     }
 
     if (!spmv_descr->optimized_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spmv_optimize must be called with the same arguments before spmv.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmv_optimize must be called before spmv.");
     }
     CHECK_DESCR_MATCH(spmv_descr, opA, "spmv_optimize");
     CHECK_DESCR_MATCH(spmv_descr, A_view, "spmv_optimize");

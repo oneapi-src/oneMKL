@@ -88,12 +88,11 @@ inline void common_spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
                                  oneapi::mkl::sparse::spmv_descr_t spmv_descr) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle,
-                     is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
     if (!spmv_descr->buffer_size_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spmv_buffer_size must be called with the same arguments before spmv_optimize.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmv_buffer_size must be called before spmv_optimize.");
     }
     spmv_descr->optimized_called = true;
     spmv_descr->last_optimized_opA = opA;
@@ -120,11 +119,10 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
     if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
         return;
     }
-    sycl::event event;
     internal_A_handle->can_be_reset = false;
     if (A_view.type_view == matrix_descr::triangular) {
-        event = oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
-                                                   internal_A_handle->backend_handle);
+        oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
+                                           internal_A_handle->backend_handle);
     }
     else if (A_view.type_view == matrix_descr::symmetric ||
              A_view.type_view == matrix_descr::hermitian) {
@@ -132,10 +130,8 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         return;
     }
     else {
-        event = oneapi::mkl::sparse::optimize_gemv(queue, opA, internal_A_handle->backend_handle);
+        oneapi::mkl::sparse::optimize_gemv(queue, opA, internal_A_handle->backend_handle);
     }
-    // spmv_optimize is not asynchronous for buffers as the backend optimize functions don't take buffers.
-    event.wait_and_throw();
 }
 
 sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -235,13 +231,12 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
                  const std::vector<sycl::event> &dependencies) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle,
-                     is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
+                     is_beta_host_accessible);
 
     if (!spmv_descr->optimized_called) {
-        throw mkl::uninitialized(
-            "sparse_blas", __func__,
-            "spmv_optimize must be called with the same arguments before spmv.");
+        throw mkl::uninitialized("sparse_blas", __func__,
+                                 "spmv_optimize must be called before spmv.");
     }
     CHECK_DESCR_MATCH(spmv_descr, opA, "spmv_optimize");
     CHECK_DESCR_MATCH(spmv_descr, A_view, "spmv_optimize");
