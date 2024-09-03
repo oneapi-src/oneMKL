@@ -119,10 +119,10 @@ inline void common_spmm_optimize(
     oneapi::mkl::sparse::dense_matrix_handle_t B_handle, bool is_beta_host_accessible,
     oneapi::mkl::sparse::dense_matrix_handle_t C_handle, oneapi::mkl::sparse::spmm_alg alg,
     oneapi::mkl::sparse::spmm_descr_t spmm_descr) {
-    detail::check_valid_spmm_common(__func__, A_view, A_handle, B_handle, C_handle,
+    detail::check_valid_spmm_common("spmm_optimize", A_view, A_handle, B_handle, C_handle,
                                     is_alpha_host_accessible, is_beta_host_accessible);
     if (!spmm_descr->buffer_size_called) {
-        throw mkl::uninitialized("sparse_blas", __func__,
+        throw mkl::uninitialized("sparse_blas", "spmm_optimize",
                                  "spmm_buffer_size must be called before spmm_optimize.");
     }
     spmm_descr->optimized_called = true;

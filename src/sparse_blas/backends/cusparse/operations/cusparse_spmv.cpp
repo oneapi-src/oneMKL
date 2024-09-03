@@ -121,10 +121,10 @@ inline void common_spmv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_
                                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                                  oneapi::mkl::sparse::spmv_alg alg,
                                  oneapi::mkl::sparse::spmv_descr_t spmv_descr) {
-    check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
-                     is_beta_host_accessible);
+    check_valid_spmv("spmv_optimize", opA, A_view, A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
     if (!spmv_descr->buffer_size_called) {
-        throw mkl::uninitialized("sparse_blas", __func__,
+        throw mkl::uninitialized("sparse_blas", "spmv_optimize",
                                  "spmv_buffer_size must be called before spmv_optimize.");
     }
     spmv_descr->optimized_called = true;
