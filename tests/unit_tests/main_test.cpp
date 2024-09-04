@@ -101,15 +101,17 @@ int main(int argc, char** argv) {
             auto plat_devs = plat.get_devices();
             for (auto dev : plat_devs) {
                 try {
-                    /* Do not test for OpenCL backend on GPU */
-                    if (dev.is_gpu() && plat.get_info<sycl::info::platform::name>().find(
-                                            "OpenCL") != std::string::npos)
+                    unsigned int vendor_id =
+                        static_cast<unsigned int>(dev.get_info<sycl::info::device::vendor_id>());
+                    /* Do not test for OpenCL backend on Intel GPU */
+                    if (dev.is_gpu() &&
+                        plat.get_info<sycl::info::platform::name>().find("OpenCL") !=
+                            std::string::npos &&
+                        vendor_id == INTEL_ID)
                         continue;
                     if (unique_devices.find(dev.get_info<sycl::info::device::name>()) ==
                         unique_devices.end()) {
                         unique_devices.insert(dev.get_info<sycl::info::device::name>());
-                        unsigned int vendor_id = static_cast<unsigned int>(
-                            dev.get_info<sycl::info::device::vendor_id>());
 #if !defined(ENABLE_MKLCPU_BACKEND) && !defined(ENABLE_PORTBLAS_BACKEND_INTEL_CPU) && \
     !defined(ENABLE_PORTFFT_BACKEND)
                         if (dev.is_cpu())
