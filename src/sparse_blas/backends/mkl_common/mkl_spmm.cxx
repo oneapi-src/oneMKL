@@ -120,10 +120,10 @@ inline void common_spmm_optimize(
     oneapi::mkl::sparse::spmm_descr_t spmm_descr) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
-    check_valid_spmm(__func__, opA, A_view, A_handle, B_handle, C_handle, is_alpha_host_accessible,
-                     is_beta_host_accessible);
+    check_valid_spmm("spmm_optimize", opA, A_view, A_handle, B_handle, C_handle,
+                     is_alpha_host_accessible, is_beta_host_accessible);
     if (!spmm_descr->buffer_size_called) {
-        throw mkl::uninitialized("sparse_blas", __func__,
+        throw mkl::uninitialized("sparse_blas", "spmm_optimize",
                                  "spmm_buffer_size must be called before spmm_optimize.");
     }
     spmm_descr->optimized_called = true;
