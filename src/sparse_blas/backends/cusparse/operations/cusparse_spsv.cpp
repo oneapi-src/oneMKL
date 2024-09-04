@@ -184,7 +184,7 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                                spsv_descr, nullptr, is_alpha_host_accessible);
         };
 
-        dispatch_submit_native_ext(__func__, queue, functor, A_handle, x_handle, y_handle);
+        dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     }
 }
 
@@ -209,8 +209,7 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
                            spsv_descr, workspace, is_alpha_host_accessible);
     };
     // No need to store the workspace USM pointer as the backend stores it already
-    return dispatch_submit_native_ext(__func__, queue, dependencies, functor, A_handle, x_handle,
-                                      y_handle);
+    return dispatch_submit(__func__, queue, dependencies, functor, A_handle, x_handle, y_handle);
 }
 
 sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,

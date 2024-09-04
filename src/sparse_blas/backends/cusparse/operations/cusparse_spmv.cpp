@@ -203,7 +203,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
             spmv_optimize_impl(cu_handle, opA, alpha, A_handle, x_handle, beta, y_handle, alg,
                                nullptr, is_alpha_host_accessible);
         };
-        dispatch_submit_native_ext(__func__, queue, functor, A_handle, x_handle, y_handle);
+        dispatch_submit(__func__, queue, functor, A_handle, x_handle, y_handle);
     }
 #endif
 }

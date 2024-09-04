@@ -218,8 +218,7 @@ sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
                            workspace, is_alpha_host_accessible);
     };
 
-    return dispatch_submit_native_ext(__func__, queue, dependencies, functor, A_handle, B_handle,
-                                      C_handle);
+    return dispatch_submit(__func__, queue, dependencies, functor, A_handle, B_handle, C_handle);
 }
 
 sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,

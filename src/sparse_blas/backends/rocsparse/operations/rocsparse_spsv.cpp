@@ -267,8 +267,8 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         };
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
             spsv_descr->workspace.get_buffer<std::uint8_t>());
-        return dispatch_submit_native_ext(__func__, queue, dependencies, functor_buffer, A_handle,
-                                     workspace_placeholder_acc, x_handle, y_handle);
+        return dispatch_submit_native_ext(__func__, queue, functor_buffer, A_handle,
+                                          workspace_placeholder_acc, x_handle, y_handle);
     }
     else {
         // The same dispatch_submit can be used for USM or buffers if no
