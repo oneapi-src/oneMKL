@@ -114,14 +114,12 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mk
     spmm_descr->buffer_size_called = true;
 }
 
-inline void common_spmm_optimize(oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
-                          bool is_alpha_host_accessible, oneapi::mkl::sparse::matrix_view A_view,
-                          oneapi::mkl::sparse::matrix_handle_t A_handle,
-                          oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
-                          bool is_beta_host_accessible,
-                          oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                          oneapi::mkl::sparse::spmm_alg alg,
-                          oneapi::mkl::sparse::spmm_descr_t spmm_descr) {
+inline void common_spmm_optimize(
+    oneapi::mkl::transpose opA, oneapi::mkl::transpose opB, bool is_alpha_host_accessible,
+    oneapi::mkl::sparse::matrix_view A_view, oneapi::mkl::sparse::matrix_handle_t A_handle,
+    oneapi::mkl::sparse::dense_matrix_handle_t B_handle, bool is_beta_host_accessible,
+    oneapi::mkl::sparse::dense_matrix_handle_t C_handle, oneapi::mkl::sparse::spmm_alg alg,
+    oneapi::mkl::sparse::spmm_descr_t spmm_descr) {
     A_handle->throw_if_already_used("spmm_optimize");
     detail::check_valid_spmm_common("spmm_optimize", A_view, A_handle, B_handle, C_handle,
                                     is_alpha_host_accessible, is_beta_host_accessible);
@@ -300,7 +298,7 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
         sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
             spmm_descr->workspace.get_buffer<std::uint8_t>());
         return dispatch_submit_native_ext(__func__, queue, functor_buffer, A_handle,
-                                     workspace_placeholder_acc, B_handle, C_handle);
+                                          workspace_placeholder_acc, B_handle, C_handle);
     }
     else {
         // The same dispatch_submit can be used for USM or buffers if no
@@ -310,8 +308,8 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
         auto functor_usm = [=](RocsparseScopedContextHandler& sc) {
             compute_functor(sc, workspace_ptr);
         };
-        return dispatch_submit_native_ext(__func__, queue, dependencies, functor_usm, A_handle, B_handle,
-                               C_handle);
+        return dispatch_submit_native_ext(__func__, queue, dependencies, functor_usm, A_handle,
+                                          B_handle, C_handle);
     }
 }
 

@@ -303,8 +303,8 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         auto functor_usm = [=](RocsparseScopedContextHandler &sc) {
             compute_functor(sc, workspace_ptr);
         };
-        return dispatch_submit_native_ext(__func__, queue, dependencies, functor_usm, A_handle, x_handle,
-                               y_handle);
+        return dispatch_submit_native_ext(__func__, queue, dependencies, functor_usm, A_handle,
+                                          x_handle, y_handle);
     }
 }
 
