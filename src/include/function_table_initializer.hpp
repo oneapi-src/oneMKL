@@ -59,11 +59,11 @@ class table_initializer {
     using dlhandle = std::unique_ptr<LIB_TYPE, handle_deleter>;
 
 public:
-    function_table_t &operator[](oneapi::mkl::device key) {
-        auto lib = tables.find(key);
+    function_table_t &operator[](std::pair<oneapi::mkl::device, sycl::queue> device_queue_pair) {
+        auto lib = tables.find(device_queue_pair.first);
         if (lib != tables.end())
             return lib->second;
-        return add_table(key);
+        return add_table(device_queue_pair.first, device_queue_pair.second);
     }
 
 private:
@@ -90,7 +90,7 @@ private:
     }
 #endif
 
-    function_table_t &add_table(oneapi::mkl::device key) {
+    function_table_t &add_table(oneapi::mkl::device key, sycl::queue &q) {
         dlhandle handle;
         // check all available libraries for the key(device)
         for (const char *libname : libraries[domain_id][key]) {
@@ -99,8 +99,13 @@ private:
                 break;
         }
         if (!handle) {
-            std::cerr << ERROR_MSG << '\n';
-            throw mkl::backend_not_found();
+            if (key == oneapi::mkl::device::generic_device) {
+                throw mkl::unsupported_device("", "", q.get_device());
+            }
+            else {
+                std::cerr << ERROR_MSG << '\n';
+                throw mkl::backend_not_found();
+            }
         }
         auto t =
             reinterpret_cast<function_table_t *>(::GET_FUNC(handle.get(), table_names[domain_id]));

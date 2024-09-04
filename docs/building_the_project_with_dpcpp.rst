@@ -128,9 +128,6 @@ The most important supported build options are:
    * - ENABLE_PORTFFT_BACKEND
      - True, False
      - False      
-   * - ENABLE_GENERIC_DEVICE
-     - True, False
-     - False
    * - BUILD_FUNCTIONAL_TESTS
      - True, False
      - True      
@@ -235,9 +232,7 @@ Building for other SYCL devices
 
 SYCL enables portable heterogeneous computing on a wide range of accelerators.
 Consequently, it is possible to use oneMKL Interfaces with accelerators not
-anticipated by the oneMKL Interfaces team. This can be enabled using the
-``-DENABLE_GENERIC_DEVICE=ON`` option. However, this is not a supported
-configuration.
+anticipated by the oneMKL Interfaces team.
 
 For generic SYCL devices, only the portBLAS backend is enabled. The user must
 set the appropriate ``-fsycl-targets`` for their device, and also any
@@ -437,8 +432,7 @@ Build oneMKL for the BLAS domain on a generic SYCL device:
       -DCMAKE_C_COMPILER=clang \ 
       -DENABLE_MKLCPU_BACKEND=False \ 
       -DENABLE_MKLGPU_BACKEND=False \
-      -DENABLE_PORTBLAS_BACKEND=True \
-      -DENABLE_GENERIC_DEVICE=True
+      -DENABLE_PORTBLAS_BACKEND=True
 
 Note that this is not a supported configuration. This builds oneMKL Interfaces
 with the portBLAS backend only, for a generic SYCL device supported by the 

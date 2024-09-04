@@ -46,15 +46,7 @@ if(NUM_TARGETS EQUAL 0)
   list(LENGTH SYCL_TARGETS NUM_TARGETS)
 endif()
 
-if(ENABLE_GENERIC_DEVICE)
-  set(ENABLE_PORTBLAS_BACKEND_GENERIC_DEVICE "ON" CACHE INTERNAL "")
-  target_compile_options(ONEMKL::SYCL::SYCL INTERFACE -fno-sycl-instrument-device-code)
-  if(NOT PORTBLAS_TUNING_TARGET)
-    # If a generic device is specified, set the tuning target to default for best compatibility.
-    message(STATUS "Setting DEFAULT portBLAS tuning target for generic device.")
-    set(PORTBLAS_TUNING_TARGET "DEFAULT")
-  endif()
-elseif (PORTBLAS_TUNING_TARGET)
+if (PORTBLAS_TUNING_TARGET)
   # Allow the user to manually enable a specific device type 
   # for tuned portBLAS configurations and sets sycl-target.
   if(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_CPU")
