@@ -9,8 +9,8 @@
 
 ## Motivation
 
-As oneMKL interface is moving to the UXL foundation we should make sure that it
-does not reuse the same name as the existing [Intel oneMKL
+As oneMKL interface is moving to the UXL foundation we should make sure that the
+name does not collide with the existing [Intel oneMKL
 product](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html).
 
 We have been discussing 2 solutions to avoid this issue:
@@ -55,9 +55,9 @@ this is not enough for people who are not working directly on the projects.
 ## Introduction
 
 oneMKL Interface has historically been implemented and supported by Intel. As
-the project is moving to the UXL foundation it we want to avoid using the name
-of an Intel product. This RFC describes the solution of renaming oneMKL
-Interface to a new name.
+the project is moving to the UXL foundation we want to avoid using the name of
+an Intel product. This RFC describes the solution of renaming oneMKL Interface
+to a new name.
 
 ## Proposal
 
