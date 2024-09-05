@@ -86,7 +86,9 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
           } },
         { device::generic_device,
           {
+#ifdef ENABLE_PORTBLAS_BACKEND
               LIB_NAME("blas_portblas"),
+#endif
           } } } },
 
     { domain::dft,
