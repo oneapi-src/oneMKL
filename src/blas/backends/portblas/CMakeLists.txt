@@ -46,7 +46,7 @@ if(NUM_TARGETS EQUAL 0)
   list(LENGTH SYCL_TARGETS NUM_TARGETS)
 endif()
 
-if (PORTBLAS_TUNING_TARGET)
+if(PORTBLAS_TUNING_TARGET)
   # Allow the user to manually enable a specific device type 
   # for tuned portBLAS configurations and sets sycl-target.
   if(PORTBLAS_TUNING_TARGET STREQUAL "INTEL_CPU")
