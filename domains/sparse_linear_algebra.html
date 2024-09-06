@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Dense Linear Algebra &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
+    <title>Sparse Linear Algebra &#8212; oneAPI Math Kernel Library Interfaces 0.1 documentation</title>
   
   
   
@@ -40,13 +40,12 @@
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'domains/dense_linear_algebra';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'domains/sparse_linear_algebra';</script>
     <link rel="icon" href="../_static/favicons.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Matrix Storage" href="matrix-storage.html" />
-    <link rel="prev" title="oneMKL Defined Datatypes" href="../onemkl-datatypes.html" />
+    <link rel="next" title="Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces" href="../create_new_backend.html" />
+    <link rel="prev" title="ungqr_batch_scratchpad_size" href="lapack/ungqr_batch_scratchpad_size.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -168,7 +167,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../onemkl-datatypes.html">oneMKL Defined Datatypes</a></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Dense Linear Algebra</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dense_linear_algebra.html">Dense Linear Algebra</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="matrix-storage.html">Matrix Storage</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="blas/blas.html">BLAS Routines</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="blas/blas-level-1-routines.html">BLAS Level 1 Routines</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -328,7 +327,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sparse_linear_algebra.html">Sparse Linear Algebra</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sparse Linear Algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../create_new_backend.html">Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces</a></li>
 </ul>
 
@@ -384,7 +383,7 @@
       
       
       
-      <li><a href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/domains/dense_linear_algebra.rst" target="_blank"
+      <li><a href="https://github.com/oneapi-src/oneMKL/edit/develop/docs/domains/sparse_linear_algebra.rst" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -401,7 +400,7 @@
       
       
       
-      <li><a href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fdomains/dense_linear_algebra.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/oneapi-src/oneMKL/issues/new?title=Issue%20on%20page%20%2Fdomains/sparse_linear_algebra.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -431,7 +430,7 @@
       
       
       
-      <li><a href="../_sources/domains/dense_linear_algebra.rst" target="_blank"
+      <li><a href="../_sources/domains/sparse_linear_algebra.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -502,7 +501,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -513,11 +514,19 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Dense Linear Algebra</h1>
+    <h1>Sparse Linear Algebra</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#onemkl-intel-cpu-and-gpu-backends">OneMKL Intel CPU and GPU backends</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -527,14 +536,41 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="dense-linear-algebra">
-<span id="onemkl-dense-linear-algebra"></span><h1>Dense Linear Algebra<a class="headerlink" href="#dense-linear-algebra" title="Link to this heading">#</a></h1>
-<p>This section contains information about dense linear algebra routines:</p>
-<p><a class="reference internal" href="matrix-storage.html#matrix-storage"><span class="std std-ref">Matrix Storage</span></a> provides information about dense matrix and vector storage formats that are used by oneMKL <a class="reference internal" href="blas/blas.html#onemkl-blas"><span class="std std-ref">BLAS Routines</span></a> and <a class="reference internal" href="lapack/lapack.html#onemkl-lapack"><span class="std std-ref">LAPACK Routines</span></a>.</p>
-<p><a class="reference internal" href="blas/blas.html#onemkl-blas"><span class="std std-ref">BLAS Routines</span></a> provides vector, matrix-vector, and matrix-matrix routines for dense matrices and vector operations.</p>
-<p><a class="reference internal" href="lapack/lapack.html#onemkl-lapack"><span class="std std-ref">LAPACK Routines</span></a> provides more complex dense linear algebra routines, e.g., matrix factorization, solving dense systems of linear equations, least square problems, eigenvalue and singular value problems, and performing a number of related computational tasks.</p>
-<div class="toctree-wrapper compound">
-</div>
+  <section id="sparse-linear-algebra">
+<span id="onemkl-sparse-linear-algebra"></span><h1>Sparse Linear Algebra<a class="headerlink" href="#sparse-linear-algebra" title="Link to this heading">#</a></h1>
+<p>See the latest specification for the sparse domain <a class="reference external" href="https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/domains/spblas/spblas">here</a>.</p>
+<p>This page documents implementation specific or backend specific details of the
+sparse domain.</p>
+<section id="onemkl-intel-cpu-and-gpu-backends">
+<h2>OneMKL Intel CPU and GPU backends<a class="headerlink" href="#onemkl-intel-cpu-and-gpu-backends" title="Link to this heading">#</a></h2>
+<p>Currently known limitations:</p>
+<ul class="simple">
+<li><p>All operations’ algorithms except <code class="docutils literal notranslate"><span class="pre">no_optimize_alg</span></code> map to the default
+algorithm.</p></li>
+<li><p>The required external workspace size is always 0 bytes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oneapi::mkl::sparse::set_csr_data</span></code> and
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::sparse::set_coo_data</span></code> functions cannot be used on a handle
+that has already been used for an operation or its optimize function. Doing so
+will throw an <code class="docutils literal notranslate"><span class="pre">oneapi::mkl::unimplemented</span></code> exception.</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">spsv</span></code> with the <code class="docutils literal notranslate"><span class="pre">oneapi::mkl::sparse::spsv_alg::no_optimize_alg</span></code> and
+a sparse matrix that does not have the
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::sparse::matrix_property::sorted</span></code> property will throw an
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::unimplemented</span></code> exception.</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">spmm</span></code> on Intel GPU with a sparse matrix that is
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::transpose::conjtrans</span></code> and has the
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::sparse::matrix_property::symmetric</span></code> property will throw an
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::unimplemented</span></code> exception.</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">spmv</span></code> with a sparse matrix that is
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::transpose::conjtrans</span></code> with a <code class="docutils literal notranslate"><span class="pre">type_view</span></code>
+<code class="docutils literal notranslate"><span class="pre">matrix_descr::symmetric</span></code> or <code class="docutils literal notranslate"><span class="pre">matrix_descr::hermitian</span></code> will throw an
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::unimplemented</span></code> exception.</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">spsv</span></code> on Intel GPU with a sparse matrix that is
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::transpose::conjtrans</span></code> and will throw an
+<code class="docutils literal notranslate"><span class="pre">oneapi::mkl::unimplemented</span></code> exception.</p></li>
+<li><p>Scalar parameters <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span></code> should be host pointers to prevent
+synchronizations and copies to the host.</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -549,20 +585,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../onemkl-datatypes.html"
+       href="lapack/ungqr_batch_scratchpad_size.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">oneMKL Defined Datatypes</p>
+        <p class="prev-next-title">ungqr_batch_scratchpad_size</p>
       </div>
     </a>
     <a class="right-next"
-       href="matrix-storage.html"
+       href="../create_new_backend.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Matrix Storage</p>
+        <p class="prev-next-title">Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -573,7 +609,20 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"></div>
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#onemkl-intel-cpu-and-gpu-backends">OneMKL Intel CPU and GPU backends</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
