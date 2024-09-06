@@ -22,7 +22,7 @@
 include(WarningsUtils)
 
 # Build object from all example sources
-set(SPARSE_BLAS_RT_SOURCES "sparse_blas_gemv_usm")
+set(SPARSE_BLAS_RT_SOURCES "sparse_blas_spmv_usm")
 # Set up for the right backend for run-time dispatching examples
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
 # overwrite ONEAPI_DEVICE_SELECTOR in their environment to run on the desired backend

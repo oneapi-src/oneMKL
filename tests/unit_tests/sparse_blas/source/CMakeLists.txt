@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2023 Intel Corporation
+# Copyright 2024 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 #===============================================================================
 
 set(SPBLAS_SOURCES
-  "sparse_gemm_buffer.cpp"
-  "sparse_gemm_usm.cpp"
-  "sparse_gemv_buffer.cpp"
-  "sparse_gemv_usm.cpp"
-  "sparse_trsv_buffer.cpp"
-  "sparse_trsv_usm.cpp"
+  "sparse_spmm_buffer.cpp"
+  "sparse_spmm_usm.cpp"
+  "sparse_spmv_buffer.cpp"
+  "sparse_spmv_usm.cpp"
+  "sparse_spsv_buffer.cpp"
+  "sparse_spsv_usm.cpp"
 )
 
 include(WarningsUtils)

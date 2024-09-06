@@ -17,17 +17,22 @@
 *
 **************************************************************************/
 
-#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
-#include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
-#include "sparse_blas/macros.hpp"
-#include "sparse_blas/matrix_view_comparison.hpp"
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+namespace oneapi::mkl::sparse {
 
-#define BACKEND mklcpu
+// Each backend can create its own descriptor type or re-use the native descriptor types that will be reinterpret_cast'ed to the types below
 
-#include "sparse_blas/backends/mkl_common/mkl_spmm.cxx"
-#include "sparse_blas/backends/mkl_common/mkl_spmv.cxx"
-#include "sparse_blas/backends/mkl_common/mkl_spsv.cxx"
+struct spmm_descr;
+using spmm_descr_t = spmm_descr*;
 
-#undef BACKEND
+struct spmv_descr;
+using spmv_descr_t = spmv_descr*;
+
+struct spsv_descr;
+using spsv_descr_t = spsv_descr*;
+
+} // namespace oneapi::mkl::sparse
+
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_

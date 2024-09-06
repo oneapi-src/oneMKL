@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2023 Intel Corporation
+# Copyright 2024 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ include(WarningsUtils)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
-  mklcpu_basic.cpp
+  mklcpu_handles.cpp
   mklcpu_operations.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>
 )

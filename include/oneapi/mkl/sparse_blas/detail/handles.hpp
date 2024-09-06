@@ -17,17 +17,22 @@
 *
 **************************************************************************/
 
-#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
-#include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
-#include "sparse_blas/macros.hpp"
-#include "sparse_blas/matrix_view_comparison.hpp"
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+namespace oneapi::mkl::sparse {
 
-#define BACKEND mklcpu
+// Each backend can create its own handle type or re-use the native handle types that will be reinterpret_cast'ed to the types below
 
-#include "sparse_blas/backends/mkl_common/mkl_spmm.cxx"
-#include "sparse_blas/backends/mkl_common/mkl_spmv.cxx"
-#include "sparse_blas/backends/mkl_common/mkl_spsv.cxx"
+struct dense_matrix_handle;
+using dense_matrix_handle_t = dense_matrix_handle*;
 
-#undef BACKEND
+struct dense_vector_handle;
+using dense_vector_handle_t = dense_vector_handle*;
+
+struct matrix_handle;
+using matrix_handle_t = matrix_handle*;
+
+} // namespace oneapi::mkl::sparse
+
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
