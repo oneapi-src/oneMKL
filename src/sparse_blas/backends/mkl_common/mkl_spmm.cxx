@@ -50,35 +50,9 @@ void check_valid_spmm(const std::string &function_name, oneapi::mkl::transpose o
                       oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
                       oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
                       bool is_alpha_host_accessible, bool is_beta_host_accessible) {
-    THROW_IF_NULLPTR(function_name, A_handle);
-    THROW_IF_NULLPTR(function_name, B_handle);
-    THROW_IF_NULLPTR(function_name, C_handle);
-
     auto internal_A_handle = detail::get_internal_handle(A_handle);
-    detail::check_all_containers_compatible(function_name, internal_A_handle, B_handle, C_handle);
-    if (internal_A_handle->all_use_buffer()) {
-        detail::check_ptr_is_host_accessible("spmm", "alpha", is_alpha_host_accessible);
-        detail::check_ptr_is_host_accessible("spmm", "beta", is_beta_host_accessible);
-    }
-    if (is_alpha_host_accessible != is_beta_host_accessible) {
-        throw mkl::invalid_argument(
-            "sparse_blas", function_name,
-            "Alpha and beta must both be placed on host memory or device memory.");
-    }
-    if (B_handle->dense_layout != C_handle->dense_layout) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "B and C matrices must used the same layout.");
-    }
-
-    if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::general) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix view's type must be `matrix_descr::general`.");
-    }
-
-    if (A_view.diag_view != oneapi::mkl::diag::nonunit) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix's diag_view must be `nonunit`.");
-    }
+    detail::check_valid_spmm_common(function_name, A_view, internal_A_handle, B_handle, C_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
 
 #if BACKEND == gpu
     detail::data_type data_type = internal_A_handle->get_value_type();

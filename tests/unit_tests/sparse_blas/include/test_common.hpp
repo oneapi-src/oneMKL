@@ -332,13 +332,18 @@ intType generate_random_matrix(sparse_matrix_format_t format, const intType nrow
     throw std::runtime_error("Unsupported sparse format");
 }
 
+inline bool require_coo_sorted_by_row(sycl::queue queue) {
+    auto vendor_id = oneapi::mkl::get_device_id(queue);
+    return vendor_id == oneapi::mkl::device::nvidiagpu;
+}
+
 /// Shuffle the 3arrays CSR or COO representation (ia, ja, values)
 /// of any sparse matrix.
 /// In CSR format, the elements within a row are shuffled without changing ia.
 /// In COO format, all the elements are shuffled.
 template <typename fpType, typename intType>
-void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intType *ia,
-                           intType *ja, fpType *a, intType nnz, std::size_t nrows) {
+void shuffle_sparse_matrix(sycl::queue queue, sparse_matrix_format_t format, intType indexing,
+                           intType *ia, intType *ja, fpType *a, intType nnz, std::size_t nrows) {
     if (format == sparse_matrix_format_t::CSR) {
         for (std::size_t i = 0; i < nrows; ++i) {
             intType nnz_row = ia[i + 1] - ia[i];
@@ -351,12 +356,33 @@ void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intT
         }
     }
     else if (format == sparse_matrix_format_t::COO) {
-        for (std::size_t i = 0; i < static_cast<std::size_t>(nnz); ++i) {
-            intType q = std::rand() % nnz;
-            // Swap elements i and q
-            std::swap(ia[q], ia[i]);
-            std::swap(ja[q], ja[i]);
-            std::swap(a[q], a[i]);
+        if (require_coo_sorted_by_row(queue)) {
+            std::size_t linear_idx = 0;
+            for (std::size_t i = 0; i < nrows; ++i) {
+                // Count the number of non-zero elements for the given row
+                std::size_t nnz_row = 1;
+                while (linear_idx + nnz_row < static_cast<std::size_t>(nnz) &&
+                       ia[linear_idx] == ia[linear_idx + nnz_row]) {
+                    ++nnz_row;
+                }
+                for (std::size_t j = 0; j < nnz_row; ++j) {
+                    // Swap elements within the same row
+                    std::size_t q = linear_idx + (static_cast<std::size_t>(std::rand()) % nnz_row);
+                    // Swap elements j and q
+                    std::swap(ja[q], ja[linear_idx + j]);
+                    std::swap(a[q], a[linear_idx + j]);
+                }
+                linear_idx += nnz_row;
+            }
+        }
+        else {
+            for (std::size_t i = 0; i < static_cast<std::size_t>(nnz); ++i) {
+                intType q = std::rand() % nnz;
+                // Swap elements i and q
+                std::swap(ia[q], ia[i]);
+                std::swap(ja[q], ja[i]);
+                std::swap(a[q], a[i]);
+            }
         }
     }
     else {

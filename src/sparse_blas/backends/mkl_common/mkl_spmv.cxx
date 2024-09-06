@@ -49,32 +49,9 @@ void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose o
                       oneapi::mkl::sparse::dense_vector_handle_t x_handle,
                       oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                       bool is_alpha_host_accessible, bool is_beta_host_accessible) {
-    THROW_IF_NULLPTR(function_name, A_handle);
-    THROW_IF_NULLPTR(function_name, x_handle);
-    THROW_IF_NULLPTR(function_name, y_handle);
-
     auto internal_A_handle = detail::get_internal_handle(A_handle);
-    detail::check_all_containers_compatible(function_name, internal_A_handle, x_handle, y_handle);
-    if (internal_A_handle->all_use_buffer()) {
-        detail::check_ptr_is_host_accessible("spmv", "alpha", is_alpha_host_accessible);
-        detail::check_ptr_is_host_accessible("spmv", "beta", is_beta_host_accessible);
-    }
-    if (is_alpha_host_accessible != is_beta_host_accessible) {
-        throw mkl::invalid_argument(
-            "sparse_blas", function_name,
-            "Alpha and beta must both be placed on host memory or device memory.");
-    }
-    if (A_view.type_view == oneapi::mkl::sparse::matrix_descr::diagonal) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix view's type cannot be diagonal.");
-    }
-
-    if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::triangular &&
-        A_view.diag_view == oneapi::mkl::diag::unit) {
-        throw mkl::invalid_argument(
-            "sparse_blas", function_name,
-            "`unit` diag_view can only be used with a triangular type_view.");
-    }
+    detail::check_valid_spmv_common(__func__, opA, A_view, internal_A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible, is_beta_host_accessible);
 
     if ((A_view.type_view == oneapi::mkl::sparse::matrix_descr::symmetric ||
          A_view.type_view == oneapi::mkl::sparse::matrix_descr::hermitian) &&

@@ -66,8 +66,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
 
     // Shuffle ordering of column indices/values to test sortedness
     if (!is_sorted) {
-        shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(), a_host.data(), nnz,
-                              mu);
+        shuffle_sparse_matrix(main_queue, format, indexing, ia_host.data(), ja_host.data(),
+                              a_host.data(), nnz, mu);
     }
 
     auto ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());
@@ -141,7 +141,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
                 format, m, m, density_A_matrix, indexing, ia_host, ja_host, a_host, is_symmetric,
                 require_diagonal);
             if (!is_sorted) {
-                shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(),
+                shuffle_sparse_matrix(main_queue, format, indexing, ia_host.data(), ja_host.data(),
                                       a_host.data(), reset_nnz, mu);
             }
             if (reset_nnz > nnz) {
@@ -218,8 +218,11 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
                                 y_ref_host.data());
 
     // Compare the results of reference implementation and DPC++ implementation.
+    // Increase default relative error margin for tests that lead to large numeric values.
+    double abs_error_factor = 10;
+    double rel_error_factor = 1E5;
     ev_copy.wait_and_throw();
-    bool valid = check_equal_vector(y_host, y_ref_host);
+    bool valid = check_equal_vector(y_host, y_ref_host, abs_error_factor, rel_error_factor);
 
     return static_cast<int>(valid);
 }

@@ -26,6 +26,8 @@
 #include <oneapi/mkl/spblas.hpp>
 
 #include "sparse_blas/generic_container.hpp"
+#include "sparse_blas/macros.hpp"
+#include "sparse_blas/sycl_helper.hpp"
 
 namespace oneapi::mkl::sparse {
 

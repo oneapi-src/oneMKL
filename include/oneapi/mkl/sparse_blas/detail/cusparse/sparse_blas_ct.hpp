@@ -17,13 +17,24 @@
 *
 **************************************************************************/
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_CUSPARSE_SPARSE_BLAS_CT_HPP_
+#define _ONEMKL_SPARSE_BLAS_DETAIL_CUSPARSE_SPARSE_BLAS_CT_HPP_
 
-#include "sparse_blas/backends/mkl_common/mkl_dispatch.hpp"
-#include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
+#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/mkl/detail/backend_selector.hpp"
 
-namespace oneapi::mkl::sparse::mklcpu {
+#include "onemkl_sparse_blas_cusparse.hpp"
 
-#include "sparse_blas/backends/mkl_common/mkl_handles.cxx"
+namespace oneapi {
+namespace mkl {
+namespace sparse {
 
-} // namespace oneapi::mkl::sparse::mklcpu
+#define BACKEND cusparse
+#include "oneapi/mkl/sparse_blas/detail/sparse_blas_ct.hxx"
+#undef BACKEND
+
+} //namespace sparse
+} //namespace mkl
+} //namespace oneapi
+
+#endif // _ONEMKL_SPARSE_BLAS_DETAIL_CUSPARSE_SPARSE_BLAS_CT_HPP_
