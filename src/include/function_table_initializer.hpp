@@ -105,8 +105,7 @@ private:
                 break;
         }
         if (!handle) {
-            if constexpr (!is_generic_device_supported &&
-                          key == oneapi::mkl::device::generic_device) {
+            if (!is_generic_device_supported && key == oneapi::mkl::device::generic_device) {
                 throw mkl::unsupported_device("", "", q.get_device());
             }
             else {
