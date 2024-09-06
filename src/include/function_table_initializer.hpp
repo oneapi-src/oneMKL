@@ -67,6 +67,12 @@ public:
     }
 
 private:
+#ifdef ENABLE_PORTBLAS_BACKEND
+    static constexpr bool is_generic_device_supported = true;
+#else
+    static constexpr bool is_generic_device_supported = false;
+#endif
+
 #ifdef _WIN64
     // Create a string with last error message
     std::string GetLastErrorStdStr() {
@@ -99,17 +105,14 @@ private:
                 break;
         }
         if (!handle) {
-#ifndef ENABLE_PORTBLAS_BACKEND
-            if (key == oneapi::mkl::device::generic_device) {
+            if constexpr (!is_generic_device_supported &&
+                          key == oneapi::mkl::device::generic_device) {
                 throw mkl::unsupported_device("", "", q.get_device());
             }
             else {
-#endif
                 std::cerr << ERROR_MSG << '\n';
                 throw mkl::backend_not_found();
-#ifndef ENABLE_PORTBLAS_BACKEND
             }
-#endif
         }
         auto t =
             reinterpret_cast<function_table_t *>(::GET_FUNC(handle.get(), table_names[domain_id]));
