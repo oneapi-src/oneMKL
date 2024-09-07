@@ -15,6 +15,19 @@ Before sending your pull requests, ensure that you follow this checklist:
 
 * Ensure that [unit tests](CONTRIBUTING.md#unit-tests) pass. Include logs from tests as attachments to the pull request.
 
+* Ensure that corresponding maintainer GitHub team is assigned to the PR review.
+
+  | GitHub team name | Description |
+  :-----------|:------------|
+  | @oneapi-src/onemkl-maintain  | All oneMKL maintainers |
+  | @oneapi-src/onemkl-arch-write | oneMKL Architecture maintainers |
+  | @oneapi-src/onemkl-blas-write | oneMKL BLAS maintainers |
+  | @oneapi-src/onemkl-dft-write | oneMKL DFT maintainers |
+  | @oneapi-src/onemkl-lapack-write | oneMKL LAPACK maintainers |
+  | @oneapi-src/onemkl-rng-write | oneMKL RNG maintainers |
+  | @oneapi-src/onemkl-sparse-write | oneMKL Sparse Algebra maintainers |
+  | @oneapi-src/onemkl-vm-write | oneMKL Vector Math maintainers |
+
 ## Library Functionality Guidelines
 
 oneMKL focuses on the following criteria:
