@@ -66,7 +66,8 @@ Some of the suggested names are:
 * **oneMath**
 * **oneSLA** (SYCL Linear Algebra)
 
-Other suggestions are welcomed.
+Other suggestions are welcomed. The name **oneMath** will be chosen if there are
+no objections by October 4, 2024.
 
 The suggested solution is to proceed in the following steps:
 1. The UXL foundation agrees on the new name.
