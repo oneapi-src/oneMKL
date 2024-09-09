@@ -27,8 +27,8 @@ endif()
 include(WarningsUtils)
 
 foreach(backend ${SPARSE_BLAS_BACKENDS})
-  set(EXAMPLE_NAME example_sparse_blas_gemv_usm_${backend})
-  add_executable(${EXAMPLE_NAME} sparse_blas_gemv_usm_${backend}.cpp)
+  set(EXAMPLE_NAME example_sparse_blas_spmv_usm_${backend})
+  add_executable(${EXAMPLE_NAME} sparse_blas_spmv_usm_${backend}.cpp)
   target_include_directories(${EXAMPLE_NAME}
       PUBLIC ${PROJECT_SOURCE_DIR}/examples/include
       PUBLIC ${PROJECT_SOURCE_DIR}/include
@@ -39,6 +39,6 @@ foreach(backend ${SPARSE_BLAS_BACKENDS})
   target_link_libraries(${EXAMPLE_NAME} PRIVATE ONEMKL::SYCL::SYCL onemkl_sparse_blas_${backend})
 
   # Register example as ctest
-  add_test(NAME sparse_blas/EXAMPLE/CT/sparse_blas_gemv_usm_${backend} COMMAND ${EXAMPLE_NAME})
+  add_test(NAME sparse_blas/EXAMPLE/CT/sparse_blas_spmv_usm_${backend} COMMAND ${EXAMPLE_NAME})
 endforeach(backend)
 

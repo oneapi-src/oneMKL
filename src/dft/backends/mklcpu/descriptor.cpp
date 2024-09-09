@@ -22,9 +22,7 @@
 
 #include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
 
-namespace oneapi {
-namespace mkl {
-namespace dft {
+namespace oneapi::mkl::dft::detail {
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::commit(backend_selector<backend::mklcpu> selector) {
@@ -46,6 +44,4 @@ template void descriptor<precision::DOUBLE, domain::COMPLEX>::commit(
 template void descriptor<precision::DOUBLE, domain::REAL>::commit(
     backend_selector<backend::mklcpu>);
 
-} //namespace dft
-} //namespace mkl
-} //namespace oneapi
+} //namespace oneapi::mkl::dft::detail

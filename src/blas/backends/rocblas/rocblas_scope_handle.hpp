@@ -26,6 +26,18 @@
 #include <unordered_map>
 #include "rocblas_helper.hpp"
 
+// After Plugin Interface removal in DPC++ ur.hpp is the new include
+#if __has_include(<sycl/detail/ur.hpp>)
+#include <sycl/detail/ur.hpp>
+#ifndef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#define ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+#endif
+#elif __has_include(<sycl/detail/pi.hpp>)
+#include <sycl/detail/pi.hpp>
+#else
+#include <CL/sycl/detail/pi.hpp>
+#endif
+
 namespace oneapi {
 namespace mkl {
 namespace blas {
@@ -43,7 +55,11 @@ class RocblasScopedContextHandler {
     sycl::context *placedContext_;
     bool needToRecover_;
     sycl::interop_handle &interop_h;
+#ifdef ONEAPI_ONEMKL_PI_INTERFACE_REMOVED
+    static thread_local rocblas_handle_container<ur_context_handle_t> handle_helper;
+#else
     static thread_local rocblas_handle_container<pi_context> handle_helper;
+#endif
     sycl::context get_context(const sycl::queue &queue);
     hipStream_t get_stream(const sycl::queue &queue);
 

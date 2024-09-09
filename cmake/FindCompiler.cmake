@@ -69,4 +69,15 @@ if(is_dpcpp)
       INTERFACE_LINK_LIBRARIES ${SYCL_LIBRARY})
   endif()
 
-endif()
+  if(ENABLE_ROCBLAS_BACKEND OR ENABLE_ROCRAND_BACKEND OR ENABLE_ROCSOLVER_BACKEND)
+    # Allow find_package(HIP) to find the correct path to libclang_rt.builtins.a
+    # HIP's CMake uses the command `${HIP_CXX_COMPILER} -print-libgcc-file-name --rtlib=compiler-rt` to find this path.
+    # This can print a non-existing file if the compiler used is icpx.
+    if(NOT HIP_CXX_COMPILER)
+      find_path(HIP_CXX_COMPILER clang++
+        HINTS ENV HIPROOT ENV ROCM_PATH
+      )
+    endif()
+  endif()
+
+endif(is_dpcpp)
