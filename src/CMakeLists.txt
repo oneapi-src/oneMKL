@@ -82,7 +82,9 @@ if(BUILD_SHARED_LIBS)
   list(TRANSFORM ONEMKL_LIBS PREPEND onemkl_)
   target_link_libraries(onemkl PUBLIC ${ONEMKL_LIBS})
   set_target_properties(onemkl PROPERTIES
-      INSTALL_RPATH "\$ORIGIN")
+      INSTALL_RPATH "\$ORIGIN"
+      BUILD_WITH_INSTALL_RPATH TRUE
+  )
 
   # Add the library to install package
   foreach(domain_lib ${ONEMKL_LIBS})
