@@ -70,7 +70,9 @@ Other suggestions are welcomed.
 
 The suggested solution is to proceed in the following steps:
 1. The UXL foundation agrees on the new name.
-2. Codeplay submits a oneMKL Interface PR to:
+2. Codeplay submits a oneAPI-spec PR to rename the occurrences of "oneMKL" to
+   the new name.
+3. Codeplay submits a oneMKL Interface PR to:
    * Update the root README to use the new name, with a mention that the project
      was formerly called oneMKL Interface.
    * Update the references to "oneMKL" and `onemkl_` in the documentation as
@@ -85,8 +87,6 @@ The suggested solution is to proceed in the following steps:
      new name. The existing targets name can be added with a deprecation
      messages for anyone using them. See the section on [CMake target
      deprecation](#cmake-deprecated-target) for more details.
-3. Codeplay submits a oneAPI-spec PR to rename the occurrences of "oneMKL" to
-   the new name.
 4. Once the PRs are approved, Codeplay transfers the
    [oneMKL](https://github.com/oneapi-src/oneMKL) GitHub project to the
    [uxlfoundation](https://github.com/uxlfoundation) organization under the new
