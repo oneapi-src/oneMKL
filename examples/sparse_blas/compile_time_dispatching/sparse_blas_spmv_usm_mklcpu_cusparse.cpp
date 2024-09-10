@@ -22,7 +22,7 @@
 *  Content:
 *       This example demonstrates use of DPCPP API oneapi::mkl::sparse::spmv
 *       using unified shared memory to perform general sparse matrix-vector
-*       multiplication on a INTEL CPU SYCL device.
+*       multiplication on a INTEL CPU SYCL device and an NVIDIA GPU SYCL device.
 *
 *       y = alpha * op(A) * x + beta * y
 *
