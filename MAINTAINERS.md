@@ -72,12 +72,12 @@ The process of becoming a Domain maintainer is:
 
 | GitHub team name | Domain maintainers |
 :-----------|:------------|
-| @oneapi-src/onemkl-blas-write | oneMKL BLAS maintainers |
-| @oneapi-src/onemkl-dft-write | oneMKL DFT maintainers |
-| @oneapi-src/onemkl-lapack-write) | oneMKL LAPACK maintainers |
-| @oneapi-src/onemkl-rng-write | oneMKL RNG maintainers |
-| @oneapi-src/onemkl-sparse-write | oneMKL Sparse Algebra maintainers |
-| @oneapi-src/onemkl-vm-write | oneMKL Vector Math maintainers |
+| @oneapi-src/onemkl-blas-write | oneMKL Interfaces BLAS maintainers |
+| @oneapi-src/onemkl-dft-write | oneMKL Interfaces DFT maintainers |
+| @oneapi-src/onemkl-lapack-write) | oneMKL Interfaces LAPACK maintainers |
+| @oneapi-src/onemkl-rng-write | oneMKL Interfaces RNG maintainers |
+| @oneapi-src/onemkl-sparse-write | oneMKL Interfaces Sparse Algebra maintainers |
+| @oneapi-src/onemkl-vm-write | oneMKL Interfaces Vector Math maintainers |
 
 ## Architecture Maintainer
 Architecture maintainers are the most established contributors who are responsible for the
@@ -107,7 +107,7 @@ Privileges:
   * Can recommend Contributor or Domain maintainer to become Architecture maintainers.
 
 Process of becoming a maintainer:
-1. A Contributor or Domain maintainer requests to join oneMKL Architecture maintainers GitHub team
+1. A Contributor or Domain maintainer requests to join oneMKL Interfaces Architecture maintainers GitHub team
 (@oneapi-src/onemkl-arch-write).
 2. At least one of Architecture maintainers approves the request.
 
