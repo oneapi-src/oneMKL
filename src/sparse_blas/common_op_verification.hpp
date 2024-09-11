@@ -67,12 +67,12 @@ void check_valid_spmm_common(const std::string &function_name,
     }
     if (B_handle->dense_layout != C_handle->dense_layout) {
         throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "B and C matrices must used the same layout.");
+                                    "B and C matrices must use the same layout.");
     }
 
     if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::general) {
         throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix view's type must be `matrix_descr::general`.");
+                                    "Matrix view's `type_view` must be `matrix_descr::general`.");
     }
 
     if (A_view.diag_view != oneapi::mkl::diag::nonunit) {
@@ -104,14 +104,14 @@ void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::tran
     }
     if (A_view.type_view == oneapi::mkl::sparse::matrix_descr::diagonal) {
         throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix view's type cannot be diagonal.");
+                                    "Matrix view's `type_view` cannot be diagonal.");
     }
 
     if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::triangular &&
         A_view.diag_view == oneapi::mkl::diag::unit) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
-            "`unit` diag_view can only be used with a triangular type_view.");
+            "`diag_view::unit` can only be used with `type_view::triangular`.");
     }
 }
 
@@ -128,8 +128,9 @@ void check_valid_spsv_common(const std::string &function_name,
 
     check_all_containers_compatible(function_name, internal_A_handle, x_handle, y_handle);
     if (A_view.type_view != matrix_descr::triangular) {
-        throw mkl::invalid_argument("sparse_blas", function_name,
-                                    "Matrix view's type must be `matrix_descr::triangular`.");
+        throw mkl::invalid_argument(
+            "sparse_blas", function_name,
+            "Matrix view's `type_view` must be `matrix_descr::triangular`.");
     }
 
     if (internal_A_handle->all_use_buffer()) {
