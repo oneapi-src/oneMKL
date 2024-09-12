@@ -207,9 +207,9 @@ template <typename fpType>
 fpType generate_data(bool is_diag) {
     rand_scalar<fpType> rand_data;
     if (is_diag) {
-        // Guarantee an amplitude >= 0.1
+        // Guarantee a large amplitude
         fpType sign = (std::rand() % 2) * 2 - 1;
-        return rand_data(0.1, 0.5) * sign;
+        return rand_data(10, 20) * sign;
     }
     return rand_data(-0.5, 0.5);
 }

@@ -47,6 +47,9 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
         matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
 
+    // Use a fixed seed for operations very sensible to the input data
+    std::srand(1);
+
     // Input matrix
     std::vector<intType> ia_host, ja_host;
     std::vector<fpType> a_host;
@@ -171,10 +174,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
 
     // Compare the results of reference implementation and DPC++ implementation.
     // Increase default relative error margin for tests that lead to large numeric values.
-    double abs_error_factor = 10;
-    double rel_error_factor = 1E5;
     auto y_acc = y_buf.get_host_access(sycl::read_only);
-    bool valid = check_equal_vector(y_acc, y_ref_host, abs_error_factor, rel_error_factor);
+    bool valid = check_equal_vector(y_acc, y_ref_host);
 
     return static_cast<int>(valid);
 }
