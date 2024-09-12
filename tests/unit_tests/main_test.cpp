@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
                         unique_devices.end()) {
                         unique_devices.insert(dev.get_info<sycl::info::device::name>());
 #if !defined(ENABLE_MKLCPU_BACKEND) && !defined(ENABLE_PORTBLAS_BACKEND_INTEL_CPU) && \
-    !defined(ENABLE_PORTFFT_BACKEND)
+    !defined(ENABLE_PORTFFT_BACKEND) && !defined(ENABLE_NETLIB_BACKEND)
                         if (dev.is_cpu())
                             continue;
 #endif
@@ -153,14 +153,6 @@ int main(int argc, char** argv) {
 #endif
     }
 
-#if defined(ENABLE_MKLCPU_BACKEND) || defined(ENABLE_NETLIB_BACKEND) || \
-    defined(ENABLE_PORTBLAS_BACKEND_INTEL_CPU)
-#ifdef __HIPSYCL__
-    local_devices.push_back(sycl::device(sycl::cpu_selector()));
-#else
-    local_devices.push_back(sycl::device(sycl::cpu_selector_v));
-#endif
-#endif
 #define GET_NAME(d) (d).template get_info<sycl::info::device::name>()
     for (auto& local_dev : local_devices) {
         // Test only unique devices
