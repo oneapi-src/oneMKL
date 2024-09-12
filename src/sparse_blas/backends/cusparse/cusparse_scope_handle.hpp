@@ -81,11 +81,6 @@ public:
         auto cudaPtr = ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(acc);
         return reinterpret_cast<void *>(cudaPtr);
     }
-
-    template <typename T>
-    inline void *get_mem(T *ptr) {
-        return reinterpret_cast<void *>(ptr);
-    }
 };
 
 } // namespace oneapi::mkl::sparse::cusparse
