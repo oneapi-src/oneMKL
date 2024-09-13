@@ -82,7 +82,10 @@ inline void check_status(cusparseStatus_t status, const std::string& function,
         switch (status) {
             case CUSPARSE_STATUS_NOT_SUPPORTED:
                 throw oneapi::mkl::unimplemented("sparse_blas", function, error_str);
+            case CUSPARSE_STATUS_NOT_INITIALIZED:
+                throw oneapi::mkl::uninitialized("sparse_blas", function, error_str);
             case CUSPARSE_STATUS_INVALID_VALUE:
+            case CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED:
                 throw oneapi::mkl::invalid_argument("sparse_blas", function, error_str);
             default: throw oneapi::mkl::exception("sparse_blas", function, error_str);
         }
