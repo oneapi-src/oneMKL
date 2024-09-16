@@ -154,7 +154,7 @@ Header-based and backend-independent Device API can be called within ```sycl ker
 Supported domains include: BLAS, LAPACK, RNG, DFT, SPARSE_BLAS
 
 Supported compilers include:
-- [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler): Intel proprietary compiler that supports CPUs and Intel GPUs. Intel(R) oneAPI DPC++ Compiler will be referred to as "Intel DPC++" in the "Supported Compiler" column of the tables below.
+- [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler): Intel proprietary compiler that supports CPUs and Intel GPUs. 
 - [oneAPI DPC++ Compiler](https://github.com/intel/llvm): Open source compiler that supports CPUs and Intel, NVIDIA, and AMD GPUs. oneAPI DPC++ Compiler will be referred to as "Open DPC++" in the "Supported Compiler" column of the tables below.
 - [AdaptiveCpp Compiler](https://github.com/AdaptiveCpp/AdaptiveCpp) (formerly known as hipSYCL): Open source compiler that supports CPUs and Intel, NVIDIA, and AMD GPUs.</br>**Note**: The source code and some documents in this project still use the previous name hipSYCL during this transition period.
 
@@ -175,28 +175,28 @@ Supported compilers include:
             <td rowspan=9 align="center">BLAS</td>
             <td rowspan=3 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>AdaptiveCpp</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">NETLIB LAPACK</td>
-            <td align="center">Intel DPC++</br>Open DPC++</br>AdaptiveCpp</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</br>Open DPC++</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">portBLAS</td>
-            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">portBLAS</td>
-            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -225,13 +225,13 @@ Supported compilers include:
             <td rowspan=4 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -250,13 +250,13 @@ Supported compilers include:
             <td rowspan=4 align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</br>AdaptiveCpp</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</br>AdaptiveCpp</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -275,23 +275,23 @@ Supported compilers include:
             <td rowspan=8 align="center">DFT</td>
             <td rowspan=2 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -320,13 +320,13 @@ Supported compilers include:
             <td rowspan=2 align="center">SPARSE_BLAS</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
     </tbody>
@@ -349,44 +349,44 @@ Supported compilers include:
             <td rowspan=3 align="center">BLAS</td>
             <td rowspan=2 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">NETLIB LAPACK</td>
-            <td align="center">Intel DPC++</br>Open DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">LAPACK</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td rowspan=2 align="center">RNG</td>
             <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
             <td align="center">Intel(R) oneMKL</td>
-            <td align="center">Intel DPC++</td>
+            <td align="center">Intel(R) oneAPI DPC++ Compiler</td>
             <td align="center">Dynamic, Static</td>
         </tr>
     </tbody>
