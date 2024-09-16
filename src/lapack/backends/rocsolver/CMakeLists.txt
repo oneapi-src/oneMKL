@@ -28,7 +28,7 @@ find_package(Threads REQUIRED)
 set(SOURCES rocsolver_lapack.cpp
 		rocsolver_batch.cpp
 	        $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:rocsolver_scope_handle.cpp>
-          $<$<BOOL:${BUILD_SHARED_LIBS}>: rocsolver_wrappers.cpp>)
+          $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>: rocsolver_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemkl_backend_libs_lapack ${LIB_NAME})

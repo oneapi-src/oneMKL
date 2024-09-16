@@ -65,7 +65,7 @@ add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   descriptor.cpp
   commit.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_portfft_wrappers.cpp>
+  $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>: mkl_dft_portfft_wrappers.cpp>
 )
 add_dependencies(onemkl_backend_libs_dft ${LIB_NAME})
 
@@ -111,7 +111,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
 #Set oneMKL libraries as not transitive for dynamic
-if(BUILD_SHARED_LIBS)
+if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
   )

@@ -20,19 +20,19 @@
 add_custom_target(onemkl_backend_libs_rng)
 add_dependencies(onemkl_backend_libs onemkl_backend_libs_rng)
 
-if(ENABLE_MKLCPU_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
   add_subdirectory(mklcpu)
 endif()
 
-if(ENABLE_MKLGPU_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
 
-if(ENABLE_CURAND_BACKEND AND UNIX)
+if(ONEAPI_ONEMKL_ENABLE_CURAND_BACKEND AND UNIX)
   add_subdirectory(curand)
 endif()
 
-if(ENABLE_ROCRAND_BACKEND AND UNIX)
+if(ONEAPI_ONEMKL_ENABLE_ROCRAND_BACKEND AND UNIX)
   add_subdirectory(rocrand)
 endif()
 

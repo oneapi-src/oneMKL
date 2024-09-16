@@ -19,7 +19,7 @@
 
 #Build object from all sources
 set(BLAS_CT_SOURCES "")
-if(ENABLE_MKLCPU_BACKEND AND ENABLE_CUBLAS_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND AND ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND)
   list(APPEND BLAS_CT_SOURCES "gemm_usm_mklcpu_cublas")
 endif()
 
@@ -31,7 +31,7 @@ foreach(blas_ct_source ${BLAS_CT_SOURCES})
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-  if(domain STREQUAL "blas" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUBLAS_BACKEND)
+  if(domain STREQUAL "blas" AND ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND AND ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND)
     add_dependencies(example_${domain}_${blas_ct_source} onemkl_${domain}_mklcpu onemkl_${domain}_cublas)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cublas)
   endif()

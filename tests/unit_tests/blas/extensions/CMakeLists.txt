@@ -20,7 +20,7 @@
 # Build object from all test sources
 set(EXTENSIONS_SOURCES "gemm_bias.cpp" "gemmt.cpp" "gemm_bias_usm.cpp" "gemmt_usm.cpp" "omatcopy.cpp" "omatcopy_usm.cpp" "imatcopy.cpp" "imatcopy_usm.cpp" "omatadd.cpp" "omatadd_usm.cpp" "omatcopy2.cpp" "omatcopy2_usm.cpp")
 
-if(BUILD_SHARED_LIBS)
+if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
   add_library(blas_extensions_rt OBJECT ${EXTENSIONS_SOURCES})
   target_compile_options(blas_extensions_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(blas_extensions_rt

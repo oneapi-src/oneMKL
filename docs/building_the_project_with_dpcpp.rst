@@ -44,8 +44,8 @@ for Windows`_ for building on Windows):
   mkdir build && cd build
   cmake .. -DCMAKE_CXX_COMPILER=$CXX_COMPILER    \ # Should be icpx or clang++
           -DCMAKE_C_COMPILER=$C_COMPILER         \ # Should be icx or clang
-          -DENABLE_MKLCPU_BACKEND=False          \ # Optional: The MKLCPU backend is True by default.
-          -DENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLGPU backend is True by default.
+          -DONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND=False          \ # Optional: The MKLCPU backend is True by default.
+          -DONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND=False          \ # Optional: The MKLGPU backend is True by default.
           -DENABLE_<BACKEND_NAME>_BACKEND=True   \ # Enable any other backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True \ # Multiple backends can be enabled at once.
           -DBUILD_FUNCTIONAL_TESTS=False         \ # See page *Building and Running Tests* for more on building tests. True by default.
@@ -86,46 +86,46 @@ The most important supported build options are:
    * - CMake Option
      - Supported Values
      - Default Value 
-   * - ENABLE_MKLCPU_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND
      - True, False
      - True      
-   * - ENABLE_MKLGPU_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND
      - True, False
      - True      
-   * - ENABLE_CUBLAS_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND
      - True, False
      - False     
-   * - ENABLE_CUSOLVER_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_CUSOLVER_BACKEND
      - True, False
      - False     
-   * - ENABLE_CUFFT_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND
      - True, False
      - False     
-   * - ENABLE_CURAND_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_CURAND_BACKEND
      - True, False
      - False     
-   * - ENABLE_NETLIB_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_NETLIB_BACKEND
      - True, False
      - False     
-   * - ENABLE_ROCBLAS_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_ROCBLAS_BACKEND
      - True, False
      - False     
-   * - ENABLE_ROCFFT_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_ROCFFT_BACKEND
      - True, False
      - False    
-   * - ENABLE_ROCSOLVER_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_ROCSOLVER_BACKEND
      - True, False
      - False     
-   * - ENABLE_ROCRAND_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_ROCRAND_BACKEND
      - True, False
      - False     
    * - ENABLE_MKLCPU_THREAD_TBB
      - True, False
      - True      
-   * - ENABLE_PORTBLAS_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_PORTBLAS_BACKEND
      - True, False
      - False      
-   * - ENABLE_PORTFFT_BACKEND
+   * - ONEAPI_ONEMKL_ENABLE_PORTFFT_BACKEND
      - True, False
      - False      
    * - BUILD_FUNCTIONAL_TESTS
@@ -166,9 +166,9 @@ Building for Intel(R) oneMKL
 
 The Intel(R) oneMKL backend supports multiple domains on both x86 CPUs and Intel
 GPUs. The MKLCPU backend using Intel(R) oneMKL for x86 CPU is enabled by
-default, and controlled with the parameter ``ENABLE_MKLCPU_BACKEND``. The MKLGPU
+default, and controlled with the parameter ``ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND``. The MKLGPU
 backend using Intel(R) oneMKL for Intel GPU is enabled by default, and
-controlled with the parameter ``ENABLE_MKLGPU_BACKEND``.
+controlled with the parameter ``ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND``.
 
 When using the Intel(R) oneAPI DPC++ Compiler, it is likely that Intel(R) oneMKL
 will be found automatically. If it is not, the parameter ``MKL_ROOT`` can be set
@@ -182,9 +182,9 @@ environment script provided by the package.
 Building for CUDA
 ^^^^^^^^^^^^^^^^^
 
-The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND``,
-``ENABLE_CUFFT_BACKEND``, ``ENABLE_CURAND_BACKEND``, and
-``ENABLE_CUSOLVER_BACKEND``.
+The CUDA backends can be enabled with ``ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND``,
+``ONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND``, ``ONEAPI_ONEMKL_ENABLE_CURAND_BACKEND``, and
+``ONEAPI_ONEMKL_ENABLE_CUSOLVER_BACKEND``.
 
 No additional parameters are required for using CUDA libraries. In most cases,
 the CUDA libraries should be found automatically by CMake.
@@ -194,9 +194,9 @@ the CUDA libraries should be found automatically by CMake.
 Building for ROCm
 ^^^^^^^^^^^^^^^^^
 
-The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND``,
-``ENABLE_ROCFFT_BACKEND``, ``ENABLE_ROCSOLVER_BACKEND`` and
-``ENABLE_ROCRAND_BACKEND``.
+The ROCm backends can be enabled with ``ONEAPI_ONEMKL_ENABLE_ROCBLAS_BACKEND``,
+``ONEAPI_ONEMKL_ENABLE_ROCFFT_BACKEND``, ``ONEAPI_ONEMKL_ENABLE_ROCSOLVER_BACKEND`` and
+``ONEAPI_ONEMKL_ENABLE_ROCRAND_BACKEND``.
 
 For *RocBLAS*, *RocSOLVER* and *RocRAND*, the target device architecture must be
 set. This can be set with using the ``HIP_TARGETS`` parameter. For example, to
@@ -264,7 +264,7 @@ Building for portBLAS
 ---------------------
 
 `portBLAS <https://github.com/codeplaysoftware/portBLAS>`_ is
-enabled by setting ``-DENABLE_PORTBLAS_BACKEND=True``.
+enabled by setting ``-DONEAPI_ONEMKL_ENABLE_PORTBLAS_BACKEND=True``.
 
 By default, the portBLAS backend is not tuned for any specific device.
 This tuning is required to achieve best performance.
@@ -293,7 +293,7 @@ Building for portFFT
 ---------------------
 
 `portFFT <https://github.com/codeplaysoftware/portFFT>`_ is enabled by setting
-``-DENABLE_PORTFFT_BACKEND=True``.
+``-DONEAPI_ONEMKL_ENABLE_PORTFFT_BACKEND=True``.
 
 By default, the portFFT backend is not tuned for any specific device. The tuning
 flags are detailed in the `portFFT
@@ -332,7 +332,7 @@ The following table provides details of CMake options and their default values:
    * - CMake Option
      - Supported Values
      - Default Value 
-   * - BUILD_SHARED_LIBS
+   * - ONEAPI_ONEMKL_BUILD_SHARED_LIBS
      - True, False
      - True      
    * - BUILD_DOC
@@ -365,12 +365,12 @@ disabled using the Ninja build system:
       -GNinja \
       -DCMAKE_CXX_COMPILER=clang++ \
       -DCMAKE_C_COMPILER=clang \
-      -DENABLE_MKLGPU_BACKEND=False \
-      -DENABLE_MKLCPU_BACKEND=False \
-      -DENABLE_CUFFT_BACKEND=True \
-      -DENABLE_CUBLAS_BACKEND=True \
-      -DENABLE_CUSOLVER_BACKEND=True \
-      -DENABLE_CURAND_BACKEND=True \
+      -DONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND=False \
+      -DONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND=False \
+      -DONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND=True \
+      -DONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND=True \
+      -DONEAPI_ONEMKL_ENABLE_CUSOLVER_BACKEND=True \
+      -DONEAPI_ONEMKL_ENABLE_CURAND_BACKEND=True \
       -DBUILD_FUNCTIONAL_TESTS=False
 
 ``$ONEMKL_DIR`` points at the oneMKL source directly. The x86 CPU (``MKLCPU``)
@@ -386,11 +386,11 @@ disabled:
   cmake $ONEMKL_DIR \
       -DCMAKE_CXX_COMPILER=clang++ \ 
       -DCMAKE_C_COMPILER=clang \
-      -DENABLE_MKLCPU_BACKEND=False \ 
-      -DENABLE_MKLGPU_BACKEND=False \
-      -DENABLE_ROCFFT_BACKEND=True  \ 
-      -DENABLE_ROCBLAS_BACKEND=True \
-      -DENABLE_ROCSOLVER_BACKEND=True \ 
+      -DONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND=False \
+      -DONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND=False \
+      -DONEAPI_ONEMKL_ENABLE_ROCFFT_BACKEND=True  \
+      -DONEAPI_ONEMKL_ENABLE_ROCBLAS_BACKEND=True \
+      -DONEAPI_ONEMKL_ENABLE_ROCSOLVER_BACKEND=True \
       -DHIP_TARGETS=gfx90a \
       -DBUILD_FUNCTIONAL_TESTS=False
 
@@ -408,8 +408,8 @@ GPU and Nvidia GPU with testing enabled:
   cmake $ONEMKL_DIR \ 
       -DCMAKE_CXX_COMPILER=icpx \
       -DCMAKE_C_COMPILER=icx \ 
-      -DENABLE_ROCFFT_BACKEND=True \
-      -DENABLE_CUFFT_BACKEND=True \
+      -DONEAPI_ONEMKL_ENABLE_ROCFFT_BACKEND=True \
+      -DONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND=True \
       -DTARGET_DOMAINS=dft \
       -DBUILD_EXAMPLES=False
 

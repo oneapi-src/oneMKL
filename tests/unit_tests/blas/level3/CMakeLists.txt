@@ -20,7 +20,7 @@
 # Build object from all test sources
 set(L3_SOURCES "gemm.cpp" "symm.cpp" "syrk.cpp" "hemm.cpp" "herk.cpp" "syr2k.cpp" "her2k.cpp" "trmm.cpp" "trsm.cpp" "gemm_usm.cpp" "symm_usm.cpp" "syrk_usm.cpp" "hemm_usm.cpp" "herk_usm.cpp" "syr2k_usm.cpp" "her2k_usm.cpp" "trmm_usm.cpp" "trsm_usm.cpp")
 
-if(BUILD_SHARED_LIBS)
+if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
   add_library(blas_level3_rt OBJECT ${L3_SOURCES})
   target_compile_options(blas_level3_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(blas_level3_rt

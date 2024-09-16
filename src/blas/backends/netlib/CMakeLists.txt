@@ -25,7 +25,7 @@ find_package(NETLIB REQUIRED)
 
 set(SOURCES netlib_common.hpp
   netlib_level1.cpp netlib_level2.cpp netlib_level3.cpp netlib_batch.cpp netlib_extensions.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: netlib_wrappers.cpp>
+  $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>: netlib_wrappers.cpp>
 )
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
@@ -53,7 +53,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 )
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
-if(BUILD_SHARED_LIBS)
+if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
   )

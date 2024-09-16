@@ -21,7 +21,7 @@
 add_subdirectory(backends)
 
 # Recipe for RNG loader object
-if(BUILD_SHARED_LIBS)
+if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
 add_library(onemkl_rng OBJECT)
 target_sources(onemkl_rng PRIVATE rng_loader.cpp)
 target_include_directories(onemkl_rng

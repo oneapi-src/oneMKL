@@ -20,22 +20,22 @@
 add_custom_target(onemkl_backend_libs_dft)
 add_dependencies(onemkl_backend_libs onemkl_backend_libs_dft)
 
-if(ENABLE_MKLGPU_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
 
-if(ENABLE_MKLCPU_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
   add_subdirectory(mklcpu)
 endif()
 
-if(ENABLE_CUFFT_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND)
   add_subdirectory(cufft)
 endif()
 
-if(ENABLE_ROCFFT_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_ROCFFT_BACKEND)
   add_subdirectory(rocfft)
 endif()
 
-if(ENABLE_PORTFFT_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_PORTFFT_BACKEND)
   add_subdirectory(portfft)
 endif()

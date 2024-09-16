@@ -21,7 +21,7 @@
 add_subdirectory(backends)
 
 # Recipe for LAPACK loader object
-if(BUILD_SHARED_LIBS)
+if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
 add_library(onemkl_lapack OBJECT)
 target_sources(onemkl_lapack PRIVATE lapack_loader.cpp)
 target_include_directories(onemkl_lapack

@@ -20,26 +20,26 @@
 add_custom_target(onemkl_backend_libs_blas)
 add_dependencies(onemkl_backend_libs onemkl_backend_libs_blas)
 
-if(ENABLE_MKLCPU_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
   add_subdirectory(mklcpu)
 endif()
 
-if(ENABLE_NETLIB_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_NETLIB_BACKEND)
   add_subdirectory(netlib)
 endif()
 
-if(ENABLE_MKLGPU_BACKEND)
+if(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
 
-if(ENABLE_CUBLAS_BACKEND AND UNIX)
+if(ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND AND UNIX)
   add_subdirectory(cublas)
 endif()
 
-if(ENABLE_ROCBLAS_BACKEND AND UNIX)
+if(ONEAPI_ONEMKL_ENABLE_ROCBLAS_BACKEND AND UNIX)
   add_subdirectory(rocblas)
 endif()
 
-if(ENABLE_PORTBLAS_BACKEND AND UNIX)
+if(ONEAPI_ONEMKL_ENABLE_PORTBLAS_BACKEND AND UNIX)
   add_subdirectory(portblas)
 endif()

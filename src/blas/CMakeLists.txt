@@ -21,7 +21,7 @@
 add_subdirectory(backends)
 
 # Recipe for BLAS loader object
-if(BUILD_SHARED_LIBS)
+if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
 add_library(onemkl_blas OBJECT)
 target_sources(onemkl_blas PRIVATE blas_loader.cpp)
 target_include_directories(onemkl_blas

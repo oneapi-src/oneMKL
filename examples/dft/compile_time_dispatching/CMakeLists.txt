@@ -19,7 +19,7 @@
 
 #Build object from all sources
 set(DFT_CT_SOURCES "")
-if (ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
+if (ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND AND ONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND)
   list(APPEND DFT_CT_SOURCES "complex_fwd_usm_mklcpu_cufft")
 endif()
 
@@ -33,7 +33,7 @@ foreach(dft_ct_source ${DFT_CT_SOURCES})
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-  if(domain STREQUAL "dft" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
+  if(domain STREQUAL "dft" AND ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND AND ONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND)
     add_dependencies(${EXAMPLE_NAME} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cufft)
   endif()
