@@ -42,15 +42,6 @@ endif()
 option(ENABLE_MKLCPU_BACKEND "Enable the Intel oneMKL CPU backend for supported interfaces" ON)
 option(ENABLE_MKLGPU_BACKEND "Enable the Intel oneMKL GPU backend for supported interfaces" ON)
 
-if(ENABLE_MKLCPU_BACKEND)
-  option(ENABLE_MKLCPU_THREAD_TBB "Enable the use of Intel TBB with the oneMKL CPU backend" ON)
-  set(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND True)
-endif()
-
-if(ENABLE_MKLGPU_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND True)
-endif()
-
 # blas
 option(ENABLE_CUBLAS_BACKEND "Enable the cuBLAS backend for the BLAS interface" OFF)
 option(ENABLE_ROCBLAS_BACKEND "Enable the rocBLAS backend for the BLAS interface" OFF)
@@ -69,6 +60,18 @@ option(ENABLE_ROCSOLVER_BACKEND "Enable the rocSOLVER backend for the LAPACK int
 option(ENABLE_CUFFT_BACKEND "Enable the cuFFT backend for the DFT interface" OFF)
 option(ENABLE_ROCFFT_BACKEND "Enable the rocFFT backend for the DFT interface" OFF)
 option(ENABLE_PORTFFT_BACKEND "Enable the portFFT DFT backend for the DFT interface. Cannot be used with other DFT backends." OFF)
+
+# Following if-conditions allow to decouple cmake configuration variables with
+# the corresponding generated macro. This is done to be conformant with ES.33
+# C++ Core Guidelines
+if(ENABLE_MKLCPU_BACKEND)
+  option(ENABLE_MKLCPU_THREAD_TBB "Enable the use of Intel TBB with the oneMKL CPU backend" ON)
+  set(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND True)
+endif()
+
+if(ENABLE_MKLGPU_BACKEND)
+  set(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND True)
+endif()
 
 if(ENABLE_CUBLAS_BACKEND)
   set(ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND True)
