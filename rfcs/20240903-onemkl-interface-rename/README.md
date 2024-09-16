@@ -61,10 +61,12 @@ to a new name.
 
 ## Proposal
 
-The main purpose of this RFC is to agree on a new name for oneMKL Interface.
-Some of the suggested names are:
+The main purpose of this RFC is to agree on a new name for the oneMKL specification and oneMKL Interface.
+Some of the suggested names for the implementations are:
 * **oneMath**
+  * The specification would be renamed oneMath Specification
 * **oneSLA** (SYCL Linear Algebra)
+  * The specification would be renamed oneSLA Specification
 
 Other suggestions are welcomed. The name **oneMath** will be chosen if there are
 no objections by October 4, 2024.
@@ -163,3 +165,12 @@ The suggested solution does not break any existing code.
    * This will have a bigger impact and require more time to complete.
    * It should be possible to rename these occurrences without any breaking
      change. This would need to be further investigated.
+* Should the specification and the existing implementation have different names?
+  * Currently both the specification and implementation are named based on
+    "oneMKL" which suggests that the oneMKL Interface is the main or only
+    implementation of the specification. If the goal of the specification is to
+    encourage for multiple implementations to co-exist then it should be named
+    differently than the implementation.
+  * Given the nature of the project that allows for multiple backends I don't
+    see any value in encouraging multiple implementations as of today.
+  * Using multiple names may create more confusion.
