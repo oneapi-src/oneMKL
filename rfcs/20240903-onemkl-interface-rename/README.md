@@ -6,6 +6,7 @@
 |Date       |Revision | Comments                                                                 |
 |-----------|---------|--------------------------------------------------------------------------|
 |  20240903 |  1.0    | Initial version                                                          |
+|  20240916 |  1.1    | Rename occurrences of "mkl" and add an open question                     |
 
 ## Motivation
 
@@ -27,7 +28,7 @@ so we are not planning to split oneMKL per domain unless there is clear and
 strong feedback from users.
 
 **We aim to agree on a solution by October 4, 2024 and have the proposal
-implemented by the end of November 2024.**
+implemented by the end of January 2025.**
 
 There has been a number issues of where we have had to clarify the differences
 between oneMKL Interface and the Intel oneMKL product
@@ -65,31 +66,47 @@ The main purpose of this RFC is to agree on a new name for the oneMKL specificat
 Some of the suggested names for the implementations are:
 * **oneMath**
   * The specification would be renamed oneMath Specification
+  * The C++ namespace would be `oneapi::math`
+  * The CMake namespace would be `ONEMATH`
 * **oneSLA** (SYCL Linear Algebra)
   * The specification would be renamed oneSLA Specification
+  * New namespace would be `oneapi::sla`
+  * The CMake namespace would be `ONESLA`
 
 Other suggestions are welcomed. The name **oneMath** will be chosen if there are
 no objections by October 4, 2024.
 
 The suggested solution is to proceed in the following steps:
 1. The UXL foundation agrees on the new name.
-2. Codeplay submits a oneAPI-spec PR to rename the occurrences of "oneMKL" to
-   the new name.
+2. Codeplay submits a oneAPI-spec PR to rename the occurrences of "oneMKL" and
+   "mkl" to the new name.
 3. Codeplay submits a oneMKL Interface PR to:
-   * Update the root README to use the new name, with a mention that the project
-     was formerly called oneMKL Interface.
-   * Update the references to "oneMKL" and `onemkl_` in the documentation as
-     seen in the first few lines of
-     [docs/onemkl-datatypes.rst](https://github.com/oneapi-src/oneMKL/blob/develop/docs/onemkl-datatypes.rst?plain=1#L1)
-     for instance.
-   * Update occurrences of "onemkl" in internal functions such as
-     [onemkl_cublas_host_task](https://github.com/oneapi-src/oneMKL/blob/1ce98a699f93bd3a78350269b2e34d822fe43b91/src/blas/backends/cublas/cublas_task.hpp#L77).
-   * Update macros such as include guards and other internal macros like
-     `ONEMKL_EXPORT` to use the new name.
-   * Rename CMake targets `onemkl` and `onemkl_<domain>_<backend>` to use the
-     new name. The existing targets name can be added with a deprecation
-     messages for anyone using them. See the section on [CMake target
-     deprecation](#cmake-deprecated-target) for more details.
+  * Update the root README to use the new name, with a mention that the project
+    was formerly called oneMKL Interface.
+  * Update the references to "oneMKL" and `onemkl_` in the documentation as
+    seen in the first few lines of
+    [docs/onemkl-datatypes.rst](https://github.com/oneapi-src/oneMKL/blob/develop/docs/onemkl-datatypes.rst?plain=1#L1)
+    for instance.
+  * Update occurrences of "onemkl" in internal functions such as
+    [onemkl_cublas_host_task](https://github.com/oneapi-src/oneMKL/blob/1ce98a699f93bd3a78350269b2e34d822fe43b91/src/blas/backends/cublas/cublas_task.hpp#L77).
+  * Update macros such as include guards and other internal macros like
+    `ONEMKL_EXPORT` to use the new name.
+  * Rename CMake targets `onemkl` and `onemkl_<domain>_<backend>` to use the
+    new name. The existing targets name can be added with a deprecation
+    messages for anyone using them. See the section on [CMake target
+    deprecation](#cmake-deprecated-target) for more details. The namespace of
+    the exported and installed targets are changed to use the new name.
+  * The namespace `oneapi::mkl` is deprecated and aliased to the new namespace
+     name.
+  * The main header and domain headers are deprecated and include the new headers as shown below:
+    * `include/oneapi/`
+      * `mkl.hpp` -> `onemath.hpp`
+      * `mkl/` -> `onemath/`
+        * `blas.hpp`
+        * `dft.hpp`
+        * `lapack.hpp`
+        * `rng.hpp`
+        * `sparse_blas.hpp`
 4. Once the PRs are approved, Codeplay transfers the
    [oneMKL](https://github.com/oneapi-src/oneMKL) GitHub project to the
    [uxlfoundation](https://github.com/uxlfoundation) organization under the new
@@ -99,9 +116,7 @@ The suggested solution is to proceed in the following steps:
    to the new one.
 5. The PRs from the step 2 and 3 are merged.
 
-We are not planning to rename the occurrences of "mkl" such as the `oneapi::mkl`
-namespace, the `include/oneapi/mkl` folder or the `include/oneapi/mkl.hpp` file.
-Whether this is needed is an open question.
+We suggest to keep the deprecated features for 1 year before removing them.
 
 ### CMake target deprecation
 
@@ -147,7 +162,22 @@ preference.
 
 ## User impact
 
-The suggested solution does not break any existing code.
+The suggested solution can break user's code in 2 ways:
+* Only the headers listed below should be included by the users. Any other
+  headers will be moved and will not have an equivalent header with a
+  deprecation warning.
+  * `include/oneapi/`
+    * `mkl.hpp`
+    * `mkl/`
+      * `blas.hpp`
+      * `dft.hpp`
+      * `lapack.hpp`
+      * `rng.hpp`
+      * `sparse_blas.hpp`
+* The CMake logic using the `MKL::` or `ONEMKL::` namespaces will need to be
+  renamed to a new namespace based on the chosen name.
+
+The following changes have no impact:
 * The repository is transferred using the [GitHub
   transfer](https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository)
   feature so users accessing or pulling from
@@ -161,10 +191,9 @@ The suggested solution does not break any existing code.
 ## Open questions
 
 * Other suggestions for new names are welcomed.
-* Is it needed to rename the occurrences of "mkl"?
-   * This will have a bigger impact and require more time to complete.
-   * It should be possible to rename these occurrences without any breaking
-     change. This would need to be further investigated.
+* Is it needed to rename the occurrences of "mkl"? 
+  * From the feedback gathered, users and maintainers are keen to rename these
+    occurrences.
 * Should the specification and the existing implementation have different names?
   * Currently both the specification and implementation are named based on
     "oneMKL" which suggests that the oneMKL Interface is the main or only
