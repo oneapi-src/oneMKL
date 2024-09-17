@@ -19,7 +19,7 @@
 
 add_subdirectory(backends)
 
-if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
   add_library(onemkl_sparse_blas OBJECT)
   target_sources(onemkl_sparse_blas PRIVATE sparse_blas_loader.cpp)
   target_include_directories(onemkl_sparse_blas

@@ -20,7 +20,7 @@
 # Build object from all test sources
 set(SERVICE_TESTS_SOURCES "skip_ahead.cpp" "engines_api_test.cpp")
 
-if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
   add_library(rng_service_rt OBJECT ${SERVICE_TESTS_SOURCES})
   target_compile_options(rng_service_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(rng_service_rt

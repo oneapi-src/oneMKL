@@ -163,7 +163,7 @@ To integrate the new third-party library to a oneMKL header-based part, followin
                    } },
      +          { device::newdevice,
      +            {
-     +  #ifdef ENABLE_NEWLIB_BACKEND
+     +  #ifdef ONEAPI_ONEMKL_ENABLE_NEWLIB_BACKEND
      +                 LIB_NAME("blas_newlib")
      +  #endif
      +             } },
@@ -335,8 +335,8 @@ Here is the list of files that should be created/updated to integrate the new wr
 
   .. code-block:: diff
 
-            option(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND "" ON)
-            option(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND "" ON)
+            option(ENABLE_MKLCPU_BACKEND "" ON)
+            option(ENABLE_MKLGPU_BACKEND "" ON)
         +   option(ENABLE_NEWLIB_BACKEND "" ON)
 
 * Add the new directory (``src/<domain>/backends/<new_directory>``) with the wrappers for the new third-party library under the ``ENABLE_XXX_BACKEND`` condition to the ``src/<domain>/backends/CMakeList.txt`` file.
@@ -345,7 +345,7 @@ Here is the list of files that should be created/updated to integrate the new wr
 
   .. code-block:: diff
     
-            if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
+            if(ENABLE_MKLCPU_BACKEND)
                 add_subdirectory(mklcpu)
             endif()
         +    
@@ -408,8 +408,8 @@ Now you can build the backend library for ``newlib`` to make sure the third-part
 
     cd build/
     cmake .. -DNEWLIB_ROOT=<path/to/newlib> \
-        -DONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND=OFF \
-        -DONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND=OFF \
+        -DENABLE_MKLCPU_BACKEND=OFF \
+        -DENABLE_MKLGPU_BACKEND=OFF \
         -DENABLE_NEWLIB_BACKEND=ON \           # Enable new third-party library backend
         -DBUILD_FUNCTIONAL_TESTS=OFF           # At this step we want build only
     cmake --build . -j4
@@ -428,7 +428,7 @@ Update the following files to enable the new third-party library for unit tests:
   .. code-block:: diff
     
         #cmakedefine ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND
-     +  #cmakedefine ENABLE_NEWLIB_BACKEND
+     +  #cmakedefine ONEAPI_ONEMKL_ENABLE_NEWLIB_BACKEND
 
 * ``tests/unit_tests/CMakeLists.txt``: add instructions about how to link tests with the new backend library
 
@@ -436,9 +436,9 @@ Update the following files to enable the new third-party library for unit tests:
 
   .. code-block:: diff
     
-        if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
+        if(ENABLE_MKLCPU_BACKEND)
             add_dependencies(test_main_ct onemkl_blas_mklcpu)
-            if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+            if(BUILD_SHARED_LIBS)
                 list(APPEND ONEMKL_LIBRARIES onemkl_blas_mklcpu)
             else()
                 list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemkl_blas_mklcpu.a)
@@ -449,7 +449,7 @@ Update the following files to enable the new third-party library for unit tests:
      +
      +    if(ENABLE_NEWLIB_BACKEND)
      +       add_dependencies(test_main_ct onemkl_blas_newlib)
-     +       if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+     +       if(BUILD_SHARED_LIBS)
      +           list(APPEND ONEMKL_LIBRARIES onemkl_blas_newlib)
      +       else()
      +           list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemkl_blas_newlib.a)
@@ -471,7 +471,7 @@ Update the following files to enable the new third-party library for unit tests:
             #define TEST_RUN_INTELGPU(q, func, args)
         #endif
      +    
-     +  #ifdef ENABLE_NEWLIB_BACKEND
+     +  #ifdef ONEAPI_ONEMKL_ENABLE_NEWLIB_BACKEND
      +     #define TEST_RUN_NEWDEVICE(q, func, args) \
      +         func<oneapi::mkl::backend::newbackend> args
      +  #else
@@ -495,7 +495,7 @@ Update the following files to enable the new third-party library for unit tests:
                 }
             }
      +           
-     +  #ifdef ENABLE_NEWLIB_BACKEND
+     +  #ifdef ONEAPI_ONEMKL_ENABLE_NEWLIB_BACKEND
      +      devices.push_back(sycl::device(sycl::host_selector()));
      +  #endif
 
@@ -505,8 +505,8 @@ Now you can build and run functional testing for enabled third-party libraries (
 
     cd build/
     cmake .. -DNEWLIB_ROOT=<path/to/newlib> \
-        -DONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND=OFF \
-        -DONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND=OFF \
+        -DENABLE_MKLCPU_BACKEND=OFF \
+        -DENABLE_MKLGPU_BACKEND=OFF \
         -DENABLE_NEWLIB_BACKEND=ON  \
         -DBUILD_FUNCTIONAL_TESTS=ON
     cmake --build . -j4

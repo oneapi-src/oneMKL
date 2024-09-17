@@ -36,7 +36,7 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
   # Inside <path to onemkl>
   mkdir build && cd build
   cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl    \ # Indicate that AdaptiveCpp is being used.
-          -DONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND=False            \ # MKLGPU backend is not supported by AdaptiveCpp
+          -DENABLE_MKLGPU_BACKEND=False            \ # MKLGPU backend is not supported by AdaptiveCpp
           -DENABLE_<BACKEND_NAME>_BACKEND=True     \ # Enable backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True   \ # Multiple backends can be enabled at once.
           -DHIPSYCL_TARGETS=omp/;hip:gfx90a,gfx906 \ # Set target architectures depending on supported devices.
@@ -75,22 +75,22 @@ The most important supported build options are:
    * - CMake Option
      - Supported Values
      - Default Value 
-   * - ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND
+   * - ENABLE_MKLCPU_BACKEND
      - True, False
      - True      
-   * - ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND
+   * - ENABLE_CUBLAS_BACKEND
      - True, False
      - False     
-   * - ONEAPI_ONEMKL_ENABLE_CURAND_BACKEND
+   * - ENABLE_CURAND_BACKEND
      - True, False
      - False     
-   * - ONEAPI_ONEMKL_ENABLE_NETLIB_BACKEND
+   * - ENABLE_NETLIB_BACKEND
      - True, False
      - False     
-   * - ONEAPI_ONEMKL_ENABLE_ROCBLAS_BACKEND
+   * - ENABLE_ROCBLAS_BACKEND
      - True, False
      - False     
-   * - ONEAPI_ONEMKL_ENABLE_ROCRAND_BACKEND
+   * - ENABLE_ROCRAND_BACKEND
      - True, False
      - False     
    * - ENABLE_MKLCPU_THREAD_TBB
@@ -117,8 +117,8 @@ Backends
 Building for CUDA
 ~~~~~~~~~~~~~~~~~
 
-The CUDA backends can be enabled with ``ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND`` and
-``ONEAPI_ONEMKL_ENABLE_CURAND_BACKEND``.
+The CUDA backends can be enabled with ``ENABLE_CUBLAS_BACKEND`` and
+``ENABLE_CURAND_BACKEND``.
 
 The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. For
 example, to target a Nvidia A100 (Ampere architecture), set
@@ -137,8 +137,8 @@ the CUDA libraries should be found automatically by CMake.
 Building for ROCm
 ~~~~~~~~~~~~~~~~~
 
-The ROCm backends can be enabled with ``ONEAPI_ONEMKL_ENABLE_ROCBLAS_BACKEND`` and
-``ONEAPI_ONEMKL_ENABLE_ROCRAND_BACKEND``.
+The ROCm backends can be enabled with ``ENABLE_ROCBLAS_BACKEND`` and
+``ENABLE_ROCRAND_BACKEND``.
 
 The target architecture must be set using the ``HIPSYCL_TARGETS`` parameter. See
 the `AdaptiveCpp documentation

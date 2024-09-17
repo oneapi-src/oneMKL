@@ -28,7 +28,7 @@ set(SPBLAS_SOURCES
 
 include(WarningsUtils)
 
-if (ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+if (BUILD_SHARED_LIBS)
     add_library(spblas_source_rt OBJECT ${SPBLAS_SOURCES})
     target_compile_options(spblas_source_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
     target_include_directories(spblas_source_rt

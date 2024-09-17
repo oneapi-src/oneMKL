@@ -63,9 +63,9 @@ endif()
 # These commands only run if this is the main project
 if(CMAKE_PROJECT_NAME STREQUAL "gtest" OR CMAKE_PROJECT_NAME STREQUAL "googletest-distribution")
 
-  # ONEAPI_ONEMKL_BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
+  # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
   # make it prominent in the GUI.
-  option(ONEAPI_ONEMKL_BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
+  option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
 
 else()
 

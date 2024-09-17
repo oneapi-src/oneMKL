@@ -20,18 +20,18 @@
 add_custom_target(onemkl_backend_libs_lapack)
 add_dependencies(onemkl_backend_libs onemkl_backend_libs_lapack)
 
-if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
+if(ENABLE_MKLCPU_BACKEND)
   add_subdirectory(mklcpu)
 endif()
 
-if(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND)
+if(ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
 
-if(ONEAPI_ONEMKL_ENABLE_CUSOLVER_BACKEND)
+if(ENABLE_CUSOLVER_BACKEND)
   add_subdirectory(cusolver)
 endif()
 
-if(ONEAPI_ONEMKL_ENABLE_ROCSOLVER_BACKEND)
+if(ENABLE_ROCSOLVER_BACKEND)
   add_subdirectory(rocsolver)
 endif()

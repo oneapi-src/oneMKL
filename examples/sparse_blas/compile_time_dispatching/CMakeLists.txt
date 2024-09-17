@@ -20,7 +20,7 @@
 #Build object from all sources
 set(SPARSE_BLAS_BACKENDS "")
 
-if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
+if(ENABLE_MKLCPU_BACKEND)
   list(APPEND SPARSE_BLAS_BACKENDS "mklcpu")
 endif()
 

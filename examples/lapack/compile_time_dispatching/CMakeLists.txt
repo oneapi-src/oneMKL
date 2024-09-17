@@ -19,11 +19,11 @@
 
 #Build object from all sources
 set(LAPACK_CT_SOURCES "")
-if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND AND ONEAPI_ONEMKL_ENABLE_CUSOLVER_BACKEND)
+if(ENABLE_MKLCPU_BACKEND AND ENABLE_CUSOLVER_BACKEND)
   list(APPEND LAPACK_CT_SOURCES "getrs_usm_mklcpu_cusolver")
 endif()
 
-if(domain STREQUAL "lapack" AND ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
+if(domain STREQUAL "lapack" AND ENABLE_MKLCPU_BACKEND)
   find_library(OPENCL_LIBRARY NAMES OpenCL)
   message(STATUS "Found OpenCL: ${OPENCL_LIBRARY}")
 endif()
@@ -35,7 +35,7 @@ foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
-  if(domain STREQUAL "lapack" AND ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND AND ONEAPI_ONEMKL_ENABLE_CUSOLVER_BACKEND)
+  if(domain STREQUAL "lapack" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUSOLVER_BACKEND)
     add_dependencies(example_${domain}_${lapack_ct_source} onemkl_${domain}_mklcpu onemkl_${domain}_cusolver)
     list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cusolver)
     target_link_libraries(example_${domain}_${lapack_ct_source} PUBLIC ${OPENCL_LIBRARY})

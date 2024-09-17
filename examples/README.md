@@ -10,7 +10,7 @@ Each routine has one run-time dispatching example and one compile-time dispatchi
 
 To build examples, use cmake build option `-DBUILD_EXAMPLES=true`.  
 Compile_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and cuda backend is enabled, because the compile-time dispatching example runs on both mklcpu and cuda backends.
-Run_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and `-DONEAPI_ONEMKL_BUILD_SHARED_LIBS=true`.
+Run_time_dispatching will be built if `-DBUILD_EXAMPLES=true` and `-DBUILD_SHARED_LIBS=true`.
 
 The example executable naming convention follows `example_<$domain>_<$routine>_<$backend>` for compile-time dispatching examples 
   or `example_<$domain>_<$routine>` for run-time dispatching examples. 

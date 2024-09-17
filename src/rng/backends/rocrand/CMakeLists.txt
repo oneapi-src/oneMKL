@@ -58,7 +58,7 @@ find_package(hip REQUIRED)
 find_package(rocrand REQUIRED)
 find_package(Threads REQUIRED)
 
-set(SOURCES philox4x32x10.cpp mrg32k3a.cpp $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>:
+set(SOURCES philox4x32x10.cpp mrg32k3a.cpp $<$<BOOL:${BUILD_SHARED_LIBS}>:
             mkl_rng_rocrand_wrappers.cpp>)
 
 add_library(${LIB_NAME})

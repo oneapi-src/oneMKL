@@ -24,7 +24,7 @@ find_package(cuBLAS REQUIRED)
 set(SOURCES     cusolver_lapack.cpp
                 cusolver_batch.cpp
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:cusolver_scope_handle.cpp >
-                $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>: cusolver_wrappers.cpp>)
+                $<$<BOOL:${BUILD_SHARED_LIBS}>: cusolver_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemkl_backend_libs_lapack ${LIB_NAME})

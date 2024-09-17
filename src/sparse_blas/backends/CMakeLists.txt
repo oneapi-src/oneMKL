@@ -20,10 +20,10 @@
 add_custom_target(onemkl_backend_libs_sparse_blas)
 add_dependencies(onemkl_backend_libs onemkl_backend_libs_sparse_blas)
 
-if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
+if(ENABLE_MKLCPU_BACKEND)
   add_subdirectory(mklcpu)
 endif()
 
-if(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND)
+if(ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()

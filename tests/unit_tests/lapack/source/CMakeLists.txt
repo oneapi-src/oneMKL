@@ -68,7 +68,7 @@ set(LAPACK_SOURCES
     "unmtr.cpp"
 )
 
-if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
   add_library(lapack_source_rt OBJECT ${LAPACK_SOURCES})
   target_compile_options(lapack_source_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
   target_include_directories(lapack_source_rt

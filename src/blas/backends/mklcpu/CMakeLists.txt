@@ -22,7 +22,7 @@ set(LIB_OBJ ${LIB_NAME}_obj)
 
 set(SOURCES
   mklcpu_level1.cpp mklcpu_level2.cpp mklcpu_level3.cpp mklcpu_batch.cpp mklcpu_extensions.cpp
-  $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>)
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
@@ -52,7 +52,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
 #Set libraries as not transitive for dynamic
-if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
   )

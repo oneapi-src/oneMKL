@@ -26,17 +26,17 @@ set(RNG_DEVICE_SOURCES "uniform")
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
 # overwrite ONEAPI_DEVICE_SELECTOR in their environment to run on the desired backend
 set(DEVICE_FILTERS "")
-if(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND)
+if(ENABLE_MKLCPU_BACKEND)
   list(APPEND DEVICE_FILTERS "opencl:cpu")
 endif()
 # RNG only supports mklcpu backend on Windows
-if(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND)
+if(ENABLE_MKLGPU_BACKEND)
   list(APPEND DEVICE_FILTERS "level_zero:gpu")
 endif()
-if(ONEAPI_ONEMKL_ENABLE_CURAND_BACKEND)
+if(ENABLE_CURAND_BACKEND)
   list(APPEND DEVICE_FILTERS "cuda:gpu")
 endif()
-if(ONEAPI_ONEMKL_ENABLE_ROCRAND_BACKEND)
+if(ENABLE_ROCRAND_BACKEND)
   list(APPEND DEVICE_FILTERS "hip:gpu")
 endif()
 

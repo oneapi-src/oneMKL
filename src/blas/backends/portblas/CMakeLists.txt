@@ -174,7 +174,7 @@ set(SOURCES
   portblas_level3_double.cpp portblas_level3_float.cpp
   portblas_level3_half.cpp portblas_level3_bfloat16.cpp
   portblas_batch.cpp
-  $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>: portblas_wrappers.cpp>)
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: portblas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
@@ -199,7 +199,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
-if(ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
   )

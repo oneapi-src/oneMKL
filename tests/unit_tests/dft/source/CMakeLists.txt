@@ -21,7 +21,7 @@ set(DFT_SOURCES "compute_tests.cpp" "descriptor_tests.cpp" "workspace_external_t
 
 include(WarningsUtils)
 
-if (ONEAPI_ONEMKL_BUILD_SHARED_LIBS)
+if (BUILD_SHARED_LIBS)
     add_library(dft_source_rt OBJECT ${DFT_SOURCES})
     target_compile_options(dft_source_rt PRIVATE -DCALL_RT_API -DNOMINMAX)
     target_include_directories(dft_source_rt

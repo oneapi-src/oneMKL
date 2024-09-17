@@ -27,7 +27,7 @@ set(SOURCES cublas_level1.cpp
                 cublas_extensions.cpp 
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:cublas_scope_handle.cpp >
                 $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},hipsycl>:cublas_scope_handle_hipsycl.cpp >
-                $<$<BOOL:${ONEAPI_ONEMKL_BUILD_SHARED_LIBS}>: cublas_wrappers.cpp>)
+                $<$<BOOL:${BUILD_SHARED_LIBS}>: cublas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
