@@ -100,8 +100,8 @@ The suggested solution is to proceed in the following steps:
      name.
   * The main header and domain headers are deprecated and include the new headers as shown below:
     * `include/oneapi/`
-      * `mkl.hpp` -> `onemath.hpp`
-      * `mkl/` -> `onemath/`
+      * `mkl.hpp` -> `math.hpp`
+      * `mkl/` -> `math/`
         * `blas.hpp`
         * `dft.hpp`
         * `lapack.hpp`
