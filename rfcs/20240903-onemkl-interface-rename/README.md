@@ -106,6 +106,7 @@ The suggested solution is to proceed in the following steps:
         * `dft.hpp`
         * `lapack.hpp`
         * `rng.hpp`
+        * `rng/device.hpp`
         * `sparse_blas.hpp`
 4. Once the PRs are approved, Codeplay transfers the
    [oneMKL](https://github.com/oneapi-src/oneMKL) GitHub project to the
@@ -173,6 +174,7 @@ The suggested solution can break user's code in 2 ways:
       * `dft.hpp`
       * `lapack.hpp`
       * `rng.hpp`
+      * `rng/device.hpp`
       * `sparse_blas.hpp`
 * The CMake logic using the `MKL::` or `ONEMKL::` namespaces will need to be
   renamed to a new namespace based on the chosen name.
