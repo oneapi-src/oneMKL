@@ -124,6 +124,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
             uplo_vec.data(), n_vec.data(), nrhs_vec.data(), lda_vec.data(), ldb_vec.data(),
             group_count, group_sizes_vec.data());
 #endif
+        queue.wait_and_throw();
         auto scratchpad_dev = device_alloc<fp>(queue, scratchpad_size);
 
         auto A_dev_iter = A_dev_list.begin();
@@ -287,6 +288,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
             uplo_vec.data(), n_vec.data(), nrhs_vec.data(), lda_vec.data(), ldb_vec.data(),
             group_count, group_sizes_vec.data());
 #endif
+        queue.wait_and_throw();
         auto scratchpad_dev = device_alloc<fp>(queue, scratchpad_size);
 
         auto A_dev_iter = A_dev_list.begin();
@@ -320,6 +322,7 @@ bool usm_dependency(const sycl::device& dev, uint64_t seed) {
                                   group_sizes_vec.data(), scratchpad_dev, scratchpad_size,
                                   std::vector<sycl::event>{ in_event });
 #endif
+        queue.wait_and_throw();
         result = check_dependency(queue, in_event, func_event);
 
         queue.wait_and_throw();

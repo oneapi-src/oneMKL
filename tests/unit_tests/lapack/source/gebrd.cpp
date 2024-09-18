@@ -76,6 +76,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
         TEST_RUN_LAPACK_CT_SELECT(
             queue, scratchpad_size = oneapi::mkl::lapack::gebrd_scratchpad_size<fp>, m, n, lda);
 #endif
+        queue.wait_and_throw();
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
@@ -149,6 +150,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
         TEST_RUN_LAPACK_CT_SELECT(
             queue, scratchpad_size = oneapi::mkl::lapack::gebrd_scratchpad_size<fp>, m, n, lda);
 #endif
+        queue.wait_and_throw();
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
         host_to_device_copy(queue, A.data(), A_dev, A.size());
@@ -166,6 +168,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, 
                                   d_dev, e_dev, tauq_dev, taup_dev, scratchpad_dev, scratchpad_size,
                                   std::vector<sycl::event>{ in_event });
 #endif
+        queue.wait_and_throw();
         result = check_dependency(queue, in_event, func_event);
 
         queue.wait_and_throw();
