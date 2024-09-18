@@ -27,9 +27,7 @@ set(DFT_RT_SOURCES "")
 # If users build more than one backend (i.e. mklcpu and mklgpu, or mklcpu and CUDA), they may need to
 # overwrite ONEAPI_DEVICE_SELECTOR in their environment to run on the desired backend
 set(DEVICE_FILTERS "")
-if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND OR
-    ENABLE_CUFFT_BACKEND OR ENABLE_ROCFFT_BACKEND OR
-    ENABLE_PORTFFT_BACKEND)
+if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND OR ENABLE_CUFFT_BACKEND OR ENABLE_ROCFFT_BACKEND OR ENABLE_PORTFFT_BACKEND)
   list(APPEND DFT_RT_SOURCES "real_fwd_usm")
 endif()
 

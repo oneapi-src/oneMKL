@@ -31,8 +31,7 @@ foreach(rng_ct_source ${RNG_CT_SOURCES})
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
 
-  if(domain STREQUAL "rng" AND ENABLE_MKLCPU_BACKEND AND
-     ENABLE_CURAND_BACKEND)
+  if(domain STREQUAL "rng" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CURAND_BACKEND)
     add_dependencies(example_${domain}_${rng_ct_source}
         onemkl_${domain}_mklcpu
         onemkl_${domain}_curand)
