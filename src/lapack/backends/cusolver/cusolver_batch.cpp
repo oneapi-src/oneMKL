@@ -137,7 +137,7 @@ inline void getri_batch(const char *func_name, Func func, sycl::queue &queue, st
                             sizeof(T *) * batch_size);
             auto **scratch_dev_ = reinterpret_cast<cuDataType **>(scratch_dev);
 
-            blas::cublas::cublas_native_func(func_name, func, err, cublas_handle, n, a_dev_, lda, ipiv32_,
+            blas::cublas::cublas_native_named_func(func_name, func, err, cublas_handle, n, a_dev_, lda, ipiv32_,
                                      scratch_dev_, lda, info_, batch_size);
 
             free(a_batched);
@@ -859,7 +859,7 @@ sycl::event getri_batch(const char *func_name, Func func, sycl::queue &queue, st
                             sizeof(T *) * batch_size);
             auto **scratch_dev_ = reinterpret_cast<cuDataType **>(scratch_dev);
 
-            blas::cublas::cublas_native_func(func_name, func, err, cublas_handle, n, a_dev_, lda, ipiv32,
+            blas::cublas::cublas_native_named_func(func_name, func, err, cublas_handle, n, a_dev_, lda, ipiv32,
                                      scratch_dev_, lda, devInfo, batch_size);
 
             free(a_batched);
