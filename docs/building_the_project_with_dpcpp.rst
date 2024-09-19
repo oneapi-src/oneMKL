@@ -434,7 +434,7 @@ Build oneMKL for the BLAS domain on a generic SYCL device:
       -DENABLE_MKLGPU_BACKEND=False \
       -DENABLE_PORTBLAS_BACKEND=True
 
-Note that this is not a supported configuration. This builds oneMKL Interfaces
+Note that this is not a tested configuration. This builds oneMKL Interfaces
 with the portBLAS backend only, for a generic SYCL device supported by the 
 Open DPC++ project.
 
