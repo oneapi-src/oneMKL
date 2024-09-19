@@ -34,13 +34,13 @@ endif()
 # Build options
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
 
-if(BUILD_SHARED_LIBS)
-  set(ONEAPI_ONEMKL_BUILD_SHARED_LIBS True)
-endif()
-
 ## Backends
 option(ENABLE_MKLCPU_BACKEND "Enable the Intel oneMKL CPU backend for supported interfaces" ON)
 option(ENABLE_MKLGPU_BACKEND "Enable the Intel oneMKL GPU backend for supported interfaces" ON)
+
+if(ENABLE_MKLCPU_BACKEND)
+  option(ENABLE_MKLCPU_THREAD_TBB "Enable the use of Intel TBB with the oneMKL CPU backend" ON)
+endif()
 
 # blas
 option(ENABLE_CUBLAS_BACKEND "Enable the cuBLAS backend for the BLAS interface" OFF)
@@ -61,61 +61,6 @@ option(ENABLE_CUFFT_BACKEND "Enable the cuFFT backend for the DFT interface" OFF
 option(ENABLE_ROCFFT_BACKEND "Enable the rocFFT backend for the DFT interface" OFF)
 option(ENABLE_PORTFFT_BACKEND "Enable the portFFT DFT backend for the DFT interface. Cannot be used with other DFT backends." OFF)
 
-# Following if-conditions allow to decouple cmake configuration variables with
-# the corresponding generated macro. This is done to be conformant with ES.33
-# C++ Core Guidelines
-if(ENABLE_MKLCPU_BACKEND)
-  option(ENABLE_MKLCPU_THREAD_TBB "Enable the use of Intel TBB with the oneMKL CPU backend" ON)
-  set(ONEAPI_ONEMKL_ENABLE_MKLCPU_BACKEND True)
-endif()
-
-if(ENABLE_MKLGPU_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_MKLGPU_BACKEND True)
-endif()
-
-if(ENABLE_CUBLAS_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_CUBLAS_BACKEND True)
-endif()
-
-if(ENABLE_ROCBLAS_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_ROCBLAS_BACKEND True)
-endif()
-
-if(ENABLE_NETLIB_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_NETLIB_BACKEND True)
-endif()
-
-if(ENABLE_PORTBLAS_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_PORTBLAS_BACKEND True)
-endif()
-
-if(ENABLE_CURAND_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_CURAND_BACKEND True)
-endif()
-
-if(ENABLE_ROCRAND_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_ROCRAND_BACKEND True)
-endif()
-
-if(ENABLE_CUSOLVER_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_CUSOLVER_BACKEND True)
-endif()
-
-if(ENABLE_ROCSOLVER_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_ROCSOLVER_BACKEND True)
-endif()
-
-if(ENABLE_CUFFT_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_CUFFT_BACKEND True)
-endif()
-
-if(ENABLE_ROCFFT_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_ROCFFT_BACKEND True)
-endif()
-
-if(ENABLE_PORTFFT_BACKEND)
-  set(ONEAPI_ONEMKL_ENABLE_PORTFFT_BACKEND True)
-endif()
 
 set(ONEMKL_SYCL_IMPLEMENTATION "dpc++" CACHE STRING "Name of the SYCL compiler")
 set(HIP_TARGETS "" CACHE STRING "Target HIP architectures")
