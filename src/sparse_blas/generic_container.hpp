@@ -265,19 +265,19 @@ struct generic_sparse_handle {
         return row_container.data_type;
     }
 
-    void set_matrix_property(oneapi::mkl::sparse::matrix_property property) {
+    void set_matrix_property(matrix_property property) {
         properties_mask |= matrix_property_to_mask(property);
     }
 
-    bool has_matrix_property(oneapi::mkl::sparse::matrix_property property) {
+    bool has_matrix_property(matrix_property property) {
         return properties_mask & matrix_property_to_mask(property);
     }
 
 private:
-    std::int32_t matrix_property_to_mask(oneapi::mkl::sparse::matrix_property property) {
+    std::int32_t matrix_property_to_mask(matrix_property property) {
         switch (property) {
-            case oneapi::mkl::sparse::matrix_property::symmetric: return 1 << 0;
-            case oneapi::mkl::sparse::matrix_property::sorted: return 1 << 1;
+            case matrix_property::symmetric: return 1 << 0;
+            case matrix_property::sorted: return 1 << 1;
             default:
                 throw oneapi::mkl::invalid_argument(
                     "sparse_blas", "set_matrix_property",

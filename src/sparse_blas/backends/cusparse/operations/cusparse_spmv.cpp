@@ -37,11 +37,11 @@ struct spmv_descr {
     bool buffer_size_called = false;
     bool optimized_called = false;
     oneapi::mkl::transpose last_optimized_opA;
-    oneapi::mkl::sparse::matrix_view last_optimized_A_view;
-    oneapi::mkl::sparse::matrix_handle_t last_optimized_A_handle;
-    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_x_handle;
-    oneapi::mkl::sparse::dense_vector_handle_t last_optimized_y_handle;
-    oneapi::mkl::sparse::spmv_alg last_optimized_alg;
+    matrix_view last_optimized_A_view;
+    matrix_handle_t last_optimized_A_handle;
+    dense_vector_handle_t last_optimized_x_handle;
+    dense_vector_handle_t last_optimized_y_handle;
+    spmv_alg last_optimized_alg;
 };
 
 } // namespace oneapi::mkl::sparse
@@ -68,14 +68,12 @@ inline auto get_cuda_spmv_alg(spmv_alg alg) {
 }
 
 void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose opA,
-                      oneapi::mkl::sparse::matrix_view A_view,
-                      oneapi::mkl::sparse::matrix_handle_t A_handle,
-                      oneapi::mkl::sparse::dense_vector_handle_t x_handle,
-                      oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                      bool is_alpha_host_accessible, bool is_beta_host_accessible) {
+                      matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
+                      dense_vector_handle_t y_handle, bool is_alpha_host_accessible,
+                      bool is_beta_host_accessible) {
     detail::check_valid_spmv_common(function_name, opA, A_view, A_handle, x_handle, y_handle,
                                     is_alpha_host_accessible, is_beta_host_accessible);
-    if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::general) {
+    if (A_view.type_view != matrix_descr::general) {
         throw mkl::unimplemented(
             "sparse_blas", function_name,
             "The backend does not support spmv with a `type_view` other than `matrix_descr::general`.");
@@ -83,12 +81,9 @@ void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose o
 }
 
 void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
-                      oneapi::mkl::sparse::matrix_view A_view,
-                      oneapi::mkl::sparse::matrix_handle_t A_handle,
-                      oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
-                      oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                      oneapi::mkl::sparse::spmv_alg alg,
-                      oneapi::mkl::sparse::spmv_descr_t spmv_descr, std::size_t &temp_buffer_size) {
+                      matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
+                      const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
+                      spmv_descr_t spmv_descr, std::size_t &temp_buffer_size) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
@@ -114,13 +109,10 @@ void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
 }
 
 inline void common_spmv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_accessible,
-                                 oneapi::mkl::sparse::matrix_view A_view,
-                                 oneapi::mkl::sparse::matrix_handle_t A_handle,
-                                 oneapi::mkl::sparse::dense_vector_handle_t x_handle,
-                                 bool is_beta_host_accessible,
-                                 oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                                 oneapi::mkl::sparse::spmv_alg alg,
-                                 oneapi::mkl::sparse::spmv_descr_t spmv_descr) {
+                                 matrix_view A_view, matrix_handle_t A_handle,
+                                 dense_vector_handle_t x_handle, bool is_beta_host_accessible,
+                                 dense_vector_handle_t y_handle, spmv_alg alg,
+                                 spmv_descr_t spmv_descr) {
     check_valid_spmv("spmv_optimize", opA, A_view, A_handle, x_handle, y_handle,
                      is_alpha_host_accessible, is_beta_host_accessible);
     if (!spmv_descr->buffer_size_called) {
@@ -139,10 +131,8 @@ inline void common_spmv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_
 #if CUSPARSE_VERSION >= 12300
 // cusparseSpMV_preprocess was added in cuSPARSE 12.3.0.142 (CUDA 12.4)
 void spmv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, const void *alpha,
-                        oneapi::mkl::sparse::matrix_handle_t A_handle,
-                        oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
-                        oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                        oneapi::mkl::sparse::spmv_alg alg, void *workspace_ptr,
+                        matrix_handle_t A_handle, dense_vector_handle_t x_handle, const void *beta,
+                        dense_vector_handle_t y_handle, spmv_alg alg, void *workspace_ptr,
                         bool is_alpha_host_accessible) {
     auto cu_a = A_handle->backend_handle;
     auto cu_x = x_handle->backend_handle;
@@ -159,12 +149,9 @@ void spmv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
 #endif
 
 void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
-                   oneapi::mkl::sparse::matrix_view A_view,
-                   oneapi::mkl::sparse::matrix_handle_t A_handle,
-                   oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
-                   oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                   oneapi::mkl::sparse::spmv_alg alg, oneapi::mkl::sparse::spmv_descr_t spmv_descr,
-                   sycl::buffer<std::uint8_t, 1> workspace) {
+                   matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
+                   const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
+                   spmv_descr_t spmv_descr, sycl::buffer<std::uint8_t, 1> workspace) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     if (!A_handle->all_use_buffer()) {
@@ -174,7 +161,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                          is_beta_host_accessible, y_handle, alg, spmv_descr);
     // Copy the buffer to extend its lifetime until the descriptor is free'd.
     spmv_descr->workspace.set_buffer_untyped(workspace);
-    if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
+    if (alg == spmv_alg::no_optimize_alg) {
         return;
     }
 
@@ -209,13 +196,10 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
 }
 
 sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
-                          oneapi::mkl::sparse::matrix_view A_view,
-                          oneapi::mkl::sparse::matrix_handle_t A_handle,
-                          oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
-                          oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                          oneapi::mkl::sparse::spmv_alg alg,
-                          oneapi::mkl::sparse::spmv_descr_t spmv_descr, void *workspace,
-                          const std::vector<sycl::event> &dependencies) {
+                          matrix_view A_view, matrix_handle_t A_handle,
+                          dense_vector_handle_t x_handle, const void *beta,
+                          dense_vector_handle_t y_handle, spmv_alg alg, spmv_descr_t spmv_descr,
+                          void *workspace, const std::vector<sycl::event> &dependencies) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     if (A_handle->all_use_buffer()) {
@@ -224,7 +208,7 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
     common_spmv_optimize(opA, is_alpha_host_accessible, A_view, A_handle, x_handle,
                          is_beta_host_accessible, y_handle, alg, spmv_descr);
     spmv_descr->workspace.usm_ptr = workspace;
-    if (alg == oneapi::mkl::sparse::spmv_alg::no_optimize_alg) {
+    if (alg == spmv_alg::no_optimize_alg) {
         return detail::collapse_dependencies(queue, dependencies);
     }
 
@@ -242,12 +226,9 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
 }
 
 sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
-                 oneapi::mkl::sparse::matrix_view A_view,
-                 oneapi::mkl::sparse::matrix_handle_t A_handle,
-                 oneapi::mkl::sparse::dense_vector_handle_t x_handle, const void *beta,
-                 oneapi::mkl::sparse::dense_vector_handle_t y_handle,
-                 oneapi::mkl::sparse::spmv_alg alg, oneapi::mkl::sparse::spmv_descr_t spmv_descr,
-                 const std::vector<sycl::event> &dependencies) {
+                 matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
+                 const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
+                 spmv_descr_t spmv_descr, const std::vector<sycl::event> &dependencies) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,

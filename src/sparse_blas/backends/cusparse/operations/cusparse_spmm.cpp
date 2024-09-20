@@ -38,11 +38,11 @@ struct spmm_descr {
     bool optimized_called = false;
     oneapi::mkl::transpose last_optimized_opA;
     oneapi::mkl::transpose last_optimized_opB;
-    oneapi::mkl::sparse::matrix_view last_optimized_A_view;
-    oneapi::mkl::sparse::matrix_handle_t last_optimized_A_handle;
-    oneapi::mkl::sparse::dense_matrix_handle_t last_optimized_B_handle;
-    oneapi::mkl::sparse::dense_matrix_handle_t last_optimized_C_handle;
-    oneapi::mkl::sparse::spmm_alg last_optimized_alg;
+    matrix_view last_optimized_A_view;
+    matrix_handle_t last_optimized_A_handle;
+    dense_matrix_handle_t last_optimized_B_handle;
+    dense_matrix_handle_t last_optimized_C_handle;
+    spmm_alg last_optimized_alg;
 };
 
 } // namespace oneapi::mkl::sparse
@@ -71,22 +71,20 @@ inline auto get_cuda_spmm_alg(spmm_alg alg) {
     }
 }
 
-inline void fallback_alg_if_needed(oneapi::mkl::sparse::spmm_alg& alg, oneapi::mkl::transpose opA,
+inline void fallback_alg_if_needed(spmm_alg& alg, oneapi::mkl::transpose opA,
                                    oneapi::mkl::transpose opB) {
-    if (alg == oneapi::mkl::sparse::spmm_alg::csr_alg3 &&
+    if (alg == spmm_alg::csr_alg3 &&
         (opA != oneapi::mkl::transpose::nontrans || opB == oneapi::mkl::transpose::conjtrans)) {
         // Avoid warnings printed on std::cerr
-        alg = oneapi::mkl::sparse::spmm_alg::default_alg;
+        alg = spmm_alg::default_alg;
     }
 }
 
 void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
-                      const void* alpha, oneapi::mkl::sparse::matrix_view A_view,
-                      oneapi::mkl::sparse::matrix_handle_t A_handle,
-                      oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void* beta,
-                      oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                      oneapi::mkl::sparse::spmm_alg alg,
-                      oneapi::mkl::sparse::spmm_descr_t spmm_descr, std::size_t& temp_buffer_size) {
+                      const void* alpha, matrix_view A_view, matrix_handle_t A_handle,
+                      dense_matrix_handle_t B_handle, const void* beta,
+                      dense_matrix_handle_t C_handle, spmm_alg alg, spmm_descr_t spmm_descr,
+                      std::size_t& temp_buffer_size) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     detail::check_valid_spmm_common(__func__, A_view, A_handle, B_handle, C_handle,
@@ -113,12 +111,11 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mk
     spmm_descr->buffer_size_called = true;
 }
 
-inline void common_spmm_optimize(
-    oneapi::mkl::transpose opA, oneapi::mkl::transpose opB, bool is_alpha_host_accessible,
-    oneapi::mkl::sparse::matrix_view A_view, oneapi::mkl::sparse::matrix_handle_t A_handle,
-    oneapi::mkl::sparse::dense_matrix_handle_t B_handle, bool is_beta_host_accessible,
-    oneapi::mkl::sparse::dense_matrix_handle_t C_handle, oneapi::mkl::sparse::spmm_alg alg,
-    oneapi::mkl::sparse::spmm_descr_t spmm_descr) {
+inline void common_spmm_optimize(oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
+                                 bool is_alpha_host_accessible, matrix_view A_view,
+                                 matrix_handle_t A_handle, dense_matrix_handle_t B_handle,
+                                 bool is_beta_host_accessible, dense_matrix_handle_t C_handle,
+                                 spmm_alg alg, spmm_descr_t spmm_descr) {
     detail::check_valid_spmm_common("spmm_optimize", A_view, A_handle, B_handle, C_handle,
                                     is_alpha_host_accessible, is_beta_host_accessible);
     if (!spmm_descr->buffer_size_called) {
@@ -136,11 +133,9 @@ inline void common_spmm_optimize(
 }
 
 void spmm_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA,
-                        oneapi::mkl::transpose opB, const void* alpha,
-                        oneapi::mkl::sparse::matrix_handle_t A_handle,
-                        oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void* beta,
-                        oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                        oneapi::mkl::sparse::spmm_alg alg, void* workspace_ptr,
+                        oneapi::mkl::transpose opB, const void* alpha, matrix_handle_t A_handle,
+                        dense_matrix_handle_t B_handle, const void* beta,
+                        dense_matrix_handle_t C_handle, spmm_alg alg, void* workspace_ptr,
                         bool is_alpha_host_accessible) {
     auto cu_a = A_handle->backend_handle;
     auto cu_b = B_handle->backend_handle;
@@ -157,12 +152,9 @@ void spmm_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA,
 }
 
 void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
-                   const void* alpha, oneapi::mkl::sparse::matrix_view A_view,
-                   oneapi::mkl::sparse::matrix_handle_t A_handle,
-                   oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void* beta,
-                   oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                   oneapi::mkl::sparse::spmm_alg alg, oneapi::mkl::sparse::spmm_descr_t spmm_descr,
-                   sycl::buffer<std::uint8_t, 1> workspace) {
+                   const void* alpha, matrix_view A_view, matrix_handle_t A_handle,
+                   dense_matrix_handle_t B_handle, const void* beta, dense_matrix_handle_t C_handle,
+                   spmm_alg alg, spmm_descr_t spmm_descr, sycl::buffer<std::uint8_t, 1> workspace) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     if (!A_handle->all_use_buffer()) {
@@ -172,7 +164,7 @@ void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::
                          is_beta_host_accessible, C_handle, alg, spmm_descr);
     // Copy the buffer to extend its lifetime until the descriptor is free'd.
     spmm_descr->workspace.set_buffer_untyped(workspace);
-    if (alg == oneapi::mkl::sparse::spmm_alg::no_optimize_alg || workspace.size() == 0) {
+    if (alg == spmm_alg::no_optimize_alg || workspace.size() == 0) {
         // cusparseSpMM_preprocess cannot be called if the workspace is empty
         return;
     }
@@ -191,13 +183,10 @@ void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::
 }
 
 sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
-                          oneapi::mkl::transpose opB, const void* alpha,
-                          oneapi::mkl::sparse::matrix_view A_view,
-                          oneapi::mkl::sparse::matrix_handle_t A_handle,
-                          oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void* beta,
-                          oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                          oneapi::mkl::sparse::spmm_alg alg,
-                          oneapi::mkl::sparse::spmm_descr_t spmm_descr, void* workspace,
+                          oneapi::mkl::transpose opB, const void* alpha, matrix_view A_view,
+                          matrix_handle_t A_handle, dense_matrix_handle_t B_handle,
+                          const void* beta, dense_matrix_handle_t C_handle, spmm_alg alg,
+                          spmm_descr_t spmm_descr, void* workspace,
                           const std::vector<sycl::event>& dependencies) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
@@ -207,7 +196,7 @@ sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
     common_spmm_optimize(opA, opB, is_alpha_host_accessible, A_view, A_handle, B_handle,
                          is_beta_host_accessible, C_handle, alg, spmm_descr);
     spmm_descr->workspace.usm_ptr = workspace;
-    if (alg == oneapi::mkl::sparse::spmm_alg::no_optimize_alg || workspace == nullptr) {
+    if (alg == spmm_alg::no_optimize_alg || workspace == nullptr) {
         // cusparseSpMM_preprocess cannot be called if the workspace is empty
         return detail::collapse_dependencies(queue, dependencies);
     }
@@ -222,11 +211,9 @@ sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
 }
 
 sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
-                 const void* alpha, oneapi::mkl::sparse::matrix_view A_view,
-                 oneapi::mkl::sparse::matrix_handle_t A_handle,
-                 oneapi::mkl::sparse::dense_matrix_handle_t B_handle, const void* beta,
-                 oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
-                 oneapi::mkl::sparse::spmm_alg alg, oneapi::mkl::sparse::spmm_descr_t spmm_descr,
+                 const void* alpha, matrix_view A_view, matrix_handle_t A_handle,
+                 dense_matrix_handle_t B_handle, const void* beta, dense_matrix_handle_t C_handle,
+                 spmm_alg alg, spmm_descr_t spmm_descr,
                  const std::vector<sycl::event>& dependencies) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);

@@ -45,11 +45,9 @@ inline void check_ptr_is_host_accessible(const std::string &function_name,
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spmm_common(const std::string &function_name,
-                             oneapi::mkl::sparse::matrix_view A_view,
+void check_valid_spmm_common(const std::string &function_name, matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
-                             oneapi::mkl::sparse::dense_matrix_handle_t B_handle,
-                             oneapi::mkl::sparse::dense_matrix_handle_t C_handle,
+                             dense_matrix_handle_t B_handle, dense_matrix_handle_t C_handle,
                              bool is_alpha_host_accessible, bool is_beta_host_accessible) {
     THROW_IF_NULLPTR(function_name, internal_A_handle);
     THROW_IF_NULLPTR(function_name, B_handle);
@@ -70,7 +68,7 @@ void check_valid_spmm_common(const std::string &function_name,
                                     "B and C matrices must use the same layout.");
     }
 
-    if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::general) {
+    if (A_view.type_view != matrix_descr::general) {
         throw mkl::invalid_argument("sparse_blas", function_name,
                                     "Matrix view's `type_view` must be `matrix_descr::general`.");
     }
@@ -83,10 +81,8 @@ void check_valid_spmm_common(const std::string &function_name,
 
 template <typename InternalSparseMatHandleT>
 void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::transpose /*opA*/,
-                             oneapi::mkl::sparse::matrix_view A_view,
-                             InternalSparseMatHandleT internal_A_handle,
-                             oneapi::mkl::sparse::dense_vector_handle_t x_handle,
-                             oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                             matrix_view A_view, InternalSparseMatHandleT internal_A_handle,
+                             dense_vector_handle_t x_handle, dense_vector_handle_t y_handle,
                              bool is_alpha_host_accessible, bool is_beta_host_accessible) {
     THROW_IF_NULLPTR(function_name, internal_A_handle);
     THROW_IF_NULLPTR(function_name, x_handle);
@@ -102,12 +98,12 @@ void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::tran
             "sparse_blas", function_name,
             "Alpha and beta must both be placed on host memory or device memory.");
     }
-    if (A_view.type_view == oneapi::mkl::sparse::matrix_descr::diagonal) {
+    if (A_view.type_view == matrix_descr::diagonal) {
         throw mkl::invalid_argument("sparse_blas", function_name,
                                     "Matrix view's `type_view` cannot be diagonal.");
     }
 
-    if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::triangular &&
+    if (A_view.type_view != matrix_descr::triangular &&
         A_view.diag_view == oneapi::mkl::diag::unit) {
         throw mkl::invalid_argument(
             "sparse_blas", function_name,
@@ -116,11 +112,9 @@ void check_valid_spmv_common(const std::string &function_name, oneapi::mkl::tran
 }
 
 template <typename InternalSparseMatHandleT>
-void check_valid_spsv_common(const std::string &function_name,
-                             oneapi::mkl::sparse::matrix_view A_view,
+void check_valid_spsv_common(const std::string &function_name, matrix_view A_view,
                              InternalSparseMatHandleT internal_A_handle,
-                             oneapi::mkl::sparse::dense_vector_handle_t x_handle,
-                             oneapi::mkl::sparse::dense_vector_handle_t y_handle,
+                             dense_vector_handle_t x_handle, dense_vector_handle_t y_handle,
                              bool is_alpha_host_accessible) {
     THROW_IF_NULLPTR(function_name, internal_A_handle);
     THROW_IF_NULLPTR(function_name, x_handle);
