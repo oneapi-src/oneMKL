@@ -43,7 +43,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
         matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
 
-    // Use a fixed seed for operations very sensible to the input data
+    // Use a fixed seed for operations very sensitive to the input data
     std::srand(1);
 
     // Input matrix
