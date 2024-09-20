@@ -832,24 +832,13 @@ inline sycl::event trsm_batch(const char *func_name, Func func, sycl::queue &que
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<const cuDataType **>(a);
                 auto **b_ = reinterpret_cast<cuDataType **>(b);
-#ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-                CUBLAS_ERROR_FUNC_T(func_name, func, err, handle,
+                cublas_native_named_func(func_name, func, err, handle,
                                     get_cublas_side_mode(left_right[i]),
                                     get_cublas_fill_mode(upper_lower[i]),
                                     get_cublas_operation(trans[i]),
                                     get_cublas_diag_type(unit_diag[i]), (int)m[i], (int)n[i],
                                     (cuDataType *)&alpha[i], a_ + offset, (int)lda[i],
                                     b_ + offset, (int)ldb[i], (int)group_size[i]);
-#else
-                CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle,
-                                         get_cublas_side_mode(left_right[i]),
-                                         get_cublas_fill_mode(upper_lower[i]),
-                                         get_cublas_operation(trans[i]),
-                                         get_cublas_diag_type(unit_diag[i]), (int)m[i],
-                                         (int)n[i], (cuDataType *)&alpha[i], a_ + offset,
-                                         (int)lda[i], b_ + offset, (int)ldb[i],
-                                         (int)group_size[i]);
-#endif
                 offset += group_size[i];
             }
         });
