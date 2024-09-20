@@ -41,6 +41,7 @@ endforeach()
 
 # Generate header with enabled backends for testing
 
+function(generate_header_file)
 # Following if-conditions allow to decouple cmake configuration variables with
 # the corresponding generated macro. This is done to be conformant with ES.33
 # C++ Core Guidelines
@@ -68,6 +69,9 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
   DESTINATION include/oneapi/mkl/detail
   COMPONENT Devel
 )
+endfunction()
+
+generate_header_file()
 
 # Add recipe for onemkl loader library
 if(BUILD_SHARED_LIBS)
