@@ -63,8 +63,13 @@ auto get_int_accessors(sycl::handler &cgh, matrix_handle_t smhandle) {
 template <typename Functor, typename... CaptureOnlyAcc>
 void submit_host_task(sycl::handler &cgh, sycl::queue &queue, Functor functor,
                       CaptureOnlyAcc... capture_only_accessors) {
-    // Only capture the accessors to ensure the dependencies are properly handled
-    // The accessors's pointer have already been set to the native container types in previous functions
+    // Only capture the accessors to ensure the dependencies are properly
+    // handled. The accessors's pointer have already been set to the native
+    // container types in previous functions. This assumes the underlying
+    // pointer of the buffer does not change. This is not guaranteed by the SYCL
+    // specification but should be true for all the implementations. This
+    // assumption avoids the overhead of resetting the pointer of all data
+    // handles for each enqueued command.
     cgh.host_task([functor, queue, capture_only_accessors...](sycl::interop_handle ih) {
         auto unused = std::make_tuple(capture_only_accessors...);
         (void)unused;
@@ -77,8 +82,13 @@ template <typename Functor, typename... CaptureOnlyAcc>
 void submit_host_task_with_acc(sycl::handler &cgh, sycl::queue &queue, Functor functor,
                                sycl::accessor<std::uint8_t> workspace_placeholder_acc,
                                CaptureOnlyAcc... capture_only_accessors) {
-    // Only capture the accessors to ensure the dependencies are properly handled
-    // The accessors's pointer have already been set to the native container types in previous functions
+    // Only capture the accessors to ensure the dependencies are properly
+    // handled. The accessors's pointer have already been set to the native
+    // container types in previous functions. This assumes the underlying
+    // pointer of the buffer does not change. This is not guaranteed by the SYCL
+    // specification but should be true for all the implementations. This
+    // assumption avoids the overhead of resetting the pointer of all data
+    // handles for each enqueued command.
     cgh.require(workspace_placeholder_acc);
     cgh.host_task([functor, queue, workspace_placeholder_acc,
                    capture_only_accessors...](sycl::interop_handle ih) {
@@ -93,8 +103,13 @@ template <typename Functor, typename... CaptureOnlyAcc>
 void submit_native_command_ext(sycl::handler &cgh, sycl::queue &queue, Functor functor,
                                const std::vector<sycl::event> &dependencies,
                                CaptureOnlyAcc... capture_only_accessors) {
-    // Only capture the accessors to ensure the dependencies are properly handled
-    // The accessors's pointer have already been set to the native container types in previous functions
+    // Only capture the accessors to ensure the dependencies are properly
+    // handled. The accessors's pointer have already been set to the native
+    // container types in previous functions. This assumes the underlying
+    // pointer of the buffer does not change. This is not guaranteed by the SYCL
+    // specification but should be true for all the implementations. This
+    // assumption avoids the overhead of resetting the pointer of all data
+    // handles for each enqueued command.
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
     cgh.ext_codeplay_enqueue_native_command(
         [functor, queue, dependencies, capture_only_accessors...](sycl::interop_handle ih) {
@@ -128,8 +143,13 @@ void submit_native_command_ext_with_acc(sycl::handler &cgh, sycl::queue &queue, 
                                         const std::vector<sycl::event> &dependencies,
                                         sycl::accessor<std::uint8_t> workspace_placeholder_acc,
                                         CaptureOnlyAcc... capture_only_accessors) {
-    // Only capture the accessors to ensure the dependencies are properly handled
-    // The accessors's pointer have already been set to the native container types in previous functions
+    // Only capture the accessors to ensure the dependencies are properly
+    // handled. The accessors's pointer have already been set to the native
+    // container types in previous functions. This assumes the underlying
+    // pointer of the buffer does not change. This is not guaranteed by the SYCL
+    // specification but should be true for all the implementations. This
+    // assumption avoids the overhead of resetting the pointer of all data
+    // handles for each enqueued command.
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
     cgh.require(workspace_placeholder_acc);
     cgh.ext_codeplay_enqueue_native_command([functor, queue, dependencies,
