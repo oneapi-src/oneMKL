@@ -73,6 +73,7 @@ void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose o
                       bool is_beta_host_accessible) {
     detail::check_valid_spmv_common(function_name, opA, A_view, A_handle, x_handle, y_handle,
                                     is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_matrix_properties(function_name, A_handle);
     if (A_view.type_view != matrix_descr::general) {
         throw mkl::unimplemented(
             "sparse_blas", function_name,

@@ -45,14 +45,17 @@ cuSPARSE backend
 
 Currently known limitations:
 
+- The COO format requires the indices to be sorted by row. See the `cuSPARSE
+  documentation
+  <https://docs.nvidia.com/cuda/cusparse/index.html#coordinate-coo>`_. Sparse
+  operations using matrices with the COO format without the property
+  ``matrix_property::sorted_by_rows`` or ``matrix_property::sorted`` will throw
+  an ``oneapi::mkl::unimplemented`` exception.
 - Using ``spmm`` with the algorithm ``spmm_alg::csr_alg3`` and an ``opA`` other
   than ``transpose::nontrans`` or an ``opB`` ``transpose::conjtrans`` will throw
   an ``oneapi::mkl::unimplemented`` exception.
 - Using ``spmv`` with a ``type_view`` other than ``matrix_descr::general`` will
   throw an ``oneapi::mkl::unimplemented`` exception.
-- The COO format requires the indices to be sorted by row. See the `cuSPARSE
-  documentation
-  <https://docs.nvidia.com/cuda/cusparse/index.html#coordinate-coo>`_.
 
 
 Operation algorithms mapping

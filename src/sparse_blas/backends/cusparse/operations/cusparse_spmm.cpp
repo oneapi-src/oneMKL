@@ -77,6 +77,7 @@ void check_valid_spmm(const std::string& function_name, oneapi::mkl::transpose o
                       bool is_alpha_host_accessible, bool is_beta_host_accessible, spmm_alg alg) {
     detail::check_valid_spmm_common(function_name, A_view, A_handle, B_handle, C_handle,
                                     is_alpha_host_accessible, is_beta_host_accessible);
+    check_valid_matrix_properties(function_name, A_handle);
     if (alg == spmm_alg::csr_alg3 && opA != oneapi::mkl::transpose::nontrans) {
         throw mkl::unimplemented(
             "sparse_blas", function_name,

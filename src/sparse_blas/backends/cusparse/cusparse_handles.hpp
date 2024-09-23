@@ -59,19 +59,32 @@ struct dense_matrix_handle : public detail::generic_dense_matrix_handle<cusparse
 struct matrix_handle : public detail::generic_sparse_handle<cusparseSpMatDescr_t> {
     template <typename fpType, typename intType>
     matrix_handle(cusparseSpMatDescr_t cu_descr, intType* row_ptr, intType* col_ptr,
-                  fpType* value_ptr, std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                  oneapi::mkl::index_base index)
+                  fpType* value_ptr, detail::sparse_format format, std::int64_t num_rows,
+                  std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index)
             : detail::generic_sparse_handle<cusparseSpMatDescr_t>(
-                  cu_descr, row_ptr, col_ptr, value_ptr, num_rows, num_cols, nnz, index) {}
+                  cu_descr, row_ptr, col_ptr, value_ptr, format, num_rows, num_cols, nnz, index) {}
 
     template <typename fpType, typename intType>
     matrix_handle(cusparseSpMatDescr_t cu_descr, const sycl::buffer<intType, 1> row_buffer,
                   const sycl::buffer<intType, 1> col_buffer,
-                  const sycl::buffer<fpType, 1> value_buffer, std::int64_t num_rows,
-                  std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index)
-            : detail::generic_sparse_handle<cusparseSpMatDescr_t>(
-                  cu_descr, row_buffer, col_buffer, value_buffer, num_rows, num_cols, nnz, index) {}
+                  const sycl::buffer<fpType, 1> value_buffer, detail::sparse_format format,
+                  std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
+                  oneapi::mkl::index_base index)
+            : detail::generic_sparse_handle<cusparseSpMatDescr_t>(cu_descr, row_buffer, col_buffer,
+                                                                  value_buffer, format, num_rows,
+                                                                  num_cols, nnz, index) {}
 };
+
+inline void check_valid_matrix_properties(const std::string& function_name,
+                                          matrix_handle_t sm_handle) {
+    if (sm_handle->format == detail::sparse_format::COO &&
+        !(sm_handle->has_matrix_property(matrix_property::sorted_by_rows) ||
+          sm_handle->has_matrix_property(matrix_property::sorted))) {
+        throw mkl::unimplemented(
+            "sparse_blas", function_name,
+            "The backend does not support unsorted COO format. Use `set_matrix_property` to set the property `matrix_property::sorted_by_rows` or `matrix_property::sorted`");
+    }
+}
 
 } // namespace oneapi::mkl::sparse
 

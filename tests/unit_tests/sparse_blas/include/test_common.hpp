@@ -59,12 +59,39 @@ enum sparse_matrix_format_t {
     COO,
 };
 
-static std::vector<std::set<oneapi::mkl::sparse::matrix_property>> test_matrix_properties{
-    { oneapi::mkl::sparse::matrix_property::sorted },
-    { oneapi::mkl::sparse::matrix_property::symmetric },
-    { oneapi::mkl::sparse::matrix_property::sorted,
-      oneapi::mkl::sparse::matrix_property::symmetric }
-};
+inline std::set<oneapi::mkl::sparse::matrix_property> get_default_matrix_properties(
+    sycl::queue queue, sparse_matrix_format_t format) {
+    auto vendor_id = oneapi::mkl::get_device_id(queue);
+    if (vendor_id == oneapi::mkl::device::nvidiagpu && format == sparse_matrix_format_t::COO) {
+        return { oneapi::mkl::sparse::matrix_property::sorted_by_rows };
+    }
+    return {};
+}
+
+/// Return the combinations of matrix_properties to test other than the default
+inline std::vector<std::set<oneapi::mkl::sparse::matrix_property>>
+get_all_matrix_properties_combinations(sycl::queue queue, sparse_matrix_format_t format) {
+    auto vendor_id = oneapi::mkl::get_device_id(queue);
+    if (vendor_id == oneapi::mkl::device::nvidiagpu && format == sparse_matrix_format_t::COO) {
+        // Ensure all the sets have the sorted or sorted_by_rows properties
+        return { { oneapi::mkl::sparse::matrix_property::sorted },
+                 { oneapi::mkl::sparse::matrix_property::sorted_by_rows,
+                   oneapi::mkl::sparse::matrix_property::symmetric },
+                 { oneapi::mkl::sparse::matrix_property::sorted,
+                   oneapi::mkl::sparse::matrix_property::symmetric } };
+    }
+
+    std::vector<std::set<oneapi::mkl::sparse::matrix_property>> properties_combinations{
+        { oneapi::mkl::sparse::matrix_property::sorted },
+        { oneapi::mkl::sparse::matrix_property::symmetric },
+        { oneapi::mkl::sparse::matrix_property::sorted,
+          oneapi::mkl::sparse::matrix_property::symmetric }
+    };
+    if (format == sparse_matrix_format_t::COO) {
+        properties_combinations.push_back({ oneapi::mkl::sparse::matrix_property::sorted_by_rows });
+    }
+    return properties_combinations;
+}
 
 void print_error_code(sycl::exception const &e);
 
@@ -332,18 +359,23 @@ intType generate_random_matrix(sparse_matrix_format_t format, const intType nrow
     throw std::runtime_error("Unsupported sparse format");
 }
 
-inline bool require_coo_sorted_by_row(sycl::queue queue) {
-    auto vendor_id = oneapi::mkl::get_device_id(queue);
-    return vendor_id == oneapi::mkl::device::nvidiagpu;
-}
-
 /// Shuffle the 3arrays CSR or COO representation (ia, ja, values)
 /// of any sparse matrix.
 /// In CSR format, the elements within a row are shuffled without changing ia.
 /// In COO format, all the elements are shuffled.
 template <typename fpType, typename intType>
-void shuffle_sparse_matrix(sycl::queue queue, sparse_matrix_format_t format, intType indexing,
-                           intType *ia, intType *ja, fpType *a, intType nnz, std::size_t nrows) {
+void shuffle_sparse_matrix_if_needed(
+    sparse_matrix_format_t format,
+    const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties, intType indexing,
+    intType *ia, intType *ja, fpType *a, intType nnz, std::size_t nrows) {
+    const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
+                           matrix_properties.cend();
+    if (is_sorted) {
+        return;
+    }
+    const bool is_sorted_by_rows =
+        matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted_by_rows) !=
+        matrix_properties.cend();
     if (format == sparse_matrix_format_t::CSR) {
         for (std::size_t i = 0; i < nrows; ++i) {
             intType nnz_row = ia[i + 1] - ia[i];
@@ -354,9 +386,10 @@ void shuffle_sparse_matrix(sycl::queue queue, sparse_matrix_format_t format, int
                 std::swap(a[q], a[j]);
             }
         }
+        // sorted_by_rows does not impact CSR
     }
     else if (format == sparse_matrix_format_t::COO) {
-        if (require_coo_sorted_by_row(queue)) {
+        if (is_sorted_by_rows) {
             std::size_t linear_idx = 0;
             for (std::size_t i = 0; i < nrows; ++i) {
                 // Count the number of non-zero elements for the given row
@@ -386,7 +419,7 @@ void shuffle_sparse_matrix(sycl::queue queue, sparse_matrix_format_t format, int
         }
     }
     else {
-        throw oneapi::mkl::exception("sparse_blas", "shuffle_sparse_matrix",
+        throw oneapi::mkl::exception("sparse_blas", "shuffle_sparse_matrix_if_needed",
                                      "Internal error: unsupported format");
     }
 }

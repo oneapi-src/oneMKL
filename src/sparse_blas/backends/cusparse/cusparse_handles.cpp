@@ -263,8 +263,8 @@ void init_coo_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             CUSPARSE_ERR_FUNC(cusparseCreateCoo, &cu_smhandle, num_rows, num_cols, nnz,
                               sc.get_mem(row_acc), sc.get_mem(col_acc), sc.get_mem(val_acc),
                               cuda_index_type, cuda_index_base, cuda_value_type);
-            *p_smhandle = new matrix_handle(cu_smhandle, row_ind, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+            *p_smhandle = new matrix_handle(cu_smhandle, row_ind, col_ind, val, detail::sparse_format::COO,
+                                            num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();
@@ -284,8 +284,8 @@ void init_coo_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             cusparseSpMatDescr_t cu_smhandle;
             CUSPARSE_ERR_FUNC(cusparseCreateCoo, &cu_smhandle, num_rows, num_cols, nnz, row_ind,
                               col_ind, val, cuda_index_type, cuda_index_base, cuda_value_type);
-            *p_smhandle = new matrix_handle(cu_smhandle, row_ind, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+            *p_smhandle = new matrix_handle(cu_smhandle, row_ind, col_ind, val, detail::sparse_format::COO,
+                                            num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();
@@ -388,8 +388,8 @@ void init_csr_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             CUSPARSE_ERR_FUNC(cusparseCreateCsr, &cu_smhandle, num_rows, num_cols, nnz,
                               sc.get_mem(row_acc), sc.get_mem(col_acc), sc.get_mem(val_acc),
                               cuda_index_type, cuda_index_type, cuda_index_base, cuda_value_type);
-            *p_smhandle = new matrix_handle(cu_smhandle, row_ptr, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+            *p_smhandle = new matrix_handle(cu_smhandle, row_ptr, col_ind, val, detail::sparse_format::CSR,
+                                            num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();
@@ -410,8 +410,8 @@ void init_csr_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             CUSPARSE_ERR_FUNC(cusparseCreateCsr, &cu_smhandle, num_rows, num_cols, nnz, row_ptr,
                               col_ind, val, cuda_index_type, cuda_index_type, cuda_index_base,
                               cuda_value_type);
-            *p_smhandle = new matrix_handle(cu_smhandle, row_ptr, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+            *p_smhandle = new matrix_handle(cu_smhandle, row_ptr, col_ind, val, detail::sparse_format::CSR,
+                                            num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();

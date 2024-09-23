@@ -41,8 +41,6 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     }
     auto [opa_nrows, opa_ncols] = swap_if_transposed<std::size_t>(transpose_val, nrows_A, ncols_A);
     intType indexing = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
-    const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
-                           matrix_properties.cend();
     const bool is_symmetric =
         matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
@@ -62,10 +60,9 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     std::vector<fpType> y_ref_host(y_host);
 
     // Shuffle ordering of column indices/values to test sortedness
-    if (!is_sorted) {
-        shuffle_sparse_matrix(main_queue, format, indexing, ia_host.data(), ja_host.data(),
-                              a_host.data(), nnz, static_cast<std::size_t>(nrows_A));
-    }
+    shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                    ja_host.data(), a_host.data(), nnz,
+                                    static_cast<std::size_t>(nrows_A));
 
     auto ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());
     auto ja_usm_uptr = malloc_device_uptr<intType>(main_queue, ja_host.size());
@@ -144,10 +141,9 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
             intType reset_nnz = generate_random_matrix<fpType, intType>(
                 format, nrows_A, ncols_A, density_A_matrix, indexing, ia_host, ja_host, a_host,
                 is_symmetric);
-            if (!is_sorted) {
-                shuffle_sparse_matrix(main_queue, format, indexing, ia_host.data(), ja_host.data(),
-                                      a_host.data(), reset_nnz, static_cast<std::size_t>(nrows_A));
-            }
+            shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                            ja_host.data(), a_host.data(), reset_nnz,
+                                            static_cast<std::size_t>(nrows_A));
             if (reset_nnz > nnz) {
                 // Wait before freeing usm pointers
                 ev_spmv.wait_and_throw();

@@ -37,8 +37,6 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
 
     intType indexing = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
     const std::size_t mu = static_cast<std::size_t>(m);
-    const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
-                           matrix_properties.cend();
     const bool is_symmetric =
         matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
@@ -68,10 +66,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
     std::vector<fpType> y_ref_host(y_host);
 
     // Shuffle ordering of column indices/values to test sortedness
-    if (!is_sorted) {
-        shuffle_sparse_matrix(main_queue, format, indexing, ia_host.data(), ja_host.data(),
-                              a_host.data(), nnz, mu);
-    }
+    shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                    ja_host.data(), a_host.data(), nnz, mu);
 
     auto ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());
     auto ja_usm_uptr = malloc_device_uptr<intType>(main_queue, ja_host.size());
@@ -143,10 +139,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
             intType reset_nnz = generate_random_matrix<fpType, intType>(
                 format, m, m, density_A_matrix, indexing, ia_host, ja_host, a_host, is_symmetric,
                 require_diagonal);
-            if (!is_sorted) {
-                shuffle_sparse_matrix(main_queue, format, indexing, ia_host.data(), ja_host.data(),
-                                      a_host.data(), reset_nnz, mu);
-            }
+            shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                            ja_host.data(), a_host.data(), reset_nnz, mu);
             if (reset_nnz > nnz) {
                 // Wait before freeing usm pointers
                 ev_spsv.wait_and_throw();

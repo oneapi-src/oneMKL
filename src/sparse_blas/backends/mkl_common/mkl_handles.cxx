@@ -109,8 +109,8 @@ void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ind, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ind, col_ind, val, detail::sparse_format::COO, num_rows, num_cols, nnz, index);
     // The backend handle must use the buffers from the internal handle as they will be kept alive until the handle is released.
     oneapi::mkl::sparse::set_coo_data(queue, mkl_handle, static_cast<intType>(num_rows),
                                       static_cast<intType>(num_cols), static_cast<intType>(nnz),
@@ -127,8 +127,8 @@ void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      fpType *val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ind, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ind, col_ind, val, detail::sparse_format::COO, num_rows, num_cols, nnz, index);
     auto event = oneapi::mkl::sparse::set_coo_data(
         queue, mkl_handle, static_cast<intType>(num_rows), static_cast<intType>(num_cols),
         static_cast<intType>(nnz), index, row_ind, col_ind, val);
@@ -189,8 +189,8 @@ void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ptr, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ptr, col_ind, val, detail::sparse_format::CSR, num_rows, num_cols, nnz, index);
     // The backend deduces nnz from row_ptr.
     // The backend handle must use the buffers from the internal handle as they will be kept alive until the handle is released.
     oneapi::mkl::sparse::set_csr_data(queue, mkl_handle, static_cast<intType>(num_rows),
@@ -208,8 +208,8 @@ void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      fpType *val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ptr, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ptr, col_ind, val, detail::sparse_format::CSR, num_rows, num_cols, nnz, index);
     // The backend deduces nnz from row_ptr.
     auto event = oneapi::mkl::sparse::set_csr_data(
         queue, mkl_handle, static_cast<intType>(num_rows), static_cast<intType>(num_cols), index,
