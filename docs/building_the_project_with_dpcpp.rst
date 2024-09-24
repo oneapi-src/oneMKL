@@ -287,6 +287,9 @@ portBLAS relies heavily on JIT compilation. This may cause time-outs on some
 systems. To avoid this issue, use ahead-of-time compilation through tuning
 targets or ``sycl-targets``.
 
+The ``sycl::half`` type can be supported by setting
+``-DPORTBLAS_ENABLE_HALF=ON``.
+
 .. _build_for_portfft_dpcpp:
 
 Building for portFFT

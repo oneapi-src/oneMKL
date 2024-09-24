@@ -45,6 +45,11 @@ foreach(domain ${TARGET_DOMAINS})
   add_subdirectory(${domain})
 endforeach()
 
+if (PORTBLAS_ENABLE_HALF)
+  # Set the variable used for C++ macro
+  set(ENABLE_PORTBLAS_HALF ON)
+endif()
+
 # Generate header with enabled backends for testing
 configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured")
 file(GENERATE
