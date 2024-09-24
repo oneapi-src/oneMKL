@@ -185,9 +185,7 @@ void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::
                            workspace_ptr, is_alpha_host_accessible);
     };
 
-    sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-    dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc, B_handle,
-                    C_handle);
+    dispatch_submit(__func__, queue, functor, A_handle, workspace, B_handle, C_handle);
 }
 
 sycl::event spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA,
@@ -268,10 +266,9 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
             auto workspace_ptr = sc.get_mem(workspace_acc);
             compute_functor(sc, workspace_ptr);
         };
-        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
-            spmm_descr->workspace.get_buffer<std::uint8_t>());
         return dispatch_submit_native_ext(__func__, queue, functor_buffer, A_handle,
-                                          workspace_placeholder_acc, B_handle, C_handle);
+                                          spmm_descr->workspace.get_buffer<std::uint8_t>(),
+                                          B_handle, C_handle);
     }
     else {
         // The same dispatch_submit can be used for USM or buffers if no

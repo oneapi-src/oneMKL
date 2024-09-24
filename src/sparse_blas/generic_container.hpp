@@ -272,11 +272,6 @@ struct generic_sparse_handle {
     }
 
     void set_matrix_property(matrix_property property) {
-        if (format == sparse_format::CSR && property == matrix_property::sorted_by_rows) {
-            throw mkl::invalid_argument(
-                "sparse_blas", "set_matrix_property",
-                "Property `matrix_property::sorted_by_rows` is not compatible with CSR format.");
-        }
         properties_mask |= matrix_property_to_mask(property);
     }
 

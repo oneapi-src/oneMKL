@@ -181,9 +181,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
 
         // The accessor can only be bound to the cgh if the buffer size is
         // greater than 0
-        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-        dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc, x_handle,
-                        y_handle);
+        dispatch_submit(__func__, queue, functor, A_handle, workspace, x_handle, y_handle);
     }
     else {
         auto functor = [=](CusparseScopedContextHandler &sc) {
@@ -284,10 +282,9 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
             auto workspace_ptr = sc.get_mem(workspace_acc);
             compute_functor(sc, workspace_ptr);
         };
-        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
-            spmv_descr->workspace.get_buffer<std::uint8_t>());
         return dispatch_submit_native_ext(__func__, queue, functor_buffer, A_handle,
-                                          workspace_placeholder_acc, x_handle, y_handle);
+                                          spmv_descr->workspace.get_buffer<std::uint8_t>(),
+                                          x_handle, y_handle);
     }
     else {
         // The same dispatch_submit can be used for USM or buffers if no
