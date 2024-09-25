@@ -7,6 +7,7 @@
 |-----------|---------|--------------------------------------------------------------------------|
 |  20240903 |  1.0    | Initial version                                                          |
 |  20240916 |  1.1    | Rename occurrences of "mkl" and add an open question                     |
+|  20240925 |  1.2    | Update wth feedback from UXL WG                                          |
 
 ## Motivation
 
@@ -91,11 +92,12 @@ The suggested solution is to proceed in the following steps:
     [onemkl_cublas_host_task](https://github.com/oneapi-src/oneMKL/blob/1ce98a699f93bd3a78350269b2e34d822fe43b91/src/blas/backends/cublas/cublas_task.hpp#L77).
   * Update macros such as include guards and other internal macros like
     `ONEMKL_EXPORT` to use the new name.
-  * Rename CMake targets `onemkl` and `onemkl_<domain>_<backend>` to use the
-    new name. The existing targets name can be added with a deprecation
-    messages for anyone using them. See the section on [CMake target
-    deprecation](#cmake-deprecated-target) for more details. The namespace of
-    the exported and installed targets are changed to use the new name.
+  * Rename CMake targets `onemkl`, `onemkl_<domain>` and
+    `onemkl_<domain>_<backend>` to use the new name. The existing targets name
+    can be added with a deprecation messages for anyone using them. See the
+    section on [CMake target deprecation](#cmake-deprecated-target) for more
+    details. The namespace of the exported and installed targets are changed to
+    use the new name.
   * The namespace `oneapi::mkl` is deprecated and aliased to the new namespace
      name.
   * The main header and domain headers are deprecated and include the new headers as shown below:
@@ -140,9 +142,10 @@ add_executable(main main.cpp)
 target_link_libraries(main PUBLIC onemkl) # Prints a warning at CMake configuration time
 ```
 
-The same solution can be used for the `onemkl_<domain>_<backend>` targets. This does
-not add any extra targets to the generated `Makefile` or `build.ninja` files so
-the library will not be built twice.
+The same solution can be used for the `onemkl_<domain>` and
+`onemkl_<domain>_<backend>` targets. This does not add any extra targets to the
+generated `Makefile` or `build.ninja` files so the library will not be built
+twice.
 
 ### Other Considered Approaches
 
@@ -192,7 +195,8 @@ The following changes have no impact:
 
 ## Open questions
 
-* Other suggestions for new names are welcomed.
+The following questions have been answered:
+
 * Is it needed to rename the occurrences of "mkl"? 
   * From the feedback gathered, users and maintainers are keen to rename these
     occurrences.
@@ -205,3 +209,5 @@ The following changes have no impact:
   * Given the nature of the project that allows for multiple backends I don't
     see any value in encouraging multiple implementations as of today.
   * Using multiple names may create more confusion.
+  * We discussed that the existing oneMKL Interface implementation should be the
+    main implementation and therefore the specification can share the same name.
