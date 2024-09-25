@@ -21,6 +21,7 @@
 #define _MKL_RNG_DEVICE_UNIFORM_IMPL_HPP_
 
 #include <limits>
+#include <cmath>
 #include "engine_base.hpp"
 
 namespace oneapi::mkl::rng::device::detail {
