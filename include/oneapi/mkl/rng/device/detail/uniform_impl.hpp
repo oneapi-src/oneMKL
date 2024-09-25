@@ -209,8 +209,8 @@ protected:
         else {
             res = engine.generate(a_, b_);
             if constexpr (std::is_same<Method, uniform_method::accurate>::value) {
-                res = sycl::fmax(res, a_);
-                res = sycl::fmin(res, b_);
+                res = std::fmax(res, a_);
+                res = std::fmin(res, b_);
             }
         }
 
@@ -271,8 +271,8 @@ protected:
         else {
             res = engine.generate_single(a_, b_);
             if constexpr (std::is_same<Method, uniform_method::accurate>::value) {
-                res = sycl::fmax(res, a_);
-                res = sycl::fmin(res, b_);
+                res = std::fmax(res, a_);
+                res = std::fmin(res, b_);
             }
         }
 
