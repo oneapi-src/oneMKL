@@ -210,8 +210,22 @@ protected:
         else {
             res = engine.generate(a_, b_);
             if constexpr (std::is_same<Method, uniform_method::accurate>::value) {
-                res = std::fmax(res, a_);
-                res = std::fmin(res, b_);
+#ifndef __HIPSYCL__
+                res = sycl::fmax(res, a_);
+                res = sycl::fmin(res, b_);
+#else
+                // a workaround for hipSYCL (AdaptiveCpp)
+                if constexpr (EngineType::vec_size == 1) {
+                    res = std::fmax(res, a_);
+                    res = std::fmin(res, b_);
+                }
+                else{
+                    for (int i = 0; i < EngineType::vec_size; i++) {
+                        res[i] = std::fmax(res[i], a_);
+                        res[i] = std::fmin(res[i], b_);
+                    }
+                }
+#endif
             }
         }
 
@@ -272,8 +286,22 @@ protected:
         else {
             res = engine.generate_single(a_, b_);
             if constexpr (std::is_same<Method, uniform_method::accurate>::value) {
-                res = std::fmax(res, a_);
-                res = std::fmin(res, b_);
+#ifndef __HIPSYCL__
+                res = sycl::fmax(res, a_);
+                res = sycl::fmin(res, b_);
+#else
+                // a workaround for hipSYCL (AdaptiveCpp)
+                if constexpr (EngineType::vec_size == 1) {
+                    res = std::fmax(res, a_);
+                    res = std::fmin(res, b_);
+                }
+                else{
+                    for (int i = 0; i < EngineType::vec_size; i++) {
+                        res[i] = std::fmax(res[i], a_);
+                        res[i] = std::fmin(res[i], b_);
+                    }
+                }
+#endif
             }
         }
 
