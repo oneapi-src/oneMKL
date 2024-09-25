@@ -21,6 +21,7 @@
 #define _MKL_RNG_DEVICE_UNIFORM_IMPL_HPP_
 
 #include <limits>
+#include "engine_base.hpp"
 
 namespace oneapi::mkl::rng::device::detail {
 
@@ -41,13 +42,13 @@ static inline std::uint64_t umul_hi_64(const std::uint64_t a, const std::uint64_
 }
 
 template <typename EngineType, typename Generator>
-static inline void generate_leftover(std::uint64_t range, Generator generate, 
+static inline void generate_leftover(std::uint64_t range, Generator generate,
                                      std::uint64_t& res_64, std::uint64_t& leftover) {
     if constexpr (std::is_same_v<EngineType, mcg31m1<EngineType::vec_size>>) {
         std::uint32_t res_1 = generate();
         std::uint32_t res_2 = generate();
         std::uint32_t res_3 = generate();
-        res_64 = (static_cast<std::uint64_t>(res_3) << 62) + 
+        res_64 = (static_cast<std::uint64_t>(res_3) << 62) +
             (static_cast<std::uint64_t>(res_2) << 31) + res_1;
     }
     else {
@@ -125,7 +126,7 @@ protected:
             else {
                 // Lemire's sample rejection method to exclude bias for uniform numbers
                 // https://arxiv.org/abs/1805.10941
-                
+
                 constexpr std::uint64_t uint_max64 = std::numeric_limits<std::uint64_t>::max();
                 constexpr std::uint64_t uint_max32 = std::numeric_limits<std::uint32_t>::max();
 
@@ -139,14 +140,14 @@ protected:
                     std::uint32_t res_1, res_2;
                     std::uint64_t res_64, leftover;
 
-                    generate_leftover<EngineType>(range, [&engine](){return engine.generate();}, 
+                    generate_leftover<EngineType>(range, [&engine](){return engine.generate();},
                                                   res_64, leftover);
 
                     if (range == uint_max64)
                         return res_64;
 
                     while (leftover < threshold) {
-                        generate_leftover<EngineType>(range, [&engine](){return engine.generate();}, 
+                        generate_leftover<EngineType>(range, [&engine](){return engine.generate();},
                                                       res_64, leftover);
                     }
 
@@ -160,12 +161,12 @@ protected:
                     sycl::vec<std::uint32_t, EngineType::vec_size> res_1 = engine.generate();
                     sycl::vec<std::uint32_t, EngineType::vec_size> res_2 = engine.generate();
                     sycl::vec<std::uint64_t, EngineType::vec_size> res_64;
-                    
+
                     if constexpr (std::is_same_v<EngineType, mcg31m1<EngineType::vec_size>>) {
                         sycl::vec<std::uint32_t, EngineType::vec_size> res_3 = engine.generate();
 
                         for (int i = 0; i < EngineType::vec_size; i++) {
-                            res_64[i] = (static_cast<std::uint64_t>(res_3[i]) << 62) + 
+                            res_64[i] = (static_cast<std::uint64_t>(res_3[i]) << 62) +
                                 (static_cast<std::uint64_t>(res_2[i]) << 31) + res_1[i];
                         }
                     }
@@ -186,7 +187,7 @@ protected:
                             }
                         }
                     }
-                    
+
                     if (range == uint_max64)
                         return res_64.template convert<Type>();
 
@@ -194,7 +195,7 @@ protected:
                         leftover = res_64[i] * range;
 
                         while (leftover < threshold) {
-                            generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();}, 
+                            generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();},
                                                           res_64[i], leftover);
                         }
 
@@ -233,7 +234,7 @@ protected:
             else {
                 // Lemire's sample rejection method to exclude bias for uniform numbers
                 // https://arxiv.org/abs/1805.10941
-                
+
                 constexpr std::uint64_t uint_max64 = std::numeric_limits<std::uint64_t>::max();
                 constexpr std::uint64_t uint_max32 = std::numeric_limits<std::uint32_t>::max();
 
@@ -251,14 +252,14 @@ protected:
                 std::uint32_t res_1, res_2;
                 std::uint64_t res_64, leftover;
 
-                generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();}, 
+                generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();},
                                               res_64, leftover);
 
                 if (range == uint_max64)
                     return res_64;
 
                 while (leftover < threshold) {
-                    generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();}, 
+                    generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();},
                                                   res_64, leftover);
                 }
 

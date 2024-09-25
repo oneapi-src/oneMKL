@@ -393,10 +393,12 @@ protected:
             res = acc_rej_kernel<EngineType::vec_size>(res, engine);
         }
         if constexpr (std::is_same_v<Method, beta_method::cja_accurate>) {
-            if (res < a_)
-                res = a_;
-            if (res > a_ + b_)
-                res = a_ + b_;
+            for(std::int32_t i = 0; i < EngineType::vec_size; i++) {
+                if (res[i] < a_)
+                    res[i] = a_;
+                if (res[i] > a_ + b_)
+                    res[i] = a_ + b_;
+            }
         }
         return res;
     }
@@ -414,10 +416,12 @@ protected:
             res = acc_rej_kernel<1>(z, engine);
         }
         if constexpr (std::is_same_v<Method, beta_method::cja_accurate>) {
-            if (res < a_)
-                res = a_;
-            if (res > a_ + b_)
-                res = a_ + b_;
+            for(std::int32_t i = 0; i < EngineType::vec_size; i++) {
+                if (res[i] < a_)
+                    res[i] = a_;
+                if (res[i] > a_ + b_)
+                    res[i] = a_ + b_;
+            }
         }
         return res;
     }

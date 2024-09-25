@@ -315,6 +315,52 @@ struct statistics_device<oneapi::mkl::rng::device::bernoulli<Fp, Method>> {
     }
 };
 
+template <typename Fp, typename Method>
+struct statistics_device<oneapi::mkl::rng::device::beta<Fp, Method>> {
+    template <typename AllocType>
+    bool check(const std::vector<Fp, AllocType>& r,
+               const oneapi::mkl::rng::device::beta<Fp, Method>& distr) {
+        double tM, tD, tQ;
+        double b, c, d, e, e2, b2, sum_pq;
+        Fp p = distr.p();
+        Fp q = distr.q();
+        Fp a = distr.a();
+        Fp beta = distr.b();
+
+        b2 = beta * beta;
+        sum_pq = p + q;
+        b = (p + 1.0) / (sum_pq + 1.0);
+        c = (p + 2.0) / (sum_pq + 2.0);
+        d = (p + 3.0) / (sum_pq + 3.0);
+        e = p / sum_pq;
+        e2 = e * e;
+
+        tM = a + e * beta;
+        tD = b2 * p * q / (sum_pq * sum_pq * (sum_pq + 1.0));
+        tQ = b2 * b2 * (e * b * c * d - 4.0 * e2 * b * c + 6.0 * e2 * e * b - 3.0 * e2 * e2);
+
+        return compare_moments(r, tM, tD, tQ);
+    }
+};
+
+template <typename Fp, typename Method>
+struct statistics_device<oneapi::mkl::rng::device::gamma<Fp, Method>> {
+    template <typename AllocType>
+    bool check(const std::vector<Fp, AllocType>& r,
+               const oneapi::mkl::rng::device::gamma<Fp, Method>& distr) {
+        double tM, tD, tQ;
+        Fp a = distr.a();
+        Fp alpha = distr.alpha();
+        Fp beta = distr.beta();
+
+        tM = a + beta * alpha;
+        tD = beta * beta * alpha;
+        tQ = beta * beta * beta * beta * 3 * alpha * (alpha + 2);
+
+        return compare_moments(r, tM, tD, tQ);
+    }
+};
+
 template <typename Fp>
 struct statistics_device<oneapi::mkl::rng::device::bits<Fp>> {
     template <typename AllocType>

@@ -237,8 +237,10 @@ protected:
         }
         auto res = a_ + beta_ * z;
         if constexpr (std::is_same_v<Method, gamma_method::marsaglia_accurate>) {
-            if (res < a_)
-                res = a_;
+            for(std::int32_t i = 0; i < EngineType::vec_size; i++) {
+                if (res[i] < a_)
+                    res[i] = a_;
+            }
         }
         return res;
     }
