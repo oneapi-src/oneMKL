@@ -68,10 +68,7 @@ protected:
     auto generate(EngineType& engine) ->
         typename std::conditional<EngineType::vec_size == 1, RealType,
                                   sycl::vec<RealType, EngineType::vec_size>>::type {
-        using OutType = typename std::conditional<EngineType::vec_size == 1, RealType,
-                                                  sycl::vec<RealType, EngineType::vec_size>>::type;
-
-        OutType res = engine.generate(RealType(0), RealType(1));
+        auto res = engine.generate(RealType(0), RealType(1));
         if constexpr (EngineType::vec_size == 1) {
             res = ln_wrapper(res);
         }
@@ -82,7 +79,7 @@ protected:
         }
         res = a_ - res * beta_;
         if constexpr (std::is_same<Method, exponential_method::icdf_accurate>::value) {
-            res = sycl::fmax(res, OutType{ a_ });
+            res = sycl::fmax(res, a_);
         }
         return res;
     }
@@ -105,6 +102,13 @@ protected:
         oneapi::mkl::rng::device::poisson<std::int32_t, poisson_method::devroye>>;
     friend class distribution_base<
         oneapi::mkl::rng::device::poisson<std::uint32_t, poisson_method::devroye>>;
+    friend class distribution_base<oneapi::mkl::rng::device::gamma<float, gamma_method::marsaglia>>;
+    friend class distribution_base<
+        oneapi::mkl::rng::device::gamma<double, gamma_method::marsaglia>>;
+    friend class distribution_base<
+        oneapi::mkl::rng::device::gamma<float, gamma_method::marsaglia_accurate>>;
+    friend class distribution_base<
+        oneapi::mkl::rng::device::gamma<double, gamma_method::marsaglia_accurate>>;
 };
 
 } // namespace oneapi::mkl::rng::device::detail
