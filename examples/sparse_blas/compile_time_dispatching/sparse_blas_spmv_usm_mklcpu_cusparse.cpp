@@ -60,42 +60,44 @@
 // is performed and finally the results are post processed.
 //
 template <typename fpType, typename intType, typename selectorType>
-int run_sparse_matrix_vector_multiply_example(const selectorType &selector) {
+int run_sparse_matrix_vector_multiply_example(selectorType &selector) {
     auto queue = selector.get_queue();
 
     // Matrix data size
-    intType size = 4;
-    intType nrows = size * size * size;
+    static constexpr intType size = 8;
 
     // Set scalar fpType values
     fpType alpha = set_fp_value(fpType(1.0));
     fpType beta = set_fp_value(fpType(0.0));
 
-    intType *ia, *ja;
-    fpType *a, *x, *y, *z;
-    std::size_t sizea = static_cast<std::size_t>(27 * nrows);
-    std::size_t sizeja = static_cast<std::size_t>(27 * nrows);
-    std::size_t sizeia = static_cast<std::size_t>(nrows + 1);
-    std::size_t sizevec = static_cast<std::size_t>(nrows);
+    intType nnz = 9;
+    // host_ia must be sorted to maintain the sorted_by_rows property
+    intType host_ia[] = { 0, 0, 1, 3, 4, 4, 4, 7, 7 };
+    intType host_ja[] = { 0, 7, 2, 2, 5, 4, 0, 0, 7 };
 
-    ia = (intType *)sycl::malloc_shared(sizeia * sizeof(intType), queue);
-    ja = (intType *)sycl::malloc_shared(sizeja * sizeof(intType), queue);
-    a = (fpType *)sycl::malloc_shared(sizea * sizeof(fpType), queue);
-    x = (fpType *)sycl::malloc_shared(sizevec * sizeof(fpType), queue);
-    y = (fpType *)sycl::malloc_shared(sizevec * sizeof(fpType), queue);
-    z = (fpType *)sycl::malloc_shared(sizevec * sizeof(fpType), queue);
+    intType *ia = (intType *)sycl::malloc_shared(nnz * sizeof(intType), queue);
+    intType *ja = (intType *)sycl::malloc_shared(nnz * sizeof(intType), queue);
+    fpType *a = (fpType *)sycl::malloc_shared(nnz * sizeof(fpType), queue);
+    fpType *x = (fpType *)sycl::malloc_shared(size * sizeof(fpType), queue);
+    fpType *y = (fpType *)sycl::malloc_shared(size * sizeof(fpType), queue);
 
-    if (!ia || !ja || !a || !x || !y || !z) {
+    if (!ia || !ja || !a || !x || !y) {
         throw std::runtime_error("Failed to allocate USM memory");
     }
 
-    intType nnz = generate_sparse_matrix<fpType, intType>(size, ia, ja, a);
+    // Copy ia and ja
+    queue.memcpy(ia, host_ia, nnz * sizeof(intType)).wait_and_throw();
+    queue.memcpy(ja, host_ja, nnz * sizeof(intType)).wait_and_throw();
+
+    // Init matrix values
+    for (int i = 0; i < nnz; i++) {
+        a[i] = set_fp_value(fpType(i + 1));
+    }
 
     // Init vectors x and y
-    for (int i = 0; i < nrows; i++) {
-        x[i] = set_fp_value(fpType(1.0));
+    for (int i = 0; i < size; i++) {
+        x[i] = set_fp_value(fpType(i + 1));
         y[i] = set_fp_value(fpType(0.0));
-        z[i] = set_fp_value(fpType(0.0));
     }
 
     std::vector<intType *> int_ptr_vec;
@@ -105,7 +107,6 @@ int run_sparse_matrix_vector_multiply_example(const selectorType &selector) {
     fp_ptr_vec.push_back(a);
     fp_ptr_vec.push_back(x);
     fp_ptr_vec.push_back(y);
-    fp_ptr_vec.push_back(z);
 
     //
     // Execute Matrix Multiply
@@ -121,19 +122,23 @@ int run_sparse_matrix_vector_multiply_example(const selectorType &selector) {
                       ? "nontrans"
                       : (transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
               << std::endl;
-    std::cout << "\t\t\tnrows = " << nrows << std::endl;
+    std::cout << "\t\t\tsize = " << size << std::endl;
     std::cout << "\t\t\talpha = " << alpha << ", beta = " << beta << std::endl;
 
-    // Create and initialize handle for a Sparse Matrix in CSR format
+    // Create and initialize handle for a Sparse Matrix in COO format sorted by rows
     oneapi::mkl::sparse::matrix_handle_t A_handle = nullptr;
-    oneapi::mkl::sparse::init_csr_matrix(selector, &A_handle, nrows, nrows, nnz,
+    oneapi::mkl::sparse::init_coo_matrix(selector, &A_handle, size, size, nnz,
                                          oneapi::mkl::index_base::zero, ia, ja, a);
+    // cuSPARSE backend requires that the property sorted_by_rows or sorted is set when using matrices in COO format.
+    // Setting these properties is also the best practice to get best performance.
+    oneapi::mkl::sparse::set_matrix_property(selector, A_handle,
+                                             oneapi::mkl::sparse::matrix_property::sorted_by_rows);
 
     // Create and initialize dense vector handles
     oneapi::mkl::sparse::dense_vector_handle_t x_handle = nullptr;
     oneapi::mkl::sparse::dense_vector_handle_t y_handle = nullptr;
-    oneapi::mkl::sparse::init_dense_vector(selector, &x_handle, sizevec, x);
-    oneapi::mkl::sparse::init_dense_vector(selector, &y_handle, sizevec, y);
+    oneapi::mkl::sparse::init_dense_vector(selector, &x_handle, size, x);
+    oneapi::mkl::sparse::init_dense_vector(selector, &y_handle, size, y);
 
     // Create operation descriptor
     oneapi::mkl::sparse::spmv_descr_t descr = nullptr;
@@ -172,25 +177,26 @@ int run_sparse_matrix_vector_multiply_example(const selectorType &selector) {
     //
 
     fpType *res = y;
+    fpType expected_res[size];
     const bool isConj = (transA == oneapi::mkl::transpose::conjtrans);
-    for (intType row = 0; row < nrows; row++) {
-        z[row] *= beta;
+    for (intType row = 0; row < size; row++) {
+        expected_res[row] *= beta;
     }
-    for (intType row = 0; row < nrows; row++) {
+    for (intType row = 0; row < size; row++) {
         fpType tmp = alpha * x[row];
         for (intType i = ia[row]; i < ia[row + 1]; i++) {
             if constexpr (is_complex<fpType>()) {
-                z[ja[i]] += tmp * (isConj ? std::conj(a[i]) : a[i]);
+                expected_res[ja[i]] += tmp * (isConj ? std::conj(a[i]) : a[i]);
             }
             else {
-                z[ja[i]] += tmp * a[i];
+                expected_res[ja[i]] += tmp * a[i];
             }
         }
     }
 
     bool good = true;
-    for (intType row = 0; row < nrows; row++) {
-        good &= check_result(res[row], z[row], nrows, row);
+    for (intType row = 0; row < size; row++) {
+        good &= check_result(res[row], expected_res[row], size, row);
     }
 
     std::cout << "\n\t\t sparse::spmv example " << (good ? "passed" : "failed") << "\n\tFinished"
@@ -217,7 +223,7 @@ void print_example_banner() {
     std::cout << "# " << std::endl;
     std::cout << "# y = alpha * op(A) * x + beta * y" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "# where A is a sparse matrix in CSR format, x and y are "
+    std::cout << "# where A is a sparse matrix in COO format, x and y are "
                  "dense vectors"
               << std::endl;
     std::cout << "# and alpha, beta are floating point type precision scalars." << std::endl;
@@ -256,7 +262,7 @@ int main(int /*argc*/, char ** /*argv*/) {
     try {
         sycl::queue cpu_queue(sycl::cpu_selector_v, exception_handler);
         sycl::queue gpu_queue(sycl::gpu_selector_v, exception_handler);
-        unsigned int vendor_id = gpu_queue.get_info<sycl::info::device::vendor_id>();
+        unsigned int vendor_id = gpu_queue.get_device().get_info<sycl::info::device::vendor_id>();
         if (vendor_id != NVIDIA_ID) {
             std::cerr << "FAILED: NVIDIA GPU device not found" << std::endl;
             return 1;
@@ -265,9 +271,9 @@ int main(int /*argc*/, char ** /*argv*/) {
         oneapi::mkl::backend_selector<oneapi::mkl::backend::cusparse> gpu_selector{ gpu_queue };
 
         std::cout << "Running Sparse BLAS SPMV USM example on:" << std::endl;
-        std::cout << "\tCPU device: " << cpu_queue.get_info<sycl::info::device::name>()
+        std::cout << "\tCPU device: " << cpu_queue.get_device().get_info<sycl::info::device::name>()
                   << std::endl;
-        std::cout << "\tGPU device: " << gpu_queue.get_info<sycl::info::device::name>()
+        std::cout << "\tGPU device: " << gpu_queue.get_device().get_info<sycl::info::device::name>()
                   << std::endl;
         std::cout << "Running with single precision real data type:" << std::endl;
 
