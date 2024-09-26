@@ -76,48 +76,36 @@ spmm
    :header-rows: 1
    :widths: 10 30 45
 
-   * - Value
-     - Description
-     - Backend equivalent
+   * - ``spmm_alg`` value
+     - MKLCPU/MKLGPU
+     - cuSPARSE
    * - ``default_optimize_alg``
-     - Default algorithm.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - none
+     - ``CUSPARSE_SPMM_ALG_DEFAULT``
    * - ``no_optimize_alg``
-     - Default algorithm but may skip some optimizations. Useful only if an
-       operation with the same configuration is run once.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - none
+     - ``CUSPARSE_SPMM_ALG_DEFAULT``
    * - ``coo_alg1``
-     - Should provide best performance for COO format, small ``nnz`` and
-       column-major layout.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG1``
+     - none
+     - ``CUSPARSE_SPMM_COO_ALG1``
    * - ``coo_alg2``
-     - Should provide best performance for COO format and column-major layout.
-       Produces deterministic results.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG2``
+     - none
+     - ``CUSPARSE_SPMM_COO_ALG2``
    * - ``coo_alg3``
-     - Should provide best performance for COO format and large ``nnz``.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG3``
+     - none
+     - ``CUSPARSE_SPMM_COO_ALG3``
    * - ``coo_alg4``
-     - Should provide best performance for COO format and row-major layout.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_COO_ALG4``
+     - none
+     - ``CUSPARSE_SPMM_COO_ALG4``
    * - ``csr_alg1``
-     - Should provide best performance for CSR format and column-major layout.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_CSR_ALG1``
+     - none
+     - ``CUSPARSE_SPMM_CSR_ALG1``
    * - ``csr_alg2``
-     - Should provide best performance for CSR format and row-major layout.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_CSR_ALG2``
+     - none
+     - ``CUSPARSE_SPMM_CSR_ALG2``
    * - ``csr_alg3``
-     - Deterministic algorithm for CSR format.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_CSR_ALG3``
+     - none
+     - ``CUSPARSE_SPMM_CSR_ALG3``
 
 
 spmv
@@ -127,38 +115,30 @@ spmv
    :header-rows: 1
    :widths: 10 30 45
 
-   * - Value
-     - Description
-     - Backend equivalent
+   * - ``spmv_alg`` value
+     - MKLCPU/MKLGPU
+     - cuSPARSE
    * - ``default_alg``
-     - Default algorithm.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMV_ALG_DEFAULT``
+     - none
+     - ``CUSPARSE_SPMV_ALG_DEFAULT``
    * - ``no_optimize_alg``
-     - Default algorithm but may skip some optimizations. Useful only if an
-       operation with the same configuration is run once.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - none
+     - ``CUSPARSE_SPMM_ALG_DEFAULT``
    * - ``coo_alg1``
-     - Default algorithm for COO format.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMV_COO_ALG1``
+     - none
+     - ``CUSPARSE_SPMV_COO_ALG1``
    * - ``coo_alg2``
-     - Deterministic algorithm for COO format.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMV_COO_ALG2``
+     - none
+     - ``CUSPARSE_SPMV_COO_ALG2``
    * - ``csr_alg1``
-     - Default algorithm for CSR format.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMV_CSR_ALG1``
+     - none
+     - ``CUSPARSE_SPMV_CSR_ALG1``
    * - ``csr_alg2``
-     - Deterministic algorithm for CSR format.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMV_CSR_ALG2``
+     - none
+     - ``CUSPARSE_SPMV_CSR_ALG2``
    * - ``csr_alg3``
-     - LRB variant of the algorithm for CSR format.
-     - | MKL: none
-       | cuSPARSE: none
+     - none
+     - none
 
 
 spsv
@@ -168,15 +148,12 @@ spsv
    :header-rows: 1
    :widths: 10 30 45
 
-   * - Value
-     - Description
-     - Backend equivalent
+   * - ``spsv_alg`` value
+     - MKLCPU/MKLGPU
+     - cuSPARSE
    * - ``default_optimize_alg``
-     - Default algorithm.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - none
+     - ``CUSPARSE_SPMM_ALG_DEFAULT``
    * - ``no_optimize_alg``
-     - Default algorithm but may skip some optimizations. Useful only if an
-       operation with the same configuration is run once.
-     - | MKL: none
-       | cuSPARSE: ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - none
+     - ``CUSPARSE_SPMM_ALG_DEFAULT``
