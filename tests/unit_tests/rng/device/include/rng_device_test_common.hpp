@@ -226,6 +226,44 @@ struct statistics_device<oneapi::mkl::rng::device::uniform<std::uint32_t, Method
     }
 };
 
+template <typename Method>
+struct statistics_device<oneapi::mkl::rng::device::uniform<std::int64_t, Method>> {
+    template <typename AllocType>
+    bool check(const std::vector<int64_t, AllocType>& r,
+               const oneapi::mkl::rng::device::uniform<int64_t, Method>& distr) {
+        double tM, tD, tQ;
+        double a = distr.a();
+        double b = distr.b();
+
+        // Theoretical moments
+        tM = (a + b - 1.0) / 2.0;
+        tD = ((b - a) * (b - a) - 1.0) / 12.0;
+        tQ = (((b - a) * (b - a)) * ((1.0 / 80.0) * (b - a) * (b - a) - (1.0 / 24.0))) +
+             (7.0 / 240.0);
+
+        return compare_moments(r, tM, tD, tQ);
+    }
+};
+
+template <typename Method>
+struct statistics_device<oneapi::mkl::rng::device::uniform<std::uint64_t, Method>> {
+    template <typename AllocType>
+    bool check(const std::vector<uint64_t, AllocType>& r,
+               const oneapi::mkl::rng::device::uniform<uint64_t, Method>& distr) {
+        double tM, tD, tQ;
+        double a = distr.a();
+        double b = distr.b();
+
+        // Theoretical moments
+        tM = (a + b - 1.0) / 2.0;
+        tD = ((b - a) * (b - a) - 1.0) / 12.0;
+        tQ = (((b - a) * (b - a)) * ((1.0 / 80.0) * (b - a) * (b - a) - (1.0 / 24.0))) +
+             (7.0 / 240.0);
+
+        return compare_moments(r, tM, tD, tQ);
+    }
+};
+
 template <typename Fp, typename Method>
 struct statistics_device<oneapi::mkl::rng::device::gaussian<Fp, Method>> {
     template <typename AllocType>
