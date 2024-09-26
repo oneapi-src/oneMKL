@@ -36,7 +36,11 @@
 #include "../stride_helper.hpp"
 
 // MKLGPU header
-#include "oneapi/mkl/dfti.hpp"
+#if INTEL_MKL_VERSION < 20250000
+#include <oneapi/mkl/dfti.hpp>
+#else
+#include <oneapi/mkl/dft.hpp>
+#endif
 
 // MKL 2024.1 deprecates input/output strides.
 #include "mkl_version.h"

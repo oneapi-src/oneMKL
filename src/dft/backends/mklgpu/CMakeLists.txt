@@ -32,12 +32,14 @@ add_library(${LIB_OBJ} OBJECT
 )
 add_dependencies(onemkl_backend_libs_dft ${LIB_NAME})
 
-target_include_directories(${LIB_OBJ}
-  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
-)
 target_include_directories(${LIB_NAME}
   PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
 )
+
+target_compile_options(${LIB_OBJ}
+  BEFORE PRIVATE -iquote $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
