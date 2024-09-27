@@ -20,8 +20,6 @@
 #ifndef _ONEMKL_DFT_SRC_CUFFT_EXECUTE_HPP_
 #define _ONEMKL_DFT_SRC_CUFFT_EXECUTE_HPP_
 
-#define SYCL_EXT_ACPP_ENQUEUE_CUSTOM_OPERATION
-
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else

@@ -18,7 +18,6 @@
 *******************************************************************************/
 
 #include <type_traits>
-
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
