@@ -266,6 +266,8 @@ public:
         // Link to rocFFT issue: https://github.com/ROCm/rocFFT/issues/507
         if constexpr (rocfft_version_major == 1 && rocfft_version_minor == 0 &&
                       (rocfft_version_patch > 22 && rocfft_version_patch < 31)) {
+            // rocFFT's functional status for problems like cfoA:B:1xB:1:A is unknown as
+            // of 4ed3e97bb7c11531684168665d5a980fde0284c9 (due to project's implementation preventing testing thereof)
             if (dom == dft::domain::COMPLEX &&
                 config_values.placement == dft::config_value::NOT_INPLACE && dimensions > 2) {
                 if (stride_vecs.vec_a != stride_vecs.vec_b)
