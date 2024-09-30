@@ -236,6 +236,8 @@ TEST_P(Philox4x32x10UniformAccDeviceMomentsTests, UnsignedIntegerPrecision) {
 }
 
 TEST_P(Philox4x32x10UniformAccDeviceMomentsTests, Integer64Precision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                      oneapi::mkl::rng::device::uniform<
@@ -257,6 +259,8 @@ TEST_P(Philox4x32x10UniformAccDeviceMomentsTests, Integer64Precision) {
 }
 
 TEST_P(Philox4x32x10UniformAccDeviceMomentsTests, UnsignedInteger64Precision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                      oneapi::mkl::rng::device::uniform<
