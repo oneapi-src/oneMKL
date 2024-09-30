@@ -132,7 +132,7 @@ void spsv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
     auto cu_x = x_handle->backend_handle;
     auto cu_y = y_handle->backend_handle;
     auto type = A_handle->value_container.data_type;
-    set_matrix_attributes("optimize_spsv", cu_a, A_view);
+    set_matrix_attributes("spsv_optimize", cu_a, A_view);
     auto cu_op = get_cuda_operation(type, opA);
     auto cu_type = get_cuda_value_type(type);
     auto cu_alg = get_cuda_spsv_alg(alg);
@@ -140,7 +140,7 @@ void spsv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
     set_pointer_mode(cu_handle, is_alpha_host_accessible);
     auto status = cusparseSpSV_analysis(cu_handle, cu_op, alpha, cu_a, cu_x, cu_y, cu_type, cu_alg,
                                         cu_descr, workspace_ptr);
-    check_status(status, "optimize_spsv");
+    check_status(status, "spsv_optimize");
 }
 
 void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,

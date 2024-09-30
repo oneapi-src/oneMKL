@@ -157,7 +157,7 @@ void spmm_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA,
     set_pointer_mode(cu_handle, is_alpha_host_accessible);
     auto status = cusparseSpMM_preprocess(cu_handle, cu_op_a, cu_op_b, alpha, cu_a, cu_b, beta,
                                           cu_c, cu_type, cu_alg, workspace_ptr);
-    check_status(status, "optimize_spmm");
+    check_status(status, "spmm_optimize");
 }
 
 void spmm_optimize(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,

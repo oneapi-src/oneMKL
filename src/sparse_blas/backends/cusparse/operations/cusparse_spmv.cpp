@@ -145,7 +145,7 @@ void spmv_optimize_impl(cusparseHandle_t cu_handle, oneapi::mkl::transpose opA, 
     set_pointer_mode(cu_handle, is_alpha_host_accessible);
     auto status = cusparseSpMV_preprocess(cu_handle, cu_op, alpha, cu_a, cu_x, beta, cu_y, cu_type,
                                           cu_alg, workspace_ptr);
-    check_status(status, "optimize_spmv");
+    check_status(status, "spmv_optimize");
 }
 #endif
 
