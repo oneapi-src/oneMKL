@@ -86,7 +86,7 @@ protected:
             if constexpr (EngineType::vec_size == 1) {
                 res = std::fmax(res, a_);
             }
-            else{
+            else {
                 for (int i = 0; i < EngineType::vec_size; i++) {
                     res[i] = std::fmax(res[i], a_);
                 }
@@ -109,7 +109,7 @@ protected:
             if constexpr (EngineType::vec_size == 1) {
                 res = std::fmax(res, a_);
             }
-            else{
+            else {
                 for (int i = 0; i < EngineType::vec_size; i++) {
                     res[i] = std::fmax(res[i], a_);
                 }

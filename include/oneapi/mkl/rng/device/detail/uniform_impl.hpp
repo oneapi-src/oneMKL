@@ -37,20 +37,21 @@ static inline std::uint64_t umul_hi_64(const std::uint64_t a, const std::uint64_
     const std::uint64_t ab_md = a_hi * b_lo;
     const std::uint64_t ba_md = b_hi * a_lo;
 
-    const std::uint64_t bias = ((ab_md & 0xFFFFFFFFULL) + (ba_md & 0xFFFFFFFFULL) + (ab_lo >> 32)) >> 32;
+    const std::uint64_t bias =
+        ((ab_md & 0xFFFFFFFFULL) + (ba_md & 0xFFFFFFFFULL) + (ab_lo >> 32)) >> 32;
 
     return ab_hi + (ab_md >> 32) + (ba_md >> 32) + bias;
 }
 
 template <typename EngineType, typename Generator>
-static inline void generate_leftover(std::uint64_t range, Generator generate,
-                                     std::uint64_t& res_64, std::uint64_t& leftover) {
+static inline void generate_leftover(std::uint64_t range, Generator generate, std::uint64_t& res_64,
+                                     std::uint64_t& leftover) {
     if constexpr (std::is_same_v<EngineType, mcg31m1<EngineType::vec_size>>) {
         std::uint32_t res_1 = generate();
         std::uint32_t res_2 = generate();
         std::uint32_t res_3 = generate();
         res_64 = (static_cast<std::uint64_t>(res_3) << 62) +
-            (static_cast<std::uint64_t>(res_2) << 31) + res_1;
+                 (static_cast<std::uint64_t>(res_2) << 31) + res_1;
     }
     else {
         std::uint32_t res_1 = generate();
@@ -121,7 +122,8 @@ protected:
                                       float>::type;
         OutType res;
         if constexpr (std::is_integral<Type>::value) {
-            if constexpr (std::is_same_v<Type, std::int32_t> || std::is_same_v<Type, std::uint32_t>) {
+            if constexpr (std::is_same_v<Type, std::int32_t> ||
+                          std::is_same_v<Type, std::uint32_t>) {
                 return generate_single_int<FpType, OutType>(engine);
             }
             else {
@@ -141,15 +143,15 @@ protected:
                     std::uint32_t res_1, res_2;
                     std::uint64_t res_64, leftover;
 
-                    generate_leftover<EngineType>(range, [&engine](){return engine.generate();},
-                                                  res_64, leftover);
+                    generate_leftover<EngineType>(
+                        range, [&engine]() { return engine.generate(); }, res_64, leftover);
 
                     if (range == uint_max64)
                         return res_64;
 
                     while (leftover < threshold) {
-                        generate_leftover<EngineType>(range, [&engine](){return engine.generate();},
-                                                      res_64, leftover);
+                        generate_leftover<EngineType>(
+                            range, [&engine]() { return engine.generate(); }, res_64, leftover);
                     }
 
                     res = a_ + umul_hi_64(res_64, range);
@@ -168,23 +170,25 @@ protected:
 
                         for (int i = 0; i < EngineType::vec_size; i++) {
                             res_64[i] = (static_cast<std::uint64_t>(res_3[i]) << 62) +
-                                (static_cast<std::uint64_t>(res_2[i]) << 31) + res_1[i];
+                                        (static_cast<std::uint64_t>(res_2[i]) << 31) + res_1[i];
                         }
                     }
                     else {
                         if constexpr (EngineType::vec_size == 3) {
                             res_64[0] = (static_cast<std::uint64_t>(res_1[1]) << 32) +
-                                static_cast<std::uint64_t>(res_1[0]);
+                                        static_cast<std::uint64_t>(res_1[0]);
                             res_64[1] = (static_cast<std::uint64_t>(res_2[0]) << 32) +
-                                static_cast<std::uint64_t>(res_1[2]);
+                                        static_cast<std::uint64_t>(res_1[2]);
                             res_64[2] = (static_cast<std::uint64_t>(res_2[2]) << 32) +
-                                static_cast<std::uint64_t>(res_2[1]);
-                        } else {
+                                        static_cast<std::uint64_t>(res_2[1]);
+                        }
+                        else {
                             for (int i = 0; i < EngineType::vec_size / 2; i++) {
                                 res_64[i] = (static_cast<std::uint64_t>(res_1[2 * i + 1]) << 32) +
-                                        static_cast<std::uint64_t>(res_1[2 * i]);
-                                res_64[i + EngineType::vec_size / 2] = (static_cast<std::uint64_t>(res_2[2 * i + 1]) << 32) +
-                                                    static_cast<std::uint64_t>(res_2[2 * i]);
+                                            static_cast<std::uint64_t>(res_1[2 * i]);
+                                res_64[i + EngineType::vec_size / 2] =
+                                    (static_cast<std::uint64_t>(res_2[2 * i + 1]) << 32) +
+                                    static_cast<std::uint64_t>(res_2[2 * i]);
                             }
                         }
                     }
@@ -196,8 +200,9 @@ protected:
                         leftover = res_64[i] * range;
 
                         while (leftover < threshold) {
-                            generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();},
-                                                          res_64[i], leftover);
+                            generate_leftover<EngineType>(
+                                range, [&engine]() { return engine.generate_single(); }, res_64[i],
+                                leftover);
                         }
 
                         res[i] = a_ + umul_hi_64(res_64[i], range);
@@ -219,7 +224,7 @@ protected:
                     res = std::fmax(res, a_);
                     res = std::fmin(res, b_);
                 }
-                else{
+                else {
                     for (int i = 0; i < EngineType::vec_size; i++) {
                         res[i] = std::fmax(res[i], a_);
                         res[i] = std::fmin(res[i], b_);
@@ -239,7 +244,8 @@ protected:
                                       float>::type;
         Type res;
         if constexpr (std::is_integral<Type>::value) {
-            if constexpr (std::is_same_v<Type, std::int32_t> || std::is_same_v<Type, std::uint32_t>) {
+            if constexpr (std::is_same_v<Type, std::int32_t> ||
+                          std::is_same_v<Type, std::uint32_t>) {
                 FpType res_fp =
                     engine.generate_single(static_cast<FpType>(a_), static_cast<FpType>(b_));
                 res_fp = sycl::floor(res_fp);
@@ -267,15 +273,15 @@ protected:
                 std::uint32_t res_1, res_2;
                 std::uint64_t res_64, leftover;
 
-                generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();},
-                                              res_64, leftover);
+                generate_leftover<EngineType>(
+                    range, [&engine]() { return engine.generate_single(); }, res_64, leftover);
 
                 if (range == uint_max64)
                     return res_64;
 
                 while (leftover < threshold) {
-                    generate_leftover<EngineType>(range, [&engine](){return engine.generate_single();},
-                                                  res_64, leftover);
+                    generate_leftover<EngineType>(
+                        range, [&engine]() { return engine.generate_single(); }, res_64, leftover);
                 }
 
                 res = a_ + umul_hi_64(res_64, range);
@@ -295,7 +301,7 @@ protected:
                     res = std::fmax(res, a_);
                     res = std::fmin(res, b_);
                 }
-                else{
+                else {
                     for (int i = 0; i < EngineType::vec_size; i++) {
                         res[i] = std::fmax(res[i], a_);
                         res[i] = std::fmin(res[i], b_);

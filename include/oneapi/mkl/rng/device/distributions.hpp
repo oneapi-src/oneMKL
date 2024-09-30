@@ -76,10 +76,10 @@ public:
                   Type(0.0),
                   std::is_integral<Type>::value
                       ? ((std::is_same_v<Type, std::uint64_t> || std::is_same_v<Type, std::int64_t>)
-                          ? (std::numeric_limits<Type>::max)()
-                          : (std::is_same<Method, uniform_method::standard>::value
-                                 ? (1 << 23)
-                                 : (std::numeric_limits<Type>::max)()))
+                             ? (std::numeric_limits<Type>::max)()
+                             : (std::is_same<Method, uniform_method::standard>::value
+                                    ? (1 << 23)
+                                    : (std::numeric_limits<Type>::max)()))
                       : Type(1.0)) {}
 
     explicit uniform(Type a, Type b) : detail::distribution_base<uniform<Type, Method>>(a, b) {}

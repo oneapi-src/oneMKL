@@ -393,7 +393,7 @@ protected:
             res = acc_rej_kernel<EngineType::vec_size>(res, engine);
         }
         if constexpr (std::is_same_v<Method, beta_method::cja_accurate>) {
-            for(std::int32_t i = 0; i < EngineType::vec_size; i++) {
+            for (std::int32_t i = 0; i < EngineType::vec_size; i++) {
                 if (res[i] < a_)
                     res[i] = a_;
                 if (res[i] > a_ + b_)
@@ -416,7 +416,7 @@ protected:
             res = acc_rej_kernel<1>(z, engine);
         }
         if constexpr (std::is_same_v<Method, beta_method::cja_accurate>) {
-            for(std::int32_t i = 0; i < EngineType::vec_size; i++) {
+            for (std::int32_t i = 0; i < EngineType::vec_size; i++) {
                 if (res[i] < a_)
                     res[i] = a_;
                 if (res[i] > a_ + b_)
