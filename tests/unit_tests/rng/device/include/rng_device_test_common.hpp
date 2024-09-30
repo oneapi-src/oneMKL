@@ -191,8 +191,8 @@ struct statistics_device<oneapi::mkl::rng::device::uniform<Fp, Method>> {
 template <typename Method>
 struct statistics_device<oneapi::mkl::rng::device::uniform<std::int32_t, Method>> {
     template <typename AllocType>
-    bool check(const std::vector<int32_t, AllocType>& r,
-               const oneapi::mkl::rng::device::uniform<int32_t, Method>& distr) {
+    bool check(const std::vector<std::int32_t, AllocType>& r,
+               const oneapi::mkl::rng::device::uniform<std::int32_t, Method>& distr) {
         double tM, tD, tQ;
         double a = distr.a();
         double b = distr.b();
@@ -210,8 +210,8 @@ struct statistics_device<oneapi::mkl::rng::device::uniform<std::int32_t, Method>
 template <typename Method>
 struct statistics_device<oneapi::mkl::rng::device::uniform<std::uint32_t, Method>> {
     template <typename AllocType>
-    bool check(const std::vector<uint32_t, AllocType>& r,
-               const oneapi::mkl::rng::device::uniform<uint32_t, Method>& distr) {
+    bool check(const std::vector<std::uint32_t, AllocType>& r,
+               const oneapi::mkl::rng::device::uniform<std::uint32_t, Method>& distr) {
         double tM, tD, tQ;
         double a = distr.a();
         double b = distr.b();
@@ -229,8 +229,8 @@ struct statistics_device<oneapi::mkl::rng::device::uniform<std::uint32_t, Method
 template <typename Method>
 struct statistics_device<oneapi::mkl::rng::device::uniform<std::int64_t, Method>> {
     template <typename AllocType>
-    bool check(const std::vector<int64_t, AllocType>& r,
-               const oneapi::mkl::rng::device::uniform<int64_t, Method>& distr) {
+    bool check(const std::vector<std::int64_t, AllocType>& r,
+               const oneapi::mkl::rng::device::uniform<std::int64_t, Method>& distr) {
         double tM, tD, tQ;
         double a = distr.a();
         double b = distr.b();
@@ -248,8 +248,8 @@ struct statistics_device<oneapi::mkl::rng::device::uniform<std::int64_t, Method>
 template <typename Method>
 struct statistics_device<oneapi::mkl::rng::device::uniform<std::uint64_t, Method>> {
     template <typename AllocType>
-    bool check(const std::vector<uint64_t, AllocType>& r,
-               const oneapi::mkl::rng::device::uniform<uint64_t, Method>& distr) {
+    bool check(const std::vector<std::uint64_t, AllocType>& r,
+               const oneapi::mkl::rng::device::uniform<std::uint64_t, Method>& distr) {
         double tM, tD, tQ;
         double a = distr.a();
         double b = distr.b();

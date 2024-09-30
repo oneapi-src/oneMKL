@@ -1055,9 +1055,7 @@ class Philox4x32x10BetaCjaDeviceMomentsTests
 class Philox4x32x10BetaCjaAccDeviceMomentsTests
         : public ::testing::TestWithParam<sycl::device*> {};
 
-// implementation uses double precision for accuracy
-TEST_P(Philox4x32x10BetaCjaDeviceMomentsTests, RealDoublePrecision) {
-    CHECK_DOUBLE_ON_DEVICE(GetParam());
+TEST_P(Philox4x32x10BetaCjaDeviceMomentsTests, RealSinglePrecision) {
 
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::beta<
@@ -1074,63 +1072,71 @@ TEST_P(Philox4x32x10BetaCjaDeviceMomentsTests, RealDoublePrecision) {
                                      float, oneapi::mkl::rng::device::beta_method::cja>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
+}
+
+TEST_P(Philox4x32x10BetaCjaDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::beta<
                                      double, oneapi::mkl::rng::device::beta_method::cja>>>
-        test4;
-    EXPECT_TRUEORSKIP((test4(GetParam())));
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam())));
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
                                  oneapi::mkl::rng::device::beta<
                                      double, oneapi::mkl::rng::device::beta_method::cja>>>
-        test5;
-    EXPECT_TRUEORSKIP((test5(GetParam())));
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam())));
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
                                  oneapi::mkl::rng::device::beta<
                                      double, oneapi::mkl::rng::device::beta_method::cja>>>
-        test6;
-    EXPECT_TRUEORSKIP((test6(GetParam())));
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam())));
 }
 
-// implementation uses double precision for accuracy
+TEST_P(Philox4x32x10BetaCjaAccDeviceMomentsTests, RealSinglePrecision) {
+
+    rng_device_test<
+        moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
+                     oneapi::mkl::rng::device::beta<
+                         float, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam())));
+    rng_device_test<
+        moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
+                     oneapi::mkl::rng::device::beta<
+                         float, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam())));
+    rng_device_test<
+        moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
+                     oneapi::mkl::rng::device::beta<
+                         float, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam())));
+}
+
 TEST_P(Philox4x32x10BetaCjaAccDeviceMomentsTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                      oneapi::mkl::rng::device::beta<
-                         float, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
+                         double, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam())));
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
                      oneapi::mkl::rng::device::beta<
-                         float, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
+                         double, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam())));
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
                      oneapi::mkl::rng::device::beta<
-                         float, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
+                         double, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
-    rng_device_test<
-        moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
-                     oneapi::mkl::rng::device::beta<
-                         double, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
-        test4;
-    EXPECT_TRUEORSKIP((test4(GetParam())));
-    rng_device_test<
-        moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
-                     oneapi::mkl::rng::device::beta<
-                         double, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
-        test5;
-    EXPECT_TRUEORSKIP((test5(GetParam())));
-    rng_device_test<
-        moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
-                     oneapi::mkl::rng::device::beta<
-                         double, oneapi::mkl::rng::device::beta_method::cja_accurate>>>
-        test6;
-    EXPECT_TRUEORSKIP((test6(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(Philox4x32x10BetaCjaDeviceMomentsTestsSuite,
@@ -1147,9 +1153,7 @@ class Philox4x32x10GammaMarsagliaDeviceMomentsTests
 class Philox4x32x10GammaMarsagliaAccDeviceMomentsTests
         : public ::testing::TestWithParam<sycl::device*> {};
 
-// implementation uses double precision for accuracy
-TEST_P(Philox4x32x10GammaMarsagliaDeviceMomentsTests, RealDoublePrecision) {
-    CHECK_DOUBLE_ON_DEVICE(GetParam());
+TEST_P(Philox4x32x10GammaMarsagliaDeviceMomentsTests, RealSinglePrecision) {
 
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::gamma<
@@ -1166,63 +1170,71 @@ TEST_P(Philox4x32x10GammaMarsagliaDeviceMomentsTests, RealDoublePrecision) {
                                      float, oneapi::mkl::rng::device::gamma_method::marsaglia>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
+}
+
+TEST_P(Philox4x32x10GammaMarsagliaDeviceMomentsTests, RealDoublePrecision) {
+    CHECK_DOUBLE_ON_DEVICE(GetParam());
+
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::gamma<
                                      double, oneapi::mkl::rng::device::gamma_method::marsaglia>>>
-        test4;
-    EXPECT_TRUEORSKIP((test4(GetParam())));
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam())));
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
                                  oneapi::mkl::rng::device::gamma<
                                      double, oneapi::mkl::rng::device::gamma_method::marsaglia>>>
-        test5;
-    EXPECT_TRUEORSKIP((test5(GetParam())));
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam())));
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
                                  oneapi::mkl::rng::device::gamma<
                                      double, oneapi::mkl::rng::device::gamma_method::marsaglia>>>
-        test6;
-    EXPECT_TRUEORSKIP((test6(GetParam())));
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam())));
 }
 
-// implementation uses double precision for accuracy
+TEST_P(Philox4x32x10GammaMarsagliaAccDeviceMomentsTests, RealSinglePrecision) {
+
+    rng_device_test<
+        moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
+                     oneapi::mkl::rng::device::gamma<
+                         float, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
+        test1;
+    EXPECT_TRUEORSKIP((test1(GetParam())));
+    rng_device_test<
+        moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
+                     oneapi::mkl::rng::device::gamma<
+                         float, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
+        test2;
+    EXPECT_TRUEORSKIP((test2(GetParam())));
+    rng_device_test<
+        moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
+                     oneapi::mkl::rng::device::gamma<
+                         float, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
+        test3;
+    EXPECT_TRUEORSKIP((test3(GetParam())));
+}
+
 TEST_P(Philox4x32x10GammaMarsagliaAccDeviceMomentsTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(GetParam());
 
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                      oneapi::mkl::rng::device::gamma<
-                         float, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
+                         double, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam())));
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
                      oneapi::mkl::rng::device::gamma<
-                         float, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
+                         double, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam())));
     rng_device_test<
         moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
                      oneapi::mkl::rng::device::gamma<
-                         float, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
+                         double, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
-    rng_device_test<
-        moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
-                     oneapi::mkl::rng::device::gamma<
-                         double, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
-        test4;
-    EXPECT_TRUEORSKIP((test4(GetParam())));
-    rng_device_test<
-        moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
-                     oneapi::mkl::rng::device::gamma<
-                         double, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
-        test5;
-    EXPECT_TRUEORSKIP((test5(GetParam())));
-    rng_device_test<
-        moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
-                     oneapi::mkl::rng::device::gamma<
-                         double, oneapi::mkl::rng::device::gamma_method::marsaglia_accurate>>>
-        test6;
-    EXPECT_TRUEORSKIP((test6(GetParam())));
 }
 
 INSTANTIATE_TEST_SUITE_P(Philox4x32x10GammaMarsagliaDeviceMomentsTestsSuite,
@@ -1257,17 +1269,17 @@ TEST_P(Philox4x32x10PoissonDevroyeDeviceMomentsTests, IntegerPrecision) {
 TEST_P(Philox4x32x10PoissonDevroyeDeviceMomentsTests, UnsignedIntegerPrecision) {
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<1>,
                                  oneapi::mkl::rng::device::poisson<
-                                     uint32_t, oneapi::mkl::rng::device::poisson_method::devroye>>>
+                                     std::uint32_t, oneapi::mkl::rng::device::poisson_method::devroye>>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam())));
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<4>,
                                  oneapi::mkl::rng::device::poisson<
-                                     uint32_t, oneapi::mkl::rng::device::poisson_method::devroye>>>
+                                     std::uint32_t, oneapi::mkl::rng::device::poisson_method::devroye>>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam())));
     rng_device_test<moments_test<oneapi::mkl::rng::device::philox4x32x10<16>,
                                  oneapi::mkl::rng::device::poisson<
-                                     uint32_t, oneapi::mkl::rng::device::poisson_method::devroye>>>
+                                     std::uint32_t, oneapi::mkl::rng::device::poisson_method::devroye>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
 }
