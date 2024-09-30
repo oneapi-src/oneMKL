@@ -56,8 +56,8 @@ Currently known limitations:
   a ``oneapi::mkl::unimplemented`` exception.
 - Using ``spmv`` with a ``type_view`` other than ``matrix_descr::general`` will
   throw a ``oneapi::mkl::unimplemented`` exception.
-- Using ``spsv`` with the algorithm ``spsv_alg::no_optimize_alg`` will throw a
-  ``oneapi::mkl::unimplemented`` exception.
+- Using ``spsv`` with the algorithm ``spsv_alg::no_optimize_alg`` may still
+  perform some mandatory preprocessing.
 - oneMKL Interface does not provide a way to use non-default algorithms without
   calling preprocess functions such as ``cusparseSpMM_preprocess`` or
   ``cusparseSpMV_preprocess``. Feel free to create an issue if this is needed.
