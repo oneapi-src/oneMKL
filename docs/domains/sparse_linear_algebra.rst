@@ -84,7 +84,7 @@ spmm
    * - ``spmm_alg`` value
      - MKLCPU/MKLGPU
      - cuSPARSE
-   * - ``default_optimize_alg``
+   * - ``default_alg``
      - none
      - ``CUSPARSE_SPMM_ALG_DEFAULT``
    * - ``no_optimize_alg``
@@ -156,7 +156,7 @@ spsv
    * - ``spsv_alg`` value
      - MKLCPU/MKLGPU
      - cuSPARSE
-   * - ``default_optimize_alg``
+   * - ``default_alg``
      - none
      - ``CUSPARSE_SPMM_ALG_DEFAULT``
    * - ``no_optimize_alg``
