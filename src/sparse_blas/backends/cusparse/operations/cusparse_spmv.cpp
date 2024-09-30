@@ -256,19 +256,9 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         auto cu_op = get_cuda_operation(type, opA);
         auto cu_type = get_cuda_value_type(type);
         auto cu_alg = get_cuda_spmv_alg(alg);
-        // Workaround issue with captured alpha and beta causing a segfault inside cuSPARSE
-        // Copy alpha and beta locally in the largest data value type and use the local pointer
-        cuDoubleComplex local_alpha, local_beta;
-        const void *alpha_ptr = alpha, *beta_ptr = beta;
-        if (is_alpha_host_accessible) {
-            local_alpha = *reinterpret_cast<const cuDoubleComplex *>(alpha_ptr);
-            local_beta = *reinterpret_cast<const cuDoubleComplex *>(beta_ptr);
-            alpha_ptr = &local_alpha;
-            beta_ptr = &local_beta;
-        }
         set_pointer_mode(cu_handle, is_alpha_host_accessible);
-        auto status = cusparseSpMV(cu_handle, cu_op, alpha_ptr, cu_a, cu_x, beta_ptr, cu_y, cu_type,
-                                   cu_alg, workspace_ptr);
+        auto status = cusparseSpMV(cu_handle, cu_op, alpha, cu_a, cu_x, beta, cu_y, cu_type, cu_alg,
+                                   workspace_ptr);
         check_status(status, __func__);
 #ifndef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
         CUDA_ERROR_FUNC(cuStreamSynchronize, cu_stream);
