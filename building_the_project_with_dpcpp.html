@@ -533,6 +533,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-intel-r-onemkl">Building for Intel(R) oneMKL</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda">Building for CUDA</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm">Building for ROCm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-other-sycl-devices">Building for other SYCL devices</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-sycl-backends-portblas-and-portfft">Pure SYCL backends: portBLAS and portFFT</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portblas">Building for portBLAS</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portfft">Building for portFFT</a></li>
@@ -773,6 +774,17 @@ change in future versions.</p>
 <p>For a host with ROCm installed, the device architecture can be retrieved via the
 <code class="docutils literal notranslate"><span class="pre">rocminfo</span></code> tool. The architecture will be displayed in the <code class="docutils literal notranslate"><span class="pre">Name:</span></code> row.</p>
 </section>
+<section id="building-for-other-sycl-devices">
+<span id="build-for-other-sycl-devices"></span><h3>Building for other SYCL devices<a class="headerlink" href="#building-for-other-sycl-devices" title="Link to this heading">#</a></h3>
+<p>SYCL enables portable heterogeneous computing on a wide range of accelerators.
+Consequently, it is possible to use oneMKL Interfaces with accelerators not
+anticipated by the oneMKL Interfaces team.</p>
+<p>For generic SYCL devices, only the portBLAS backend is enabled. The user must
+set the appropriate <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> for their device, and also any
+<code class="docutils literal notranslate"><span class="pre">PORTBLAS_TUNING_TARGET</span></code> required for performance. See
+<a class="reference internal" href="#building-for-portblas">Building for portBLAS</a>. Extensive testing is strongly advised for these
+unsupported configurations.</p>
+</section>
 <section id="pure-sycl-backends-portblas-and-portfft">
 <span id="build-for-portlibs-dpcpp"></span><h3>Pure SYCL backends: portBLAS and portFFT<a class="headerlink" href="#pure-sycl-backends-portblas-and-portfft" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://github.com/codeplaysoftware/portBLAS">portBLAS</a> and <a class="reference external" href="https://github.com/codeplaysoftware/portFFT">portFFT</a> are experimental pure-SYCL
@@ -926,6 +938,18 @@ default, with backends for Nvidia GPU and AMD GPU explicitly enabled.
 set, the backend libraries to enable the use of BLAS, LAPACK and RNG with MKLGPU
 and MKLCPU would also be enabled. The build of examples is disabled. Since
 functional testing was not disabled, tests would be built.</p>
+<p>Build oneMKL for the BLAS domain on a generic SYCL device:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span><span class="nv">$ONEMKL_DIR</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>clang++<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_C_COMPILER<span class="o">=</span>clang<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_PORTBLAS_BACKEND<span class="o">=</span>True
+</pre></div>
+</div>
+<p>Note that this is not a tested configuration. This builds oneMKL Interfaces
+with the portBLAS backend only, for a generic SYCL device supported by the
+Open DPC++ project.</p>
 </section>
 <section id="project-cleanup">
 <span id="id6"></span><h2>Project Cleanup<a class="headerlink" href="#project-cleanup" title="Link to this heading">#</a></h2>
@@ -1040,6 +1064,7 @@ setting <code class="docutils literal notranslate"><span class="pre">-DBUILD_FUN
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-intel-r-onemkl">Building for Intel(R) oneMKL</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-cuda">Building for CUDA</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-rocm">Building for ROCm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-other-sycl-devices">Building for other SYCL devices</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-sycl-backends-portblas-and-portfft">Pure SYCL backends: portBLAS and portFFT</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portblas">Building for portBLAS</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#building-for-portfft">Building for portFFT</a></li>
