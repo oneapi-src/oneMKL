@@ -179,8 +179,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                                workspace_ptr, is_alpha_host_accessible);
         };
 
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
+        // The accessor can only be created if the buffer size is greater than 0
         dispatch_submit(__func__, queue, functor, A_handle, workspace, x_handle, y_handle);
     }
     else {
@@ -265,8 +264,7 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
 #endif
     };
     if (A_handle->all_use_buffer() && spmv_descr->temp_buffer_size > 0) {
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
+        // The accessor can only be created if the buffer size is greater than 0
         auto functor_buffer = [=](CusparseScopedContextHandler &sc,
                                   sycl::accessor<std::uint8_t> workspace_acc) {
             auto workspace_ptr = sc.get_mem(workspace_acc);

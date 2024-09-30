@@ -166,8 +166,7 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                                spsv_descr, workspace_ptr, is_alpha_host_accessible);
         };
 
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
+        // The accessor can only be created if the buffer size is greater than 0
         dispatch_submit(__func__, queue, functor, A_handle, workspace, x_handle, y_handle);
     }
     else {

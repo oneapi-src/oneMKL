@@ -259,8 +259,7 @@ sycl::event spmm(sycl::queue& queue, oneapi::mkl::transpose opA, oneapi::mkl::tr
 #endif
     };
     if (A_handle->all_use_buffer() && spmm_descr->temp_buffer_size > 0) {
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
+        // The accessor can only be created if the buffer size is greater than 0
         auto functor_buffer = [=](CusparseScopedContextHandler& sc,
                                   sycl::accessor<std::uint8_t> workspace_acc) {
             auto workspace_ptr = sc.get_mem(workspace_acc);
