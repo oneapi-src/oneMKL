@@ -234,10 +234,10 @@ SYCL enables portable heterogeneous computing on a wide range of accelerators.
 Consequently, it is possible to use oneMKL Interfaces with accelerators not
 anticipated by the oneMKL Interfaces team.
 
-For generic SYCL devices, only portBLAS and portFFT backend are enabled. The user must
-set the appropriate ``-fsycl-targets`` for their device, and also any
-other option required for performance. See
-`Building for portBLAS`_ and `Building for portFFT`_. Extensive testing is strongly advised for these
+For generic SYCL devices, only portBLAS and portFFT backend are enabled.
+The user must set the appropriate ``-fsycl-targets`` for their device, and also
+any other option required for performance. See `Building for portBLAS`_ and
+`Building for portFFT`_. Extensive testing is strongly advised for these
 unsupported configurations.
 
 .. _build_for_portlibs_dpcpp:
