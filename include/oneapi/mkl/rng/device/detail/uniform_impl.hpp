@@ -221,13 +221,13 @@ protected:
 #else
                 // a workaround for hipSYCL (AdaptiveCpp)
                 if constexpr (EngineType::vec_size == 1) {
-                    res = std::fmax(res, a_);
-                    res = std::fmin(res, b_);
+                    res = sycl::fmax(res, a_);
+                    res = sycl::fmin(res, b_);
                 }
                 else {
                     for (int i = 0; i < EngineType::vec_size; i++) {
-                        res[i] = std::fmax(res[i], a_);
-                        res[i] = std::fmin(res[i], b_);
+                        res[i] = sycl::fmax(res[i], a_);
+                        res[i] = sycl::fmin(res[i], b_);
                     }
                 }
 #endif
@@ -298,13 +298,13 @@ protected:
 #else
                 // a workaround for hipSYCL (AdaptiveCpp)
                 if constexpr (EngineType::vec_size == 1) {
-                    res = std::fmax(res, a_);
-                    res = std::fmin(res, b_);
+                    res = sycl::fmax(res, a_);
+                    res = sycl::fmin(res, b_);
                 }
                 else {
                     for (int i = 0; i < EngineType::vec_size; i++) {
-                        res[i] = std::fmax(res[i], a_);
-                        res[i] = std::fmin(res[i], b_);
+                        res[i] = sycl::fmax(res[i], a_);
+                        res[i] = sycl::fmin(res[i], b_);
                     }
                 }
 #endif
