@@ -128,7 +128,7 @@ spmv
      - ``CUSPARSE_SPMV_ALG_DEFAULT``
    * - ``no_optimize_alg``
      - none
-     - ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - ``CUSPARSE_SPMV_ALG_DEFAULT``
    * - ``coo_alg1``
      - none
      - ``CUSPARSE_SPMV_COO_ALG1``
@@ -143,7 +143,7 @@ spmv
      - ``CUSPARSE_SPMV_CSR_ALG2``
    * - ``csr_alg3``
      - none
-     - none
+     - ``CUSPARSE_SPMV_ALG_DEFAULT``
 
 
 spsv
@@ -158,7 +158,7 @@ spsv
      - cuSPARSE
    * - ``default_alg``
      - none
-     - ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - ``CUSPARSE_SPSV_ALG_DEFAULT``
    * - ``no_optimize_alg``
      - none
-     - ``CUSPARSE_SPMM_ALG_DEFAULT``
+     - ``CUSPARSE_SPSV_ALG_DEFAULT``
