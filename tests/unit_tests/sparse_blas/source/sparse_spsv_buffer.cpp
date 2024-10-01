@@ -41,11 +41,12 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
 
     intType indexing = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
     const std::size_t mu = static_cast<std::size_t>(m);
-    const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
-                           matrix_properties.cend();
     const bool is_symmetric =
         matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
+
+    // Use a fixed seed for operations very sensitive to the input data
+    std::srand(1);
 
     // Input matrix
     std::vector<intType> ia_host, ja_host;
@@ -69,10 +70,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
     std::vector<fpType> y_ref_host(y_host);
 
     // Shuffle ordering of column indices/values to test sortedness
-    if (!is_sorted) {
-        shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(), a_host.data(), nnz,
-                              mu);
-    }
+    shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                    ja_host.data(), a_host.data(), nnz, mu);
 
     auto ia_buf = make_buffer(ia_host);
     auto ja_buf = make_buffer(ja_host);
@@ -109,10 +108,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
             intType reset_nnz = generate_random_matrix<fpType, intType>(
                 format, m, m, density_A_matrix, indexing, ia_host, ja_host, a_host, is_symmetric,
                 require_diagonal);
-            if (!is_sorted) {
-                shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(),
-                                      a_host.data(), reset_nnz, mu);
-            }
+            shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                            ja_host.data(), a_host.data(), reset_nnz, mu);
             if (reset_nnz > nnz) {
                 ia_buf = make_buffer(ia_host);
                 ja_buf = make_buffer(ja_host);
@@ -170,6 +167,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
                                 y_ref_host.data());
 
     // Compare the results of reference implementation and DPC++ implementation.
+    // Increase default relative error margin for tests that lead to large numeric values.
     auto y_acc = y_buf.get_host_access(sycl::read_only);
     bool valid = check_equal_vector(y_acc, y_ref_host);
 

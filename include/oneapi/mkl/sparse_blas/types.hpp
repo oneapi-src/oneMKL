@@ -36,6 +36,7 @@ namespace sparse {
 enum class matrix_property {
     symmetric,
     sorted,
+    sorted_by_rows,
 };
 
 enum class spmm_alg {
