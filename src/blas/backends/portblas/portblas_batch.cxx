@@ -710,7 +710,12 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        const double **b, std::int64_t *ldb, double *beta, double **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM using double");
+    if (group_count != 1) {
+        throw unimplemented("blas", "gemm_batch", " using group API and group_count != 1");
+    }
+    CALL_PORTBLAS_USM_FN(::blas::_gemm_batched, queue, transa[0], transb[0], m[0], n[0], k[0],
+                         alpha[0], a[0], lda[0], b[0], ldb[0], beta[0], c[0], ldc[0], group_size[0],
+                         ::blas::gemm_batch_type_t::strided, dependencies);
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
