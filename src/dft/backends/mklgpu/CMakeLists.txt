@@ -36,6 +36,9 @@ target_include_directories(${LIB_NAME}
   PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
 )
 
+# Due to using the same file name for different headers in this library and in
+# MKL Intel library, we force the compiler to follow C++ Core Guideline SF.12
+# using the flag "-iquote" to avoid conflicts and find the correct header.
 target_compile_options(${LIB_OBJ}
   BEFORE PRIVATE -iquote $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
