@@ -59,11 +59,11 @@ inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
         else if (vendor_id == AMD_ID)
             device_id = device::amdgpu;
         else {
-            throw unsupported_device("", "", queue.get_device());
+            device_id = device::generic_device;
         }
     }
     else {
-        throw unsupported_device("", "", queue.get_device());
+        device_id = device::generic_device;
     }
     return device_id;
 }

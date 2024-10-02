@@ -20,22 +20,50 @@
 #ifndef _ONEMKL_SPARSE_BLAS_TYPES_HPP_
 #define _ONEMKL_SPARSE_BLAS_TYPES_HPP_
 
-#if __has_include(<sycl/sycl.hpp>)
-#include <sycl/sycl.hpp>
-#else
-#include <CL/sycl.hpp>
-#endif
-
-#include <vector>
-
 #include "oneapi/mkl/types.hpp"
-#include "detail/helper_types.hpp"
+#include "matrix_view.hpp"
+#include "detail/handles.hpp"
+#include "detail/operation_types.hpp"
+
+/**
+ * @file Include and define the sparse types that are common between close-source MKL API and oneMKL API.
+*/
 
 namespace oneapi {
 namespace mkl {
 namespace sparse {
 
-using matrix_handle_t = detail::matrix_handle*;
+enum class matrix_property {
+    symmetric,
+    sorted,
+};
+
+enum class spmm_alg {
+    default_alg,
+    no_optimize_alg,
+    coo_alg1,
+    coo_alg2,
+    coo_alg3,
+    coo_alg4,
+    csr_alg1,
+    csr_alg2,
+    csr_alg3,
+};
+
+enum class spmv_alg {
+    default_alg,
+    no_optimize_alg,
+    coo_alg1,
+    coo_alg2,
+    csr_alg1,
+    csr_alg2,
+    csr_alg3,
+};
+
+enum class spsv_alg {
+    default_alg,
+    no_optimize_alg,
+};
 
 } // namespace sparse
 } // namespace mkl

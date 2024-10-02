@@ -62,7 +62,7 @@ oneMKL is part of the [UXL Foundation](http://www.uxlfoundation.org).
         </tr>
         <tr>
             <td align="center"><a href="https://github.com/codeplaysoftware/portBLAS"> portBLAS </a></td>
-            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
+            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU, Other SYCL devices (unsupported)</td>
         </tr>
         <tr>
             <td align="center"><a href="https://github.com/codeplaysoftware/portFFT"> portFFT </a></td>
@@ -172,7 +172,7 @@ Supported compilers include:
     </thead>
     <tbody>
         <tr>
-            <td rowspan=9 align="center">BLAS</td>
+            <td rowspan=10 align="center">BLAS</td>
             <td rowspan=3 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</br>AdaptiveCpp</td>
@@ -219,6 +219,12 @@ Supported compilers include:
         <tr>
             <td align="center">portBLAS</td>
             <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=1 align="center">Other SYCL devices (unsupported)</td>
+            <td align="center">portBLAS</td>
+            <td align="center">Intel DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
@@ -405,6 +411,7 @@ Supported compilers include:
     - Intel(R) Data Center GPU Max Series
     - NVIDIA(R) A100 (Linux* only)
     - AMD(R) GPUs see [here](https://github.com/RadeonOpenCompute/ROCm#hardware-and-software-support) tested on AMD Vega 20 (gfx906)
+    - Other SYCL devices can be used, but are not supported
     
 ---
 ### Supported Operating Systems
@@ -545,19 +552,6 @@ You can also join the mailing lists for the [UXL Foundation](https://lists.uxlfo
 ## Contributing
 
 You can contribute to this project and also contribute to [the specification for this project](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/). Please read the [CONTRIBUTING](CONTRIBUTING.md) page for more information. You can also contact oneMKL developers and maintainers via [UXL Foundation Slack](https://slack-invite.uxlfoundation.org/) using [#onemkl](https://uxlfoundation.slack.com/archives/onemkl) channel.
-
-For GitHub questions, issues, RFCs, or PRs you can contact maintainers via one of the following GitHub teams based on the topic:
-
-| GitHub team name | Description |
-:-----------|:------------|
-| @oneapi-src/onemkl-maintain  | All oneMKL maintainers |
-| @oneapi-src/onemkl-arch-write | oneMKL Architecture maintainers |
-| @oneapi-src/onemkl-blas-write | oneMKL BLAS maintainers |
-| @oneapi-src/onemkl-dft-write | oneMKL DFT maintainers |
-| @oneapi-src/onemkl-lapack-write) | oneMKL LAPACK maintainers |
-| @oneapi-src/onemkl-rng-write | oneMKL RNG maintainers |
-| @oneapi-src/onemkl-sparse-write | oneMKL Sparse Algebra maintainers |
-| @oneapi-src/onemkl-vm-write | oneMKL Vector Math maintainers |
 
 ---
 

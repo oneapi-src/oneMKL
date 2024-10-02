@@ -20,9 +20,10 @@
 /*
 *
 *  Content:
-*       This example demonstrates use of DPCPP API oneapi::mkl::sparse::gemv
+*       This example demonstrates use of DPCPP API oneapi::mkl::sparse::spmv
 *       using unified shared memory to perform general sparse matrix-vector
-*       multiplication on a INTEL CPU SYCL device.
+*       multiplication on a SYCL device (HOST, CPU, GPU) that is selected
+*       during runtime.
 *
 *       y = alpha * op(A) * x + beta * y
 *
@@ -32,7 +33,7 @@
 *
 *
 *       This example demonstrates only single precision (float) data type for
-*       gemv matrix data
+*       spmv matrix data
 *
 *
 *******************************************************************************/
@@ -60,7 +61,7 @@
 // is performed and finally the results are post processed.
 //
 template <typename fp, typename intType>
-int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
+int run_sparse_matrix_vector_multiply_example(const sycl::device &dev) {
     // Matrix data size
     intType size = 4;
     intType nrows = size * size * size;
@@ -77,15 +78,14 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
             }
             catch (sycl::exception const &e) {
                 std::cout << "Caught asynchronous SYCL "
-                             "exception during sparse::gemv:\n"
+                             "exception during sparse::spmv:\n"
                           << e.what() << std::endl;
             }
         }
     };
 
     // create execution queue and buffers of matrix data
-    sycl::queue cpu_queue(cpu_dev, exception_handler);
-    oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector{ cpu_queue };
+    sycl::queue main_queue(dev, exception_handler);
 
     intType *ia, *ja;
     fp *a, *x, *y, *z;
@@ -93,13 +93,14 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
     std::size_t sizeja = static_cast<std::size_t>(27 * nrows);
     std::size_t sizeia = static_cast<std::size_t>(nrows + 1);
     std::size_t sizevec = static_cast<std::size_t>(nrows);
+    auto sizevec_i64 = static_cast<std::int64_t>(sizevec);
 
-    ia = (intType *)sycl::malloc_shared(sizeia * sizeof(intType), cpu_queue);
-    ja = (intType *)sycl::malloc_shared(sizeja * sizeof(intType), cpu_queue);
-    a = (fp *)sycl::malloc_shared(sizea * sizeof(fp), cpu_queue);
-    x = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), cpu_queue);
-    y = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), cpu_queue);
-    z = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), cpu_queue);
+    ia = (intType *)sycl::malloc_shared(sizeia * sizeof(intType), main_queue);
+    ja = (intType *)sycl::malloc_shared(sizeja * sizeof(intType), main_queue);
+    a = (fp *)sycl::malloc_shared(sizea * sizeof(fp), main_queue);
+    x = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), main_queue);
+    y = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), main_queue);
+    z = (fp *)sycl::malloc_shared(sizevec * sizeof(fp), main_queue);
 
     if (!ia || !ja || !a || !x || !y || !z) {
         throw std::runtime_error("Failed to allocate USM memory");
@@ -128,7 +129,10 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
     //
 
     oneapi::mkl::transpose transA = oneapi::mkl::transpose::nontrans;
-    std::cout << "\n\t\tsparse::gemv parameters:\n";
+    oneapi::mkl::sparse::spmv_alg alg = oneapi::mkl::sparse::spmv_alg::default_alg;
+    oneapi::mkl::sparse::matrix_view A_view;
+
+    std::cout << "\n\t\tsparse::spmv parameters:\n";
     std::cout << "\t\t\ttransA = "
               << (transA == oneapi::mkl::transpose::nontrans
                       ? "nontrans"
@@ -137,23 +141,49 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
     std::cout << "\t\t\tnrows = " << nrows << std::endl;
     std::cout << "\t\t\talpha = " << alpha << ", beta = " << beta << std::endl;
 
-    // create and initialize handle for a Sparse Matrix in CSR format
-    oneapi::mkl::sparse::matrix_handle_t handle = nullptr;
+    // Create and initialize handle for a Sparse Matrix in CSR format
+    oneapi::mkl::sparse::matrix_handle_t A_handle = nullptr;
+    oneapi::mkl::sparse::init_csr_matrix(main_queue, &A_handle, nrows, nrows, nnz,
+                                         oneapi::mkl::index_base::zero, ia, ja, a);
 
-    oneapi::mkl::sparse::init_matrix_handle(cpu_selector, &handle);
+    // Create and initialize dense vector handles
+    oneapi::mkl::sparse::dense_vector_handle_t x_handle = nullptr;
+    oneapi::mkl::sparse::dense_vector_handle_t y_handle = nullptr;
+    oneapi::mkl::sparse::init_dense_vector(main_queue, &x_handle, sizevec_i64, x);
+    oneapi::mkl::sparse::init_dense_vector(main_queue, &y_handle, sizevec_i64, y);
 
-    auto ev_set = oneapi::mkl::sparse::set_csr_data(cpu_selector, handle, nrows, nrows, nnz,
-                                                    oneapi::mkl::index_base::zero, ia, ja, a);
+    // Create operation descriptor
+    oneapi::mkl::sparse::spmv_descr_t descr = nullptr;
+    oneapi::mkl::sparse::init_spmv_descr(main_queue, &descr);
 
-    auto ev_opt = oneapi::mkl::sparse::optimize_gemv(cpu_selector, transA, handle, { ev_set });
+    // Allocate external workspace
+    std::size_t workspace_size = 0;
+    oneapi::mkl::sparse::spmv_buffer_size(main_queue, transA, &alpha, A_view, A_handle, x_handle,
+                                          &beta, y_handle, alg, descr, workspace_size);
+    void *workspace = sycl::malloc_device(workspace_size, main_queue);
 
-    auto ev_gemv =
-        oneapi::mkl::sparse::gemv(cpu_selector, transA, alpha, handle, x, beta, y, { ev_opt });
+    // Optimize spmv
+    auto ev_opt =
+        oneapi::mkl::sparse::spmv_optimize(main_queue, transA, &alpha, A_view, A_handle, x_handle,
+                                           &beta, y_handle, alg, descr, workspace);
 
-    auto ev_release =
-        oneapi::mkl::sparse::release_matrix_handle(cpu_selector, &handle, { ev_gemv });
+    // Run spmv
+    auto ev_spmv = oneapi::mkl::sparse::spmv(main_queue, transA, &alpha, A_view, A_handle, x_handle,
+                                             &beta, y_handle, alg, descr, { ev_opt });
 
-    ev_release.wait_and_throw();
+    // Release handles and descriptor
+    std::vector<sycl::event> release_events;
+    release_events.push_back(
+        oneapi::mkl::sparse::release_dense_vector(main_queue, x_handle, { ev_spmv }));
+    release_events.push_back(
+        oneapi::mkl::sparse::release_dense_vector(main_queue, y_handle, { ev_spmv }));
+    release_events.push_back(
+        oneapi::mkl::sparse::release_sparse_matrix(main_queue, A_handle, { ev_spmv }));
+    release_events.push_back(
+        oneapi::mkl::sparse::release_spmv_descr(main_queue, descr, { ev_spmv }));
+    for (auto event : release_events) {
+        event.wait_and_throw();
+    }
 
     //
     // Post Processing
@@ -181,11 +211,11 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device &cpu_dev) {
         good &= check_result(res[row], z[row], nrows, row);
     }
 
-    std::cout << "\n\t\t sparse::gemv example " << (good ? "passed" : "failed") << "\n\tFinished"
+    std::cout << "\n\t\t sparse::spmv example " << (good ? "passed" : "failed") << "\n\tFinished"
               << std::endl;
 
-    free_vec(fp_ptr_vec, cpu_queue);
-    free_vec(int_ptr_vec, cpu_queue);
+    free_vec(fp_ptr_vec, main_queue);
+    free_vec(int_ptr_vec, main_queue);
 
     if (!good)
         return 1;
@@ -211,11 +241,14 @@ void print_example_banner() {
     std::cout << "# and alpha, beta are floating point type precision scalars." << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Using apis:" << std::endl;
-    std::cout << "#   sparse::gemv" << std::endl;
+    std::cout << "#   sparse::spmv" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "# Using single precision (float) data type" << std::endl;
     std::cout << "# " << std::endl;
-    std::cout << "# Running on Intel CPU device" << std::endl;
+    std::cout << "# Device will be selected during runtime." << std::endl;
+    std::cout << "# The environment variable ONEAPI_DEVICE_SELECTOR can be used to specify"
+              << std::endl;
+    std::cout << "# available devices" << std::endl;
     std::cout << "# " << std::endl;
     std::cout << "########################################################################"
               << std::endl;
@@ -229,25 +262,31 @@ int main(int /*argc*/, char ** /*argv*/) {
     print_example_banner();
 
     try {
-        // TODO: Add cuSPARSE compile-time dispatcher in this example once it is supported.
-        sycl::device cpu_dev(sycl::cpu_selector_v);
+        sycl::device dev = sycl::device();
 
-        std::cout << "Running Sparse BLAS GEMV USM example on CPU device." << std::endl;
-        std::cout << "Device name is: " << cpu_dev.get_info<sycl::info::device::name>()
-                  << std::endl;
+        if (dev.is_gpu()) {
+            std::cout << "Running Sparse BLAS SPMV USM example on GPU device." << std::endl;
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>()
+                      << std::endl;
+        }
+        else {
+            std::cout << "Running Sparse BLAS SPMV USM example on CPU device." << std::endl;
+            std::cout << "Device name is: " << dev.get_info<sycl::info::device::name>()
+                      << std::endl;
+        }
         std::cout << "Running with single precision real data type:" << std::endl;
 
-        run_sparse_matrix_vector_multiply_example<float, std::int32_t>(cpu_dev);
-        std::cout << "Sparse BLAS GEMV USM example ran OK." << std::endl;
+        run_sparse_matrix_vector_multiply_example<float, std::int32_t>(dev);
+        std::cout << "Sparse BLAS SPMV USM example ran OK." << std::endl;
     }
     catch (sycl::exception const &e) {
-        std::cerr << "Caught synchronous SYCL exception during Sparse GEMV:" << std::endl;
+        std::cerr << "Caught synchronous SYCL exception during Sparse SPMV:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         std::cerr << "\tSYCL error code: " << e.code().value() << std::endl;
         return 1;
     }
     catch (std::exception const &e) {
-        std::cerr << "Caught std::exception during Sparse GEMV:" << std::endl;
+        std::cerr << "Caught std::exception during Sparse SPMV:" << std::endl;
         std::cerr << "\t" << e.what() << std::endl;
         return 1;
     }
