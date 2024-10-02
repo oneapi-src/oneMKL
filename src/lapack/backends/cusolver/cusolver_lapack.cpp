@@ -2455,10 +2455,9 @@ inline void gebrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define GEBRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2507,10 +2506,9 @@ inline void geqrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define GEQRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2539,10 +2537,9 @@ inline void gesvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, scratch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define GESVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2571,10 +2568,9 @@ inline void getrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, nullptr, lda, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define GETRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2632,12 +2628,11 @@ inline void heevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cusolver_job(jobz),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cusolver_job(jobz),
                                   get_cublas_fill_mode(uplo), n, nullptr, lda, nullptr,
                                   scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define HEEVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                        \
@@ -2665,12 +2660,11 @@ inline void hegvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cusolver_itype(itype),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cusolver_itype(itype),
                                   get_cusolver_job(jobz), get_cublas_fill_mode(uplo), n, nullptr,
                                   lda, nullptr, ldb, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define HEGVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -2697,11 +2691,10 @@ inline void hetrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define HETRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2738,11 +2731,10 @@ inline void orgbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_generate(vec), m, n, k,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_generate(vec), m, n, k,
                                   nullptr, lda, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define ORGBR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
@@ -2769,11 +2761,10 @@ inline void orgtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
                                   nullptr, lda, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define ORGTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2799,11 +2790,10 @@ inline void orgqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
                                   scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define ORGQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2845,12 +2835,11 @@ inline void ormqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_side_mode(side),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_side_mode(side),
                                   get_cublas_operation(trans), m, n, k, nullptr, lda, nullptr,
                                   nullptr, ldc, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define ORMQRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -2878,12 +2867,11 @@ inline void ormtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_side_mode(side),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_side_mode(side),
                                   get_cublas_fill_mode(uplo), get_cublas_operation(trans), m, n,
                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define ORMTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -2911,11 +2899,10 @@ inline void potrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
                                   nullptr, lda, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define POTRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2959,11 +2946,10 @@ inline void potri_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
                                   nullptr, lda, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define POTRI_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -2991,10 +2977,9 @@ inline void sytrf_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, n, nullptr, lda, scratch_size);
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, n, nullptr, lda, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define SYTRF_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3022,12 +3007,11 @@ inline void syevd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cusolver_job(jobz),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cusolver_job(jobz),
                                   get_cublas_fill_mode(uplo), n, nullptr, lda, nullptr,
                                   scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define SYEVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                        \
@@ -3055,12 +3039,11 @@ inline void sygvd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cusolver_itype(itype),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cusolver_itype(itype),
                                   get_cusolver_job(jobz), get_cublas_fill_mode(uplo), n, nullptr,
                                   lda, nullptr, ldb, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define SYGVD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -3087,11 +3070,10 @@ inline void sytrd_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
                                   nullptr, lda, nullptr, nullptr, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define SYTRD_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3148,11 +3130,10 @@ inline void ungbr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_generate(vec), m, n, k,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_generate(vec), m, n, k,
                                   nullptr, lda, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define UNGBR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
@@ -3179,11 +3160,10 @@ inline void ungqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, m, n, k, nullptr, lda, nullptr,
                                   scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define UNGQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                            \
@@ -3209,11 +3189,10 @@ inline void ungtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_fill_mode(uplo), n,
                                   nullptr, lda, nullptr, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define UNGTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                    \
@@ -3257,12 +3236,11 @@ inline void unmqr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_side_mode(side),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_side_mode(side),
                                   get_cublas_operation(trans), m, n, k, nullptr, lda, nullptr,
                                   nullptr, ldc, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define UNMQR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
@@ -3290,12 +3268,11 @@ inline void unmtr_scratchpad_size(const char *func_name, Func func, sycl::queue 
         onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
-            CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, get_cublas_side_mode(side),
+            CUSOLVER_ERROR_FUNC_T_SYNC(func_name, func, err, handle, get_cublas_side_mode(side),
                                   get_cublas_fill_mode(uplo), get_cublas_operation(trans), m, n,
                                   nullptr, lda, nullptr, nullptr, ldc, scratch_size);
         });
-    });
-    queue.wait();
+    }).wait();
 }
 
 #define UNMTR_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                             \
