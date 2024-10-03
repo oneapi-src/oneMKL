@@ -77,6 +77,7 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
+      PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
       PUBLIC ${LAPACKE_INCLUDE}
   )
   target_link_libraries(lapack_source_rt PUBLIC ONEMKL::SYCL::SYCL)
@@ -90,6 +91,7 @@ target_include_directories(lapack_source_ct
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
+    PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
     PUBLIC ${LAPACKE_INCLUDE}
 )
 target_link_libraries(lapack_source_ct PUBLIC ONEMKL::SYCL::SYCL)

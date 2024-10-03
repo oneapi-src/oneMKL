@@ -28,6 +28,7 @@ target_include_directories(rng_device_moments_ct
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
+    PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
 )
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET rng_device_moments_ct SOURCES ${MOMENTS_DEVICE_TESTS_SOURCES})

@@ -29,6 +29,7 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
+      PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
   )
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
     add_sycl_to_target(TARGET rng_statistics_rt SOURCES ${STATS_CHECK_SOURCES})
@@ -45,6 +46,7 @@ target_include_directories(rng_statistics_ct
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
+    PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
 )
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET rng_statistics_ct SOURCES ${STATS_CHECK_SOURCES})
