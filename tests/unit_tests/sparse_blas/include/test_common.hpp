@@ -59,12 +59,48 @@ enum sparse_matrix_format_t {
     COO,
 };
 
-static std::vector<std::set<oneapi::mkl::sparse::matrix_property>> test_matrix_properties{
-    { oneapi::mkl::sparse::matrix_property::sorted },
-    { oneapi::mkl::sparse::matrix_property::symmetric },
-    { oneapi::mkl::sparse::matrix_property::sorted,
-      oneapi::mkl::sparse::matrix_property::symmetric }
-};
+inline std::set<oneapi::mkl::sparse::matrix_property> get_default_matrix_properties(
+    sycl::queue queue, sparse_matrix_format_t format) {
+    auto vendor_id = oneapi::mkl::get_device_id(queue);
+    if (vendor_id == oneapi::mkl::device::nvidiagpu && format == sparse_matrix_format_t::COO) {
+        return { oneapi::mkl::sparse::matrix_property::sorted_by_rows };
+    }
+    if (vendor_id == oneapi::mkl::device::amdgpu &&
+        (format == sparse_matrix_format_t::COO || format == sparse_matrix_format_t::CSR)) {
+        return { oneapi::mkl::sparse::matrix_property::sorted };
+    }
+    return {};
+}
+
+/// Return the combinations of matrix_properties to test other than the default
+inline std::vector<std::set<oneapi::mkl::sparse::matrix_property>>
+get_all_matrix_properties_combinations(sycl::queue queue, sparse_matrix_format_t format) {
+    auto vendor_id = oneapi::mkl::get_device_id(queue);
+    if (vendor_id == oneapi::mkl::device::nvidiagpu && format == sparse_matrix_format_t::COO) {
+        // Ensure all the sets have the sorted or sorted_by_rows properties
+        return { { oneapi::mkl::sparse::matrix_property::sorted },
+                 { oneapi::mkl::sparse::matrix_property::sorted_by_rows,
+                   oneapi::mkl::sparse::matrix_property::symmetric },
+                 { oneapi::mkl::sparse::matrix_property::sorted,
+                   oneapi::mkl::sparse::matrix_property::symmetric } };
+    }
+    if (vendor_id == oneapi::mkl::device::amdgpu &&
+        (format == sparse_matrix_format_t::COO || format == sparse_matrix_format_t::CSR)) {
+        return { { oneapi::mkl::sparse::matrix_property::sorted,
+                   oneapi::mkl::sparse::matrix_property::symmetric } };
+    }
+
+    std::vector<std::set<oneapi::mkl::sparse::matrix_property>> properties_combinations{
+        { oneapi::mkl::sparse::matrix_property::sorted },
+        { oneapi::mkl::sparse::matrix_property::symmetric },
+        { oneapi::mkl::sparse::matrix_property::sorted,
+          oneapi::mkl::sparse::matrix_property::symmetric }
+    };
+    if (format == sparse_matrix_format_t::COO) {
+        properties_combinations.push_back({ oneapi::mkl::sparse::matrix_property::sorted_by_rows });
+    }
+    return properties_combinations;
+}
 
 void print_error_code(sycl::exception const &e);
 
@@ -202,14 +238,14 @@ void rand_matrix(std::vector<fpType> &m, oneapi::mkl::layout layout_val, std::si
 }
 
 /// Generate random value in the range [-0.5, 0.5]
-/// The amplitude is guaranteed to be >= 0.1 if is_diag is true
+/// The amplitude is guaranteed to be >= 10 if is_diag is true
 template <typename fpType>
 fpType generate_data(bool is_diag) {
     rand_scalar<fpType> rand_data;
     if (is_diag) {
-        // Guarantee an amplitude >= 0.1
+        // Guarantee a large amplitude
         fpType sign = (std::rand() % 2) * 2 - 1;
-        return rand_data(0.1, 0.5) * sign;
+        return rand_data(10, 20) * sign;
     }
     return rand_data(-0.5, 0.5);
 }
@@ -337,8 +373,18 @@ intType generate_random_matrix(sparse_matrix_format_t format, const intType nrow
 /// In CSR format, the elements within a row are shuffled without changing ia.
 /// In COO format, all the elements are shuffled.
 template <typename fpType, typename intType>
-void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intType *ia,
-                           intType *ja, fpType *a, intType nnz, std::size_t nrows) {
+void shuffle_sparse_matrix_if_needed(
+    sparse_matrix_format_t format,
+    const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties, intType indexing,
+    intType *ia, intType *ja, fpType *a, intType nnz, std::size_t nrows) {
+    const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
+                           matrix_properties.cend();
+    if (is_sorted) {
+        return;
+    }
+    const bool is_sorted_by_rows =
+        matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted_by_rows) !=
+        matrix_properties.cend();
     if (format == sparse_matrix_format_t::CSR) {
         for (std::size_t i = 0; i < nrows; ++i) {
             intType nnz_row = ia[i + 1] - ia[i];
@@ -349,18 +395,40 @@ void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intT
                 std::swap(a[q], a[j]);
             }
         }
+        // sorted_by_rows does not impact CSR
     }
     else if (format == sparse_matrix_format_t::COO) {
-        for (std::size_t i = 0; i < static_cast<std::size_t>(nnz); ++i) {
-            intType q = std::rand() % nnz;
-            // Swap elements i and q
-            std::swap(ia[q], ia[i]);
-            std::swap(ja[q], ja[i]);
-            std::swap(a[q], a[i]);
+        if (is_sorted_by_rows) {
+            std::size_t linear_idx = 0;
+            for (std::size_t i = 0; i < nrows; ++i) {
+                // Count the number of non-zero elements for the given row
+                std::size_t nnz_row = 1;
+                while (linear_idx + nnz_row < static_cast<std::size_t>(nnz) &&
+                       ia[linear_idx] == ia[linear_idx + nnz_row]) {
+                    ++nnz_row;
+                }
+                for (std::size_t j = 0; j < nnz_row; ++j) {
+                    // Swap elements within the same row
+                    std::size_t q = linear_idx + (static_cast<std::size_t>(std::rand()) % nnz_row);
+                    // Swap elements j and q
+                    std::swap(ja[q], ja[linear_idx + j]);
+                    std::swap(a[q], a[linear_idx + j]);
+                }
+                linear_idx += nnz_row;
+            }
+        }
+        else {
+            for (std::size_t i = 0; i < static_cast<std::size_t>(nnz); ++i) {
+                intType q = std::rand() % nnz;
+                // Swap elements i and q
+                std::swap(ia[q], ia[i]);
+                std::swap(ja[q], ja[i]);
+                std::swap(a[q], a[i]);
+            }
         }
     }
     else {
-        throw oneapi::mkl::exception("sparse_blas", "shuffle_sparse_matrix",
+        throw oneapi::mkl::exception("sparse_blas", "shuffle_sparse_matrix_if_needed",
                                      "Internal error: unsupported format");
     }
 }

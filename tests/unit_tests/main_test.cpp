@@ -124,13 +124,15 @@ int main(int argc, char** argv) {
 #endif
 #if !defined(ENABLE_CUBLAS_BACKEND) && !defined(ENABLE_CURAND_BACKEND) &&                \
     !defined(ENABLE_CUSOLVER_BACKEND) && !defined(ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU) && \
-    !defined(ENABLE_CUFFT_BACKEND) && !defined(ENABLE_PORTFFT_BACKEND)
+    !defined(ENABLE_CUFFT_BACKEND) && !defined(ENABLE_PORTFFT_BACKEND) &&                \
+    !defined(ENABLE_CUSPARSE_BACKEND)
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
 #if !defined(ENABLE_ROCBLAS_BACKEND) && !defined(ENABLE_ROCRAND_BACKEND) &&            \
     !defined(ENABLE_ROCSOLVER_BACKEND) && !defined(ENABLE_PORTBLAS_BACKEND_AMD_GPU) && \
-    !defined(ENABLE_ROCFFT_BACKEND) && !defined(ENABLE_PORTFFT_BACKEND)
+    !defined(ENABLE_ROCFFT_BACKEND) && !defined(ENABLE_PORTFFT_BACKEND) &&             \
+    !defined(ENABLE_ROCSPARSE_BACKEND)
                         if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif

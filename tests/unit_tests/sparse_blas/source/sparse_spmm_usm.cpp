@@ -47,8 +47,6 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     auto [opa_nrows, opa_ncols] = swap_if_transposed<std::size_t>(transpose_A, nrows_A, ncols_A);
     auto [opb_nrows, opb_ncols] = swap_if_transposed<std::int64_t>(transpose_B, opa_ncols, ncols_C);
     intType indexing = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
-    const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
-                           matrix_properties.cend();
     const bool is_symmetric =
         matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
@@ -69,10 +67,9 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     std::vector<fpType> c_ref_host(c_host);
 
     // Shuffle ordering of column indices/values to test sortedness
-    if (!is_sorted) {
-        shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(), a_host.data(), nnz,
-                              static_cast<std::size_t>(nrows_A));
-    }
+    shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                    ja_host.data(), a_host.data(), nnz,
+                                    static_cast<std::size_t>(nrows_A));
 
     auto ia_usm_uptr = malloc_device_uptr<intType>(main_queue, ia_host.size());
     auto ja_usm_uptr = malloc_device_uptr<intType>(main_queue, ja_host.size());
@@ -88,26 +85,21 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     fpType *b_usm = b_usm_uptr.get();
     fpType *c_usm = c_usm_uptr.get();
 
-    std::vector<sycl::event> mat_dependencies;
-    std::vector<sycl::event> spmm_dependencies;
+    std::vector<sycl::event> dependencies;
     // Copy host to device
-    mat_dependencies.push_back(
+    dependencies.push_back(
         main_queue.memcpy(ia_usm, ia_host.data(), ia_host.size() * sizeof(intType)));
-    mat_dependencies.push_back(
+    dependencies.push_back(
         main_queue.memcpy(ja_usm, ja_host.data(), ja_host.size() * sizeof(intType)));
-    mat_dependencies.push_back(
-        main_queue.memcpy(a_usm, a_host.data(), a_host.size() * sizeof(fpType)));
-    spmm_dependencies.push_back(
-        main_queue.memcpy(b_usm, b_host.data(), b_host.size() * sizeof(fpType)));
-    spmm_dependencies.push_back(
-        main_queue.memcpy(c_usm, c_host.data(), c_host.size() * sizeof(fpType)));
+    dependencies.push_back(main_queue.memcpy(a_usm, a_host.data(), a_host.size() * sizeof(fpType)));
+    dependencies.push_back(main_queue.memcpy(b_usm, b_host.data(), b_host.size() * sizeof(fpType)));
+    dependencies.push_back(main_queue.memcpy(c_usm, c_host.data(), c_host.size() * sizeof(fpType)));
 
     fpType *alpha_host_or_usm_ptr = &alpha;
     fpType *beta_host_or_usm_ptr = &beta;
     if (test_scalar_on_device) {
-        spmm_dependencies.push_back(
-            main_queue.memcpy(alpha_usm_uptr.get(), &alpha, sizeof(fpType)));
-        spmm_dependencies.push_back(main_queue.memcpy(beta_usm_uptr.get(), &beta, sizeof(fpType)));
+        dependencies.push_back(main_queue.memcpy(alpha_usm_uptr.get(), &alpha, sizeof(fpType)));
+        dependencies.push_back(main_queue.memcpy(beta_usm_uptr.get(), &beta, sizeof(fpType)));
         alpha_host_or_usm_ptr = alpha_usm_uptr.get();
         beta_host_or_usm_ptr = beta_usm_uptr.get();
     }
@@ -141,21 +133,18 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
         sycl::event ev_opt;
         CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::spmm_optimize, main_queue, transpose_A,
                       transpose_B, &alpha, A_view, A_handle, B_handle, &beta, C_handle, alg, descr,
-                      workspace_usm.get(), mat_dependencies);
+                      workspace_usm.get(), dependencies);
 
-        spmm_dependencies.push_back(ev_opt);
         CALL_RT_OR_CT(ev_spmm = oneapi::mkl::sparse::spmm, main_queue, transpose_A, transpose_B,
-                      &alpha, A_view, A_handle, B_handle, &beta, C_handle, alg, descr,
-                      spmm_dependencies);
+                      &alpha, A_view, A_handle, B_handle, &beta, C_handle, alg, descr, { ev_opt });
 
         if (reset_data) {
             intType reset_nnz = generate_random_matrix<fpType, intType>(
                 format, nrows_A, ncols_A, density_A_matrix, indexing, ia_host, ja_host, a_host,
                 is_symmetric);
-            if (!is_sorted) {
-                shuffle_sparse_matrix(format, indexing, ia_host.data(), ja_host.data(),
-                                      a_host.data(), reset_nnz, static_cast<std::size_t>(nrows_A));
-            }
+            shuffle_sparse_matrix_if_needed(format, matrix_properties, indexing, ia_host.data(),
+                                            ja_host.data(), a_host.data(), reset_nnz,
+                                            static_cast<std::size_t>(nrows_A));
             if (reset_nnz > nnz) {
                 // Wait before freeing usm pointers
                 ev_spmm.wait_and_throw();
@@ -168,14 +157,14 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
             }
             nnz = reset_nnz;
 
-            mat_dependencies.clear();
-            mat_dependencies.push_back(main_queue.memcpy(
-                ia_usm, ia_host.data(), ia_host.size() * sizeof(intType), ev_spmm));
-            mat_dependencies.push_back(main_queue.memcpy(
-                ja_usm, ja_host.data(), ja_host.size() * sizeof(intType), ev_spmm));
-            mat_dependencies.push_back(
+            dependencies.clear();
+            dependencies.push_back(main_queue.memcpy(ia_usm, ia_host.data(),
+                                                     ia_host.size() * sizeof(intType), ev_spmm));
+            dependencies.push_back(main_queue.memcpy(ja_usm, ja_host.data(),
+                                                     ja_host.size() * sizeof(intType), ev_spmm));
+            dependencies.push_back(
                 main_queue.memcpy(a_usm, a_host.data(), a_host.size() * sizeof(fpType), ev_spmm));
-            mat_dependencies.push_back(
+            dependencies.push_back(
                 main_queue.memcpy(c_usm, c_host.data(), c_host.size() * sizeof(fpType), ev_spmm));
             set_matrix_data(main_queue, format, A_handle, nrows_A, ncols_A, nnz, index, ia_usm,
                             ja_usm, a_usm);
@@ -190,7 +179,7 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
 
             CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::spmm_optimize, main_queue, transpose_A,
                           transpose_B, &alpha, A_view, A_handle, B_handle, &beta, C_handle, alg,
-                          descr, workspace_usm.get(), mat_dependencies);
+                          descr, workspace_usm.get(), dependencies);
 
             CALL_RT_OR_CT(ev_spmm = oneapi::mkl::sparse::spmm, main_queue, transpose_A, transpose_B,
                           &alpha, A_view, A_handle, B_handle, &beta, C_handle, alg, descr,

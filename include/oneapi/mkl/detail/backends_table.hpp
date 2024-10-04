@@ -193,6 +193,18 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_MKLGPU_BACKEND
               LIB_NAME("sparse_blas_mklgpu")
 #endif
+          } },
+        { device::nvidiagpu,
+          {
+#ifdef ENABLE_CUSPARSE_BACKEND
+              LIB_NAME("sparse_blas_cusparse")
+#endif
+          } },
+        { device::amdgpu,
+          {
+#ifdef ENABLE_ROCSPARSE_BACKEND
+              LIB_NAME("sparse_blas_rocsparse")
+#endif
           } } } },
 };
 

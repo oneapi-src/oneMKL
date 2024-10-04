@@ -19,8 +19,8 @@
 
 #include "oneapi/mkl/sparse_blas/detail/mklgpu/onemkl_sparse_blas_mklgpu.hpp"
 
+#include "sparse_blas/backends/mkl_common/mkl_dispatch.hpp"
 #include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
-#include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
 
 namespace oneapi::mkl::sparse::mklgpu {
 

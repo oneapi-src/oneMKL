@@ -27,3 +27,11 @@ endif()
 if(ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
 endif()
+
+if(ENABLE_CUSPARSE_BACKEND)
+  add_subdirectory(cusparse)
+endif()
+
+if(ENABLE_ROCSPARSE_BACKEND)
+  add_subdirectory(rocsparse)
+endif()
