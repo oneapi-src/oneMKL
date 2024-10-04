@@ -76,7 +76,7 @@ void check_valid_spmv(const std::string &function_name, oneapi::mkl::transpose o
                       bool is_alpha_host_accessible, bool is_beta_host_accessible) {
     detail::check_valid_spmv_common(function_name, opA, A_view, A_handle, x_handle, y_handle,
                                     is_alpha_host_accessible, is_beta_host_accessible);
-    A_handle->throw_if_already_used(__func__);
+    A_handle->check_valid_handle(__func__);
     if (A_view.type_view != oneapi::mkl::sparse::matrix_descr::general) {
         throw mkl::unimplemented(
             "sparse_blas", function_name,
@@ -157,7 +157,7 @@ void spmv_optimize_impl(rocsparse_handle roc_handle, oneapi::mkl::transpose opA,
     auto status =
         rocsparse_spmv(roc_handle, roc_op, alpha, roc_a, roc_x, beta, roc_y, roc_type, roc_alg,
                        rocsparse_spmv_stage_preprocess, &buffer_size, workspace_ptr);
-    check_status(status, "optimize_spmv");
+    check_status(status, "spmv_optimize");
 }
 
 void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -180,6 +180,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
         return;
     }
     std::size_t buffer_size = spmv_descr->temp_buffer_size;
+    // The accessor can only be created if the buffer size is greater than 0
     if (buffer_size > 0) {
         auto functor = [=](RocsparseScopedContextHandler &sc,
                            sycl::accessor<std::uint8_t> workspace_acc) {
@@ -189,11 +190,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                                buffer_size, workspace_ptr, is_alpha_host_accessible);
         };
 
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
-        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-        dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc, x_handle,
-                        y_handle);
+        dispatch_submit(__func__, queue, functor, A_handle, workspace, x_handle, y_handle);
     }
     else {
         auto functor = [=](RocsparseScopedContextHandler &sc) {
@@ -282,23 +279,21 @@ sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         HIP_ERROR_FUNC(hipStreamSynchronize, roc_stream);
 #endif
     };
+    // The accessor can only be created if the buffer size is greater than 0
     if (A_handle->all_use_buffer() && buffer_size > 0) {
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
         auto functor_buffer = [=](RocsparseScopedContextHandler &sc,
                                   sycl::accessor<std::uint8_t> workspace_acc) {
             auto workspace_ptr = sc.get_mem(workspace_acc);
             compute_functor(sc, workspace_ptr);
         };
-        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
-            spmv_descr->workspace.get_buffer<std::uint8_t>());
         return dispatch_submit_native_ext(__func__, queue, functor_buffer, A_handle,
-                                          workspace_placeholder_acc, x_handle, y_handle);
+                                          spmv_descr->workspace.get_buffer<std::uint8_t>(),
+                                          x_handle, y_handle);
     }
     else {
         // The same dispatch_submit can be used for USM or buffers if no
-        // workspace accessor is needed, workspace_ptr will be a nullptr in the
-        // latter case.
+        // workspace accessor is needed.
+        // workspace_ptr will be a nullptr in the latter case.
         auto workspace_ptr = spmv_descr->workspace.usm_ptr;
         auto functor_usm = [=](RocsparseScopedContextHandler &sc) {
             compute_functor(sc, workspace_ptr);

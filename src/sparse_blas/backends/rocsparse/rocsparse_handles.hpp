@@ -65,25 +65,33 @@ private:
 public:
     template <typename fpType, typename intType>
     matrix_handle(rocsparse_spmat_descr roc_descr, intType* row_ptr, intType* col_ptr,
-                  fpType* value_ptr, std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
-                  oneapi::mkl::index_base index)
+                  fpType* value_ptr, detail::sparse_format format, std::int64_t num_rows,
+                  std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index)
             : detail::generic_sparse_handle<rocsparse_spmat_descr>(
-                  roc_descr, row_ptr, col_ptr, value_ptr, num_rows, num_cols, nnz, index) {}
+                  roc_descr, row_ptr, col_ptr, value_ptr, format, num_rows, num_cols, nnz, index) {}
 
     template <typename fpType, typename intType>
     matrix_handle(rocsparse_spmat_descr roc_descr, const sycl::buffer<intType, 1> row_buffer,
                   const sycl::buffer<intType, 1> col_buffer,
-                  const sycl::buffer<fpType, 1> value_buffer, std::int64_t num_rows,
-                  std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index)
-            : detail::generic_sparse_handle<rocsparse_spmat_descr>(
-                  roc_descr, row_buffer, col_buffer, value_buffer, num_rows, num_cols, nnz, index) {
+                  const sycl::buffer<fpType, 1> value_buffer, detail::sparse_format format,
+                  std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
+                  oneapi::mkl::index_base index)
+            : detail::generic_sparse_handle<rocsparse_spmat_descr>(roc_descr, row_buffer,
+                                                                   col_buffer, value_buffer, format,
+                                                                   num_rows, num_cols, nnz, index) {
     }
 
-    void throw_if_already_used(const std::string& function_name) {
+    void check_valid_handle(const std::string& function_name) {
         if (used) {
             throw mkl::unimplemented(
                 "sparse_blas", function_name,
                 "The backend does not support re-using the same sparse matrix handle in multiple operations.");
+        }
+        if (this->format == detail::sparse_format::COO &&
+            !this->has_matrix_property(matrix_property::sorted)) {
+            throw mkl::unimplemented(
+                "sparse_blas", function_name,
+                "The backend does not support unsorted COO format. Use `set_matrix_property` to set the property `matrix_property::sorted`");
         }
     }
 

@@ -59,7 +59,7 @@ void init_dense_vector(sycl::queue &queue, dense_vector_handle_t *p_dvhandle, st
             sc.get_handle(queue);
             auto roc_value_type = RocEnumType<fpType>::value;
             rocsparse_dnvec_descr roc_dvhandle;
-            ROCSPARSE_ERR_FUNC(rocsparse_create_dnvec_descr, &roc_dvhandle, size, sc.get_mem(val),
+            ROCSPARSE_ERR_FUNC(rocsparse_create_dnvec_descr, &roc_dvhandle, size, val,
                                roc_value_type);
             *p_dvhandle = new dense_vector_handle(roc_dvhandle, val, size);
         });
@@ -105,12 +105,11 @@ void set_dense_vector_data(sycl::queue &queue, dense_vector_handle_t dvhandle, s
                 ROCSPARSE_ERR_FUNC(rocsparse_destroy_dnvec_descr, dvhandle->backend_handle);
                 auto roc_value_type = RocEnumType<fpType>::value;
                 ROCSPARSE_ERR_FUNC(rocsparse_create_dnvec_descr, &dvhandle->backend_handle, size,
-                                   sc.get_mem(val), roc_value_type);
+                                   val, roc_value_type);
                 dvhandle->size = size;
             }
             else {
-                ROCSPARSE_ERR_FUNC(rocsparse_dnvec_set_values, dvhandle->backend_handle,
-                                   sc.get_mem(val));
+                ROCSPARSE_ERR_FUNC(rocsparse_dnvec_set_values, dvhandle->backend_handle, val);
             }
             dvhandle->set_usm_ptr(val);
         });
@@ -163,7 +162,7 @@ void init_dense_matrix(sycl::queue &queue, dense_matrix_handle_t *p_dmhandle, st
             auto roc_order = get_roc_order(dense_layout);
             rocsparse_dnmat_descr roc_dmhandle;
             ROCSPARSE_ERR_FUNC(rocsparse_create_dnmat_descr, &roc_dmhandle, num_rows, num_cols, ld,
-                               sc.get_mem(val), roc_value_type, roc_order);
+                               val, roc_value_type, roc_order);
             *p_dmhandle =
                 new dense_matrix_handle(roc_dmhandle, val, num_rows, num_cols, ld, dense_layout);
         });
@@ -219,16 +218,14 @@ void set_dense_matrix_data(sycl::queue &queue, dense_matrix_handle_t dmhandle,
                 auto roc_value_type = RocEnumType<fpType>::value;
                 auto roc_order = get_roc_order(dense_layout);
                 ROCSPARSE_ERR_FUNC(rocsparse_create_dnmat_descr, &dmhandle->backend_handle,
-                                   num_rows, num_cols, ld, sc.get_mem(val), roc_value_type,
-                                   roc_order);
+                                   num_rows, num_cols, ld, val, roc_value_type, roc_order);
                 dmhandle->num_rows = num_rows;
                 dmhandle->num_cols = num_cols;
                 dmhandle->ld = ld;
                 dmhandle->dense_layout = dense_layout;
             }
             else {
-                ROCSPARSE_ERR_FUNC(rocsparse_dnmat_set_values, dmhandle->backend_handle,
-                                   sc.get_mem(val));
+                ROCSPARSE_ERR_FUNC(rocsparse_dnmat_set_values, dmhandle->backend_handle, val);
             }
             dmhandle->set_usm_ptr(val);
         });
@@ -268,8 +265,9 @@ void init_coo_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             ROCSPARSE_ERR_FUNC(rocsparse_create_coo_descr, &roc_smhandle, num_rows, num_cols, nnz,
                                sc.get_mem(row_acc), sc.get_mem(col_acc), sc.get_mem(val_acc),
                                roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new matrix_handle(roc_smhandle, row_ind, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+            *p_smhandle =
+                new matrix_handle(roc_smhandle, row_ind, col_ind, val, detail::sparse_format::COO,
+                                  num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();
@@ -288,10 +286,11 @@ void init_coo_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             auto roc_value_type = RocEnumType<fpType>::value;
             rocsparse_spmat_descr roc_smhandle;
             ROCSPARSE_ERR_FUNC(rocsparse_create_coo_descr, &roc_smhandle, num_rows, num_cols, nnz,
-                               sc.get_mem(row_ind), sc.get_mem(col_ind), sc.get_mem(val),
-                               roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new matrix_handle(roc_smhandle, row_ind, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+                               row_ind, col_ind, val, roc_index_type, roc_index_base,
+                               roc_value_type);
+            *p_smhandle =
+                new matrix_handle(roc_smhandle, row_ind, col_ind, val, detail::sparse_format::COO,
+                                  num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();
@@ -353,16 +352,16 @@ void set_coo_matrix_data(sycl::queue &queue, matrix_handle_t smhandle, std::int6
                 auto roc_index_base = get_roc_index_base(index);
                 auto roc_value_type = RocEnumType<fpType>::value;
                 ROCSPARSE_ERR_FUNC(rocsparse_create_coo_descr, &smhandle->backend_handle, num_rows,
-                                   num_cols, nnz, sc.get_mem(row_ind), sc.get_mem(col_ind),
-                                   sc.get_mem(val), roc_index_type, roc_index_base, roc_value_type);
+                                   num_cols, nnz, row_ind, col_ind, val, roc_index_type,
+                                   roc_index_base, roc_value_type);
                 smhandle->num_rows = num_rows;
                 smhandle->num_cols = num_cols;
                 smhandle->nnz = nnz;
                 smhandle->index = index;
             }
             else {
-                ROCSPARSE_ERR_FUNC(rocsparse_coo_set_pointers, smhandle->backend_handle,
-                                   sc.get_mem(row_ind), sc.get_mem(col_ind), sc.get_mem(val));
+                ROCSPARSE_ERR_FUNC(rocsparse_coo_set_pointers, smhandle->backend_handle, row_ind,
+                                   col_ind, val);
             }
             smhandle->row_container.set_usm_ptr(row_ind);
             smhandle->col_container.set_usm_ptr(col_ind);
@@ -394,8 +393,9 @@ void init_csr_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             ROCSPARSE_ERR_FUNC(rocsparse_create_csr_descr, &roc_smhandle, num_rows, num_cols, nnz,
                                sc.get_mem(row_acc), sc.get_mem(col_acc), sc.get_mem(val_acc),
                                roc_index_type, roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new matrix_handle(roc_smhandle, row_ptr, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+            *p_smhandle =
+                new matrix_handle(roc_smhandle, row_ptr, col_ind, val, detail::sparse_format::CSR,
+                                  num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();
@@ -414,10 +414,11 @@ void init_csr_matrix(sycl::queue &queue, matrix_handle_t *p_smhandle, std::int64
             auto roc_value_type = RocEnumType<fpType>::value;
             rocsparse_spmat_descr roc_smhandle;
             ROCSPARSE_ERR_FUNC(rocsparse_create_csr_descr, &roc_smhandle, num_rows, num_cols, nnz,
-                               sc.get_mem(row_ptr), sc.get_mem(col_ind), sc.get_mem(val),
-                               roc_index_type, roc_index_type, roc_index_base, roc_value_type);
-            *p_smhandle = new matrix_handle(roc_smhandle, row_ptr, col_ind, val, num_rows, num_cols,
-                                            nnz, index);
+                               row_ptr, col_ind, val, roc_index_type, roc_index_type,
+                               roc_index_base, roc_value_type);
+            *p_smhandle =
+                new matrix_handle(roc_smhandle, row_ptr, col_ind, val, detail::sparse_format::CSR,
+                                  num_rows, num_cols, nnz, index);
         });
     });
     event.wait_and_throw();
@@ -479,17 +480,16 @@ void set_csr_matrix_data(sycl::queue &queue, matrix_handle_t smhandle, std::int6
                 auto roc_index_base = get_roc_index_base(index);
                 auto roc_value_type = RocEnumType<fpType>::value;
                 ROCSPARSE_ERR_FUNC(rocsparse_create_csr_descr, &smhandle->backend_handle, num_rows,
-                                   num_cols, nnz, sc.get_mem(row_ptr), sc.get_mem(col_ind),
-                                   sc.get_mem(val), roc_index_type, roc_index_type, roc_index_base,
-                                   roc_value_type);
+                                   num_cols, nnz, row_ptr, col_ind, val, roc_index_type,
+                                   roc_index_type, roc_index_base, roc_value_type);
                 smhandle->num_rows = num_rows;
                 smhandle->num_cols = num_cols;
                 smhandle->nnz = nnz;
                 smhandle->index = index;
             }
             else {
-                ROCSPARSE_ERR_FUNC(rocsparse_csr_set_pointers, smhandle->backend_handle,
-                                   sc.get_mem(row_ptr), sc.get_mem(col_ind), sc.get_mem(val));
+                ROCSPARSE_ERR_FUNC(rocsparse_csr_set_pointers, smhandle->backend_handle, row_ptr,
+                                   col_ind, val);
             }
             smhandle->row_container.set_usm_ptr(row_ptr);
             smhandle->col_container.set_usm_ptr(col_ind);

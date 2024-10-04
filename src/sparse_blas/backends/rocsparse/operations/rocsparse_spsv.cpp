@@ -61,6 +61,14 @@ inline auto get_roc_spsv_alg(spsv_alg /*alg*/) {
     return rocsparse_spsv_alg_default;
 }
 
+void check_valid_spsv(const std::string &function_name, matrix_view A_view,
+                      matrix_handle_t A_handle, dense_vector_handle_t x_handle,
+                      dense_vector_handle_t y_handle, bool is_alpha_host_accessible) {
+    detail::check_valid_spsv_common(function_name, A_view, A_handle, x_handle, y_handle,
+                                    is_alpha_host_accessible);
+    A_handle->check_valid_handle(function_name);
+}
+
 void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
                       oneapi::mkl::sparse::matrix_view A_view,
                       oneapi::mkl::sparse::matrix_handle_t A_handle,
@@ -69,9 +77,7 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
                       oneapi::mkl::sparse::spsv_alg alg,
                       oneapi::mkl::sparse::spsv_descr_t spsv_descr, std::size_t &temp_buffer_size) {
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
-    A_handle->throw_if_already_used(__func__);
-    detail::check_valid_spsv_common(__func__, A_view, A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible);
+    check_valid_spsv(__func__, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible);
     auto functor = [=, &temp_buffer_size](RocsparseScopedContextHandler &sc) {
         auto [roc_handle, roc_stream] = sc.get_handle_and_stream(queue);
         auto roc_a = A_handle->backend_handle;
@@ -101,8 +107,8 @@ inline void common_spsv_optimize(oneapi::mkl::transpose opA, bool is_alpha_host_
                                  oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                                  oneapi::mkl::sparse::spsv_alg alg,
                                  oneapi::mkl::sparse::spsv_descr_t spsv_descr) {
-    detail::check_valid_spsv_common("spsv_optimize", A_view, A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible);
+    check_valid_spsv("spsv_optimize", A_view, A_handle, x_handle, y_handle,
+                     is_alpha_host_accessible);
     if (!spsv_descr->buffer_size_called) {
         throw mkl::uninitialized(
             "sparse_blas", "spsv_optimize",
@@ -127,7 +133,7 @@ void spsv_optimize_impl(rocsparse_handle roc_handle, oneapi::mkl::transpose opA,
     auto roc_a = A_handle->backend_handle;
     auto roc_x = x_handle->backend_handle;
     auto roc_y = y_handle->backend_handle;
-    set_matrix_attributes("optimize_spsv", roc_a, A_view);
+    set_matrix_attributes("spsv_optimize", roc_a, A_view);
     auto roc_op = get_roc_operation(opA);
     auto roc_type = get_roc_value_type(A_handle->value_container.data_type);
     auto roc_alg = get_roc_spsv_alg(alg);
@@ -135,7 +141,7 @@ void spsv_optimize_impl(rocsparse_handle roc_handle, oneapi::mkl::transpose opA,
     // rocsparse_spsv_stage_preprocess stage is blocking
     auto status = rocsparse_spsv(roc_handle, roc_op, alpha, roc_a, roc_x, roc_y, roc_type, roc_alg,
                                  rocsparse_spsv_stage_preprocess, &buffer_size, workspace_ptr);
-    check_status(status, "optimize_spsv");
+    check_status(status, "spsv_optimize");
 }
 
 void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
@@ -149,14 +155,15 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
     if (!A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
-    A_handle->throw_if_already_used(__func__);
+    A_handle->check_valid_handle(__func__);
     common_spsv_optimize(opA, is_alpha_host_accessible, A_view, A_handle, x_handle, y_handle, alg,
                          spsv_descr);
     // Ignore spsv_alg::no_optimize_alg as this step is mandatory for rocSPARSE
     // Copy the buffer to extend its lifetime until the descriptor is free'd.
     spsv_descr->workspace.set_buffer_untyped(workspace);
     std::size_t buffer_size = spsv_descr->temp_buffer_size;
-    if (buffer_size) {
+    // The accessor can only be created if the buffer size is greater than 0
+    if (buffer_size > 0) {
         auto functor = [=](RocsparseScopedContextHandler &sc,
                            sycl::accessor<std::uint8_t> workspace_acc) {
             auto roc_handle = sc.get_handle(queue);
@@ -165,11 +172,7 @@ void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *a
                                buffer_size, workspace_ptr, is_alpha_host_accessible);
         };
 
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
-        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(workspace);
-        dispatch_submit(__func__, queue, functor, A_handle, workspace_placeholder_acc, x_handle,
-                        y_handle);
+        dispatch_submit(__func__, queue, functor, A_handle, workspace, x_handle, y_handle);
     }
     else {
         auto functor = [=](RocsparseScopedContextHandler &sc) {
@@ -194,7 +197,7 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const 
     if (A_handle->all_use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
-    A_handle->throw_if_already_used(__func__);
+    A_handle->check_valid_handle(__func__);
     common_spsv_optimize(opA, is_alpha_host_accessible, A_view, A_handle, x_handle, y_handle, alg,
                          spsv_descr);
     spsv_descr->workspace.usm_ptr = workspace;
@@ -220,9 +223,7 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
     if (A_handle->all_use_buffer() != spsv_descr->workspace.use_buffer()) {
         detail::throw_incompatible_container(__func__);
     }
-    A_handle->throw_if_already_used(__func__);
-    detail::check_valid_spsv_common(__func__, A_view, A_handle, x_handle, y_handle,
-                                    is_alpha_host_accessible);
+    check_valid_spsv(__func__, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible);
 
     if (!spsv_descr->optimized_called) {
         throw mkl::uninitialized(
@@ -257,23 +258,21 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
         HIP_ERROR_FUNC(hipStreamSynchronize, roc_stream);
 #endif
     };
+    // The accessor can only be created if the buffer size is greater than 0
     if (A_handle->all_use_buffer() && buffer_size > 0) {
-        // The accessor can only be bound to the cgh if the buffer size is
-        // greater than 0
         auto functor_buffer = [=](RocsparseScopedContextHandler &sc,
                                   sycl::accessor<std::uint8_t> workspace_acc) {
             auto workspace_ptr = sc.get_mem(workspace_acc);
             compute_functor(sc, workspace_ptr);
         };
-        sycl::accessor<std::uint8_t, 1> workspace_placeholder_acc(
-            spsv_descr->workspace.get_buffer<std::uint8_t>());
         return dispatch_submit_native_ext(__func__, queue, functor_buffer, A_handle,
-                                          workspace_placeholder_acc, x_handle, y_handle);
+                                          spsv_descr->workspace.get_buffer<std::uint8_t>(),
+                                          x_handle, y_handle);
     }
     else {
         // The same dispatch_submit can be used for USM or buffers if no
-        // workspace accessor is needed, workspace_ptr will be a nullptr in the
-        // latter case.
+        // workspace accessor is needed.
+        // workspace_ptr will be a nullptr in the latter case.
         auto workspace_ptr = spsv_descr->workspace.usm_ptr;
         auto functor_usm = [=](RocsparseScopedContextHandler &sc) {
             compute_functor(sc, workspace_ptr);
