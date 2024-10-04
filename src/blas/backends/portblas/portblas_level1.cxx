@@ -174,8 +174,7 @@ void rotm(sycl::queue &queue, std::int64_t n, sycl::buffer<real_t, 1> &x, std::i
 
 void rotmg(sycl::queue &queue, sycl::buffer<real_t, 1> &d1, sycl::buffer<real_t, 1> &d2,
            sycl::buffer<real_t, 1> &x1, real_t y1, sycl::buffer<real_t, 1> &param) {
-    sycl::buffer<real_t, 1> y1_buffer(&y1, sycl::range<1>{ 1 });
-    CALL_PORTBLAS_FN(::blas::_rotmg, queue, d1, d2, x1, y1_buffer, param);
+    CALL_PORTBLAS_FN(::blas::_rotmg, queue, d1, d2, x1, y1, param);
 }
 
 void scal(sycl::queue &queue, std::int64_t n, real_t alpha, sycl::buffer<real_t, 1> &x,
@@ -368,18 +367,7 @@ sycl::event rotm(sycl::queue &queue, std::int64_t n, real_t *x, std::int64_t inc
 
 sycl::event rotmg(sycl::queue &queue, real_t *d1, real_t *d2, real_t *x1, real_t y1, real_t *param,
                   const std::vector<sycl::event> &dependencies) {
-    auto y_d =
-        (real_t *)sycl::malloc_device(sizeof(real_t), queue.get_device(), queue.get_context());
-    auto copy_in_event = queue.memcpy(y_d, &y1, sizeof(real_t), dependencies);
-    auto rotmg_event = std::invoke([&]() -> sycl::event {
-        CALL_PORTBLAS_USM_FN(::blas::_rotmg, queue, d1, d2, x1, y_d, param,
-                             std::vector<sycl::event>{ copy_in_event });
-    });
-    auto free_event = queue.submit([&](sycl::handler &cgh) {
-        cgh.depends_on(rotmg_event);
-        cgh.host_task([=]() { sycl::free(y_d, queue); });
-    });
-    return free_event;
+    CALL_PORTBLAS_USM_FN(::blas::_rotmg, queue, d1, d2, x1, y1, param, dependencies);
 }
 
 sycl::event scal(sycl::queue &queue, std::int64_t n, real_t alpha, real_t *x, std::int64_t incx,

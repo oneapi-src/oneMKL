@@ -17,34 +17,32 @@
 *
 **************************************************************************/
 
+// In this file functions and types using the namespace oneapi::mkl::sparse:: refer to the backend's namespace for better readability.
+
 // Dense vector
 template <typename fpType>
-void init_dense_vector(sycl::queue & /*queue*/,
-                       oneapi::mkl::sparse::dense_vector_handle_t *p_dvhandle, std::int64_t size,
-                       sycl::buffer<fpType, 1> val) {
-    *p_dvhandle = new oneapi::mkl::sparse::dense_vector_handle(val, size);
+void init_dense_vector(sycl::queue & /*queue*/, dense_vector_handle_t *p_dvhandle,
+                       std::int64_t size, sycl::buffer<fpType, 1> val) {
+    *p_dvhandle = new dense_vector_handle(val, size);
 }
 
 template <typename fpType>
-void init_dense_vector(sycl::queue & /*queue*/,
-                       oneapi::mkl::sparse::dense_vector_handle_t *p_dvhandle, std::int64_t size,
-                       fpType *val) {
-    *p_dvhandle = new oneapi::mkl::sparse::dense_vector_handle(val, size);
+void init_dense_vector(sycl::queue & /*queue*/, dense_vector_handle_t *p_dvhandle,
+                       std::int64_t size, fpType *val) {
+    *p_dvhandle = new dense_vector_handle(val, size);
 }
 
 template <typename fpType>
-void set_dense_vector_data(sycl::queue & /*queue*/,
-                           oneapi::mkl::sparse::dense_vector_handle_t dvhandle, std::int64_t size,
-                           sycl::buffer<fpType, 1> val) {
+void set_dense_vector_data(sycl::queue & /*queue*/, dense_vector_handle_t dvhandle,
+                           std::int64_t size, sycl::buffer<fpType, 1> val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dvhandle, true);
     dvhandle->size = size;
     dvhandle->set_buffer(val);
 }
 
 template <typename fpType>
-void set_dense_vector_data(sycl::queue & /*queue*/,
-                           oneapi::mkl::sparse::dense_vector_handle_t dvhandle, std::int64_t size,
-                           fpType *val) {
+void set_dense_vector_data(sycl::queue & /*queue*/, dense_vector_handle_t dvhandle,
+                           std::int64_t size, fpType *val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dvhandle, false);
     dvhandle->size = size;
     dvhandle->set_usm_ptr(val);
@@ -52,34 +50,28 @@ void set_dense_vector_data(sycl::queue & /*queue*/,
 
 FOR_EACH_FP_TYPE(INSTANTIATE_DENSE_VECTOR_FUNCS);
 
-sycl::event release_dense_vector(sycl::queue &queue,
-                                 oneapi::mkl::sparse::dense_vector_handle_t dvhandle,
+sycl::event release_dense_vector(sycl::queue &queue, dense_vector_handle_t dvhandle,
                                  const std::vector<sycl::event> &dependencies) {
     return detail::submit_release(queue, dvhandle, dependencies);
 }
 
 // Dense matrix
 template <typename fpType>
-void init_dense_matrix(sycl::queue & /*queue*/,
-                       oneapi::mkl::sparse::dense_matrix_handle_t *p_dmhandle,
+void init_dense_matrix(sycl::queue & /*queue*/, dense_matrix_handle_t *p_dmhandle,
                        std::int64_t num_rows, std::int64_t num_cols, std::int64_t ld,
                        oneapi::mkl::layout dense_layout, sycl::buffer<fpType, 1> val) {
-    *p_dmhandle =
-        new oneapi::mkl::sparse::dense_matrix_handle(val, num_rows, num_cols, ld, dense_layout);
+    *p_dmhandle = new dense_matrix_handle(val, num_rows, num_cols, ld, dense_layout);
 }
 
 template <typename fpType>
-void init_dense_matrix(sycl::queue & /*queue*/,
-                       oneapi::mkl::sparse::dense_matrix_handle_t *p_dmhandle,
+void init_dense_matrix(sycl::queue & /*queue*/, dense_matrix_handle_t *p_dmhandle,
                        std::int64_t num_rows, std::int64_t num_cols, std::int64_t ld,
                        oneapi::mkl::layout dense_layout, fpType *val) {
-    *p_dmhandle =
-        new oneapi::mkl::sparse::dense_matrix_handle(val, num_rows, num_cols, ld, dense_layout);
+    *p_dmhandle = new dense_matrix_handle(val, num_rows, num_cols, ld, dense_layout);
 }
 
 template <typename fpType>
-void set_dense_matrix_data(sycl::queue & /*queue*/,
-                           oneapi::mkl::sparse::dense_matrix_handle_t dmhandle,
+void set_dense_matrix_data(sycl::queue & /*queue*/, dense_matrix_handle_t dmhandle,
                            std::int64_t num_rows, std::int64_t num_cols, std::int64_t ld,
                            oneapi::mkl::layout dense_layout, sycl::buffer<fpType, 1> val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dmhandle, true);
@@ -91,8 +83,7 @@ void set_dense_matrix_data(sycl::queue & /*queue*/,
 }
 
 template <typename fpType>
-void set_dense_matrix_data(sycl::queue & /*queue*/,
-                           oneapi::mkl::sparse::dense_matrix_handle_t dmhandle,
+void set_dense_matrix_data(sycl::queue & /*queue*/, dense_matrix_handle_t dmhandle,
                            std::int64_t num_rows, std::int64_t num_cols, std::int64_t ld,
                            oneapi::mkl::layout dense_layout, fpType *val) {
     detail::check_can_reset_value_handle<fpType>(__func__, dmhandle, false);
@@ -105,8 +96,7 @@ void set_dense_matrix_data(sycl::queue & /*queue*/,
 
 FOR_EACH_FP_TYPE(INSTANTIATE_DENSE_MATRIX_FUNCS);
 
-sycl::event release_dense_matrix(sycl::queue &queue,
-                                 oneapi::mkl::sparse::dense_matrix_handle_t dmhandle,
+sycl::event release_dense_matrix(sycl::queue &queue, dense_matrix_handle_t dmhandle,
                                  const std::vector<sycl::event> &dependencies) {
     return detail::submit_release(queue, dmhandle, dependencies);
 }
@@ -119,8 +109,8 @@ void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ind, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ind, col_ind, val, detail::sparse_format::COO, num_rows, num_cols, nnz, index);
     // The backend handle must use the buffers from the internal handle as they will be kept alive until the handle is released.
     oneapi::mkl::sparse::set_coo_data(queue, mkl_handle, static_cast<intType>(num_rows),
                                       static_cast<intType>(num_cols), static_cast<intType>(nnz),
@@ -137,8 +127,8 @@ void init_coo_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      fpType *val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ind, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ind, col_ind, val, detail::sparse_format::COO, num_rows, num_cols, nnz, index);
     auto event = oneapi::mkl::sparse::set_coo_data(
         queue, mkl_handle, static_cast<intType>(num_rows), static_cast<intType>(num_cols),
         static_cast<intType>(nnz), index, row_ind, col_ind, val);
@@ -199,8 +189,8 @@ void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      sycl::buffer<intType, 1> col_ind, sycl::buffer<fpType, 1> val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ptr, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ptr, col_ind, val, detail::sparse_format::CSR, num_rows, num_cols, nnz, index);
     // The backend deduces nnz from row_ptr.
     // The backend handle must use the buffers from the internal handle as they will be kept alive until the handle is released.
     oneapi::mkl::sparse::set_csr_data(queue, mkl_handle, static_cast<intType>(num_rows),
@@ -218,8 +208,8 @@ void init_csr_matrix(sycl::queue &queue, oneapi::mkl::sparse::matrix_handle_t *p
                      fpType *val) {
     oneapi::mkl::sparse::matrix_handle_t mkl_handle;
     oneapi::mkl::sparse::init_matrix_handle(&mkl_handle);
-    auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ptr, col_ind, val,
-                                                              num_rows, num_cols, nnz, index);
+    auto internal_smhandle = new detail::sparse_matrix_handle(
+        mkl_handle, row_ptr, col_ind, val, detail::sparse_format::CSR, num_rows, num_cols, nnz, index);
     // The backend deduces nnz from row_ptr.
     auto event = oneapi::mkl::sparse::set_csr_data(
         queue, mkl_handle, static_cast<intType>(num_rows), static_cast<intType>(num_cols), index,
@@ -286,18 +276,18 @@ sycl::event release_sparse_matrix(sycl::queue &queue, oneapi::mkl::sparse::matri
 }
 
 bool set_matrix_property(sycl::queue & /*queue*/, oneapi::mkl::sparse::matrix_handle_t smhandle,
-                         oneapi::mkl::sparse::matrix_property property) {
+                         matrix_property property) {
     auto internal_smhandle = detail::get_internal_handle(smhandle);
     // Store the matrix property internally for better error checking
     internal_smhandle->set_matrix_property(property);
     // Set the matrix property on the backend handle
     // Backend and oneMKL interface types for the property don't match
     switch (property) {
-        case oneapi::mkl::sparse::matrix_property::symmetric:
+        case matrix_property::symmetric:
             oneapi::mkl::sparse::set_matrix_property(internal_smhandle->backend_handle,
                                                      oneapi::mkl::sparse::property::symmetric);
             return true;
-        case oneapi::mkl::sparse::matrix_property::sorted:
+        case matrix_property::sorted:
             oneapi::mkl::sparse::set_matrix_property(internal_smhandle->backend_handle,
                                                      oneapi::mkl::sparse::property::sorted);
             return true;

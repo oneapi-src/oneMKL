@@ -74,17 +74,12 @@ public:
     /// See get_handle_and_stream
     cusparseHandle_t get_handle(const sycl::queue &queue);
 
-    // This is a work-around function for reinterpret_casting the memory. This
-    // will be fixed when SYCL-2020 has been implemented for Pi backend.
+    // Get the native pointer from an accessor. This is a different pointer than
+    // what can be retrieved with get_multi_ptr.
     template <typename AccT>
     inline void *get_mem(AccT acc) {
         auto cudaPtr = ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(acc);
         return reinterpret_cast<void *>(cudaPtr);
-    }
-
-    template <typename T>
-    inline void *get_mem(T *ptr) {
-        return reinterpret_cast<void *>(ptr);
     }
 };
 

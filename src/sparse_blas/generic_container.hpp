@@ -205,6 +205,8 @@ struct generic_dense_matrix_handle : public detail::generic_dense_handle<Backend
     }
 };
 
+enum class sparse_format { CSR, COO };
+
 /// Generic sparse_matrix_handle used by all backends
 template <typename BackendHandleT>
 struct generic_sparse_handle {
@@ -214,6 +216,7 @@ struct generic_sparse_handle {
     generic_container col_container;
     generic_container value_container;
 
+    sparse_format format;
     std::int64_t num_rows;
     std::int64_t num_cols;
     std::int64_t nnz;
@@ -223,12 +226,13 @@ struct generic_sparse_handle {
 
     template <typename fpType, typename intType>
     generic_sparse_handle(BackendHandleT backend_handle, intType* row_ptr, intType* col_ptr,
-                          fpType* value_ptr, std::int64_t num_rows, std::int64_t num_cols,
-                          std::int64_t nnz, oneapi::mkl::index_base index)
+                          fpType* value_ptr, sparse_format format, std::int64_t num_rows,
+                          std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index)
             : backend_handle(backend_handle),
               row_container(generic_container(row_ptr)),
               col_container(generic_container(col_ptr)),
               value_container(generic_container(value_ptr)),
+              format(format),
               num_rows(num_rows),
               num_cols(num_cols),
               nnz(nnz),
@@ -239,12 +243,14 @@ struct generic_sparse_handle {
     template <typename fpType, typename intType>
     generic_sparse_handle(BackendHandleT backend_handle, const sycl::buffer<intType, 1> row_buffer,
                           const sycl::buffer<intType, 1> col_buffer,
-                          const sycl::buffer<fpType, 1> value_buffer, std::int64_t num_rows,
-                          std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index)
+                          const sycl::buffer<fpType, 1> value_buffer, sparse_format format,
+                          std::int64_t num_rows, std::int64_t num_cols, std::int64_t nnz,
+                          oneapi::mkl::index_base index)
             : backend_handle(backend_handle),
               row_container(row_buffer),
               col_container(col_buffer),
               value_container(value_buffer),
+              format(format),
               num_rows(num_rows),
               num_cols(num_cols),
               nnz(nnz),
@@ -265,19 +271,20 @@ struct generic_sparse_handle {
         return row_container.data_type;
     }
 
-    void set_matrix_property(oneapi::mkl::sparse::matrix_property property) {
+    void set_matrix_property(matrix_property property) {
         properties_mask |= matrix_property_to_mask(property);
     }
 
-    bool has_matrix_property(oneapi::mkl::sparse::matrix_property property) {
+    bool has_matrix_property(matrix_property property) {
         return properties_mask & matrix_property_to_mask(property);
     }
 
 private:
-    std::int32_t matrix_property_to_mask(oneapi::mkl::sparse::matrix_property property) {
+    std::int32_t matrix_property_to_mask(matrix_property property) {
         switch (property) {
-            case oneapi::mkl::sparse::matrix_property::symmetric: return 1 << 0;
-            case oneapi::mkl::sparse::matrix_property::sorted: return 1 << 1;
+            case matrix_property::symmetric: return 1 << 0;
+            case matrix_property::sorted: return 1 << 1;
+            case matrix_property::sorted_by_rows: return 1 << 2;
             default:
                 throw oneapi::mkl::invalid_argument(
                     "sparse_blas", "set_matrix_property",
