@@ -20,7 +20,7 @@
 #ifndef _ONEMKL_SRC_SPARSE_BLAS_MATRIX_VIEW_COMPARISON_HPP_
 #define _ONEMKL_SRC_SPARSE_BLAS_MATRIX_VIEW_COMPARISON_HPP_
 
-#include "oneapi/mkl/sparse_blas/matrix_view.hpp"
+#include "oneapi/math/sparse_blas/matrix_view.hpp"
 
 inline bool operator==(const oneapi::mkl::sparse::matrix_view& lhs,
                        const oneapi::mkl::sparse::matrix_view& rhs) {

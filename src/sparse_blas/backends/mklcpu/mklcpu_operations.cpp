@@ -22,7 +22,7 @@
 #include "sparse_blas/macros.hpp"
 #include "sparse_blas/matrix_view_comparison.hpp"
 
-#include "oneapi/mkl/sparse_blas/detail/mklcpu/onemkl_sparse_blas_mklcpu.hpp"
+#include "oneapi/math/sparse_blas/detail/mklcpu/onemath_sparse_blas_mklcpu.hpp"
 
 #define BACKEND mklcpu
 

@@ -23,9 +23,9 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/types.hpp"
-#include "oneapi/mkl/lapack/detail/mklgpu/onemkl_lapack_mklgpu.hpp"
+#include "oneapi/math/types.hpp"
+#include "oneapi/math/lapack/types.hpp"
+#include "oneapi/math/lapack/detail/mklgpu/onemkl_lapack_mklgpu.hpp"
 #include "../mkl_common/mkl_lapack_backend.hpp"
 
 namespace oneapi {

@@ -17,7 +17,7 @@
 *
 **************************************************************************/
 #include "blas/function_table.hpp"
-#include "oneapi/mkl/blas/detail/cublas/onemkl_blas_cublas.hpp"
+#include "oneapi/math/blas/detail/cublas/onemkl_blas_cublas.hpp"
 
 #define WRAPPER_VERSION 1
 

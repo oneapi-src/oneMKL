@@ -26,8 +26,8 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl.hpp"
-#include "oneapi/mkl/detail/config.hpp"
+#include "oneapi/math.hpp"
+#include "oneapi/math/detail/config.hpp"
 
 #include "common_sparse_reference.hpp"
 #include "test_common.hpp"

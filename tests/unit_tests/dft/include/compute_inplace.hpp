@@ -21,7 +21,7 @@
 #define ONEMKL_COMPUTE_INPLACE_HPP
 
 #include "compute_tester.hpp"
-#include <oneapi/mkl/exceptions.hpp>
+#include <oneapi/math/exceptions.hpp>
 
 template <oneapi::mkl::dft::precision precision, oneapi::mkl::dft::domain domain>
 int DFT_Test<precision, domain>::test_in_place_buffer() {

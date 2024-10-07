@@ -26,9 +26,9 @@
 
 #include "mkl_vsl.h"
 
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/rng/detail/engine_impl.hpp"
-#include "oneapi/mkl/rng/detail/mklcpu/onemkl_rng_mklcpu.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/rng/detail/engine_impl.hpp"
+#include "oneapi/math/rng/detail/mklcpu/onemkl_rng_mklcpu.hpp"
 
 #include "cpu_common.hpp"
 

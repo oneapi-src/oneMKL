@@ -20,7 +20,7 @@
 #ifndef _ONEMKL_SPARSE_BLAS_FUNCTION_TABLE_HPP_
 #define _ONEMKL_SPARSE_BLAS_FUNCTION_TABLE_HPP_
 
-#include "oneapi/mkl/sparse_blas/types.hpp"
+#include "oneapi/math/sparse_blas/types.hpp"
 #include "sparse_blas/macros.hpp"
 
 // Dense vector

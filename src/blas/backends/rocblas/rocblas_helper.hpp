@@ -29,7 +29,7 @@
 
 #include <rocblas/rocblas.h>
 #include <complex>
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/math/types.hpp"
 #include <hip/hip_runtime.h>
 #include "dtype_string.hpp"
 

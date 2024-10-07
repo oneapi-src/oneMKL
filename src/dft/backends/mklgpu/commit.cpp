@@ -23,14 +23,14 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/math/types.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/detail/backends.hpp"
 
-#include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
-#include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
-#include "oneapi/mkl/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
+#include "oneapi/math/dft/detail/commit_impl.hpp"
+#include "oneapi/math/dft/detail/types_impl.hpp"
+#include "oneapi/math/dft/detail/descriptor_impl.hpp"
+#include "oneapi/math/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
 
 #include "dft/backends/mklgpu/mklgpu_helpers.hpp"
 #include "../stride_helper.hpp"

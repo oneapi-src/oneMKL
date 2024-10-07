@@ -23,7 +23,7 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "oneapi/mkl/dft/descriptor.hpp"
+#include "oneapi/math/dft/descriptor.hpp"
 
 namespace oneapi {
 namespace mkl {

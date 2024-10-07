@@ -31,9 +31,9 @@
 #endif
 #include "allocator_helper.hpp"
 #include "cblas.h"
-#include "oneapi/mkl/detail/config.hpp"
-#include "oneapi/mkl.hpp"
-#include "onemkl_blas_helper.hpp"
+#include "oneapi/math/detail/config.hpp"
+#include "oneapi/math.hpp"
+#include "onemath_blas_helper.hpp"
 #include "reference_blas_templates.hpp"
 #include "test_common.hpp"
 #include "test_helper.hpp"

@@ -24,8 +24,8 @@
 
 #include <portfft/portfft.hpp>
 
-#include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
+#include "oneapi/math/dft/detail/commit_impl.hpp"
+#include "oneapi/math/dft/detail/descriptor_impl.hpp"
 
 namespace pfft = portfft;
 

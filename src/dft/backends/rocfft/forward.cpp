@@ -24,10 +24,10 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/exceptions.hpp"
+#include "oneapi/math/exceptions.hpp"
 
-#include "oneapi/mkl/dft/detail/rocfft/onemkl_dft_rocfft.hpp"
-#include "oneapi/mkl/dft/descriptor.hpp"
+#include "oneapi/math/dft/detail/rocfft/onemkl_dft_rocfft.hpp"
+#include "oneapi/math/dft/descriptor.hpp"
 
 #include "execute_helper.hpp"
 #include "../../execute_helper_generic.hpp"

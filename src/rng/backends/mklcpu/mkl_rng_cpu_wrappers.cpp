@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 #include "rng/function_table.hpp"
-#include "oneapi/mkl/rng/detail/mklcpu/onemkl_rng_mklcpu.hpp"
+#include "oneapi/math/rng/detail/mklcpu/onemkl_rng_mklcpu.hpp"
 
 #define WRAPPER_VERSION 1
 

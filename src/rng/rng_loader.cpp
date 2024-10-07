@@ -17,7 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include "oneapi/mkl/rng/detail/rng_loader.hpp"
+#include "oneapi/math/rng/detail/rng_loader.hpp"
 
 #include "function_table_initializer.hpp"
 #include "rng/function_table.hpp"

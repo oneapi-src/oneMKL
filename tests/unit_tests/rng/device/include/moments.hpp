@@ -35,7 +35,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/rng/device.hpp"
+#include "oneapi/math/rng/device.hpp"
 
 #include "rng_device_test_common.hpp"
 

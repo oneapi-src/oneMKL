@@ -17,7 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include "oneapi/mkl/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
+#include "oneapi/math/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
 #include "dft/function_table.hpp"
 
 #define WRAPPER_VERSION 1

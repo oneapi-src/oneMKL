@@ -17,7 +17,7 @@
 *
 **************************************************************************/
 #include "lapack/function_table.hpp"
-#include "oneapi/mkl/lapack/detail/cusolver/onemkl_lapack_cusolver.hpp"
+#include "oneapi/math/lapack/detail/cusolver/onemkl_lapack_cusolver.hpp"
 
 #define WRAPPER_VERSION 1
 

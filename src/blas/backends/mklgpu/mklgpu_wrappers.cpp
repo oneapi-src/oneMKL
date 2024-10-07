@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 #include "blas/function_table.hpp"
-#include "oneapi/mkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp"
+#include "oneapi/math/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp"
 
 #define WRAPPER_VERSION 1
 

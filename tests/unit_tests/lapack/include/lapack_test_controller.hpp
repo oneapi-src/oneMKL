@@ -31,7 +31,7 @@
 #endif
 
 #include "lapack_common.hpp"
-#include "oneapi/mkl/exceptions.hpp"
+#include "oneapi/math/exceptions.hpp"
 
 template <class T>
 std::istream& operator>>(std::istream& is, T& t) {

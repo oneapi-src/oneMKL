@@ -24,8 +24,8 @@
 #endif
 
 #include "netlib_common.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/blas/detail/netlib/onemkl_blas_netlib.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/blas/detail/netlib/onemkl_blas_netlib.hpp"
 
 inline float abs_val(float val) {
     return std::abs(val);

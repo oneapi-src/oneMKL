@@ -26,7 +26,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 #include <complex>
 
 void run_example(const sycl::device& cpu_device, const sycl::device& gpu_device) {

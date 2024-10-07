@@ -22,7 +22,7 @@
 #include <complex>
 
 #include "mkl_version.h"
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/math/types.hpp"
 
 namespace oneapi {
 namespace mkl {

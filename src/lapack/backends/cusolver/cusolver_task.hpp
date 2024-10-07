@@ -28,7 +28,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/math/types.hpp"
 #include "cusolver_scope_handle.hpp"
 
 // After Plugin Interface removal in DPC++ ur.hpp is the new include

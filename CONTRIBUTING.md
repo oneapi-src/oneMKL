@@ -195,7 +195,7 @@ class table { };
 *  **NS4:** Put each namespace on its own line when declaring nested namespaces.
 
 ```c
-#include "oneapi/mkl/blas/path_to_some_header.hpp"
+#include "oneapi/math/blas/path_to_some_header.hpp"
 
 namespace oneapi {
 namespace mkl {

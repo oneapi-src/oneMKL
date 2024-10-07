@@ -20,8 +20,8 @@
 #ifndef _ONEMKL_DFT_COMMIT_DERIVED_IMPL_HPP_
 #define _ONEMKL_DFT_COMMIT_DERIVED_IMPL_HPP_
 
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/dft/detail/types_impl.hpp"
 #include "dft/backends/mklcpu/mklcpu_helpers.hpp"
 
 // MKLCPU header

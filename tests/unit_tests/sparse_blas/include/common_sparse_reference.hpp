@@ -24,7 +24,7 @@
 #include <string>
 #include <tuple>
 
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 
 #include "test_common.hpp"
 

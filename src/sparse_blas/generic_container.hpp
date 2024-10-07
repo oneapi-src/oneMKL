@@ -29,7 +29,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/sparse_blas/types.hpp"
+#include "oneapi/math/sparse_blas/types.hpp"
 #include "enum_data_types.hpp"
 
 namespace oneapi::mkl::sparse::detail {

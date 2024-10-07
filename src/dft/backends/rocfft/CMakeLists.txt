@@ -27,7 +27,7 @@ add_library(${LIB_OBJ} OBJECT
   commit.cpp
   forward.cpp
   backward.cpp
-  $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_rocfft_wrappers.cpp>
+  $<$<BOOL:${BUILD_SHARED_LIBS}>: rocfft_wrappers.cpp>
 )
 add_dependencies(onemkl_backend_libs_dft ${LIB_NAME})
 

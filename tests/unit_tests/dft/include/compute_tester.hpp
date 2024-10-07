@@ -27,7 +27,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 #include "test_helper.hpp"
 #include "test_common.hpp"
 #include "reference_dft.hpp"

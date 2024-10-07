@@ -17,12 +17,12 @@
 *
 **************************************************************************/
 
-#include "oneapi/mkl/sparse_blas/detail/sparse_blas_rt.hpp"
+#include "oneapi/math/sparse_blas/detail/sparse_blas_rt.hpp"
 
 #include "function_table_initializer.hpp"
 #include "sparse_blas/function_table.hpp"
 #include "sparse_blas/macros.hpp"
-#include "oneapi/mkl/detail/get_device_id.hpp"
+#include "oneapi/math/detail/get_device_id.hpp"
 
 namespace oneapi::mkl::sparse {
 

@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 #include "blas/function_table.hpp"
-#include "oneapi/mkl/blas/detail/netlib/onemkl_blas_netlib.hpp"
+#include "oneapi/math/blas/detail/netlib/onemkl_blas_netlib.hpp"
 
 #define WRAPPER_VERSION 1
 

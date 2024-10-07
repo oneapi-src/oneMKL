@@ -26,10 +26,10 @@
 
 #include "mkl_version.h"
 
-#include "oneapi/mkl/rng/detail/engine_impl.hpp"
-#include "oneapi/mkl/rng/engines.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/rng/detail/mklgpu/onemkl_rng_mklgpu.hpp"
+#include "oneapi/math/rng/detail/engine_impl.hpp"
+#include "oneapi/math/rng/engines.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/rng/detail/mklgpu/onemkl_rng_mklgpu.hpp"
 
 #include "mkl_internal_rng_gpu.hpp"
 

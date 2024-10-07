@@ -28,7 +28,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 
 void run_example(const sycl::device& dev) {
     constexpr std::size_t N = 16;

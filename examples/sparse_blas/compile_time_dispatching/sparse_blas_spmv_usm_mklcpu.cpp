@@ -46,7 +46,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 
 #include "example_helper.hpp"
 

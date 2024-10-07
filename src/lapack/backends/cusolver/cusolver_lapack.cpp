@@ -19,8 +19,8 @@
 #include "cusolver_helper.hpp"
 #include "cusolver_task.hpp"
 
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/lapack/detail/cusolver/onemkl_lapack_cusolver.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/lapack/detail/cusolver/onemkl_lapack_cusolver.hpp"
 
 namespace oneapi {
 namespace mkl {

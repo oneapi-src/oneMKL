@@ -24,11 +24,11 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/exceptions.hpp"
+#include "oneapi/math/exceptions.hpp"
 
-#include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/detail/cufft/onemkl_dft_cufft.hpp"
-#include "oneapi/mkl/dft/types.hpp"
+#include "oneapi/math/dft/detail/commit_impl.hpp"
+#include "oneapi/math/dft/detail/cufft/onemkl_dft_cufft.hpp"
+#include "oneapi/math/dft/types.hpp"
 
 #include "execute_helper.hpp"
 #include "../../execute_helper_generic.hpp"

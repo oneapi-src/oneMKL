@@ -20,8 +20,8 @@
 #ifndef _ONEMKL_DFT_SRC_MKLGPU_HELPERS_HPP_
 #define _ONEMKL_DFT_SRC_MKLGPU_HELPERS_HPP_
 
-#include "oneapi/mkl/detail/exceptions.hpp"
-#include "oneapi/mkl/dft/detail/types_impl.hpp"
+#include "oneapi/math/detail/exceptions.hpp"
+#include "oneapi/math/dft/detail/types_impl.hpp"
 
 #include "mkl_version.h"
 // MKLGPU header

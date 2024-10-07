@@ -59,7 +59,7 @@ find_package(rocrand REQUIRED)
 find_package(Threads REQUIRED)
 
 set(SOURCES philox4x32x10.cpp mrg32k3a.cpp $<$<BOOL:${BUILD_SHARED_LIBS}>:
-            mkl_rng_rocrand_wrappers.cpp>)
+            rocrand_wrappers.cpp>)
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})

@@ -30,7 +30,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 
 #include "rng_test_common.hpp"
 

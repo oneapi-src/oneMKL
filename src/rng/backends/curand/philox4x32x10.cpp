@@ -72,12 +72,12 @@
 #endif
 #include <iostream>
 
-#include "oneapi/mkl/rng/detail/engine_impl.hpp"
-// #include "oneapi/mkl/rng/engines.hpp"
+#include "oneapi/math/rng/detail/engine_impl.hpp"
+// #include "oneapi/math/rng/engines.hpp"
 #include "curand_helper.hpp"
 #include "curand_task.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/rng/detail/curand/onemkl_rng_curand.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/rng/detail/curand/onemkl_rng_curand.hpp"
 
 namespace oneapi {
 namespace mkl {

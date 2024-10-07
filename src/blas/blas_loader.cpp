@@ -17,7 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include "oneapi/mkl/blas/detail/blas_loader.hpp"
+#include "oneapi/math/blas/detail/blas_loader.hpp"
 
 #include "function_table_initializer.hpp"
 #include "blas/function_table.hpp"

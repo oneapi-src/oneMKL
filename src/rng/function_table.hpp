@@ -27,7 +27,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/rng/detail/engine_impl.hpp"
+#include "oneapi/math/rng/detail/engine_impl.hpp"
 
 typedef struct {
     int version;

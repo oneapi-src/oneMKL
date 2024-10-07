@@ -28,7 +28,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 #include "lapack_common.hpp"
 #include "lapack_test_controller.hpp"
 #include "lapack_accuracy_checks.hpp"

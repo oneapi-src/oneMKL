@@ -17,13 +17,13 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include "oneapi/mkl/dft/detail/dft_loader.hpp"
-#include "oneapi/mkl/dft/forward.hpp"
-#include "oneapi/mkl/dft/backward.hpp"
+#include "oneapi/math/dft/detail/dft_loader.hpp"
+#include "oneapi/math/dft/forward.hpp"
+#include "oneapi/math/dft/backward.hpp"
 
 #include "function_table_initializer.hpp"
 #include "dft/function_table.hpp"
-#include "oneapi/mkl/detail/get_device_id.hpp"
+#include "oneapi/math/detail/get_device_id.hpp"
 
 namespace oneapi::mkl::dft::detail {
 

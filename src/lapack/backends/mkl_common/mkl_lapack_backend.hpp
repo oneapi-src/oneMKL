@@ -21,8 +21,8 @@
 
 #include <complex>
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/types.hpp"
+#include "oneapi/math/types.hpp"
+#include "oneapi/math/lapack/types.hpp"
 
 namespace oneapi {
 namespace mkl {

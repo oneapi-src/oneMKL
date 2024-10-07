@@ -42,7 +42,7 @@ Example:
 The command below will generate:
 "blas_ct_templates.hpp" header with general templates for compile-time BLAS API based on "blas.hpp".
 
-    {script}  include/oneapi/mkl/blas.hpp include/oneapi/mkl/blas/detail/blas_ct_templates.hpp
+    {script}  include/oneapi/math/blas.hpp include/oneapi/math/blas/detail/blas_ct_templates.hpp
 '''.format(script = argv[0]))
 
 if len(argv) < 2:
@@ -90,8 +90,8 @@ out_file.write("""//
 #include <complex>
 #include <cstdint>
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/detail/backends.hpp"
+#include "oneapi/math/types.hpp"
+#include "oneapi/math/detail/backends.hpp"
 
 """.format(in_header=in_filename))
 

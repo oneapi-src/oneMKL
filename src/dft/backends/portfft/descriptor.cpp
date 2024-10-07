@@ -17,10 +17,10 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include "oneapi/mkl/dft/descriptor.hpp"
+#include "oneapi/math/dft/descriptor.hpp"
 #include "../../descriptor.cxx"
 
-#include "oneapi/mkl/dft/detail/portfft/onemkl_dft_portfft.hpp"
+#include "oneapi/math/dft/detail/portfft/onemkl_dft_portfft.hpp"
 
 namespace oneapi::mkl::dft::detail {
 

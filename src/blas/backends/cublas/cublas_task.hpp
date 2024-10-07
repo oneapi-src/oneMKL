@@ -29,7 +29,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/math/types.hpp"
 #ifndef __HIPSYCL__
 #include "cublas_scope_handle.hpp"
 #else

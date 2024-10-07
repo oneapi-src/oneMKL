@@ -23,8 +23,8 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/blas/detail/portblas/onemkl_blas_portblas.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/blas/detail/portblas/onemkl_blas_portblas.hpp"
 
 namespace oneapi {
 namespace mkl {

@@ -30,9 +30,9 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl.hpp"
-#include "oneapi/mkl/detail/config.hpp"
-#include "oneapi/mkl/detail/backend_selector.hpp"
+#include "oneapi/math.hpp"
+#include "oneapi/math/detail/config.hpp"
+#include "oneapi/math/detail/backend_selector.hpp"
 
 #ifdef _WIN64
 #include <malloc.h>

@@ -32,10 +32,10 @@
 #include <hip/hip_runtime.h>
 #include <complex>
 
-#include "oneapi/mkl/types.hpp"
+#include "oneapi/math/types.hpp"
 #include "runtime_support_helper.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/lapack/exceptions.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/lapack/exceptions.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -43,7 +43,7 @@ namespace lapack {
 namespace rocsolver {
 
 // The static assert to make sure that all index types used in
-// oneMKL/include/oneapi/mkl/lapack.hpp interface are int64_t
+// oneMKL/include/oneapi/math/lapack.hpp interface are int64_t
 template <typename... Next>
 struct is_int64 : std::false_type {};
 

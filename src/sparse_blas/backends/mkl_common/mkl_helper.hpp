@@ -26,8 +26,8 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/sparse_blas/detail/helper_types.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/sparse_blas/detail/helper_types.hpp"
 
 #include "sparse_blas/enum_data_types.hpp"
 #include "sparse_blas/macros.hpp"

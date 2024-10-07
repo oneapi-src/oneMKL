@@ -60,13 +60,13 @@ function(generate_header_file)
   set(ONEMKL_ENABLE_ROCFFT_BACKEND ${ENABLE_ROCFFT_BACKEND})
   set(ONEMKL_ENABLE_PORTFFT_BACKEND ${ENABLE_PORTFFT_BACKEND})
 
-  configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured")
+  configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/oneapi/math/config.hpp.configured")
   file(GENERATE
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
-    INPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/config.hpp.configured"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/math/detail/config.hpp"
+    INPUT "${CMAKE_CURRENT_BINARY_DIR}/oneapi/math/config.hpp.configured"
   )
-  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/mkl/detail/config.hpp"
-    DESTINATION include/oneapi/mkl/detail
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oneapi/math/detail/config.hpp"
+    DESTINATION include/oneapi/math/detail
     COMPONENT Devel
   )
 endfunction()

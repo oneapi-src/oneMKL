@@ -74,10 +74,10 @@
 
 #include "rocrand_helper.hpp"
 #include "rocrand_task.hpp"
-#include "oneapi/mkl/exceptions.hpp"
-#include "oneapi/mkl/rng/detail/rocrand/onemkl_rng_rocrand.hpp"
-#include "oneapi/mkl/rng/detail/engine_impl.hpp"
-#include "oneapi/mkl/rng/engines.hpp"
+#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/rng/detail/rocrand/onemkl_rng_rocrand.hpp"
+#include "oneapi/math/rng/detail/engine_impl.hpp"
+#include "oneapi/math/rng/engines.hpp"
 
 namespace oneapi {
 namespace mkl {

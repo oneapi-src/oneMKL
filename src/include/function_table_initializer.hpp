@@ -23,8 +23,8 @@
 #include <cstdint>
 #include <map>
 
-#include "oneapi/mkl/detail/backends_table.hpp"
-#include "oneapi/mkl/detail/exceptions.hpp"
+#include "oneapi/math/detail/backends_table.hpp"
+#include "oneapi/math/detail/exceptions.hpp"
 
 #define SPEC_VERSION 1
 

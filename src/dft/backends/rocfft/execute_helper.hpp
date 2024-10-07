@@ -26,10 +26,10 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/dft/detail/commit_impl.hpp"
-#include "oneapi/mkl/dft/detail/descriptor_impl.hpp"
-#include "oneapi/mkl/dft/types.hpp"
-#include "oneapi/mkl/exceptions.hpp"
+#include "oneapi/math/dft/detail/commit_impl.hpp"
+#include "oneapi/math/dft/detail/descriptor_impl.hpp"
+#include "oneapi/math/dft/types.hpp"
+#include "oneapi/math/exceptions.hpp"
 
 #include <hip/hip_runtime.h>
 #include <rocfft.h>
