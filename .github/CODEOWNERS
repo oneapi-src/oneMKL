@@ -1,4 +1,6 @@
 # Arch files
+/.github/ @oneapi-src/onemkl-arch-write
+/.gitignore/ @oneapi-src/onemkl-arch-write
 /cmake/ @oneapi-src/onemkl-arch-write
 /deps/ @oneapi-src/onemkl-arch-write
 /docs/ @oneapi-src/onemkl-arch-write
@@ -67,7 +69,3 @@
 
 # Shared files
 /include/oneapi/mkl/types.hpp @oneapi-src/onemkl-blas-write @oneapi-src/onemkl-lapack-write
-
-# Admin files
-/.github/ @oneapi-src/onemkl-admin
-/.gitignore/ @oneapi-src/onemkl-admin
