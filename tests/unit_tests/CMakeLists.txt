@@ -25,11 +25,6 @@ if("lapack" IN_LIST TARGET_DOMAINS)
     find_package(LAPACKE REQUIRED)
 endif()
 
-# Setup config header with path to reference libraries
-set(ONEMKL_TESTS_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/config.hpp.in
-               ${ONEMKL_TESTS_BINARY_DIR}/include/config.hpp)
-
 foreach(domain ${TARGET_DOMAINS})
   # Build tests first
   add_subdirectory(${domain})

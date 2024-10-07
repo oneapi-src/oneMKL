@@ -29,7 +29,6 @@ if(BUILD_SHARED_LIBS)
       PUBLIC ${PROJECT_SOURCE_DIR}/include
       PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
       PUBLIC ${CMAKE_BINARY_DIR}/bin
-      PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
       PUBLIC ${CBLAS_INCLUDE}
   )
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
@@ -47,7 +46,6 @@ target_include_directories(blas_level3_ct
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
     PUBLIC ${CMAKE_BINARY_DIR}/bin
-    PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
     PUBLIC ${CBLAS_INCLUDE}
 )
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)

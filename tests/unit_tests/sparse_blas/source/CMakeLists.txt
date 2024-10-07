@@ -37,7 +37,6 @@ if (BUILD_SHARED_LIBS)
             PUBLIC ${PROJECT_SOURCE_DIR}/include
             PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
             PUBLIC ${CMAKE_BINARY_DIR}/bin
-            PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
             )
     if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
         add_sycl_to_target(TARGET spblas_source_rt SOURCES ${SPBLAS_SOURCES})
@@ -55,7 +54,6 @@ target_include_directories(spblas_source_ct
         PUBLIC ${PROJECT_SOURCE_DIR}/include
         PUBLIC ${PROJECT_SOURCE_DIR}/deps/googletest/include
         PUBLIC ${CMAKE_BINARY_DIR}/bin
-        PUBLIC ${ONEMKL_TESTS_BINARY_DIR}/include
         )
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
     add_sycl_to_target(TARGET spblas_source_ct SOURCES ${SPBLAS_SOURCES})

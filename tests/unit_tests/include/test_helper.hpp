@@ -33,7 +33,6 @@
 #include "oneapi/mkl.hpp"
 #include "oneapi/mkl/detail/config.hpp"
 #include "oneapi/mkl/detail/backend_selector.hpp"
-#include "config.hpp"
 
 #ifdef _WIN64
 #include <malloc.h>
