@@ -76,7 +76,7 @@ class ComputeTests_real_real_out_of_place_REAL
         catch (std::exception & e) {                                                      \
             std::string msg = e.what();                                                   \
             if ((msg.find("FFT_UNIMPLEMENTED") != std::string::npos) ||                   \
-                msg.find("unimplemented") != std::string::npos) {                         \
+                (msg.find("Unimplemented") != std::string::npos)) {                       \
                 std::cout << "Skipping test because: \"" << msg << "\"" << std::endl;     \
                 GTEST_SKIP();                                                             \
             }                                                                             \
