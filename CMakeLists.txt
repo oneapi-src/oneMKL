@@ -343,7 +343,7 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/oneMathConfig.cmake"
 set(config_package_location "lib/cmake/${PROJECT_NAME}")
 install(EXPORT oneMathTargets
   FILE oneMathTargets.cmake
-  NAMESPACE MKL::
+  NAMESPACE ONEMATH::
   DESTINATION ${config_package_location}
 )
 install(

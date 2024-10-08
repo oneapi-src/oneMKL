@@ -31,12 +31,12 @@ For example:
 .. code-block:: cmake
 
     find_package(oneMath REQUIRED)
-    target_link_libraries(myTarget PRIVATE MKL::onemath)
+    target_link_libraries(myTarget PRIVATE ONEMATH::onemath)
 
 Different targets can be used depending on the requirements of oneMath. 
-To link against the entire library, the ``MKL::onemath`` target should be used.
-For specific domains, ``MKL::onemath_<domain>`` should be used.
-And for specific backends, ``MKL::onemath_<domain>_<backend>`` should be used.
+To link against the entire library, the ``ONEMATH::onemath`` target should be used.
+For specific domains, ``ONEMATH::onemath_<domain>`` should be used.
+And for specific backends, ``ONEMATH::onemath_<domain>_<backend>`` should be used.
 
 When using a binary, it may be useful to know the backends that were enabled
 during the build. To check for the existence of backends, CMake's ``if(TARGET
@@ -44,8 +44,8 @@ during the build. To check for the existence of backends, CMake's ``if(TARGET
 
 .. code-block:: cmake
 
-    if(TARGET MKL::onemath_dft_cufft)
-        target_link_libraries(myTarget PRIVATE MKL::onemath_dft_cufft)
+    if(TARGET ONEMATH::onemath_dft_cufft)
+        target_link_libraries(myTarget PRIVATE ONEMATH::onemath_dft_cufft)
     else()
         message(FATAL_ERROR "oneMath was not built with CuFFT backend")
     endif()
