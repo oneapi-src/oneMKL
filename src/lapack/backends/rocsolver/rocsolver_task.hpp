@@ -52,7 +52,11 @@ namespace rocsolver {
 
 template <typename H, typename F>
 static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
+#ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+    cgh.ext_codeplay_enqueue_native_command([f, queue](sycl::interop_handle ih){
+#else
     cgh.host_task([f, queue](cl::sycl::interop_handle ih) {
+#endif
         auto sc = RocsolverScopedContextHandler(queue, ih);
         f(sc);
     });
