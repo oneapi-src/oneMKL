@@ -22,10 +22,10 @@
 
 #include "engine_base.hpp"
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 template <typename UIntType>
-class distribution_base<oneapi::mkl::rng::device::uniform_bits<UIntType>> {
+class distribution_base<oneapi::math::rng::device::uniform_bits<UIntType>> {
 protected:
     template <typename EngineType>
     auto generate(EngineType& engine) ->
@@ -46,6 +46,6 @@ protected:
     }
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_UNIFORM_BITS_IMPL_HPP_

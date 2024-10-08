@@ -46,7 +46,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace rocsolver {
 
@@ -69,6 +69,6 @@ static inline void onemath_rocsolver_host_task(H &cgh, sycl::queue queue, F f) {
 
 } // namespace rocsolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 #endif // _MKL_LAPACK_ROCSOLVER_TASK_HPP_

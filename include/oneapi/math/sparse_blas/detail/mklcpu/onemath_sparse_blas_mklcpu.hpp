@@ -24,12 +24,12 @@
 #include "oneapi/math/sparse_blas/detail/helper_types.hpp"
 #include "oneapi/math/sparse_blas/types.hpp"
 
-namespace oneapi::mkl::sparse::mklcpu {
+namespace oneapi::math::sparse::mklcpu {
 
-namespace detail = oneapi::mkl::sparse::detail;
+namespace detail = oneapi::math::sparse::detail;
 
 #include "oneapi/math/sparse_blas/detail/onemath_sparse_blas_backends.hxx"
 
-} // namespace oneapi::mkl::sparse::mklcpu
+} // namespace oneapi::math::sparse::mklcpu
 
 #endif // _ONEMATH_SPARSE_BLAS_DETAIL_MKLCPU_ONEMATH_SPARSE_BLAS_MKLCPU_HPP_

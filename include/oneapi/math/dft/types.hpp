@@ -23,7 +23,7 @@
 #include "detail/types_impl.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace dft {
 
 /** The detail namespace is required since the MKLGPU backend uses identical 
@@ -36,7 +36,7 @@ using config_value = detail::config_value;
 using DFT_ERROR = detail::DFT_ERROR;
 
 } // namespace dft
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_TYPES_HPP_

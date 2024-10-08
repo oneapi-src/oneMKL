@@ -24,7 +24,7 @@
 
 #include <sycl/sycl.hpp>
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 // internal structure to specify state of engine
 template <typename EngineType>
@@ -33,7 +33,7 @@ struct engine_state {};
 template <typename EngineType>
 class engine_base {};
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #include "oneapi/math/rng/device/detail/philox4x32x10_impl.hpp"
 #include "oneapi/math/rng/device/detail/mrg32k3a_impl.hpp"

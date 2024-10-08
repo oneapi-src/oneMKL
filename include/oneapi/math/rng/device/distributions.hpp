@@ -25,11 +25,11 @@
 #include "oneapi/math/rng/device/detail/distribution_base.hpp"
 #include "oneapi/math/rng/device/functions.hpp"
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 // CONTINUOUS AND DISCRETE RANDOM NUMBER DISTRIBUTIONS
 
-// Class template oneapi::mkl::rng::device::uniform
+// Class template oneapi::math::rng::device::uniform
 //
 // Represents continuous and discrete uniform random number distribution
 //
@@ -40,8 +40,8 @@ namespace oneapi::mkl::rng::device {
 //      std::uint32_t
 //
 // Supported methods:
-//      oneapi::mkl::rng::device::uniform_method::standard
-//      oneapi::mkl::rng::device::uniform_method::accurate
+//      oneapi::math::rng::device::uniform_method::standard
+//      oneapi::math::rng::device::uniform_method::accurate
 //
 // Input arguments:
 //      a - left bound. 0.0 by default
@@ -112,7 +112,7 @@ private:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::gaussian
+// Class template oneapi::math::rng::device::gaussian
 //
 // Represents continuous normal random number distribution
 //
@@ -121,8 +121,8 @@ private:
 //      double
 //
 // Supported methods:
-//      oneapi::mkl::rng::device::gaussian_method::box_muller2
-//      oneapi::mkl::rng::device::gaussian_method::icdf
+//      oneapi::math::rng::device::gaussian_method::box_muller2
+//      oneapi::math::rng::device::gaussian_method::icdf
 //
 // Input arguments:
 //      mean   - mean. 0 by default
@@ -179,7 +179,7 @@ public:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::lognormal
+// Class template oneapi::math::rng::device::lognormal
 //
 // Represents continuous lognormal random number distribution
 //
@@ -188,7 +188,7 @@ public:
 //      double
 //
 // Supported methods:
-//      oneapi::mkl::rng::device::lognormal_method::box_muller2
+//      oneapi::math::rng::device::lognormal_method::box_muller2
 //
 // Input arguments:
 //      m     - mean of the subject normal distribution. 0.0 by default
@@ -252,7 +252,7 @@ public:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::beta
+// Class template oneapi::math::rng::device::beta
 //
 // Represents continuous beta random number distribution
 //
@@ -261,8 +261,8 @@ public:
 //      double
 //
 // Supported methods:
-//      oneapi::mkl::rng::device::beta_method::cja
-//      oneapi::mkl::rng::device::beta_method::cja_accurate
+//      oneapi::math::rng::device::beta_method::cja
+//      oneapi::math::rng::device::beta_method::cja_accurate
 //
 // Input arguments:
 //      p - shape. 1.0 by default
@@ -330,7 +330,7 @@ public:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::gamma
+// Class template oneapi::math::rng::device::gamma
 //
 // Represents continuous gamma random number distribution
 //
@@ -339,8 +339,8 @@ public:
 //      double
 //
 // Supported methods:
-//      oneapi::mkl::rng::device::gamma_method::marsaglia
-//      oneapi::mkl::rng::device::gamma_method::marsaglia_accurate
+//      oneapi::math::rng::device::gamma_method::marsaglia
+//      oneapi::math::rng::device::gamma_method::marsaglia_accurate
 //
 // Input arguments:
 //      alpha - shape. 1.0 by default
@@ -403,7 +403,7 @@ public:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::uniform_bits
+// Class template oneapi::math::rng::device::uniform_bits
 //
 // Represents discrete uniform bits random number distribution
 //
@@ -429,7 +429,7 @@ private:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::bits
+// Class template oneapi::math::rng::device::bits
 //
 // Represents bits of underlying random number engine
 //
@@ -455,7 +455,7 @@ private:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::exponential
+// Class template oneapi::math::rng::device::exponential
 //
 // Represents continuous exponential random number distribution
 //
@@ -464,8 +464,8 @@ private:
 //      double
 //
 // Supported methods:
-//      oneapi::mkl::rng::device::exponential_method::icdf
-//      oneapi::mkl::rng::device::exponential_method::icdf_accurate
+//      oneapi::math::rng::device::exponential_method::icdf
+//      oneapi::math::rng::device::exponential_method::icdf_accurate
 //
 // Input arguments:
 //      displ - displacement. 0.0 by default
@@ -520,7 +520,7 @@ public:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::poisson
+// Class template oneapi::math::rng::device::poisson
 //
 // Represents discrete poisson random number distribution
 //
@@ -529,7 +529,7 @@ public:
 //      std::uint32_t
 //
 // Supported methods:
-//      oneapi::mkl::rng::device::poisson_method::devroye
+//      oneapi::math::rng::device::poisson_method::devroye
 //
 // Input arguments:
 //      lambda - mean value. 1.0 by default
@@ -574,7 +574,7 @@ public:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-// Class template oneapi::mkl::rng::device::bernoulli
+// Class template oneapi::math::rng::device::bernoulli
 //
 // Represents discrete Bernoulli random number distribution
 //
@@ -583,7 +583,7 @@ public:
 //      std::int32_t
 //
 // Supported methods:
-//      oneapi::mkl::rng::bernoulli_method::icdf;
+//      oneapi::math::rng::bernoulli_method::icdf;
 //
 // Input arguments:
 //      p - success probablity of a trial. 0.5 by default
@@ -632,6 +632,6 @@ public:
     friend typename Distr::result_type generate_single(Distr& distr, Engine& engine);
 };
 
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #endif // _MKL_RNG_DEVICE_DISTRIBUTIONS_HPP_

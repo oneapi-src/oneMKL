@@ -76,12 +76,12 @@
 #if defined(ONEMATH_ENABLE_MKLCPU_BACKEND) || defined(ONEMATH_ENABLE_NETLIB_BACKEND)
 #ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
 #define TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ q })
+    func(oneapi::math::backend_selector<oneapi::math::backend::mklcpu>{ q })
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::mklcpu>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_INTELCPU_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::netlib>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::netlib>{ q }, __VA_ARGS__)
 #endif
 #else
 #define TEST_RUN_INTELCPU_SELECT_NO_ARGS(q, func)
@@ -90,9 +90,9 @@
 
 #ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
 #define TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q })
+    func(oneapi::math::backend_selector<oneapi::math::backend::mklgpu>{ q })
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::mklgpu>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_INTELGPU_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_INTELGPU_SELECT(q, func, ...)
@@ -100,57 +100,57 @@
 
 #ifdef ONEMATH_ENABLE_CUBLAS_BACKEND
 #define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::cublas>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...)
 #endif
 #ifdef ONEMATH_ENABLE_CUSOLVER_BACKEND
 #define TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cusolver>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::cusolver>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_NVIDIAGPU_CUSOLVER_SELECT(q, func, ...)
 #endif
 
 #ifdef ONEMATH_ENABLE_ROCBLAS_BACKEND
 #define TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocblas>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::rocblas>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_AMDGPU_ROCBLAS_SELECT(q, func, ...)
 #endif
 
 #ifdef ONEMATH_ENABLE_CURAND_BACKEND
 #define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::curand>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::curand>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...)
 #endif
 
 #ifdef ONEMATH_ENABLE_ROCRAND_BACKEND
 #define TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocrand>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::rocrand>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_AMDGPU_ROCRAND_SELECT(q, func, ...)
 #endif
 
 #ifdef ONEMATH_ENABLE_ROCSOLVER_BACKEND
 #define TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocsolver>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::rocsolver>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_AMDGPU_ROCSOLVER_SELECT(q, func, ...)
 #endif
 
 #ifdef ONEMATH_ENABLE_PORTBLAS_BACKEND
 #define TEST_RUN_PORTBLAS_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::portblas>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::portblas>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_PORTBLAS_SELECT(q, func, ...)
 #endif
 
 #ifdef ONEMATH_ENABLE_CUFFT_BACKEND
 #define TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cufft>{ q })
+    func(oneapi::math::backend_selector<oneapi::math::backend::cufft>{ q })
 #define TEST_RUN_NVIDIAGPU_CUFFT_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cufft>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::cufft>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_NVIDIAGPU_CUFFT_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_NVIDIAGPU_CUFFT_SELECT(q, func, ...)
@@ -158,9 +158,9 @@
 
 #ifdef ONEMATH_ENABLE_ROCFFT_BACKEND
 #define TEST_RUN_AMDGPU_ROCFFT_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocfft>{ q })
+    func(oneapi::math::backend_selector<oneapi::math::backend::rocfft>{ q })
 #define TEST_RUN_AMDGPU_ROCFFT_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::rocfft>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::rocfft>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_AMDGPU_ROCFFT_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_AMDGPU_ROCFFT_SELECT(q, func, ...)
@@ -168,9 +168,9 @@
 
 #ifdef ONEMATH_ENABLE_PORTFFT_BACKEND
 #define TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::portfft>{ q })
+    func(oneapi::math::backend_selector<oneapi::math::backend::portfft>{ q })
 #define TEST_RUN_PORTFFT_SELECT(q, func, ...) \
-    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::portfft>{ q }, __VA_ARGS__)
+    func(oneapi::math::backend_selector<oneapi::math::backend::portfft>{ q }, __VA_ARGS__)
 #else
 #define TEST_RUN_PORTFFT_SELECT_NO_ARGS(q, func)
 #define TEST_RUN_PORTFFT_SELECT(q, func, ...)
@@ -290,9 +290,9 @@ public:
 class LayoutDeviceNamePrint {
 public:
     std::string operator()(
-        testing::TestParamInfo<std::tuple<sycl::device *, oneapi::mkl::layout>> dev) const {
+        testing::TestParamInfo<std::tuple<sycl::device *, oneapi::math::layout>> dev) const {
         std::string layout_name =
-            std::get<1>(dev.param) == oneapi::mkl::layout::col_major ? "Column_Major" : "Row_Major";
+            std::get<1>(dev.param) == oneapi::math::layout::col_major ? "Column_Major" : "Row_Major";
         std::string dev_name = std::get<0>(dev.param)->get_info<sycl::info::device::name>();
         for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
             if (!isalnum(dev_name[i]))
@@ -304,9 +304,9 @@ public:
 };
 
 /* to accommodate Windows and Linux differences between alligned_alloc and
-   _aligned_malloc calls use oneapi::mkl::aligned_alloc and oneapi::mkl::aligned_free instead */
+   _aligned_malloc calls use oneapi::math::aligned_alloc and oneapi::math::aligned_free instead */
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 static inline void *aligned_alloc(size_t align, size_t size) {
 #ifdef _WIN64
@@ -361,7 +361,7 @@ static inline void free_usm(void *p, sycl::context ctx) {
     sycl::free(p, ctx);
 }
 
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _TEST_HELPER_HPP_

@@ -28,7 +28,7 @@
 
 #include "detail/types_impl.hpp"
 
-namespace oneapi::mkl::dft {
+namespace oneapi::math::dft {
 //Buffer version
 
 //In-place transform
@@ -159,6 +159,6 @@ sycl::event compute_backward(descriptor_type &desc, input_type *in_re, input_typ
                                             reinterpret_cast<scalar_type *>(out_re),
                                             reinterpret_cast<scalar_type *>(out_im), dependencies);
 }
-} // namespace oneapi::mkl::dft
+} // namespace oneapi::math::dft
 
 #endif // _ONEMATH_DFT_BACKWARD_HPP_

@@ -26,7 +26,7 @@
 #include "oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace rocblas {
 namespace column_major {
@@ -1778,5 +1778,5 @@ NRM2_LAUNCHER_USM(std::complex<double>, double, rocblas_dznrm2)
 } // namespace row_major
 } // namespace rocblas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

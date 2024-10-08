@@ -26,7 +26,7 @@
 #include "oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace rocblas {
 namespace column_major {
@@ -960,9 +960,9 @@ inline void symm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
                  int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::symm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c, ldc);
 }
@@ -987,9 +987,9 @@ inline void hemm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
                  int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::hemm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c, ldc);
 }
@@ -1011,10 +1011,10 @@ template <typename Func, typename T>
 inline void syrk(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                  int64_t k, T alpha, sycl::buffer<T, 1> &a, int64_t lda, T beta,
                  sycl::buffer<T, 1> &c, int64_t ldc) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::syrk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc);
 }
@@ -1037,10 +1037,10 @@ template <typename Func, typename DataType, typename ScalarType>
 inline void herk(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                  int64_t k, ScalarType alpha, sycl::buffer<DataType, 1> &a, int64_t lda,
                  ScalarType beta, sycl::buffer<DataType, 1> &c, int64_t ldc) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::conjtrans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::herk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc);
 }
@@ -1061,10 +1061,10 @@ template <typename Func, typename T>
 inline void syr2k(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                   int64_t k, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &b,
                   int64_t ldb, T beta, sycl::buffer<T, 1> &c, int64_t ldc) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::syr2k(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, b, ldb, beta, c,
                         ldc);
@@ -1090,10 +1090,10 @@ inline void her2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
                   int64_t k, DataType alpha, sycl::buffer<DataType, 1> &a, int64_t lda,
                   sycl::buffer<DataType, 1> &b, int64_t ldb, ScalarType beta,
                   sycl::buffer<DataType, 1> &c, int64_t ldc) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::conjtrans
+                                                               : oneapi::math::transpose::nontrans;
     auto new_alpha = std::conj(alpha);
 
     column_major::her2k(func, queue, new_uplo, new_trans, n, k, new_alpha, a, lda, b, ldb, beta, c,
@@ -1123,9 +1123,9 @@ inline void trmm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  diag unit_diag, int64_t m, int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
                  sycl::buffer<T, 1> &b, int64_t ldb) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::trmm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a, lda, b,
                        ldb);
@@ -1151,9 +1151,9 @@ inline void trsm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
                  diag unit_diag, int64_t m, int64_t n, T alpha, sycl::buffer<T, 1> &a, int64_t lda,
                  sycl::buffer<T, 1> &b, int64_t ldb) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::trsm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a, lda, b,
                        ldb);
@@ -1247,9 +1247,9 @@ inline sycl::event symm(Func func, sycl::queue &queue, side left_right, uplo upp
                         int64_t n, T alpha, const T *a, int64_t lda, const T *b, int64_t ldb,
                         T beta, T *c, int64_t ldc, const std::vector<sycl::event> &dependencies) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::symm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c,
                               ldc, dependencies);
@@ -1276,9 +1276,9 @@ inline sycl::event hemm(Func func, sycl::queue &queue, side left_right, uplo upp
                         int64_t n, T alpha, const T *a, int64_t lda, const T *b, int64_t ldb,
                         T beta, T *c, int64_t ldc, const std::vector<sycl::event> &dependencies) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::hemm(func, queue, new_side, new_uplo, n, m, alpha, a, lda, b, ldb, beta, c,
                               ldc, dependencies);
@@ -1302,10 +1302,10 @@ template <typename Func, typename T>
 inline sycl::event syrk(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, int64_t n,
                         int64_t k, T alpha, const T *a, int64_t lda, T beta, T *c, int64_t ldc,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::syrk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc,
                               dependencies);
@@ -1331,10 +1331,10 @@ inline sycl::event herk(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         int64_t k, const ScalarType alpha, const DataType *a, int64_t lda,
                         const ScalarType beta, DataType *c, int64_t ldc,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::conjtrans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::herk(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, beta, c, ldc,
                               dependencies);
@@ -1359,10 +1359,10 @@ inline sycl::event syr2k(Func func, sycl::queue &queue, uplo upper_lower, transp
                          int64_t n, int64_t k, T alpha, const T *a, int64_t lda, const T *b,
                          int64_t ldb, T beta, T *c, int64_t ldc,
                          const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::syr2k(func, queue, new_uplo, new_trans, n, k, alpha, a, lda, b, ldb, beta,
                                c, ldc, dependencies);
@@ -1389,10 +1389,10 @@ inline sycl::event her2k(Func func, sycl::queue &queue, uplo upper_lower, transp
                          int64_t n, int64_t k, const DataType alpha, const DataType *a, int64_t lda,
                          const DataType *b, int64_t ldb, const ScalarType beta, DataType *c,
                          int64_t ldc, const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::conjtrans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::conjtrans
+                                                               : oneapi::math::transpose::nontrans;
     auto new_alpha = std::conj(alpha);
 
     return column_major::her2k(func, queue, new_uplo, new_trans, n, k, new_alpha, a, lda, b, ldb,
@@ -1423,9 +1423,9 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
                         int64_t lda, T *b, int64_t ldb,
                         const std::vector<sycl::event> &dependencies) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::trmm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a,
                               lda, b, ldb, dependencies);
@@ -1452,9 +1452,9 @@ inline sycl::event trsm(Func func, sycl::queue &queue, side left_right, uplo upp
                         int64_t lda, T *b, int64_t ldb,
                         const std::vector<sycl::event> &dependencies) {
     auto new_side =
-        left_right == oneapi::mkl::side::left ? oneapi::mkl::side::right : oneapi::mkl::side::left;
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+        left_right == oneapi::math::side::left ? oneapi::math::side::right : oneapi::math::side::left;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::trsm(func, queue, new_side, new_uplo, trans, unit_diag, n, m, alpha, a,
                               lda, b, ldb, dependencies);
@@ -1478,5 +1478,5 @@ TRSM_LAUNCHER_USM(std::complex<double>, rocblas_ztrsm)
 } // namespace row_major
 } // namespace rocblas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

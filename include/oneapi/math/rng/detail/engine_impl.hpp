@@ -34,7 +34,7 @@
 #include "oneapi/math/types.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 namespace detail {
 
@@ -191,7 +191,7 @@ protected:
 
 } // namespace detail
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_RNG_ENGINE_IMPL_HPP_

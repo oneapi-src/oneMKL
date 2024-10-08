@@ -38,7 +38,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 enum class device : uint16_t { x86cpu, intelgpu, nvidiagpu, amdgpu, generic_device };
 enum class domain : uint16_t { blas, dft, lapack, rng, sparse_blas };
@@ -209,7 +209,7 @@ static std::map<domain, const char*> table_names = { { domain::blas, "mkl_blas_t
                                                      { domain::sparse_blas,
                                                        "mkl_sparse_blas_table" } };
 
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_ONEMATH_BACKENDS_TABLE_HPP_

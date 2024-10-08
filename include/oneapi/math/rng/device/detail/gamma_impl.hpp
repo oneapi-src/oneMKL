@@ -22,7 +22,7 @@
 
 #include "vm_wrappers.hpp"
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 enum class gamma_algorithm { Exponential = 0, Vaduva, EPD_Transform, Marsaglia };
 
@@ -54,7 +54,7 @@ inline DataType gamma_c06() {
 }
 
 template <typename RealType, typename Method>
-class distribution_base<oneapi::mkl::rng::device::gamma<RealType, Method>> {
+class distribution_base<oneapi::math::rng::device::gamma<RealType, Method>> {
 public:
     struct param_type {
         param_type(RealType alpha, RealType a, RealType beta) : alpha_(alpha), a_(a), beta_(beta) {}
@@ -71,10 +71,10 @@ public:
         set_algorithm();
 #ifndef __SYCL_DEVICE_ONLY__
         if (alpha <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gamma", "alpha <= 0");
+            throw oneapi::math::invalid_argument("rng", "gamma", "alpha <= 0");
         }
         else if (beta <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gamma", "beta <= 0");
+            throw oneapi::math::invalid_argument("rng", "gamma", "beta <= 0");
         }
 #endif
     }
@@ -102,10 +102,10 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.alpha_ <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gamma", "alpha <= 0");
+            throw oneapi::math::invalid_argument("rng", "gamma", "alpha <= 0");
         }
         else if (pt.beta_ <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gamma", "beta <= 0");
+            throw oneapi::math::invalid_argument("rng", "gamma", "beta <= 0");
         }
 #endif
         alpha_ = pt.alpha_;
@@ -250,7 +250,7 @@ protected:
         typename std::conditional<EngineType::vec_size == 1, RealType,
                                   sycl::vec<RealType, EngineType::vec_size>>::type {
         if (algorithm_ == gamma_algorithm::Exponential) {
-            distribution_base<oneapi::mkl::rng::device::exponential<RealType>> distr_exp(a_, beta_);
+            distribution_base<oneapi::math::rng::device::exponential<RealType>> distr_exp(a_, beta_);
             return distr_exp.generate(engine);
         }
         sycl::vec<RealType, EngineType::vec_size> res{};
@@ -262,7 +262,7 @@ protected:
     template <typename EngineType>
     RealType generate_single(EngineType& engine) {
         if (algorithm_ == gamma_algorithm::Exponential) {
-            distribution_base<oneapi::mkl::rng::device::exponential<RealType>> distr_exp(a_, beta_);
+            distribution_base<oneapi::math::rng::device::exponential<RealType>> distr_exp(a_, beta_);
             RealType z = distr_exp.generate_single(engine);
             return z;
         }
@@ -282,6 +282,6 @@ protected:
     gamma_algorithm algorithm_;
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_GAMMA_IMPL_HPP_

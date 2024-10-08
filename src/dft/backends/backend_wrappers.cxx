@@ -37,10 +37,10 @@ and backend_forward_instantiations.cxx.
 */
 
 // clang-format off
-oneapi::mkl::dft::BACKEND::create_commit,
-oneapi::mkl::dft::BACKEND::create_commit,
-oneapi::mkl::dft::BACKEND::create_commit,
-oneapi::mkl::dft::BACKEND::create_commit,
+oneapi::math::dft::BACKEND::create_commit,
+oneapi::math::dft::BACKEND::create_commit,
+oneapi::math::dft::BACKEND::create_commit,
+oneapi::math::dft::BACKEND::create_commit,
 // clang-format on
 
 #undef ONEAPI_MKL_DFT_BACKEND_SIGNATURES

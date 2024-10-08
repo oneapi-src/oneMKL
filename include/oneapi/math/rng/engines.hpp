@@ -49,10 +49,10 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 
-// Class oneapi::mkl::rng::philox4x32x10
+// Class oneapi::math::rng::philox4x32x10
 //
 // Represents Philox4x32-10 counter-based pseudorandom number generator
 //
@@ -144,7 +144,7 @@ private:
                                 const std::vector<sycl::event>& dependencies);
 };
 
-// Class oneapi::mkl::rng::mrg32k3a
+// Class oneapi::math::rng::mrg32k3a
 //
 // Represents the combined recurcive pseudorandom number generator
 //
@@ -237,7 +237,7 @@ private:
 using default_engine = philox4x32x10;
 
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_RNG_ENGINES_HPP_

@@ -31,10 +31,10 @@
 #include "oneapi/math/rng/predicates.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 
-// Function oneapi::mkl::rng::generate().Buffer API
+// Function oneapi::math::rng::generate().Buffer API
 // Provides random numbers from a given engine with a given statistics
 //
 // Input parameters:
@@ -51,7 +51,7 @@ static inline void generate(const Distr& distr, Engine& engine, std::int64_t n,
     engine.pimpl_->generate(distr, n, r);
 }
 
-// Function oneapi::mkl::rng::generate(). USM API
+// Function oneapi::math::rng::generate(). USM API
 // Provides random numbers from a given engine with a given statistics
 //
 // Input parameters:
@@ -76,7 +76,7 @@ static inline sycl::event generate(const Distr& distr, Engine& engine, std::int6
 
 //  SERVICE FUNCTIONS
 
-// Function oneapi::mkl::rng::skip_ahead(). Common interface
+// Function oneapi::math::rng::skip_ahead(). Common interface
 //
 // Proceeds state of engine using the skip-ahead method
 //
@@ -88,7 +88,7 @@ static inline void skip_ahead(Engine& engine, std::uint64_t num_to_skip) {
     engine.pimpl_->skip_ahead(num_to_skip);
 }
 
-// Function oneapi::mkl::rng::skip_ahead(). Interface with partitioned number of skipped elements
+// Function oneapi::math::rng::skip_ahead(). Interface with partitioned number of skipped elements
 //
 // Proceeds state of engine using the skip-ahead method
 //
@@ -100,7 +100,7 @@ static inline void skip_ahead(Engine& engine, std::initializer_list<std::uint64_
     engine.pimpl_->skip_ahead(num_to_skip);
 }
 
-// Function oneapi::mkl::rng::leapfrog()
+// Function oneapi::math::rng::leapfrog()
 //
 // Proceeds state of engine using the leapfrog method
 //
@@ -114,7 +114,7 @@ static inline void leapfrog(Engine& engine, std::uint64_t idx, std::uint64_t str
 }
 
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_RNG_FUNCTIONS_HPP_

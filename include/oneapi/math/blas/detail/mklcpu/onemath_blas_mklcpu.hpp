@@ -30,12 +30,12 @@
 #include "oneapi/math/detail/export.hpp"
 
 namespace oneapi {
-namespace mkl {
-using oneapi::mkl::transpose;
-using oneapi::mkl::uplo;
-using oneapi::mkl::side;
-using oneapi::mkl::diag;
-using oneapi::mkl::offset;
+namespace math {
+using oneapi::math::transpose;
+using oneapi::math::uplo;
+using oneapi::math::side;
+using oneapi::math::diag;
+using oneapi::math::offset;
 namespace blas {
 namespace mklcpu {
 namespace column_major {
@@ -50,7 +50,7 @@ namespace row_major {
 } // namespace row_major
 } // namespace mklcpu
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_BLAS_MKLCPU_HPP_

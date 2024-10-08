@@ -31,10 +31,10 @@
 #include "oneapi/math/exceptions.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 
-// Class template oneapi::mkl::rng::uniform
+// Class template oneapi::math::rng::uniform
 //
 // Represents continuous and discrete uniform random number distribution
 //
@@ -44,8 +44,8 @@ namespace rng {
 //      std::int32_t
 //
 // Supported methods:
-//      oneapi::mkl::rng::uniform_method::standard
-//      oneapi::mkl::rng::uniform_method::accurate - for float and double types only
+//      oneapi::math::rng::uniform_method::standard
+//      oneapi::math::rng::uniform_method::accurate - for float and double types only
 //
 // Input arguments:
 //      a - left bound. 0.0 by default
@@ -75,7 +75,7 @@ public:
 
     explicit uniform(Type a, Type b) : a_(a), b_(b) {
         if (a >= b) {
-            throw oneapi::mkl::invalid_argument("rng", "uniform",
+            throw oneapi::math::invalid_argument("rng", "uniform",
                                                 "parameters are incorrect, a >= b");
         }
     }
@@ -103,7 +103,7 @@ public:
 
     explicit uniform(std::int32_t a, std::int32_t b) : a_(a), b_(b) {
         if (a >= b) {
-            throw oneapi::mkl::invalid_argument("rng", "uniform",
+            throw oneapi::math::invalid_argument("rng", "uniform",
                                                 "parameters are incorrect, a >= b");
         }
     }
@@ -121,7 +121,7 @@ private:
     std::int32_t b_;
 };
 
-// Class template oneapi::mkl::rng::gaussian
+// Class template oneapi::math::rng::gaussian
 //
 // Represents continuous normal random number distribution
 //
@@ -130,8 +130,8 @@ private:
 //      double
 //
 // Supported methods:
-//      oneapi::mkl::rng::gaussian_method::box_muller2
-//      oneapi::mkl::rng::gaussian_method::icdf
+//      oneapi::math::rng::gaussian_method::box_muller2
+//      oneapi::math::rng::gaussian_method::icdf
 //
 // Input arguments:
 //      mean   - mean. 0 by default
@@ -160,7 +160,7 @@ public:
 
     explicit gaussian(RealType mean, RealType stddev) : mean_(mean), stddev_(stddev) {
         if (stddev <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gaussian",
+            throw oneapi::math::invalid_argument("rng", "gaussian",
                                                 "stddev parameter is incorrect, stddev <= 0.0");
         }
     }
@@ -178,7 +178,7 @@ private:
     RealType stddev_;
 };
 
-// Class template oneapi::mkl::rng::lognormal
+// Class template oneapi::math::rng::lognormal
 //
 // Represents continuous lognormal random number distribution
 //
@@ -187,8 +187,8 @@ private:
 //      double
 //
 // Supported methods:
-//      oneapi::mkl::rng::lognormal_method::box_muller2
-//      oneapi::mkl::rng::lognormal_method::icdf
+//      oneapi::math::rng::lognormal_method::box_muller2
+//      oneapi::math::rng::lognormal_method::icdf
 //
 // Input arguments:
 //      m     - mean of the subject normal distribution. 0.0 by default
@@ -226,10 +226,10 @@ public:
               displ_(displ),
               scale_(scale) {
         if (s <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "lognormal", "s <= 0");
+            throw oneapi::math::invalid_argument("rng", "lognormal", "s <= 0");
         }
         if (scale <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "lognormal", "scale <= 0");
+            throw oneapi::math::invalid_argument("rng", "lognormal", "scale <= 0");
         }
     }
 
@@ -256,7 +256,7 @@ private:
     RealType scale_;
 };
 
-// Class template oneapi::mkl::rng::bernoulli
+// Class template oneapi::math::rng::bernoulli
 //
 // Represents discrete Bernoulli random number distribution
 //
@@ -265,7 +265,7 @@ private:
 //      std::int32_t
 //
 // Supported methods:
-//      oneapi::mkl::rng::bernoulli_method::icdf;
+//      oneapi::math::rng::bernoulli_method::icdf;
 //
 // Input arguments:
 //      p - success probability of a trial. 0.5 by default
@@ -292,7 +292,7 @@ public:
 
     explicit bernoulli(float p) : p_(p) {
         if ((p > 1.0f) || (p < 0.0f)) {
-            throw oneapi::mkl::invalid_argument("rng", "bernoulli", "p > 1 or p < 0");
+            throw oneapi::math::invalid_argument("rng", "bernoulli", "p > 1 or p < 0");
         }
     }
 
@@ -304,7 +304,7 @@ private:
     float p_;
 };
 
-// Class template oneapi::mkl::rng::poisson
+// Class template oneapi::math::rng::poisson
 //
 // Represents discrete Poisson random number distribution
 //
@@ -312,7 +312,7 @@ private:
 //      std::int32_t
 //
 // Supported methods:
-//      oneapi::mkl::rng::poisson_method::gaussian_icdf_based
+//      oneapi::math::rng::poisson_method::gaussian_icdf_based
 //
 // Input arguments:
 //      lambda - distribution parameter. 0.5 by default
@@ -339,7 +339,7 @@ public:
 
     explicit poisson(double lambda) : lambda_(lambda) {
         if ((lambda <= 0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "poisson", "lamdba < 0");
+            throw oneapi::math::invalid_argument("rng", "poisson", "lamdba < 0");
         }
     }
 
@@ -351,7 +351,7 @@ private:
     double lambda_;
 };
 
-// Class template oneapi::mkl::rng::bits
+// Class template oneapi::math::rng::bits
 //
 // Represents bits of underlying random number engine
 //
@@ -367,7 +367,7 @@ public:
 };
 
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_RNG_DISTRIBUTIONS_HPP_

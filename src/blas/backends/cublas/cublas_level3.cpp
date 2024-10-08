@@ -23,7 +23,7 @@
 #include "oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace cublas {
 namespace column_major {
@@ -82,7 +82,7 @@ inline void gemm_ex(DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C, sycl::que
     overflow_check(m, n, k, lda, ldb, ldc);
     queue.submit([&](sycl::handler &cgh) {
         if (!verify_support<sycl::half, T_A, T_B, T_C>(queue, sycl::aspect::fp16)) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
         }
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
@@ -1346,5 +1346,5 @@ TRSM_LAUNCHER_USM(std::complex<double>, cublasZtrsm)
 } // namespace row_major
 } // namespace cublas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

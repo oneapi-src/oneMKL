@@ -26,7 +26,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace rocsolver {
 
@@ -151,5 +151,5 @@ sycl::context RocsolverScopedContextHandler::get_context(const sycl::queue &queu
 
 } // namespace rocsolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

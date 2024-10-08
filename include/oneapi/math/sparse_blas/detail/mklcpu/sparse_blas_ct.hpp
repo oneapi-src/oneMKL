@@ -26,7 +26,7 @@
 #include "onemath_sparse_blas_mklcpu.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace sparse {
 
 #define BACKEND mklcpu
@@ -34,7 +34,7 @@ namespace sparse {
 #undef BACKEND
 
 } //namespace sparse
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif // _ONEMATH_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_

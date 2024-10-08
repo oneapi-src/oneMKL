@@ -25,7 +25,7 @@
 #include "oneapi/math/detail/backend_selector_predicates.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 template <backend Backend>
 class backend_selector {
@@ -41,7 +41,7 @@ private:
     sycl::queue queue_;
 };
 
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_BACKEND_SELECTOR_HPP_

@@ -39,7 +39,7 @@
 #include <cufft.h>
 #include <cuda.h>
 
-namespace oneapi::mkl::dft::cufft {
+namespace oneapi::math::dft::cufft {
 namespace detail {
 
 /// Commit impl class specialization for cuFFT.
@@ -56,11 +56,11 @@ private:
 
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::cufft,
+            : oneapi::math::dft::detail::commit_impl<prec, dom>(queue, backend::cufft,
                                                                config_values) {
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
-                throw mkl::exception("DFT", "commit", "Device does not support double precision.");
+                throw math::exception("DFT", "commit", "Device does not support double precision.");
             }
         }
     }
@@ -69,14 +69,14 @@ public:
         auto fix_context = plans[0].has_value() || plans[1].has_value();
         if (plans[0]) {
             if (cufftDestroy(plans[0].value()) != CUFFT_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                throw math::exception("dft/backends/cufft", __FUNCTION__,
                                      "Failed to destroy forward cuFFT plan.");
             }
             plans[0] = std::nullopt;
         }
         if (plans[1]) {
             if (cufftDestroy(plans[1].value()) != CUFFT_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                throw math::exception("dft/backends/cufft", __FUNCTION__,
                                      "Failed to destroy backward cuFFT plan.");
             }
             plans[1] = std::nullopt;
@@ -87,7 +87,7 @@ public:
                 sycl::get_native<sycl::backend::ext_oneapi_cuda>(this->get_queue().get_device());
             CUcontext interopContext;
             if (cuDevicePrimaryCtxRetain(&interopContext, interopDevice) != CUDA_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                throw math::exception("dft/backends/cufft", __FUNCTION__,
                                      "Failed to change cuda context.");
             }
         }
@@ -96,13 +96,13 @@ public:
     void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
         // this could be a recommit
         this->external_workspace_helper_ =
-            oneapi::mkl::dft::detail::external_workspace_helper<prec, dom>(
+            oneapi::math::dft::detail::external_workspace_helper<prec, dom>(
                 config_values.workspace_placement ==
-                oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
+                oneapi::math::dft::detail::config_value::WORKSPACE_EXTERNAL);
         clean_plans();
 
         if (config_values.fwd_scale != 1.0 || config_values.bwd_scale != 1.0) {
-            throw mkl::unimplemented(
+            throw math::unimplemented(
                 "dft/backends/cufft", __FUNCTION__,
                 "cuFFT does not support values other than 1 for FORWARD/BACKWARD_SCALE");
         }
@@ -164,14 +164,14 @@ public:
         if constexpr (dom == dft::domain::REAL) {
             if ((a_min != stride_vecs.vec_a.begin() + rank) ||
                 (b_min != stride_vecs.vec_b.begin() + rank)) {
-                throw mkl::unimplemented(
+                throw math::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires the last stride to be the the smallest one for real transforms!");
             }
         }
         else {
             if (a_min - stride_vecs.vec_a.begin() != b_min - stride_vecs.vec_b.begin()) {
-                throw mkl::unimplemented(
+                throw math::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires that if ordered by stride length, the order of strides is the same for input/output or fwd/bwd strides!");
             }
@@ -192,7 +192,7 @@ public:
         }
         for (int i = 1; i < rank; i++) {
             if ((stride_vecs.vec_a[i] % a_stride != 0) || (stride_vecs.vec_b[i] % b_stride != 0)) {
-                throw mkl::unimplemented(
+                throw math::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires a stride to be divisible by all smaller strides!");
             }
@@ -202,7 +202,7 @@ public:
         if (rank > 2) {
             if (stride_vecs.vec_a[1] > stride_vecs.vec_a[2] &&
                 stride_vecs.vec_b[1] < stride_vecs.vec_b[2]) {
-                throw mkl::unimplemented(
+                throw math::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires that if ordered by stride length, the order of strides is the same for input and output strides!");
             }
@@ -215,7 +215,7 @@ public:
             }
             if ((stride_vecs.vec_a[1] % stride_vecs.vec_a[2] != 0) ||
                 (stride_vecs.vec_b[1] % stride_vecs.vec_b[2] != 0)) {
-                throw mkl::unimplemented(
+                throw math::unimplemented(
                     "dft/backends/cufft", __FUNCTION__,
                     "cufft requires a stride to be divisible by all smaller strides!");
             }
@@ -252,14 +252,14 @@ public:
                                   : check_stride_validity(stride_vecs.bwd_out, stride_vecs.bwd_in);
 
         if (!valid_forward && !valid_backward) {
-            throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
+            throw math::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
         }
 
         if (valid_forward) {
             cufftHandle fwd_plan;
             auto res = cufftCreate(&fwd_plan);
             if (res != CUFFT_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", __FUNCTION__, "cufftCreate failed.");
+                throw math::exception("dft/backends/cufft", __FUNCTION__, "cufftCreate failed.");
             }
             apply_external_workspace_setting(fwd_plan, config_values.workspace_placement);
             res = cufftPlanMany(&fwd_plan, // plan
@@ -276,7 +276,7 @@ public:
             );
 
             if (res != CUFFT_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                throw math::exception("dft/backends/cufft", __FUNCTION__,
                                      "Failed to create forward cuFFT plan.");
             }
 
@@ -287,7 +287,7 @@ public:
             cufftHandle bwd_plan;
             auto res = cufftCreate(&bwd_plan);
             if (res != CUFFT_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", __FUNCTION__, "cufftCreate failed.");
+                throw math::exception("dft/backends/cufft", __FUNCTION__, "cufftCreate failed.");
             }
             apply_external_workspace_setting(bwd_plan, config_values.workspace_placement);
             // flip fwd_distance and bwd_distance because cuFFt uses input distance and output distance.
@@ -304,7 +304,7 @@ public:
                                 batch // batch
             );
             if (res != CUFFT_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", __FUNCTION__,
+                throw math::exception("dft/backends/cufft", __FUNCTION__,
                                      "Failed to create backward cuFFT plan.");
             }
             plans[1] = bwd_plan;
@@ -320,7 +320,7 @@ public:
         if (workspace_setting == config_value::WORKSPACE_EXTERNAL) {
             auto res = cufftSetAutoAllocation(handle, 0);
             if (res != CUFFT_SUCCESS) {
-                throw mkl::exception("dft/backends/cufft", "commit",
+                throw math::exception("dft/backends/cufft", "commit",
                                      "cufftSetAutoAllocation(plan, 0) failed.");
             }
         }
@@ -357,7 +357,7 @@ public:
                     auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
                     auto result = cufftSetStream(plan, stream);
                     if (result != CUFFT_SUCCESS) {
-                        throw oneapi::mkl::exception(
+                        throw oneapi::math::exception(
                             "dft/backends/cufft", "set_workspace",
                             "cufftSetStream returned " + std::to_string(result));
                     }
@@ -459,4 +459,4 @@ get_offsets_bwd<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
     dft::detail::commit_impl<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>*);
 } //namespace detail
 
-} // namespace oneapi::mkl::dft::cufft
+} // namespace oneapi::math::dft::cufft

@@ -26,7 +26,7 @@
 #include "oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace rocblas {
 namespace column_major {
@@ -97,8 +97,8 @@ inline void omatcopy(Func func, sycl::queue &queue, transpose trans, int64_t m, 
     overflow_check(m, n, lda, ldb);
 
     const T beta = 0;
-    const int64_t new_m = trans == oneapi::mkl::transpose::nontrans ? m : n;
-    const int64_t new_n = trans == oneapi::mkl::transpose::nontrans ? n : m;
+    const int64_t new_m = trans == oneapi::math::transpose::nontrans ? m : n;
+    const int64_t new_n = trans == oneapi::math::transpose::nontrans ? n : m;
 
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
@@ -284,8 +284,8 @@ inline sycl::event omatcopy(Func func, sycl::queue &queue, transpose trans, int6
     overflow_check(m, n, lda, ldb);
 
     const T beta = 0;
-    const int64_t new_m = trans == oneapi::mkl::transpose::nontrans ? m : n;
-    const int64_t new_n = trans == oneapi::mkl::transpose::nontrans ? n : m;
+    const int64_t new_m = trans == oneapi::math::transpose::nontrans ? m : n;
+    const int64_t new_n = trans == oneapi::math::transpose::nontrans ? n : m;
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
@@ -712,5 +712,5 @@ OMATADD_LAUNCHER_USM(std::complex<double>, rocblas_zgeam)
 } // namespace row_major
 } // namespace rocblas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

@@ -193,7 +193,7 @@ inline sycl::event release_spmm_descr(backend_selector<backend::BACKEND> selecto
 }
 
 inline void spmm_buffer_size(backend_selector<backend::BACKEND> selector,
-                             oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
+                             oneapi::math::transpose opA, oneapi::math::transpose opB,
                              const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                              dense_matrix_handle_t B_handle, const void *beta,
                              dense_matrix_handle_t C_handle, spmm_alg alg, spmm_descr_t spmm_descr,
@@ -202,8 +202,8 @@ inline void spmm_buffer_size(backend_selector<backend::BACKEND> selector,
                               beta, C_handle, alg, spmm_descr, temp_buffer_size);
 }
 
-inline void spmm_optimize(backend_selector<backend::BACKEND> selector, oneapi::mkl::transpose opA,
-                          oneapi::mkl::transpose opB, const void *alpha, matrix_view A_view,
+inline void spmm_optimize(backend_selector<backend::BACKEND> selector, oneapi::math::transpose opA,
+                          oneapi::math::transpose opB, const void *alpha, matrix_view A_view,
                           matrix_handle_t A_handle, dense_matrix_handle_t B_handle,
                           const void *beta, dense_matrix_handle_t C_handle, spmm_alg alg,
                           spmm_descr_t spmm_descr, sycl::buffer<std::uint8_t, 1> workspace) {
@@ -212,7 +212,7 @@ inline void spmm_optimize(backend_selector<backend::BACKEND> selector, oneapi::m
 }
 
 inline sycl::event spmm_optimize(backend_selector<backend::BACKEND> selector,
-                                 oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
+                                 oneapi::math::transpose opA, oneapi::math::transpose opB,
                                  const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                                  dense_matrix_handle_t B_handle, const void *beta,
                                  dense_matrix_handle_t C_handle, spmm_alg alg,
@@ -222,8 +222,8 @@ inline sycl::event spmm_optimize(backend_selector<backend::BACKEND> selector,
                                   beta, C_handle, alg, spmm_descr, workspace, dependencies);
 }
 
-inline sycl::event spmm(backend_selector<backend::BACKEND> selector, oneapi::mkl::transpose opA,
-                        oneapi::mkl::transpose opB, const void *alpha, matrix_view A_view,
+inline sycl::event spmm(backend_selector<backend::BACKEND> selector, oneapi::math::transpose opA,
+                        oneapi::math::transpose opB, const void *alpha, matrix_view A_view,
                         matrix_handle_t A_handle, dense_matrix_handle_t B_handle, const void *beta,
                         dense_matrix_handle_t C_handle, spmm_alg alg, spmm_descr_t spmm_descr,
                         const std::vector<sycl::event> &dependencies = {}) {
@@ -244,7 +244,7 @@ inline sycl::event release_spmv_descr(backend_selector<backend::BACKEND> selecto
 }
 
 inline void spmv_buffer_size(backend_selector<backend::BACKEND> selector,
-                             oneapi::mkl::transpose opA, const void *alpha, matrix_view A_view,
+                             oneapi::math::transpose opA, const void *alpha, matrix_view A_view,
                              matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                              const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
                              spmv_descr_t spmv_descr, std::size_t &temp_buffer_size) {
@@ -252,7 +252,7 @@ inline void spmv_buffer_size(backend_selector<backend::BACKEND> selector,
                               y_handle, alg, spmv_descr, temp_buffer_size);
 }
 
-inline void spmv_optimize(backend_selector<backend::BACKEND> selector, oneapi::mkl::transpose opA,
+inline void spmv_optimize(backend_selector<backend::BACKEND> selector, oneapi::math::transpose opA,
                           const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                           dense_vector_handle_t x_handle, const void *beta,
                           dense_vector_handle_t y_handle, spmv_alg alg, spmv_descr_t spmv_descr,
@@ -262,7 +262,7 @@ inline void spmv_optimize(backend_selector<backend::BACKEND> selector, oneapi::m
 }
 
 inline sycl::event spmv_optimize(backend_selector<backend::BACKEND> selector,
-                                 oneapi::mkl::transpose opA, const void *alpha, matrix_view A_view,
+                                 oneapi::math::transpose opA, const void *alpha, matrix_view A_view,
                                  matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                                  const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
                                  spmv_descr_t spmv_descr, void *workspace,
@@ -271,7 +271,7 @@ inline sycl::event spmv_optimize(backend_selector<backend::BACKEND> selector,
                                   beta, y_handle, alg, spmv_descr, workspace, dependencies);
 }
 
-inline sycl::event spmv(backend_selector<backend::BACKEND> selector, oneapi::mkl::transpose opA,
+inline sycl::event spmv(backend_selector<backend::BACKEND> selector, oneapi::math::transpose opA,
                         const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                         dense_vector_handle_t x_handle, const void *beta,
                         dense_vector_handle_t y_handle, spmv_alg alg, spmv_descr_t spmv_descr,
@@ -293,7 +293,7 @@ inline sycl::event release_spsv_descr(backend_selector<backend::BACKEND> selecto
 }
 
 inline void spsv_buffer_size(backend_selector<backend::BACKEND> selector,
-                             oneapi::mkl::transpose opA, const void *alpha, matrix_view A_view,
+                             oneapi::math::transpose opA, const void *alpha, matrix_view A_view,
                              matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                              dense_vector_handle_t y_handle, spsv_alg alg, spsv_descr_t spsv_descr,
                              std::size_t &temp_buffer_size) {
@@ -301,7 +301,7 @@ inline void spsv_buffer_size(backend_selector<backend::BACKEND> selector,
                               y_handle, alg, spsv_descr, temp_buffer_size);
 }
 
-inline void spsv_optimize(backend_selector<backend::BACKEND> selector, oneapi::mkl::transpose opA,
+inline void spsv_optimize(backend_selector<backend::BACKEND> selector, oneapi::math::transpose opA,
                           const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                           dense_vector_handle_t x_handle, dense_vector_handle_t y_handle,
                           spsv_alg alg, spsv_descr_t spsv_descr,
@@ -311,7 +311,7 @@ inline void spsv_optimize(backend_selector<backend::BACKEND> selector, oneapi::m
 }
 
 inline sycl::event spsv_optimize(backend_selector<backend::BACKEND> selector,
-                                 oneapi::mkl::transpose opA, const void *alpha, matrix_view A_view,
+                                 oneapi::math::transpose opA, const void *alpha, matrix_view A_view,
                                  matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                                  dense_vector_handle_t y_handle, spsv_alg alg,
                                  spsv_descr_t spsv_descr, void *workspace,
@@ -320,7 +320,7 @@ inline sycl::event spsv_optimize(backend_selector<backend::BACKEND> selector,
                                   y_handle, alg, spsv_descr, workspace, dependencies);
 }
 
-inline sycl::event spsv(backend_selector<backend::BACKEND> selector, oneapi::mkl::transpose opA,
+inline sycl::event spsv(backend_selector<backend::BACKEND> selector, oneapi::math::transpose opA,
                         const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                         dense_vector_handle_t x_handle, dense_vector_handle_t y_handle,
                         spsv_alg alg, spsv_descr_t spsv_descr,

@@ -47,8 +47,8 @@ extern std::vector<sycl::device*> devices;
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
-         oneapi::mkl::uplo upper_lower, int m, int n, int lda, int ldb, int ldc, fp alpha,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::side left_right,
+         oneapi::math::uplo upper_lower, int m, int n, int lda, int ldb, int ldc, fp alpha,
          fp beta) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
@@ -72,12 +72,12 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
     // Prepare data.
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> A(ua), B(ua), C(ua);
-    if (left_right == oneapi::mkl::side::left)
-        rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, m, m, lda);
+    if (left_right == oneapi::math::side::left)
+        rand_matrix(A, layout, oneapi::math::transpose::nontrans, m, m, lda);
     else
-        rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, n, n, lda);
-    rand_matrix(B, layout, oneapi::mkl::transpose::nontrans, m, n, ldb);
-    rand_matrix(C, layout, oneapi::mkl::transpose::nontrans, m, n, ldc);
+        rand_matrix(A, layout, oneapi::math::transpose::nontrans, n, n, lda);
+    rand_matrix(B, layout, oneapi::math::transpose::nontrans, m, n, ldb);
+    rand_matrix(C, layout, oneapi::math::transpose::nontrans, m, n, ldc);
 
     auto C_ref = C;
 
@@ -95,13 +95,13 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                done = oneapi::mkl::blas::column_major::symm(main_queue, left_right, upper_lower, m,
+            case oneapi::math::layout::col_major:
+                done = oneapi::math::blas::column_major::symm(main_queue, left_right, upper_lower, m,
                                                              n, alpha, A.data(), lda, B.data(), ldb,
                                                              beta, C.data(), ldc, dependencies);
                 break;
-            case oneapi::mkl::layout::row_major:
-                done = oneapi::mkl::blas::row_major::symm(main_queue, left_right, upper_lower, m, n,
+            case oneapi::math::layout::row_major:
+                done = oneapi::math::blas::row_major::symm(main_queue, left_right, upper_lower, m, n,
                                                           alpha, A.data(), lda, B.data(), ldb, beta,
                                                           C.data(), ldc, dependencies);
                 break;
@@ -110,13 +110,13 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::symm,
+            case oneapi::math::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::symm,
                                         left_right, upper_lower, m, n, alpha, A.data(), lda,
                                         B.data(), ldb, beta, C.data(), ldc, dependencies);
                 break;
-            case oneapi::mkl::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::symm, left_right,
+            case oneapi::math::layout::row_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::symm, left_right,
                                         upper_lower, m, n, alpha, A.data(), lda, B.data(), ldb,
                                         beta, C.data(), ldc, dependencies);
                 break;
@@ -130,7 +130,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
         print_error_code(e);
     }
 
-    catch (const oneapi::mkl::unimplemented& e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
@@ -146,22 +146,22 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::side left_right,
 }
 
 class SymmUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(SymmUsmTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::side::left, oneapi::mkl::uplo::lower, 72, 27, 101,
+                                  oneapi::math::side::left, oneapi::math::uplo::lower, 72, 27, 101,
                                   102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::side::right, oneapi::mkl::uplo::lower, 72, 27, 101,
+                                  oneapi::math::side::right, oneapi::math::uplo::lower, 72, 27, 101,
                                   102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::side::left, oneapi::mkl::uplo::upper, 72, 27, 101,
+                                  oneapi::math::side::left, oneapi::math::uplo::upper, 72, 27, 101,
                                   102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::side::right, oneapi::mkl::uplo::upper, 72, 27, 101,
+                                  oneapi::math::side::right, oneapi::math::uplo::upper, 72, 27, 101,
                                   102, 103, alpha, beta));
 }
 TEST_P(SymmUsmTests, RealDoublePrecision) {
@@ -170,32 +170,32 @@ TEST_P(SymmUsmTests, RealDoublePrecision) {
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::side::left, oneapi::mkl::uplo::lower, 72, 27, 101,
+                                   oneapi::math::side::left, oneapi::math::uplo::lower, 72, 27, 101,
                                    102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::side::right, oneapi::mkl::uplo::lower, 72, 27, 101,
+                                   oneapi::math::side::right, oneapi::math::uplo::lower, 72, 27, 101,
                                    102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::side::left, oneapi::mkl::uplo::upper, 72, 27, 101,
+                                   oneapi::math::side::left, oneapi::math::uplo::upper, 72, 27, 101,
                                    102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::side::right, oneapi::mkl::uplo::upper, 72, 27, 101,
+                                   oneapi::math::side::right, oneapi::math::uplo::upper, 72, 27, 101,
                                    102, 103, alpha, beta));
 }
 TEST_P(SymmUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::mkl::side::left, oneapi::mkl::uplo::lower,
+                                                oneapi::math::side::left, oneapi::math::uplo::lower,
                                                 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::mkl::side::right, oneapi::mkl::uplo::lower,
+                                                oneapi::math::side::right, oneapi::math::uplo::lower,
                                                 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::mkl::side::left, oneapi::mkl::uplo::upper,
+                                                oneapi::math::side::left, oneapi::math::uplo::upper,
                                                 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::mkl::side::right, oneapi::mkl::uplo::upper,
+                                                oneapi::math::side::right, oneapi::math::uplo::upper,
                                                 72, 27, 101, 102, 103, alpha, beta));
 }
 TEST_P(SymmUsmTests, ComplexDoublePrecision) {
@@ -204,23 +204,23 @@ TEST_P(SymmUsmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::mkl::side::left, oneapi::mkl::uplo::lower,
+                                                 oneapi::math::side::left, oneapi::math::uplo::lower,
                                                  72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::mkl::side::right, oneapi::mkl::uplo::lower,
+                                                 oneapi::math::side::right, oneapi::math::uplo::lower,
                                                  72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::mkl::side::left, oneapi::mkl::uplo::upper,
+                                                 oneapi::math::side::left, oneapi::math::uplo::upper,
                                                  72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::mkl::side::right, oneapi::mkl::uplo::upper,
+                                                 oneapi::math::side::right, oneapi::math::uplo::upper,
                                                  72, 27, 101, 102, 103, alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(SymmUsmTestSuite, SymmUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::col_major,
-                                                            oneapi::mkl::layout::row_major)),
+                                            testing::Values(oneapi::math::layout::col_major,
+                                                            oneapi::math::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

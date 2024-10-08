@@ -25,7 +25,7 @@
 #include <type_traits>
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace sparse {
 namespace detail {
 
@@ -44,7 +44,7 @@ inline constexpr bool are_fp_int_supported_v =
 
 } // namespace detail
 } // namespace sparse
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_SPARSE_BLAS_DETAIL_HELPER_TYPES_HPP_

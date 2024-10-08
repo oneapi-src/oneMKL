@@ -20,7 +20,7 @@
 #ifndef _MKL_RNG_DEVICE_MCG59_IMPL_HPP_
 #define _MKL_RNG_DEVICE_MCG59_IMPL_HPP_
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 template <std::int32_t VecSize = 1>
 class mcg59;
@@ -71,7 +71,7 @@ struct mcg59_param {
 };
 
 template <std::int32_t VecSize>
-struct engine_state<oneapi::mkl::rng::device::mcg59<VecSize>> {
+struct engine_state<oneapi::math::rng::device::mcg59<VecSize>> {
     std::uint64_t s;
 };
 
@@ -103,14 +103,14 @@ static inline std::uint64_t power(std::uint64_t a, std::uint64_t n) {
 }
 
 template <std::int32_t VecSize>
-static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state,
+static inline void skip_ahead(engine_state<oneapi::math::rng::device::mcg59<VecSize>>& state,
                               std::uint64_t num_to_skip) {
     std::uint64_t loc_A = power(mcg59_param::a, num_to_skip);
     state.s = custom_mod(loc_A * state.s);
 }
 
 template <std::int32_t VecSize>
-static inline void init(engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state,
+static inline void init(engine_state<oneapi::math::rng::device::mcg59<VecSize>>& state,
                         std::uint64_t seed, std::uint64_t offset) {
     state.s = seed & mcg59_param::m_64;
     if (state.s == 0)
@@ -121,7 +121,7 @@ static inline void init(engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& 
 
 template <std::int32_t VecSize>
 static inline sycl::vec<std::uint64_t, VecSize> generate(
-    engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state) {
+    engine_state<oneapi::math::rng::device::mcg59<VecSize>>& state) {
     sycl::vec<std::uint64_t, VecSize> res(state.s);
 #ifndef __HIPSYCL__
     res = custom_mod(mcg59_vector_a<VecSize>::vector_a * res);
@@ -135,7 +135,7 @@ static inline sycl::vec<std::uint64_t, VecSize> generate(
 
 template <std::int32_t VecSize>
 static inline std::uint64_t generate_single(
-    engine_state<oneapi::mkl::rng::device::mcg59<VecSize>>& state) {
+    engine_state<oneapi::math::rng::device::mcg59<VecSize>>& state) {
     std::uint64_t x = state.s;
     state.s = custom_mod(mcg59_param::a * x);
     return x;
@@ -144,7 +144,7 @@ static inline std::uint64_t generate_single(
 } // namespace mcg59_impl
 
 template <std::int32_t VecSize>
-class engine_base<oneapi::mkl::rng::device::mcg59<VecSize>> {
+class engine_base<oneapi::math::rng::device::mcg59<VecSize>> {
 protected:
     engine_base(std::uint64_t seed, std::uint64_t offset = 0) {
         mcg59_impl::init(this->state_, seed, offset);
@@ -266,10 +266,10 @@ protected:
         detail::mcg59_impl::skip_ahead(this->state_, num_to_skip);
     }
 
-    engine_state<oneapi::mkl::rng::device::mcg59<VecSize>> state_;
+    engine_state<oneapi::math::rng::device::mcg59<VecSize>> state_;
 };
 
 } // namespace detail
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #endif // _MKL_RNG_DEVICE_MCG59_IMPL_HPP_

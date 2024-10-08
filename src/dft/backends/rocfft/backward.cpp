@@ -35,7 +35,7 @@
 #include <rocfft.h>
 #include <hip/hip_runtime_api.h>
 
-namespace oneapi::mkl::dft::rocfft {
+namespace oneapi::math::dft::rocfft {
 namespace detail {
 //forward declaration
 template <dft::precision prec, dft::domain dom>
@@ -70,7 +70,7 @@ ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
         offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -103,7 +103,7 @@ ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
     auto offsets = detail::get_offsets_bwd(commit);
 
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -226,7 +226,7 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descripto
         offsets[0] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -260,7 +260,7 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descri
     auto offsets = detail::get_offsets_bwd(commit);
 
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -348,4 +348,4 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descri
 // Template function instantiations
 #include "dft/backends/backend_backward_instantiations.cxx"
 
-} // namespace oneapi::mkl::dft::rocfft
+} // namespace oneapi::math::dft::rocfft

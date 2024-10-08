@@ -29,10 +29,10 @@
 #include "oneapi/math/detail/export.hpp"
 #include "oneapi/math/dft/detail/types_impl.hpp"
 
-namespace oneapi::mkl::dft::rocfft {
+namespace oneapi::math::dft::rocfft {
 
 #include "oneapi/math/dft/detail/dft_ct.hxx"
 
-} // namespace oneapi::mkl::dft::rocfft
+} // namespace oneapi::math::dft::rocfft
 
 #endif // _ONEMATH_DFT_ROCFFT_HPP_

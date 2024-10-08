@@ -45,7 +45,7 @@ interface of this oneMath library. Consequently, the types under dft::TYPE are
 Intel oneMKL types, and types under dft::detail::TYPE are from this library.
 **/
 
-namespace oneapi::mkl::dft::mklgpu {
+namespace oneapi::math::dft::mklgpu {
 namespace detail {
 /// Forward a MKLGPU DFT call to the backend, checking that the commit impl is valid.
 /// Assumes backend descriptor values match those of the frontend.
@@ -56,7 +56,7 @@ inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&..
     using handle_t = std::pair<desc_shptr_t, desc_shptr_t>;
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::mklgpu) {
-        throw mkl::invalid_argument("DFT", "compute_forward",
+        throw math::invalid_argument("DFT", "compute_forward",
                                     "DFT descriptor has not been commited for MKLGPU");
     }
     auto handle = reinterpret_cast<handle_t *>(commit_handle->get_handle());
@@ -64,7 +64,7 @@ inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&..
     int commit_status{ DFTI_UNCOMMITTED };
     mklgpu_desc->get_value(dft::config_param::COMMIT_STATUS, &commit_status);
     if (commit_status != DFTI_COMMITTED) {
-        throw mkl::invalid_argument("DFT", "compute_forward",
+        throw math::invalid_argument("DFT", "compute_forward",
                                     "MKLGPU DFT descriptor was not successfully committed.");
     }
     // The MKLGPU backend's interface contains fewer function signatures than in this
@@ -73,14 +73,14 @@ inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&..
     return dft::compute_forward(*mklgpu_desc, std::forward<ArgTs>(args)...);
 }
 
-/// Throw an mkl::invalid_argument if the runtime param in the descriptor does not match
+/// Throw an math::invalid_argument if the runtime param in the descriptor does not match
 /// the expected value.
 template <dft::detail::config_param Param, dft::detail::config_value Expected, typename DescT>
 inline auto expect_config(DescT &desc, const char *message) {
     dft::detail::config_value actual{ 0 };
     desc.get_value(Param, &actual);
     if (actual != Expected) {
-        throw mkl::invalid_argument("DFT", "compute_forward", message);
+        throw math::invalid_argument("DFT", "compute_forward", message);
     }
 }
 } // namespace detail
@@ -101,7 +101,7 @@ template <typename descriptor_type>
 ONEMATH_EXPORT void compute_forward(descriptor_type & /*desc*/,
                                    sycl::buffer<scalar<descriptor_type>, 1> & /*inout_re*/,
                                    sycl::buffer<scalar<descriptor_type>, 1> & /*inout_im*/) {
-    throw mkl::unimplemented("DFT", "compute_forward",
+    throw math::unimplemented("DFT", "compute_forward",
                              "MKLGPU does not support compute_forward(desc, inout_re, inout_im).");
 }
 
@@ -125,7 +125,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
-    throw oneapi::mkl::unimplemented(
+    throw oneapi::math::unimplemented(
         "DFT", "compute_forward(desc, in_re, in_im, out_re, out_im)",
         "MKLGPU does not support out-of-place FFT with real-real complex storage.");
 }
@@ -147,7 +147,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type & /*desc*/,
                                           scalar<descriptor_type> * /*inout_re*/,
                                           scalar<descriptor_type> * /*inout_im*/,
                                           const std::vector<sycl::event> & /*dependencies*/) {
-    throw mkl::unimplemented(
+    throw math::unimplemented(
         "DFT", "compute_forward",
         "MKLGPU does not support compute_forward(desc, inout_re, inout_im, dependencies).");
 }
@@ -174,7 +174,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc,
     detail::expect_config<dft::detail::config_param::COMPLEX_STORAGE,
                           dft::detail::config_value::REAL_REAL>(
         desc, "Unexpected value for complex storage");
-    throw oneapi::mkl::unimplemented(
+    throw oneapi::math::unimplemented(
         "DFT", "compute_forward(desc, in_re, in_im, out_re, out_im, dependencies)",
         "MKLGPU does not support out-of-place FFT with real-real complex storage.");
 }
@@ -182,4 +182,4 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc,
 // Template function instantiations
 #include "dft/backends/backend_forward_instantiations.cxx"
 
-} // namespace oneapi::mkl::dft::mklgpu
+} // namespace oneapi::math::dft::mklgpu

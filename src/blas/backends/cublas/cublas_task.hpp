@@ -52,7 +52,7 @@ using interop_handler = sycl::interop_handle;
 }
 #endif
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace cublas {
 
@@ -84,6 +84,6 @@ static inline void onemath_cublas_host_task(H &cgh, sycl::queue queue, F f) {
 
 } // namespace cublas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 #endif // _MKL_BLAS_CUBLAS_TASK_HPP_

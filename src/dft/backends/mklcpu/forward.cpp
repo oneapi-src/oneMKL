@@ -34,7 +34,7 @@
 // MKLCPU header
 #include "mkl_dfti.h"
 
-namespace oneapi::mkl::dft::mklcpu {
+namespace oneapi::math::dft::mklcpu {
 namespace detail {
 
 // BUFFER version
@@ -43,7 +43,7 @@ template <dft::precision prec, dft::domain dom>
 inline void check_fwd_commit(dft::descriptor<prec, dom> &desc) {
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::mklcpu) {
-        throw mkl::invalid_argument("DFT", "computer_forward",
+        throw math::invalid_argument("DFT", "computer_forward",
                                     "DFT descriptor has not been commited for MKLCPU");
     }
 
@@ -51,19 +51,19 @@ inline void check_fwd_commit(dft::descriptor<prec, dom> &desc) {
     MKL_LONG commit_status{ DFTI_UNCOMMITTED };
     DftiGetValue(mklcpu_desc[0], DFTI_COMMIT_STATUS, &commit_status);
     if (commit_status != DFTI_COMMITTED) {
-        throw mkl::invalid_argument("DFT", "compute_forward",
+        throw math::invalid_argument("DFT", "compute_forward",
                                     "MKLCPU DFT descriptor was not successfully committed.");
     }
 }
 
-// Throw an mkl::invalid_argument if the runtime param in the descriptor does not match
+// Throw an math::invalid_argument if the runtime param in the descriptor does not match
 // the expected value.
 template <dft::detail::config_param Param, dft::detail::config_value Expected, typename DescT>
 inline auto expect_config(DescT &desc, const char *message) {
     dft::detail::config_value actual{ 0 };
     desc.get_value(Param, &actual);
     if (actual != Expected) {
-        throw mkl::invalid_argument("DFT", "compute_forward", message);
+        throw math::invalid_argument("DFT", "compute_forward", message);
     }
 }
 
@@ -95,7 +95,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
             DFT_ERROR status =
                 DftiComputeForward(desc_acc[detail::DIR::fwd], detail::acc_to_ptr(inout_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -127,7 +127,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
             DFT_ERROR status = DftiComputeForward(
                 desc_acc[detail::DIR::fwd], detail::acc_to_ptr(re_acc), detail::acc_to_ptr(im_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -159,7 +159,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<desc
             DFT_ERROR status =
                 DftiComputeForward(desc_acc[detail::DIR::fwd], in_ptr, detail::acc_to_ptr(out_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -198,7 +198,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
                 DftiComputeForward(desc_acc[detail::DIR::fwd], inre_ptr, inim_ptr,
                                    detail::acc_to_ptr(outre_acc), detail::acc_to_ptr(outim_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -228,7 +228,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
         detail::host_task<class host_usm_kernel_inplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], inout);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -258,7 +258,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descrip
         detail::host_task<class host_usm_kernel_split_inplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], inout_re, inout_im);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -289,7 +289,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
         detail::host_task<class host_usm_kernel_outofplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeForward(desc_acc[detail::DIR::fwd], in, out);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -322,7 +322,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descrip
             DFT_ERROR status =
                 DftiComputeForward(desc_acc[detail::DIR::fwd], in_re, in_im, out_re, out_im);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/forward/mklcpu", "compute_forward",
                     std::string("DftiComputeForward failed : ") + DftiErrorMessage(status));
             }
@@ -333,4 +333,4 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descrip
 // Template function instantiations
 #include "dft/backends/backend_forward_instantiations.cxx"
 
-} // namespace oneapi::mkl::dft::mklcpu
+} // namespace oneapi::math::dft::mklcpu

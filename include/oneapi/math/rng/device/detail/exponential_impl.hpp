@@ -22,10 +22,10 @@
 
 #include "vm_wrappers.hpp"
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 template <typename RealType, typename Method>
-class distribution_base<oneapi::mkl::rng::device::exponential<RealType, Method>> {
+class distribution_base<oneapi::math::rng::device::exponential<RealType, Method>> {
 public:
     struct param_type {
         param_type(RealType a, RealType beta) : a_(a), beta_(beta) {}
@@ -36,7 +36,7 @@ public:
     distribution_base(RealType a, RealType beta) : a_(a), beta_(beta) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (beta <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "exponential", "beta <= 0");
+            throw oneapi::math::invalid_argument("rng", "exponential", "beta <= 0");
         }
 #endif
     }
@@ -56,7 +56,7 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.beta_ <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "exponential", "beta <= 0");
+            throw oneapi::math::invalid_argument("rng", "exponential", "beta <= 0");
         }
 #endif
         a_ = pt.a_;
@@ -123,18 +123,18 @@ protected:
     RealType beta_;
 
     friend class distribution_base<
-        oneapi::mkl::rng::device::poisson<std::int32_t, poisson_method::devroye>>;
+        oneapi::math::rng::device::poisson<std::int32_t, poisson_method::devroye>>;
     friend class distribution_base<
-        oneapi::mkl::rng::device::poisson<std::uint32_t, poisson_method::devroye>>;
-    friend class distribution_base<oneapi::mkl::rng::device::gamma<float, gamma_method::marsaglia>>;
+        oneapi::math::rng::device::poisson<std::uint32_t, poisson_method::devroye>>;
+    friend class distribution_base<oneapi::math::rng::device::gamma<float, gamma_method::marsaglia>>;
     friend class distribution_base<
-        oneapi::mkl::rng::device::gamma<double, gamma_method::marsaglia>>;
+        oneapi::math::rng::device::gamma<double, gamma_method::marsaglia>>;
     friend class distribution_base<
-        oneapi::mkl::rng::device::gamma<float, gamma_method::marsaglia_accurate>>;
+        oneapi::math::rng::device::gamma<float, gamma_method::marsaglia_accurate>>;
     friend class distribution_base<
-        oneapi::mkl::rng::device::gamma<double, gamma_method::marsaglia_accurate>>;
+        oneapi::math::rng::device::gamma<double, gamma_method::marsaglia_accurate>>;
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_EXPONENTIAL_IMPL_HPP_

@@ -42,7 +42,7 @@
 #include <rocfft-version.h>
 #include <hip/hip_runtime_api.h>
 
-namespace oneapi::mkl::dft::rocfft {
+namespace oneapi::math::dft::rocfft {
 namespace detail {
 
 // rocfft has global setup and cleanup functions which use some global state internally.
@@ -55,7 +55,7 @@ class rocfft_singleton {
     rocfft_singleton() {
         const auto result = rocfft_setup();
         if (result != rocfft_status_success) {
-            throw mkl::exception(
+            throw math::exception(
                 "DFT", "rocfft",
                 "Failed to setup rocfft. returned status " + std::to_string(result));
         }
@@ -93,11 +93,11 @@ private:
 
 public:
     rocfft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::rocfft,
+            : oneapi::math::dft::detail::commit_impl<prec, dom>(queue, backend::rocfft,
                                                                config_values) {
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
-                throw mkl::exception("DFT", "commit", "Device does not support double precision.");
+                throw math::exception("DFT", "commit", "Device does not support double precision.");
             }
         }
         // initialise the rocFFT global state
@@ -107,14 +107,14 @@ public:
     void clean_plans() {
         if (handles[0].plan) {
             if (rocfft_plan_destroy(handles[0].plan.value()) != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to destroy forward plan.");
             }
             handles[0].plan = std::nullopt;
         }
         if (handles[1].plan) {
             if (rocfft_plan_destroy(handles[1].plan.value()) != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to destroy backward plan.");
             }
             handles[1].plan = std::nullopt;
@@ -122,14 +122,14 @@ public:
 
         if (handles[0].info) {
             if (rocfft_execution_info_destroy(handles[0].info.value()) != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to destroy forward execution info .");
             }
             handles[0].info = std::nullopt;
         }
         if (handles[1].info) {
             if (rocfft_execution_info_destroy(handles[1].info.value()) != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to destroy backward execution info .");
             }
             handles[1].info = std::nullopt;
@@ -141,9 +141,9 @@ public:
     void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
         // this could be a recommit
         this->external_workspace_helper_ =
-            oneapi::mkl::dft::detail::external_workspace_helper<prec, dom>(
+            oneapi::math::dft::detail::external_workspace_helper<prec, dom>(
                 config_values.workspace_placement ==
-                oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
+                oneapi::math::dft::detail::config_value::WORKSPACE_EXTERNAL);
         clean_plans();
 
         const rocfft_result_placement placement =
@@ -214,7 +214,7 @@ public:
             }
             else {
                 if (config_values.conj_even_storage != dft::config_value::COMPLEX_COMPLEX) {
-                    throw mkl::exception(
+                    throw math::exception(
                         "dft/backends/rocfft", __FUNCTION__,
                         "only COMPLEX_COMPLEX conjugate_even_storage is supported");
                 }
@@ -243,7 +243,7 @@ public:
                     if (strides[i] > strides[j] && strides[i] % cplx_dim != 0 &&
                         strides[i] % real_dim != 0) {
                         // rocfft does not throw, it just produces wrong results
-                        throw oneapi::mkl::unimplemented(
+                        throw oneapi::math::unimplemented(
                             "DFT", func,
                             "rocfft requires a stride to be divisible by all dimensions associated with smaller strides!");
                     }
@@ -271,7 +271,7 @@ public:
             if (dom == dft::domain::COMPLEX &&
                 config_values.placement == dft::config_value::NOT_INPLACE && dimensions > 2) {
                 if (stride_vecs.vec_a != stride_vecs.vec_b)
-                    throw oneapi::mkl::unimplemented(
+                    throw oneapi::math::unimplemented(
                         "DFT", func,
                         "due to a bug in rocfft version in use, it requires fwd and bwd stride to be the same for COMPLEX out_of_place computations");
             }
@@ -279,17 +279,17 @@ public:
 
         rocfft_plan_description plan_desc_fwd, plan_desc_bwd; // Can't reuse with ROCm 6 due to bug.
         if (rocfft_plan_description_create(&plan_desc_fwd) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+            throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                  "Failed to create plan description.");
         }
         if (rocfft_plan_description_create(&plan_desc_bwd) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+            throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                  "Failed to create plan description.");
         }
         // plan_description can be destroyed afted plan_create
         auto description_destroy = [](rocfft_plan_description p) {
             if (rocfft_plan_description_destroy(p) != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to destroy plan description.");
             }
         };
@@ -342,7 +342,7 @@ public:
                               (vec_b_valid_as_bwd_domain && vec_a_valid_as_fwd_domain);
 
         if (!valid_forward && !valid_backward) {
-            throw mkl::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
+            throw math::exception("dft/backends/cufft", __FUNCTION__, "Invalid strides.");
         }
 
         if (valid_forward) {
@@ -358,13 +358,13 @@ public:
                                                         bwd_distance // out distance
                 );
             if (res != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to set forward data layout.");
             }
 
             if (rocfft_plan_description_set_scale_factor(plan_desc_fwd, config_values.fwd_scale) !=
                 rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to set forward scale factor.");
             }
 
@@ -373,7 +373,7 @@ public:
                                      lengths.data(), number_of_transforms, plan_desc_fwd);
 
             if (res != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to create forward plan.");
             }
 
@@ -381,7 +381,7 @@ public:
 
             rocfft_execution_info fwd_info;
             if (rocfft_execution_info_create(&fwd_info) != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to create forward execution info.");
             }
             handles[0].info = fwd_info;
@@ -391,7 +391,7 @@ public:
                 if (work_buf_size != 0) {
                     void* work_buf;
                     if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
-                        throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                        throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                              "Failed to get allocate forward work buffer.");
                     }
                     set_workspace_impl(handles[0], reinterpret_cast<scalar_type*>(work_buf),
@@ -414,13 +414,13 @@ public:
                                                         fwd_distance // out distance
                 );
             if (res != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to set backward data layout.");
             }
 
             if (rocfft_plan_description_set_scale_factor(plan_desc_bwd, config_values.bwd_scale) !=
                 rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to set backward scale factor.");
             }
 
@@ -428,14 +428,14 @@ public:
             res = rocfft_plan_create(&bwd_plan, placement, bwd_type, precision, dimensions,
                                      lengths.data(), number_of_transforms, plan_desc_bwd);
             if (res != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to create backward rocFFT plan.");
             }
             handles[1].plan = bwd_plan;
 
             rocfft_execution_info bwd_info;
             if (rocfft_execution_info_create(&bwd_info) != rocfft_status_success) {
-                throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                      "Failed to create backward execution info.");
             }
             handles[1].info = bwd_info;
@@ -445,7 +445,7 @@ public:
                 if (work_buf_size != 0) {
                     void* work_buf;
                     if (hipMalloc(&work_buf, work_buf_size) != hipSuccess) {
-                        throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+                        throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                              "Failed to get allocate backward work buffer.");
                     }
                     set_workspace_impl(handles[1], reinterpret_cast<scalar_type*>(work_buf),
@@ -484,11 +484,11 @@ public:
     **/
     std::int64_t get_rocfft_workspace_bytes(rocfft_handle& handle, const char* function) {
         if (!handle.plan) {
-            throw mkl::exception("dft/backends/rocfft", function, "Missing internal rocfft plan");
+            throw math::exception("dft/backends/rocfft", function, "Missing internal rocfft plan");
         }
         std::size_t size = 0;
         if (rocfft_plan_get_work_buffer_size(*handle.plan, &size) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", function,
+            throw math::exception("dft/backends/rocfft", function,
                                  "Failed to get rocfft work buffer size.");
         }
         return static_cast<std::int64_t>(size);
@@ -505,31 +505,31 @@ public:
     void set_workspace_impl(const rocfft_handle& handle, scalar_type* workspace,
                             std::int64_t workspace_bytes, const char* function) {
         if (!handle.info) {
-            throw mkl::exception(
+            throw math::exception(
                 "dft/backends/rocfft", function,
                 "Could not set rocFFT workspace - handle has no associated rocfft_info.");
         }
         if (handle.buffer) {
-            throw mkl::exception(
+            throw math::exception(
                 "dft/backends/rocfft", function,
                 "Could not set rocFFT workspace - an internal buffer is already set.");
         }
         if (workspace_bytes && workspace == nullptr) {
-            throw mkl::exception("dft/backends/rocfft", function, "Trying to nullptr workspace.");
+            throw math::exception("dft/backends/rocfft", function, "Trying to nullptr workspace.");
         }
         auto info = *handle.info;
         if (workspace_bytes &&
             rocfft_execution_info_set_work_buffer(info, static_cast<void*>(workspace),
                                                   static_cast<std::size_t>(workspace_bytes)) !=
                 rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", function, "Failed to set work buffer.");
+            throw math::exception("dft/backends/rocfft", function, "Failed to set work buffer.");
         }
     }
 
     void free_internal_workspace_if_rqd(rocfft_handle& handle, const char* function) {
         if (handle.buffer) {
             if (hipFree(*handle.buffer) != hipSuccess) {
-                throw mkl::exception("dft/backends/rocfft", function,
+                throw math::exception("dft/backends/rocfft", function,
                                      "Failed to free internal buffer.");
             }
             handle.buffer = std::nullopt;
@@ -583,12 +583,12 @@ public:
     std::int64_t get_plan_workspace_size_bytes(rocfft_plan_t* plan) {
         // plan work buffer
         if (plan == nullptr) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+            throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                  "Missing internal rocFFT plan.");
         }
         std::size_t work_buf_size;
         if (rocfft_plan_get_work_buffer_size(plan, &work_buf_size) != rocfft_status_success) {
-            throw mkl::exception("dft/backends/rocfft", __FUNCTION__,
+            throw math::exception("dft/backends/rocfft", __FUNCTION__,
                                  "Failed to get work buffer size.");
         }
         return static_cast<std::int64_t>(work_buf_size);
@@ -668,4 +668,4 @@ get_offsets_bwd<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>(
 
 } //namespace detail
 
-} // namespace oneapi::mkl::dft::rocfft
+} // namespace oneapi::math::dft::rocfft

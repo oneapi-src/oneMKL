@@ -38,7 +38,7 @@
 #include "dtype_string.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace cublas {
 
@@ -226,35 +226,35 @@ inline void cublas_native_named_func(const char *func_name, Func func,
 #endif
 };
 
-inline cublasOperation_t get_cublas_operation(oneapi::mkl::transpose trn) {
+inline cublasOperation_t get_cublas_operation(oneapi::math::transpose trn) {
     switch (trn) {
-        case oneapi::mkl::transpose::nontrans: return CUBLAS_OP_N;
-        case oneapi::mkl::transpose::trans: return CUBLAS_OP_T;
-        case oneapi::mkl::transpose::conjtrans: return CUBLAS_OP_C;
+        case oneapi::math::transpose::nontrans: return CUBLAS_OP_N;
+        case oneapi::math::transpose::trans: return CUBLAS_OP_T;
+        case oneapi::math::transpose::conjtrans: return CUBLAS_OP_C;
         default: throw "Wrong transpose Operation.";
     }
 }
 
-inline cublasFillMode_t get_cublas_fill_mode(oneapi::mkl::uplo ul) {
+inline cublasFillMode_t get_cublas_fill_mode(oneapi::math::uplo ul) {
     switch (ul) {
-        case oneapi::mkl::uplo::upper: return CUBLAS_FILL_MODE_UPPER;
-        case oneapi::mkl::uplo::lower: return CUBLAS_FILL_MODE_LOWER;
+        case oneapi::math::uplo::upper: return CUBLAS_FILL_MODE_UPPER;
+        case oneapi::math::uplo::lower: return CUBLAS_FILL_MODE_LOWER;
         default: throw "Wrong fill mode.";
     }
 }
 
-inline cublasDiagType_t get_cublas_diag_type(oneapi::mkl::diag un) {
+inline cublasDiagType_t get_cublas_diag_type(oneapi::math::diag un) {
     switch (un) {
-        case oneapi::mkl::diag::unit: return CUBLAS_DIAG_UNIT;
-        case oneapi::mkl::diag::nonunit: return CUBLAS_DIAG_NON_UNIT;
+        case oneapi::math::diag::unit: return CUBLAS_DIAG_UNIT;
+        case oneapi::math::diag::nonunit: return CUBLAS_DIAG_NON_UNIT;
         default: throw "Wrong diag type.";
     }
 }
 
-inline cublasSideMode_t get_cublas_side_mode(oneapi::mkl::side lr) {
+inline cublasSideMode_t get_cublas_side_mode(oneapi::math::side lr) {
     switch (lr) {
-        case oneapi::mkl::side::left: return CUBLAS_SIDE_LEFT;
-        case oneapi::mkl::side::right: return CUBLAS_SIDE_RIGHT;
+        case oneapi::math::side::left: return CUBLAS_SIDE_LEFT;
+        case oneapi::math::side::right: return CUBLAS_SIDE_RIGHT;
         default: throw "Wrong side mode.";
     }
 }
@@ -330,6 +330,6 @@ struct CudaEquivalentType<std::complex<double>> {
 
 } // namespace cublas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 #endif // _CUBLAS_HELPER_HPP_

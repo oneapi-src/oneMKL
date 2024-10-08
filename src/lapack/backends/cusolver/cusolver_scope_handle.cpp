@@ -24,7 +24,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace cusolver {
 
@@ -149,5 +149,5 @@ sycl::context CusolverScopedContextHandler::get_context(const sycl::queue &queue
 
 } // namespace cusolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

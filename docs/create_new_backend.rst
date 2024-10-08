@@ -40,20 +40,20 @@ For each new backend library, you should create the following two header files:
 * Header file with a declaration of entry points to the new third-party library wrappers
 * Compiler-time dispatching interface (see `oneMath Usage Models <../README.md#supported-usage-models>`_) for new third-party libraries
 
-**Header File Example**: command to generate the header file with a declaration of BLAS entry points in the oneapi::mkl::newlib namespace 
+**Header File Example**: command to generate the header file with a declaration of BLAS entry points in the oneapi::math::newlib namespace 
 
 .. code-block:: bash
 
     python scripts/generate_backend_api.py include/oneapi/math/blas.hpp \                                  # Base header file
                                            include/oneapi/math/blas/detail/newlib/onemath_blas_newlib.hpp \ # Output header file
-                                           oneapi::mkl::newlib                                            # Wrappers namespace
+                                           oneapi::math::newlib                                            # Wrappers namespace
 
 Code snippet of the generated header file ``include/oneapi/math/blas/detail/newlib/onemath_blas_newlib.hpp``
 
 .. code-block:: cpp
 
     namespace oneapi {
-    namespace mkl {
+    namespace math {
     namespace newlib {
     
     void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -70,14 +70,14 @@ Code snippet of the generated header file ``include/oneapi/math/blas/detail/newl
                                             include/oneapi/math/blas/detail/newlib/onemath_blas_newlib.hpp \ # Header file with declaration of entry points to wrappers
                                             newlib \                                                       # Library name
                                             newdevice \                                                    # Backend name
-                                            oneapi::mkl::newlib                                            # Wrappers namespace
+                                            oneapi::math::newlib                                            # Wrappers namespace
 
 Code snippet of the generated header file ``include/oneapi/math/blas/detail/newlib/blas_ct.hpp``
 
 .. code-block:: cpp
 
     namespace oneapi {
-    namespace mkl {
+    namespace math {
     namespace blas {
     
     template <>
@@ -85,7 +85,7 @@ Code snippet of the generated header file ``include/oneapi/math/blas/detail/newl
                                                    sycl::buffer<float, 1> &x, std::int64_t incx,
                                                    sycl::buffer<float, 1> &result) {
         asum_precondition(queue, n, x, incx, result);
-        oneapi::mkl::newlib::asum(queue, n, x, incx, result);
+        oneapi::math::newlib::asum(queue, n, x, incx, result);
         asum_postcondition(queue, n, x, incx, result);
     }
 
@@ -174,8 +174,8 @@ To integrate the new third-party library to a oneMath header-based part, followi
 
   .. code-block:: diff
     
-        inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
-            oneapi::mkl::device device_id;
+        inline oneapi::math::device get_device_id(sycl::queue &queue) {
+            oneapi::math::device device_id;
      +      if (queue.is_host())
      +          device_id=device::newdevice;
 
@@ -283,7 +283,7 @@ The following code snippet is updated for ``src/blas/backends/newlib/newlib_wrap
     +    #include "newlib.h"
         
         namespace oneapi {
-        namespace mkl {
+        namespace math {
         namespace newlib {
         
         void asum(sycl::queue &queue, std::int64_t n, sycl::buffer<float, 1> &x, std::int64_t incx,
@@ -466,14 +466,14 @@ Update the following files to enable the new third-party library for unit tests:
     
         #ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
             #define TEST_RUN_INTELGPU(q, func, args) \
-                func<oneapi::mkl::backend::mklgpu> args
+                func<oneapi::math::backend::mklgpu> args
         #else
             #define TEST_RUN_INTELGPU(q, func, args)
         #endif
      +    
      +  #ifdef ONEMATH_ENABLE_NEWLIB_BACKEND
      +     #define TEST_RUN_NEWDEVICE(q, func, args) \
-     +         func<oneapi::mkl::backend::newbackend> args
+     +         func<oneapi::math::backend::newbackend> args
      +  #else
      +      #define TEST_RUN_NEWDEVICE(q, func, args)
      +  #endif

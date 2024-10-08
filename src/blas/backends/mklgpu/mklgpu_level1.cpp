@@ -28,23 +28,23 @@
 #include "../mkl_common/mkl_blas_backend.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace mklgpu {
 namespace column_major {
 
-namespace blas_major = ::oneapi::mkl::blas::column_major;
+namespace blas_major = ::oneapi::math::blas::column_major;
 #include "../mkl_common/mkl_level1.cxx"
 
 } // namespace column_major
 
 namespace row_major {
 
-namespace blas_major = ::oneapi::mkl::blas::row_major;
+namespace blas_major = ::oneapi::math::blas::row_major;
 #include "../mkl_common/mkl_level1.cxx"
 
 } // namespace row_major
 } // namespace mklgpu
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

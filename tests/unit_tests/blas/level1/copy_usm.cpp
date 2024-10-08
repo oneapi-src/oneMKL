@@ -46,7 +46,7 @@ extern std::vector<sycl::device*> devices;
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
+int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
@@ -86,12 +86,12 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                done = oneapi::mkl::blas::column_major::copy(main_queue, N, x.data(), incx,
+            case oneapi::math::layout::col_major:
+                done = oneapi::math::blas::column_major::copy(main_queue, N, x.data(), incx,
                                                              y.data(), incy, dependencies);
                 break;
-            case oneapi::mkl::layout::row_major:
-                done = oneapi::mkl::blas::row_major::copy(main_queue, N, x.data(), incx, y.data(),
+            case oneapi::math::layout::row_major:
+                done = oneapi::math::blas::row_major::copy(main_queue, N, x.data(), incx, y.data(),
                                                           incy, dependencies);
                 break;
             default: break;
@@ -99,12 +99,12 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
         done.wait();
 #else
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::copy, N,
+            case oneapi::math::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::copy, N,
                                         x.data(), incx, y.data(), incy, dependencies);
                 break;
-            case oneapi::mkl::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::copy, N, x.data(),
+            case oneapi::math::layout::row_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::copy, N, x.data(),
                                         incx, y.data(), incy, dependencies);
                 break;
             default: break;
@@ -117,7 +117,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
         print_error_code(e);
     }
 
-    catch (const oneapi::mkl::unimplemented& e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
@@ -133,7 +133,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
 }
 
 class CopyUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(CopyUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2, 3));
@@ -168,8 +168,8 @@ TEST_P(CopyUsmTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(CopyUsmTestSuite, CopyUsmTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::col_major,
-                                                            oneapi::mkl::layout::row_major)),
+                                            testing::Values(oneapi::math::layout::col_major,
+                                                            oneapi::math::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

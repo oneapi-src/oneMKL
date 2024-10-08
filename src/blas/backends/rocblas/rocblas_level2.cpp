@@ -74,7 +74,7 @@ static inline void conj_vector(sycl::handler &cgh, T *ptr_a, T *ptr_b, const int
 }
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace rocblas {
 namespace column_major {
@@ -1810,10 +1810,10 @@ inline void gemv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
                  std::complex<T> alpha, sycl::buffer<std::complex<T>, 1> &a, int64_t lda,
                  sycl::buffer<std::complex<T>, 1> &x, int64_t incx, std::complex<T> beta,
                  sycl::buffer<std::complex<T>, 1> &y, int64_t incy) {
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         alpha = std::conj(alpha);
         beta = std::conj(beta);
 
@@ -1828,7 +1828,7 @@ inline void gemv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
 
     column_major::gemv(func, queue, new_trans, n, m, alpha, a, lda, x, incx, beta, y, incy);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
         }
@@ -1839,8 +1839,8 @@ template <typename Func, typename T>
 inline void gemv(Func func, sycl::queue &queue, transpose trans, int64_t m, int64_t n, T alpha,
                  sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::gemv(func, queue, new_trans, n, m, alpha, a, lda, x, incx, beta, y, incy);
 }
@@ -1864,10 +1864,10 @@ inline void gbmv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
                  int64_t ku, std::complex<T> alpha, sycl::buffer<std::complex<T>, 1> &a,
                  int64_t lda, sycl::buffer<std::complex<T>, 1> &x, int64_t incx,
                  std::complex<T> beta, sycl::buffer<std::complex<T>, 1> &y, int64_t incy) {
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         alpha = std::conj(alpha);
         beta = std::conj(beta);
 
@@ -1882,7 +1882,7 @@ inline void gbmv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
 
     column_major::gbmv(func, queue, new_trans, n, m, ku, kl, alpha, a, lda, x, incx, beta, y, incy);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, y, n, incy); });
         }
@@ -1893,8 +1893,8 @@ template <typename Func, typename T>
 inline void gbmv(Func func, sycl::queue &queue, transpose trans, int64_t m, int64_t n, int64_t kl,
                  int64_t ku, T alpha, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x,
                  int64_t incx, T beta, sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::gbmv(func, queue, new_trans, n, m, ku, kl, alpha, a, lda, x, incx, beta, y, incy);
 }
@@ -1960,8 +1960,8 @@ template <typename Func, typename T>
 inline void hbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, T alpha,
                  sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
     auto new_alpha = std::conj(alpha);
     auto new_beta = std::conj(beta);
 
@@ -1992,8 +1992,8 @@ template <typename Func, typename T>
 inline void hemv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
     auto new_alpha = std::conj(alpha);
     auto new_beta = std::conj(beta);
 
@@ -2024,8 +2024,8 @@ template <typename Func, typename ScalarType, typename DataType>
 inline void her(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, ScalarType alpha,
                 sycl::buffer<DataType, 1> &x, int64_t incx, sycl::buffer<DataType, 1> &a,
                 int64_t lda) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
@@ -2050,8 +2050,8 @@ template <typename Func, typename T>
 inline void her2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &x, int64_t incx, sycl::buffer<T, 1> &y, int64_t incy,
                  sycl::buffer<T, 1> &a, int64_t lda) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, y, n, incx, incy); });
@@ -2076,8 +2076,8 @@ template <typename Func, typename T>
 inline void hpmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &a, sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
     auto new_alpha = std::conj(alpha);
     auto new_beta = std::conj(beta);
 
@@ -2107,8 +2107,8 @@ HPMV_LAUNCHER(std::complex<double>, rocblas_zhpmv)
 template <typename Func, typename ScalarType, typename DataType>
 inline void hpr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, ScalarType alpha,
                 sycl::buffer<DataType, 1> &x, int64_t incx, sycl::buffer<DataType, 1> &a) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
@@ -2132,8 +2132,8 @@ template <typename Func, typename T>
 inline void hpr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &x, int64_t incx, sycl::buffer<T, 1> &y, int64_t incy,
                  sycl::buffer<T, 1> &a) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, y, n, incx, incy); });
@@ -2158,8 +2158,8 @@ template <typename Func, typename T>
 inline void sbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k, T alpha,
                  sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::sbmv(func, queue, new_uplo, n, k, alpha, a, lda, x, incx, beta, y, incy);
 }
@@ -2180,8 +2180,8 @@ template <typename Func, typename T>
 inline void symv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::symv(func, queue, new_uplo, n, alpha, a, lda, x, incx, beta, y, incy);
 }
@@ -2201,8 +2201,8 @@ SYMV_LAUNCHER(double, rocblas_dsymv)
 template <typename Func, typename T>
 inline void syr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                 sycl::buffer<T, 1> &x, int64_t incx, sycl::buffer<T, 1> &a, int64_t lda) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::syr(func, queue, new_uplo, n, alpha, x, incx, a, lda);
 }
@@ -2225,8 +2225,8 @@ template <typename Func, typename T>
 inline void syr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &x, int64_t incx, sycl::buffer<T, 1> &y, int64_t incy,
                  sycl::buffer<T, 1> &a, int64_t lda) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::syr2(func, queue, new_uplo, n, alpha, x, incx, y, incy, a, lda);
 }
@@ -2250,8 +2250,8 @@ template <typename Func, typename T>
 inline void spmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &a, sycl::buffer<T, 1> &x, int64_t incx, T beta,
                  sycl::buffer<T, 1> &y, int64_t incy) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::spmv(func, queue, new_uplo, n, alpha, a, x, incx, beta, y, incy);
 }
@@ -2271,8 +2271,8 @@ SPMV_LAUNCHER(double, rocblas_dspmv)
 template <typename Func, typename T>
 inline void spr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                 sycl::buffer<T, 1> &x, int64_t incx, sycl::buffer<T, 1> &a) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::spr(func, queue, new_uplo, n, alpha, x, incx, a);
 }
@@ -2292,8 +2292,8 @@ template <typename Func, typename T>
 inline void spr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                  sycl::buffer<T, 1> &x, int64_t incx, sycl::buffer<T, 1> &y, int64_t incy,
                  sycl::buffer<T, 1> &a) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     column_major::spr2(func, queue, new_uplo, n, alpha, x, incx, y, incy, a);
 }
@@ -2314,12 +2314,12 @@ template <typename Func, typename T>
 inline void tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, int64_t k, sycl::buffer<std::complex<T>, 1> &a, int64_t lda,
                  sycl::buffer<std::complex<T>, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2327,7 +2327,7 @@ inline void tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     column_major::tbmv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2338,10 +2338,10 @@ template <typename Func, typename T>
 inline void tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, int64_t k, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x,
                  int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::tbmv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx);
 }
@@ -2364,12 +2364,12 @@ template <typename Func, typename T>
 inline void tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, int64_t k, sycl::buffer<std::complex<T>, 1> &a, int64_t lda,
                  sycl::buffer<std::complex<T>, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2377,7 +2377,7 @@ inline void tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     column_major::tbsv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2388,10 +2388,10 @@ template <typename Func, typename T>
 inline void tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, int64_t k, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x,
                  int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::tbsv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx);
 }
@@ -2414,12 +2414,12 @@ template <typename Func, typename T>
 inline void tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<std::complex<T>, 1> &a,
                  sycl::buffer<std::complex<T>, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2427,7 +2427,7 @@ inline void tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     column_major::tpmv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2437,10 +2437,10 @@ inline void tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 template <typename Func, typename T>
 inline void tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<T, 1> &a, sycl::buffer<T, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::tpmv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx);
 }
@@ -2462,12 +2462,12 @@ template <typename Func, typename T>
 inline void tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<std::complex<T>, 1> &a,
                  sycl::buffer<std::complex<T>, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2475,7 +2475,7 @@ inline void tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     column_major::tpsv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2485,10 +2485,10 @@ inline void tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 template <typename Func, typename T>
 inline void tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<T, 1> &a, sycl::buffer<T, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::tpsv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx);
 }
@@ -2510,12 +2510,12 @@ template <typename Func, typename T>
 inline void trmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<std::complex<T>, 1> &a, int64_t lda,
                  sycl::buffer<std::complex<T>, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2523,7 +2523,7 @@ inline void trmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     column_major::trmv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2534,10 +2534,10 @@ template <typename Func, typename T>
 inline void trmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x,
                  int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::trmv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx);
 }
@@ -2559,12 +2559,12 @@ template <typename Func, typename T>
 inline void trsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<std::complex<T>, 1> &a, int64_t lda,
                  sycl::buffer<std::complex<T>, 1> &x, int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2572,7 +2572,7 @@ inline void trsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
 
     column_major::trsv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); });
         }
@@ -2583,10 +2583,10 @@ template <typename Func, typename T>
 inline void trsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans, diag unit_diag,
                  int64_t n, sycl::buffer<T, 1> &a, int64_t lda, sycl::buffer<T, 1> &x,
                  int64_t incx) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     column_major::trsv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx);
 }
@@ -2614,10 +2614,10 @@ inline sycl::event gemv(Func func, sycl::queue &queue, transpose trans, int64_t 
                         const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         alpha = std::conj(alpha);
         beta = std::conj(beta);
 
@@ -2636,7 +2636,7 @@ inline sycl::event gemv(Func func, sycl::queue &queue, transpose trans, int64_t 
     done = column_major::gemv(func, queue, new_trans, n, m, alpha, a, lda, x, incx, beta, y, incy,
                               dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(done);
@@ -2652,8 +2652,8 @@ template <typename Func, typename T>
 inline sycl::event gemv(Func func, sycl::queue &queue, transpose trans, int64_t m, int64_t n,
                         T alpha, const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
                         int64_t incy, const std::vector<sycl::event> &dependencies) {
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::gemv(func, queue, new_trans, n, m, alpha, a, lda, x, incx, beta, y, incy,
                               dependencies);
@@ -2682,10 +2682,10 @@ inline sycl::event gbmv(Func func, sycl::queue &queue, transpose trans, int64_t 
                         const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         alpha = std::conj(alpha);
         beta = std::conj(beta);
 
@@ -2704,7 +2704,7 @@ inline sycl::event gbmv(Func func, sycl::queue &queue, transpose trans, int64_t 
     done = column_major::gbmv(func, queue, new_trans, n, m, ku, kl, alpha, a, lda, x, incx, beta, y,
                               incy, dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(done);
@@ -2721,8 +2721,8 @@ inline sycl::event gbmv(Func func, sycl::queue &queue, transpose trans, int64_t 
                         int64_t kl, int64_t ku, T alpha, const T *a, int64_t lda, const T *x,
                         int64_t incx, T beta, T *y, int64_t incy,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::gbmv(func, queue, new_trans, n, m, ku, kl, alpha, a, lda, x, incx, beta, y,
                               incy, dependencies);
@@ -2795,8 +2795,8 @@ inline sycl::event hbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
                         int64_t incy, const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
     auto new_alpha = std::conj(alpha);
     auto new_beta = std::conj(beta);
 
@@ -2837,8 +2837,8 @@ inline sycl::event hemv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
                         int64_t incy, const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
     auto new_alpha = std::conj(alpha);
     auto new_beta = std::conj(beta);
 
@@ -2877,8 +2877,8 @@ template <typename Func, typename ScalarType, typename DataType>
 inline sycl::event her(Func func, sycl::queue &queue, uplo upper_lower, int64_t n,
                        const ScalarType alpha, const DataType *x, int64_t incx, DataType *a,
                        int64_t lda, const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (DataType *)x, n, incx); })
@@ -2904,8 +2904,8 @@ template <typename Func, typename T>
 inline sycl::event her2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                         const T *x, int64_t incx, const T *y, int64_t incy, T *a, int64_t lda,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (T *)x, (T *)y, n, incx, incy); })
@@ -2935,8 +2935,8 @@ inline sycl::event hpmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
                         const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
     auto new_alpha = std::conj(alpha);
     auto new_beta = std::conj(beta);
 
@@ -2975,8 +2975,8 @@ template <typename Func, typename ScalarType, typename DataType>
 inline sycl::event hpr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n,
                        const ScalarType alpha, const DataType *x, int64_t incx, DataType *a,
                        const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (DataType *)x, n, incx); })
@@ -3002,8 +3002,8 @@ template <typename Func, typename T>
 inline sycl::event hpr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                         const T *x, int64_t incx, const T *y, int64_t incy, T *a,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     if (n > 0) {
         queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, (T *)x, (T *)y, n, incx, incy); })
@@ -3030,8 +3030,8 @@ template <typename Func, typename T>
 inline sycl::event sbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, int64_t k,
                         T alpha, const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
                         int64_t incy, const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::sbmv(func, queue, new_uplo, n, k, alpha, a, lda, x, incx, beta, y, incy,
                               dependencies);
@@ -3054,8 +3054,8 @@ template <typename Func, typename T>
 inline sycl::event symv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                         const T *a, int64_t lda, const T *x, int64_t incx, T beta, T *y,
                         int64_t incy, const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::symv(func, queue, new_uplo, n, alpha, a, lda, x, incx, beta, y, incy,
                               dependencies);
@@ -3078,8 +3078,8 @@ template <typename Func, typename T>
 inline sycl::event syr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                        const T *x, int64_t incx, T *a, int64_t lda,
                        const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::syr(func, queue, new_uplo, n, alpha, x, incx, a, lda, dependencies);
 }
@@ -3103,8 +3103,8 @@ template <typename Func, typename T>
 inline sycl::event syr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                         const T *x, int64_t incx, const T *y, int64_t incy, T *a, int64_t lda,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::syr2(func, queue, new_uplo, n, alpha, x, incx, y, incy, a, lda,
                               dependencies);
@@ -3130,8 +3130,8 @@ template <typename Func, typename T>
 inline sycl::event spmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                         const T *a, const T *x, int64_t incx, T beta, T *y, int64_t incy,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::spmv(func, queue, new_uplo, n, alpha, a, x, incx, beta, y, incy,
                               dependencies);
@@ -3154,8 +3154,8 @@ template <typename Func, typename T>
 inline sycl::event spr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                        const T *x, int64_t incx, T *a,
                        const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::spr(func, queue, new_uplo, n, alpha, x, incx, a, dependencies);
 }
@@ -3175,8 +3175,8 @@ template <typename Func, typename T>
 inline sycl::event spr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T alpha,
                         const T *x, int64_t incx, const T *y, int64_t incy, T *a,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
 
     return column_major::spr2(func, queue, new_uplo, n, alpha, x, incx, y, incy, a, dependencies);
 }
@@ -3201,12 +3201,12 @@ inline sycl::event tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
@@ -3216,7 +3216,7 @@ inline sycl::event tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     done = column_major::tbmv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx,
                               dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(done);
@@ -3232,10 +3232,10 @@ template <typename Func, typename T>
 inline sycl::event tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans,
                         diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
                         int64_t incx, const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::tbmv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx,
                               dependencies);
@@ -3263,12 +3263,12 @@ inline sycl::event tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
@@ -3278,7 +3278,7 @@ inline sycl::event tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     done = column_major::tbsv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx,
                               dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(done);
@@ -3294,10 +3294,10 @@ template <typename Func, typename T>
 inline sycl::event tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans,
                         diag unit_diag, int64_t n, int64_t k, const T *a, int64_t lda, T *x,
                         int64_t incx, const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::tbsv(func, queue, new_uplo, new_trans, unit_diag, n, k, a, lda, x, incx,
                               dependencies);
@@ -3324,12 +3324,12 @@ inline sycl::event tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         int64_t incx, const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
@@ -3339,7 +3339,7 @@ inline sycl::event tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     done = column_major::tpmv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx,
                               dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             incx = std::abs(incx);
 
@@ -3357,10 +3357,10 @@ template <typename Func, typename T>
 inline sycl::event tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans,
                         diag unit_diag, int64_t n, const T *a, T *x, int64_t incx,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::tpmv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx,
                               dependencies);
@@ -3387,12 +3387,12 @@ inline sycl::event tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         int64_t incx, const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
@@ -3402,7 +3402,7 @@ inline sycl::event tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     done = column_major::tpsv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx,
                               dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             incx = std::abs(incx);
 
@@ -3420,10 +3420,10 @@ template <typename Func, typename T>
 inline sycl::event tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans,
                         diag unit_diag, int64_t n, const T *a, T *x, int64_t incx,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::tpsv(func, queue, new_uplo, new_trans, unit_diag, n, a, x, incx,
                               dependencies);
@@ -3451,12 +3451,12 @@ inline sycl::event trmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
@@ -3466,7 +3466,7 @@ inline sycl::event trmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     done = column_major::trmv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx,
                               dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(done);
@@ -3482,10 +3482,10 @@ template <typename Func, typename T>
 inline sycl::event trmv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans,
                         diag unit_diag, int64_t n, const T *a, int64_t lda, T *x, int64_t incx,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::trmv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx,
                               dependencies);
@@ -3513,12 +3513,12 @@ inline sycl::event trsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
                         const std::vector<sycl::event> &dependencies) {
     sycl::event done;
 
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             queue.submit([&](sycl::handler &cgh) { conj_vector(cgh, x, n, incx); })
                 .wait_and_throw();
@@ -3528,7 +3528,7 @@ inline sycl::event trsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
     done = column_major::trsv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx,
                               dependencies);
 
-    if (trans == oneapi::mkl::transpose::conjtrans) {
+    if (trans == oneapi::math::transpose::conjtrans) {
         if (n > 0) {
             done = queue.submit([&](sycl::handler &cgh) {
                 cgh.depends_on(done);
@@ -3544,10 +3544,10 @@ template <typename Func, typename T>
 inline sycl::event trsv(Func func, sycl::queue &queue, uplo upper_lower, transpose trans,
                         diag unit_diag, int64_t n, const T *a, int64_t lda, T *x, int64_t incx,
                         const std::vector<sycl::event> &dependencies) {
-    auto new_uplo = upper_lower == oneapi::mkl::uplo::lower ? oneapi::mkl::uplo::upper
-                                                            : oneapi::mkl::uplo::lower;
-    auto new_trans = trans == oneapi::mkl::transpose::nontrans ? oneapi::mkl::transpose::trans
-                                                               : oneapi::mkl::transpose::nontrans;
+    auto new_uplo = upper_lower == oneapi::math::uplo::lower ? oneapi::math::uplo::upper
+                                                            : oneapi::math::uplo::lower;
+    auto new_trans = trans == oneapi::math::transpose::nontrans ? oneapi::math::transpose::trans
+                                                               : oneapi::math::transpose::nontrans;
 
     return column_major::trsv(func, queue, new_uplo, new_trans, unit_diag, n, a, lda, x, incx,
                               dependencies);
@@ -3571,5 +3571,5 @@ TRSV_LAUNCHER_USM(std::complex<double>, rocblas_ztrsv)
 } // namespace row_major
 } // namespace rocblas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

@@ -72,25 +72,25 @@
 #include "oneapi/math/rng/detail/engine_impl.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 namespace rocrand {
 
-ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
+ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
                                                                           std::uint64_t seed);
 
-ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
+ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_philox4x32x10(
     sycl::queue queue, std::initializer_list<std::uint64_t> seed);
 
-ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
+ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
                                                                      std::uint32_t seed);
 
-ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(
+ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_mrg32k3a(
     sycl::queue queue, std::initializer_list<std::uint32_t> seed);
 
 } // namespace rocrand
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_RNG_ROCRAND_HPP_

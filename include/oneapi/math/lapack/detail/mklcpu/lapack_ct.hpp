@@ -34,7 +34,7 @@
 #include "oneapi/math/lapack/detail/mklcpu/onemath_lapack_mklcpu.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 
 #define LAPACK_BACKEND mklcpu
@@ -42,5 +42,5 @@ namespace lapack {
 #undef LAPACK_BACKEND
 
 } //namespace lapack
-} //namespace mkl
+} //namespace math
 } //namespace oneapi

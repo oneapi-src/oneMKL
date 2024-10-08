@@ -38,7 +38,7 @@
 
 #define THROW_IF_NULLPTR(FUNC_NAME, PTR)                                       \
     if (!(PTR)) {                                                              \
-        throw mkl::uninitialized("sparse_blas", FUNC_NAME,                     \
+        throw math::uninitialized("sparse_blas", FUNC_NAME,                     \
                                  std::string(#PTR) + " must not be nullptr."); \
     }
 

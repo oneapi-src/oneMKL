@@ -34,7 +34,7 @@
 #include "oneapi/math/lapack/detail/cusolver/onemath_lapack_cusolver.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 
 #define LAPACK_BACKEND cusolver
@@ -42,7 +42,7 @@ namespace lapack {
 #undef LAPACK_BACKEND
 
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_DETAIL_CUSOLVER_LAPACK_CT_HPP_

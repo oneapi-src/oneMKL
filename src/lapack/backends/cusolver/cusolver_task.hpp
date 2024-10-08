@@ -44,7 +44,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace cusolver {
 
@@ -67,6 +67,6 @@ static inline void onemath_cusolver_host_task(H &cgh, sycl::queue queue, F f) {
 
 } // namespace cusolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 #endif // _MKL_LAPACK_CUSOLVER_TASK_HPP_

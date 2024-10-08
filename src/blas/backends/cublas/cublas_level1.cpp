@@ -23,7 +23,7 @@
 #include "oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace cublas {
 namespace column_major {
@@ -778,7 +778,7 @@ inline sycl::event rotg(const char *func_name, Func func, sycl::queue &queue, T1
             sycl::get_pointer_type(b, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(c, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(s, ctx) == sycl::usm::alloc::unknown) {
-            throw oneapi::mkl::exception(
+            throw oneapi::math::exception(
                 "blas", "rotg",
                 "If any pointer is only device accessible, all must be device accessible");
         }
@@ -1034,7 +1034,7 @@ inline sycl::event rotmg(const char *func_name, Func func, sycl::queue &queue, T
         if (sycl::get_pointer_type(d1, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(d2, ctx) == sycl::usm::alloc::unknown ||
             sycl::get_pointer_type(x1, ctx) == sycl::usm::alloc::unknown) {
-            throw oneapi::mkl::exception(
+            throw oneapi::math::exception(
                 "blas", "rotmg",
                 "If any pointer is only device accessible, all must be device accessible");
         }
@@ -1849,5 +1849,5 @@ NRM2_LAUNCHER_USM(std::complex<double>, double, cublasDznrm2)
 } // namespace row_major
 } // namespace cublas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

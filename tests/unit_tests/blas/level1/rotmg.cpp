@@ -46,7 +46,7 @@ extern std::vector<sycl::device*> devices;
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout) {
+int test(device* dev, oneapi::math::layout layout) {
     // Prepare data.
     fp d1, d2, x1, y1, d1_ref, d2_ref, x1_ref;
     vector<fp> param(5, fp(0)), param_ref(5, fp(0));
@@ -89,24 +89,24 @@ int test(device* dev, oneapi::mkl::layout layout) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                oneapi::mkl::blas::column_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer,
+            case oneapi::math::layout::col_major:
+                oneapi::math::blas::column_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer,
                                                        y1, param_buffer);
                 break;
-            case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer, y1,
+            case oneapi::math::layout::row_major:
+                oneapi::math::blas::row_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer, y1,
                                                     param_buffer);
                 break;
             default: break;
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::rotmg,
+            case oneapi::math::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::rotmg,
                                         d1_buffer, d2_buffer, x1_buffer, y1, param_buffer);
                 break;
-            case oneapi::mkl::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::rotmg, d1_buffer,
+            case oneapi::math::layout::row_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::rotmg, d1_buffer,
                                         d2_buffer, x1_buffer, y1, param_buffer);
                 break;
             default: break;
@@ -118,7 +118,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
         print_error_code(e);
     }
 
-    catch (const oneapi::mkl::unimplemented& e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
@@ -187,7 +187,7 @@ int test(device* dev, oneapi::mkl::layout layout) {
     return (int)good;
 }
 
-class RotmgTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
+class RotmgTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(RotmgTests, RealSinglePrecision) {
@@ -201,8 +201,8 @@ TEST_P(RotmgTests, RealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(RotmgTestSuite, RotmgTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::col_major,
-                                                            oneapi::mkl::layout::row_major)),
+                                            testing::Values(oneapi::math::layout::col_major,
+                                                            oneapi::math::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

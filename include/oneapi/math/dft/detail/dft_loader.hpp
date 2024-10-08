@@ -30,7 +30,7 @@
 #include "oneapi/math/dft/detail/types_impl.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace dft {
 namespace detail {
 
@@ -46,7 +46,7 @@ ONEMATH_EXPORT commit_impl<prec, dom>* create_commit(const descriptor<prec, dom>
 
 } // namespace detail
 } // namespace dft
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_DFT_LOADER_HPP_

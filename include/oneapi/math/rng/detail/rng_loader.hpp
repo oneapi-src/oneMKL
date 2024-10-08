@@ -33,25 +33,25 @@
 #include "oneapi/math/rng/detail/engine_impl.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 namespace detail {
 
-ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::math::device libkey, sycl::queue queue,
                                                 std::uint64_t seed);
 
-ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::math::device libkey, sycl::queue queue,
                                                 std::initializer_list<std::uint64_t> seed);
 
-ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::math::device libkey, sycl::queue queue,
                                            std::uint32_t seed);
 
-ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::math::device libkey, sycl::queue queue,
                                            std::initializer_list<std::uint32_t> seed);
 
 } // namespace detail
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_RNG_LOADER_HPP_

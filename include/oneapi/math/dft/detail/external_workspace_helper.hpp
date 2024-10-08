@@ -31,7 +31,7 @@
 #include "oneapi/math/dft/detail/commit_impl.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace dft {
 namespace detail {
 
@@ -90,7 +90,7 @@ public:
     */
     void set_workspace_throw(commit_impl_t& committed_desc, scalar_t* usm_workspace) {
         if (get_rqd_workspace_bytes(committed_desc) > 0 && usm_workspace == nullptr) {
-            throw mkl::invalid_argument("DFT", "set_workspace",
+            throw math::invalid_argument("DFT", "set_workspace",
                                         "Backend expected a non-null workspace pointer.");
         }
         m_ext_workspace_rqd = true;
@@ -105,11 +105,11 @@ public:
                              sycl::buffer<scalar_t>& buffer_workspace) {
         if (static_cast<std::size_t>(get_rqd_workspace_bytes(committed_desc)) / sizeof(scalar_t) >
             buffer_workspace.size()) {
-            throw mkl::invalid_argument("DFT", "set_workspace", "Provided workspace is too small");
+            throw math::invalid_argument("DFT", "set_workspace", "Provided workspace is too small");
             return;
         }
         if (buffer_workspace.is_sub_buffer()) {
-            throw mkl::invalid_argument("DFT", "set_workspace",
+            throw math::invalid_argument("DFT", "set_workspace",
                                         "Cannot use sub-buffers for workspace");
             return;
         }
@@ -137,7 +137,7 @@ public:
                 }
             }
             else {
-                throw mkl::invalid_argument(
+                throw math::invalid_argument(
                     "DFT", function_name,
                     "Buffer external workspace must be used with buffer compute calls");
             }
@@ -169,7 +169,7 @@ private:
     */
     void usm_compute_call_throw(const char* function_name) const {
         if (m_ext_workspace_rqd && m_workspace_type != ext_workspace_type::usm) {
-            throw mkl::invalid_argument(
+            throw math::invalid_argument(
                 "DFT", function_name, "USM external workspace must be used with usm compute calls");
         }
     }
@@ -179,7 +179,7 @@ private:
     */
     void buffer_compute_call_throw(const char* function_name) const {
         if (m_ext_workspace_rqd && m_workspace_type != ext_workspace_type::buffer) {
-            throw mkl::invalid_argument(
+            throw math::invalid_argument(
                 "DFT", function_name,
                 "Buffer external workspace must be used with buffer compute calls");
         }
@@ -188,7 +188,7 @@ private:
 
 } // namespace detail
 } // namespace dft
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_DFT_EXTERNAL_WORKSPACE_HELPER_HPP_

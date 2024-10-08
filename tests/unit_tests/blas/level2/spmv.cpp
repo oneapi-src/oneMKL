@@ -47,14 +47,14 @@ extern std::vector<sycl::device *> devices;
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower, int n, fp alpha,
+int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, fp alpha,
          fp beta, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y, y_ref, A;
     rand_vector(x, n, incx);
     rand_vector(y, n, incy);
     y_ref = y;
-    rand_matrix(A, layout, oneapi::mkl::transpose::nontrans, n, n, n);
+    rand_matrix(A, layout, oneapi::math::transpose::nontrans, n, n, n);
 
     // Call Reference SPMV.
     const int n_ref = n, incx_ref = incx, incy_ref = incy;
@@ -89,25 +89,25 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                oneapi::mkl::blas::column_major::spmv(main_queue, upper_lower, n, alpha, A_buffer,
+            case oneapi::math::layout::col_major:
+                oneapi::math::blas::column_major::spmv(main_queue, upper_lower, n, alpha, A_buffer,
                                                       x_buffer, incx, beta, y_buffer, incy);
                 break;
-            case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::spmv(main_queue, upper_lower, n, alpha, A_buffer,
+            case oneapi::math::layout::row_major:
+                oneapi::math::blas::row_major::spmv(main_queue, upper_lower, n, alpha, A_buffer,
                                                    x_buffer, incx, beta, y_buffer, incy);
                 break;
             default: break;
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::spmv,
+            case oneapi::math::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::spmv,
                                         upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
                                         y_buffer, incy);
                 break;
-            case oneapi::mkl::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::spmv, upper_lower,
+            case oneapi::math::layout::row_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::spmv, upper_lower,
                                         n, alpha, A_buffer, x_buffer, incx, beta, y_buffer, incy);
                 break;
             default: break;
@@ -119,7 +119,7 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
         print_error_code(e);
     }
 
-    catch (const oneapi::mkl::unimplemented &e) {
+    catch (const oneapi::math::unimplemented &e) {
         return test_skipped;
     }
 
@@ -134,24 +134,24 @@ int test(device *dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     return (int)good;
 }
 
-class SpmvTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::mkl::layout>> {
+class SpmvTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {
 };
 
 TEST_P(SpmvTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
+                                  oneapi::math::uplo::lower, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
+                                  oneapi::math::uplo::upper, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::uplo::lower, 30, alpha, beta, -2, -3));
+                                  oneapi::math::uplo::lower, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::uplo::upper, 30, alpha, beta, -2, -3));
+                                  oneapi::math::uplo::upper, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
+                                  oneapi::math::uplo::lower, 30, alpha, beta, 1, 1));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
+                                  oneapi::math::uplo::upper, 30, alpha, beta, 1, 1));
 }
 TEST_P(SpmvTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
@@ -159,23 +159,23 @@ TEST_P(SpmvTests, RealDoublePrecision) {
     double alpha(2.0);
     double beta(3.0);
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::uplo::lower, 30, alpha, beta, 2, 3));
+                                   oneapi::math::uplo::lower, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::uplo::upper, 30, alpha, beta, 2, 3));
+                                   oneapi::math::uplo::upper, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::uplo::lower, 30, alpha, beta, -2, -3));
+                                   oneapi::math::uplo::lower, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::uplo::upper, 30, alpha, beta, -2, -3));
+                                   oneapi::math::uplo::upper, 30, alpha, beta, -2, -3));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::uplo::lower, 30, alpha, beta, 1, 1));
+                                   oneapi::math::uplo::lower, 30, alpha, beta, 1, 1));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::mkl::uplo::upper, 30, alpha, beta, 1, 1));
+                                   oneapi::math::uplo::upper, 30, alpha, beta, 1, 1));
 }
 
 INSTANTIATE_TEST_SUITE_P(SpmvTestSuite, SpmvTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::col_major,
-                                                            oneapi::mkl::layout::row_major)),
+                                            testing::Values(oneapi::math::layout::col_major,
+                                                            oneapi::math::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

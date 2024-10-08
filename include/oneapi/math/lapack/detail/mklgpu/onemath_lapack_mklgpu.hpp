@@ -33,7 +33,7 @@
 #include "oneapi/math/detail/export.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace mklgpu {
 
@@ -41,5 +41,5 @@ namespace mklgpu {
 
 } //namespace mklgpu
 } //namespace lapack
-} //namespace mkl
+} //namespace math
 } //namespace oneapi

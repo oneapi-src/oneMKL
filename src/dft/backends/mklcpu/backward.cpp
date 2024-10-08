@@ -34,7 +34,7 @@
 // MKLCPU header
 #include "mkl_dfti.h"
 
-namespace oneapi::mkl::dft::mklcpu {
+namespace oneapi::math::dft::mklcpu {
 namespace detail {
 
 // BUFFER version
@@ -43,7 +43,7 @@ template <dft::precision prec, dft::domain dom>
 inline void check_bwd_commit(dft::descriptor<prec, dom> &desc) {
     auto commit_handle = dft::detail::get_commit(desc);
     if (commit_handle == nullptr || commit_handle->get_backend() != backend::mklcpu) {
-        throw mkl::invalid_argument("DFT", "computer_backward",
+        throw math::invalid_argument("DFT", "computer_backward",
                                     "DFT descriptor has not been commited for MKLCPU");
     }
 
@@ -51,19 +51,19 @@ inline void check_bwd_commit(dft::descriptor<prec, dom> &desc) {
     MKL_LONG commit_status{ DFTI_UNCOMMITTED };
     DftiGetValue(mklcpu_desc[1], DFTI_COMMIT_STATUS, &commit_status);
     if (commit_status != DFTI_COMMITTED) {
-        throw mkl::invalid_argument("DFT", "compute_backward",
+        throw math::invalid_argument("DFT", "compute_backward",
                                     "MKLCPU DFT descriptor was not successfully committed.");
     }
 }
 
-// Throw an mkl::invalid_argument if the runtime param in the descriptor does not match
+// Throw an math::invalid_argument if the runtime param in the descriptor does not match
 // the expected value.
 template <dft::detail::config_param Param, dft::detail::config_value Expected, typename DescT>
 inline auto expect_config(DescT &desc, const char *message) {
     dft::detail::config_value actual{ 0 };
     desc.get_value(Param, &actual);
     if (actual != Expected) {
-        throw mkl::invalid_argument("DFT", "compute_backward", message);
+        throw math::invalid_argument("DFT", "compute_backward", message);
     }
 }
 // convert the base commit class to derived cpu commit class
@@ -94,7 +94,7 @@ ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
             DFT_ERROR status =
                 DftiComputeBackward(desc_acc[detail::DIR::bwd], detail::acc_to_ptr(inout_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -126,7 +126,7 @@ ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
             DFT_ERROR status = DftiComputeBackward(
                 desc_acc[detail::DIR::bwd], detail::acc_to_ptr(re_acc), detail::acc_to_ptr(im_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -159,7 +159,7 @@ ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
             DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], in_ptr,
                                                    detail::acc_to_ptr(out_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -198,7 +198,7 @@ ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
                 DftiComputeBackward(desc_acc[detail::DIR::bwd], inre_ptr, inim_ptr,
                                     detail::acc_to_ptr(outre_acc), detail::acc_to_ptr(outim_acc));
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -227,7 +227,7 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descripto
         detail::host_task<class host_usm_kernel_back_inplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], inout);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -255,7 +255,7 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descri
         detail::host_task<class host_usm_kernel_split_back_inplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], inout_re, inout_im);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -285,7 +285,7 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descripto
         detail::host_task<class host_usm_kernel_back_outofplace>(cgh, [=]() {
             DFT_ERROR status = DftiComputeBackward(desc_acc[detail::DIR::bwd], in, out);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -316,7 +316,7 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descri
             DFT_ERROR status =
                 DftiComputeBackward(desc_acc[detail::DIR::bwd], in_re, in_im, out_re, out_im);
             if (status != DFTI_NO_ERROR) {
-                throw oneapi::mkl::exception(
+                throw oneapi::math::exception(
                     "dft/backends/mklcpu", "compute_backward",
                     std::string("DftiComputeBackward failed : ") + DftiErrorMessage(status));
             }
@@ -327,4 +327,4 @@ ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descri
 // Template function instantiations
 #include "dft/backends/backend_backward_instantiations.cxx"
 
-} // namespace oneapi::mkl::dft::mklcpu
+} // namespace oneapi::math::dft::mklcpu

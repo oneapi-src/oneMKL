@@ -28,7 +28,7 @@
 #include <utility>
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace portblas {
 
@@ -64,10 +64,10 @@ DEF_PORTBLAS_TYPE(int64_t, int64_t)
 DEF_PORTBLAS_TYPE(sycl::half, sycl::half)
 DEF_PORTBLAS_TYPE(float, float)
 DEF_PORTBLAS_TYPE(double, double)
-DEF_PORTBLAS_TYPE(oneapi::mkl::transpose, char)
-DEF_PORTBLAS_TYPE(oneapi::mkl::uplo, char)
-DEF_PORTBLAS_TYPE(oneapi::mkl::side, char)
-DEF_PORTBLAS_TYPE(oneapi::mkl::diag, char)
+DEF_PORTBLAS_TYPE(oneapi::math::transpose, char)
+DEF_PORTBLAS_TYPE(oneapi::math::uplo, char)
+DEF_PORTBLAS_TYPE(oneapi::math::side, char)
+DEF_PORTBLAS_TYPE(oneapi::math::diag, char)
 DEF_PORTBLAS_TYPE(std::complex<float>, sycl_complex_t<float>)
 DEF_PORTBLAS_TYPE(std::complex<double>, sycl_complex_t<double>)
 // Passthrough of portBLAS arg types for more complex wrapping.
@@ -113,21 +113,21 @@ inline typename portblas_type<InputT>::type convert_to_portblas_type(InputT& inp
 }
 
 template <>
-inline char convert_to_portblas_type<oneapi::mkl::transpose>(oneapi::mkl::transpose& trans) {
-    if (trans == oneapi::mkl::transpose::nontrans) {
+inline char convert_to_portblas_type<oneapi::math::transpose>(oneapi::math::transpose& trans) {
+    if (trans == oneapi::math::transpose::nontrans) {
         return 'n';
     }
-    else if (trans == oneapi::mkl::transpose::trans) {
+    else if (trans == oneapi::math::transpose::trans) {
         return 't';
     }
-    else { // trans == oneapi::mkl::transpose::conjtrans
+    else { // trans == oneapi::math::transpose::conjtrans
         return 'c';
     }
 }
 
 template <>
-inline char convert_to_portblas_type<oneapi::mkl::uplo>(oneapi::mkl::uplo& upper_lower) {
-    if (upper_lower == oneapi::mkl::uplo::upper) {
+inline char convert_to_portblas_type<oneapi::math::uplo>(oneapi::math::uplo& upper_lower) {
+    if (upper_lower == oneapi::math::uplo::upper) {
         return 'u';
     }
     else {
@@ -136,8 +136,8 @@ inline char convert_to_portblas_type<oneapi::mkl::uplo>(oneapi::mkl::uplo& upper
 }
 
 template <>
-inline char convert_to_portblas_type<oneapi::mkl::side>(oneapi::mkl::side& left_right) {
-    if (left_right == oneapi::mkl::side::left) {
+inline char convert_to_portblas_type<oneapi::math::side>(oneapi::math::side& left_right) {
+    if (left_right == oneapi::math::side::left) {
         return 'l';
     }
     else {
@@ -146,8 +146,8 @@ inline char convert_to_portblas_type<oneapi::mkl::side>(oneapi::mkl::side& left_
 }
 
 template <>
-inline char convert_to_portblas_type<oneapi::mkl::diag>(oneapi::mkl::diag& unit_diag) {
-    if (unit_diag == oneapi::mkl::diag::unit) {
+inline char convert_to_portblas_type<oneapi::math::diag>(oneapi::math::diag& unit_diag) {
+    if (unit_diag == oneapi::math::diag::unit) {
         return 'u';
     }
     else {
@@ -180,7 +180,7 @@ struct throw_if_unsupported_by_device {
         static constexpr bool checkTypeInPack = (std::is_same_v<CheckT, ArgTs> || ...);
         if (checkTypeInPack) {
             if (!q.get_info<sycl::info::queue::device>().has(AspectVal)) {
-                throw mkl::unsupported_device("blas", message,
+                throw math::unsupported_device("blas", message,
                                               q.get_info<sycl::info::queue::device>());
             }
         }
@@ -233,7 +233,7 @@ struct throw_if_unsupported_by_device {
 
 } // namespace portblas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _PORTBLAS_COMMON_HPP_

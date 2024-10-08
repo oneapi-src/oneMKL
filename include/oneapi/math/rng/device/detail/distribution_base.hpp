@@ -25,7 +25,7 @@
 #include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/rng/device/types.hpp"
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 namespace detail {
 
@@ -65,7 +65,7 @@ class poisson;
 template <typename IntType = std::uint32_t, typename Method = bernoulli_method::by_default>
 class bernoulli;
 
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #include "oneapi/math/rng/device/detail/uniform_impl.hpp"
 #include "oneapi/math/rng/device/detail/gaussian_impl.hpp"

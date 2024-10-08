@@ -47,7 +47,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace rocblas {
 
@@ -79,6 +79,6 @@ static inline void onemath_rocblas_host_task(H &cgh, sycl::queue queue, F f) {
 
 } // namespace rocblas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 #endif // _ROCBLAS_TASK_HPP_

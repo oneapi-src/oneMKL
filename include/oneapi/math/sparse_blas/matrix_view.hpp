@@ -23,7 +23,7 @@
 #include "oneapi/math/types.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace sparse {
 
 enum class matrix_descr {
@@ -45,7 +45,7 @@ struct matrix_view {
 };
 
 } // namespace sparse
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_SPARSE_BLAS_MATRIX_VIEW_HPP_

@@ -59,11 +59,11 @@ enum sparse_matrix_format_t {
     COO,
 };
 
-static std::vector<std::set<oneapi::mkl::sparse::matrix_property>> test_matrix_properties{
-    { oneapi::mkl::sparse::matrix_property::sorted },
-    { oneapi::mkl::sparse::matrix_property::symmetric },
-    { oneapi::mkl::sparse::matrix_property::sorted,
-      oneapi::mkl::sparse::matrix_property::symmetric }
+static std::vector<std::set<oneapi::math::sparse::matrix_property>> test_matrix_properties{
+    { oneapi::math::sparse::matrix_property::sorted },
+    { oneapi::math::sparse::matrix_property::symmetric },
+    { oneapi::math::sparse::matrix_property::sorted,
+      oneapi::math::sparse::matrix_property::symmetric }
 };
 
 void print_error_code(sycl::exception const &e);
@@ -129,12 +129,12 @@ auto swap_if_cond(bool swap, T x, T y) {
 }
 
 template <typename OutT, typename XT, typename YT>
-auto swap_if_transposed(oneapi::mkl::transpose op, XT x, YT y) {
-    return swap_if_cond<OutT, XT, YT>(op != oneapi::mkl::transpose::nontrans, x, y);
+auto swap_if_transposed(oneapi::math::transpose op, XT x, YT y) {
+    return swap_if_cond<OutT, XT, YT>(op != oneapi::math::transpose::nontrans, x, y);
 }
 
 template <typename T>
-auto swap_if_transposed(oneapi::mkl::transpose op, T x, T y) {
+auto swap_if_transposed(oneapi::math::transpose op, T x, T y) {
     return swap_if_transposed<T, T, T>(op, x, y);
 }
 
@@ -178,13 +178,13 @@ void rand_vector(std::vector<fpType> &v, std::size_t n) {
 }
 
 template <typename fpType>
-void rand_matrix(std::vector<fpType> &m, oneapi::mkl::layout layout_val, std::size_t nrows,
+void rand_matrix(std::vector<fpType> &m, oneapi::math::layout layout_val, std::size_t nrows,
                  std::size_t ncols, std::size_t ld,
-                 oneapi::mkl::transpose transpose_val = oneapi::mkl::transpose::nontrans) {
+                 oneapi::math::transpose transpose_val = oneapi::math::transpose::nontrans) {
     using fpRealType = typename complex_info<fpType>::real_type;
     auto [op_nrows, op_cols] = swap_if_transposed(transpose_val, nrows, ncols);
     auto [outer_size, inner_size] =
-        swap_if_cond(layout_val == oneapi::mkl::layout::row_major, op_cols, op_nrows);
+        swap_if_cond(layout_val == oneapi::math::layout::row_major, op_cols, op_nrows);
     if (inner_size > ld) {
         throw std::runtime_error("Expected inner_size <= ld");
     }
@@ -360,7 +360,7 @@ void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intT
         }
     }
     else {
-        throw oneapi::mkl::exception("sparse_blas", "shuffle_sparse_matrix",
+        throw oneapi::math::exception("sparse_blas", "shuffle_sparse_matrix",
                                      "Internal error: unsupported format");
     }
 }
@@ -368,19 +368,19 @@ void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intT
 /// Initialize a sparse matrix specified by the given format
 template <typename ContainerValueT, typename ContainerIndexT>
 void init_sparse_matrix(sycl::queue &queue, sparse_matrix_format_t format,
-                        oneapi::mkl::sparse::matrix_handle_t *p_smhandle, std::int64_t num_rows,
-                        std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                        oneapi::math::sparse::matrix_handle_t *p_smhandle, std::int64_t num_rows,
+                        std::int64_t num_cols, std::int64_t nnz, oneapi::math::index_base index,
                         ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
     if (format == sparse_matrix_format_t::CSR) {
-        CALL_RT_OR_CT(oneapi::mkl::sparse::init_csr_matrix, queue, p_smhandle, num_rows, num_cols,
+        CALL_RT_OR_CT(oneapi::math::sparse::init_csr_matrix, queue, p_smhandle, num_rows, num_cols,
                       nnz, index, rows, cols, vals);
     }
     else if (format == sparse_matrix_format_t::COO) {
-        CALL_RT_OR_CT(oneapi::mkl::sparse::init_coo_matrix, queue, p_smhandle, num_rows, num_cols,
+        CALL_RT_OR_CT(oneapi::math::sparse::init_coo_matrix, queue, p_smhandle, num_rows, num_cols,
                       nnz, index, rows, cols, vals);
     }
     else {
-        throw oneapi::mkl::exception("sparse_blas", "init_sparse_matrix",
+        throw oneapi::math::exception("sparse_blas", "init_sparse_matrix",
                                      "Internal error: unsupported format");
     }
 }
@@ -388,19 +388,19 @@ void init_sparse_matrix(sycl::queue &queue, sparse_matrix_format_t format,
 /// Reset the data of a sparse matrix specified by the given format
 template <typename ContainerValueT, typename ContainerIndexT>
 void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
-                     oneapi::mkl::sparse::matrix_handle_t smhandle, std::int64_t num_rows,
-                     std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
+                     oneapi::math::sparse::matrix_handle_t smhandle, std::int64_t num_rows,
+                     std::int64_t num_cols, std::int64_t nnz, oneapi::math::index_base index,
                      ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
     if (format == sparse_matrix_format_t::CSR) {
-        CALL_RT_OR_CT(oneapi::mkl::sparse::set_csr_matrix_data, queue, smhandle, num_rows, num_cols,
+        CALL_RT_OR_CT(oneapi::math::sparse::set_csr_matrix_data, queue, smhandle, num_rows, num_cols,
                       nnz, index, rows, cols, vals);
     }
     else if (format == sparse_matrix_format_t::COO) {
-        CALL_RT_OR_CT(oneapi::mkl::sparse::set_coo_matrix_data, queue, smhandle, num_rows, num_cols,
+        CALL_RT_OR_CT(oneapi::math::sparse::set_coo_matrix_data, queue, smhandle, num_rows, num_cols,
                       nnz, index, rows, cols, vals);
     }
     else {
-        throw oneapi::mkl::exception("sparse_blas", "set_matrix_data",
+        throw oneapi::math::exception("sparse_blas", "set_matrix_data",
                                      "Internal error: unsupported format");
     }
 }
@@ -416,18 +416,18 @@ inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> depe
             }
             sycl::event event;
             if constexpr (std::is_same_v<decltype(handles),
-                                         oneapi::mkl::sparse::dense_vector_handle_t>) {
-                CALL_RT_OR_CT(event = oneapi::mkl::sparse::release_dense_vector, queue, handles,
+                                         oneapi::math::sparse::dense_vector_handle_t>) {
+                CALL_RT_OR_CT(event = oneapi::math::sparse::release_dense_vector, queue, handles,
                               dependencies);
             }
             else if constexpr (std::is_same_v<decltype(handles),
-                                              oneapi::mkl::sparse::dense_matrix_handle_t>) {
-                CALL_RT_OR_CT(event = oneapi::mkl::sparse::release_dense_matrix, queue, handles,
+                                              oneapi::math::sparse::dense_matrix_handle_t>) {
+                CALL_RT_OR_CT(event = oneapi::math::sparse::release_dense_matrix, queue, handles,
                               dependencies);
             }
             else if constexpr (std::is_same_v<decltype(handles),
-                                              oneapi::mkl::sparse::matrix_handle_t>) {
-                CALL_RT_OR_CT(event = oneapi::mkl::sparse::release_sparse_matrix, queue, handles,
+                                              oneapi::math::sparse::matrix_handle_t>) {
+                CALL_RT_OR_CT(event = oneapi::math::sparse::release_sparse_matrix, queue, handles,
                               dependencies);
             }
             event.wait();
@@ -447,12 +447,12 @@ inline void wait_and_free_handles(sycl::queue &queue, HandlesT &&... handles) {
 }
 
 inline bool require_square_matrix(
-    oneapi::mkl::sparse::matrix_view A_view,
-    const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties) {
+    oneapi::math::sparse::matrix_view A_view,
+    const std::set<oneapi::math::sparse::matrix_property> &matrix_properties) {
     const bool is_symmetric =
-        matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
+        matrix_properties.find(oneapi::math::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
-    return A_view.type_view != oneapi::mkl::sparse::matrix_descr::general || is_symmetric;
+    return A_view.type_view != oneapi::math::sparse::matrix_descr::general || is_symmetric;
 }
 
 template <typename fpType>

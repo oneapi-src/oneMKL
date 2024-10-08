@@ -24,7 +24,7 @@
 #include "oneapi/math/sparse_blas/types.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace sparse {
 
 // Dense vector
@@ -123,25 +123,25 @@ void init_spmm_descr(sycl::queue &queue, spmm_descr_t *p_spmm_descr);
 sycl::event release_spmm_descr(sycl::queue &queue, spmm_descr_t spmm_descr,
                                const std::vector<sycl::event> &dependencies = {});
 
-void spmm_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
+void spmm_buffer_size(sycl::queue &queue, oneapi::math::transpose opA, oneapi::math::transpose opB,
                       const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                       dense_matrix_handle_t B_handle, const void *beta,
                       dense_matrix_handle_t C_handle, spmm_alg alg, spmm_descr_t spmm_descr,
                       std::size_t &temp_buffer_size);
 
-void spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
+void spmm_optimize(sycl::queue &queue, oneapi::math::transpose opA, oneapi::math::transpose opB,
                    const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                    dense_matrix_handle_t B_handle, const void *beta, dense_matrix_handle_t C_handle,
                    spmm_alg alg, spmm_descr_t spmm_descr, sycl::buffer<std::uint8_t, 1> workspace);
 
-sycl::event spmm_optimize(sycl::queue &queue, oneapi::mkl::transpose opA,
-                          oneapi::mkl::transpose opB, const void *alpha, matrix_view A_view,
+sycl::event spmm_optimize(sycl::queue &queue, oneapi::math::transpose opA,
+                          oneapi::math::transpose opB, const void *alpha, matrix_view A_view,
                           matrix_handle_t A_handle, dense_matrix_handle_t B_handle,
                           const void *beta, dense_matrix_handle_t C_handle, spmm_alg alg,
                           spmm_descr_t spmm_descr, void *workspace,
                           const std::vector<sycl::event> &dependencies = {});
 
-sycl::event spmm(sycl::queue &queue, oneapi::mkl::transpose opA, oneapi::mkl::transpose opB,
+sycl::event spmm(sycl::queue &queue, oneapi::math::transpose opA, oneapi::math::transpose opB,
                  const void *alpha, matrix_view A_view, matrix_handle_t A_handle,
                  dense_matrix_handle_t B_handle, const void *beta, dense_matrix_handle_t C_handle,
                  spmm_alg alg, spmm_descr_t spmm_descr,
@@ -153,23 +153,23 @@ void init_spmv_descr(sycl::queue &queue, spmv_descr_t *p_spmv_descr);
 sycl::event release_spmv_descr(sycl::queue &queue, spmv_descr_t spmv_descr,
                                const std::vector<sycl::event> &dependencies = {});
 
-void spmv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+void spmv_buffer_size(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                       matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                       const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
                       spmv_descr_t spmv_descr, std::size_t &temp_buffer_size);
 
-void spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+void spmv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                    matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                    const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
                    spmv_descr_t spmv_descr, sycl::buffer<std::uint8_t, 1> workspace);
 
-sycl::event spmv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+sycl::event spmv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                           matrix_view A_view, matrix_handle_t A_handle,
                           dense_vector_handle_t x_handle, const void *beta,
                           dense_vector_handle_t y_handle, spmv_alg alg, spmv_descr_t spmv_descr,
                           void *workspace, const std::vector<sycl::event> &dependencies = {});
 
-sycl::event spmv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+sycl::event spmv(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                  matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                  const void *beta, dense_vector_handle_t y_handle, spmv_alg alg,
                  spmv_descr_t spmv_descr, const std::vector<sycl::event> &dependencies = {});
@@ -180,29 +180,29 @@ void init_spsv_descr(sycl::queue &queue, spsv_descr_t *p_spsv_descr);
 sycl::event release_spsv_descr(sycl::queue &queue, spsv_descr_t spsv_descr,
                                const std::vector<sycl::event> &dependencies = {});
 
-void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+void spsv_buffer_size(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                       matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                       dense_vector_handle_t y_handle, spsv_alg alg, spsv_descr_t spsv_descr,
                       std::size_t &temp_buffer_size);
 
-void spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+void spsv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                    matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                    dense_vector_handle_t y_handle, spsv_alg alg, spsv_descr_t spsv_descr,
                    sycl::buffer<std::uint8_t, 1> workspace);
 
-sycl::event spsv_optimize(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+sycl::event spsv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                           matrix_view A_view, matrix_handle_t A_handle,
                           dense_vector_handle_t x_handle, dense_vector_handle_t y_handle,
                           spsv_alg alg, spsv_descr_t spsv_descr, void *workspace,
                           const std::vector<sycl::event> &dependencies = {});
 
-sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alpha,
+sycl::event spsv(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
                  matrix_view A_view, matrix_handle_t A_handle, dense_vector_handle_t x_handle,
                  dense_vector_handle_t y_handle, spsv_alg alg, spsv_descr_t spsv_descr,
                  const std::vector<sycl::event> &dependencies = {});
 
 } // namespace sparse
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_SPARSE_BLAS_DETAIL_SPARSE_BLAS_RT_HPP_

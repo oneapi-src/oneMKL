@@ -27,33 +27,33 @@
 #include "oneapi/math/exceptions.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
-class backend_not_found : public oneapi::mkl::exception {
+class backend_not_found : public oneapi::math::exception {
 public:
     backend_not_found(const std::string &info = "")
-            : oneapi::mkl::exception(
+            : oneapi::math::exception(
                   "", "", ((info.length() != 0) ? info : "Couldn't load selected backend")) {}
 };
 
-class function_not_found : public oneapi::mkl::exception {
+class function_not_found : public oneapi::math::exception {
 public:
     function_not_found(const std::string &info = "")
-            : oneapi::mkl::exception(
+            : oneapi::math::exception(
                   "", "",
                   ((info.length() != 0) ? info : "Couldn't load functions from selected backend")) {
     }
 };
 
-class specification_mismatch : public oneapi::mkl::exception {
+class specification_mismatch : public oneapi::math::exception {
 public:
     specification_mismatch(const std::string &info = "")
-            : oneapi::mkl::exception(
+            : oneapi::math::exception(
                   "", "",
                   ((info.length() != 0) ? info : "Loaded oneMath specification version mismatch")) {}
 };
 
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_DETAIL_EXCEPTIONS_HPP_

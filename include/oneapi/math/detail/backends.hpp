@@ -24,7 +24,7 @@
 #include <string>
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 enum class backend {
     mklcpu,
@@ -55,7 +55,7 @@ static backendmap backend_map = {
     { backend::portfft, "portfft" },     { backend::unsupported, "unsupported" }
 };
 
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_ONEMATH_BACKENDS_HPP_

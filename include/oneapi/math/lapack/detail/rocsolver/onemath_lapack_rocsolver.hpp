@@ -35,7 +35,7 @@
 #include "oneapi/math/detail/export.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace rocsolver {
 
@@ -43,7 +43,7 @@ namespace rocsolver {
 
 } // namespace rocsolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_LAPACK_ROCSOLVER_HPP_

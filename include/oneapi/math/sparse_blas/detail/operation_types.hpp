@@ -20,7 +20,7 @@
 #ifndef _ONEMATH_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
 #define _ONEMATH_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
 
-namespace oneapi::mkl::sparse {
+namespace oneapi::math::sparse {
 
 // Each backend can create its own descriptor type or re-use the native descriptor types that will be reinterpret_cast'ed to the types below
 
@@ -33,6 +33,6 @@ using spmv_descr_t = spmv_descr*;
 struct spsv_descr;
 using spsv_descr_t = spsv_descr*;
 
-} // namespace oneapi::mkl::sparse
+} // namespace oneapi::math::sparse
 
 #endif // _ONEMATH_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_

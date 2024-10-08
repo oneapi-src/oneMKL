@@ -31,38 +31,38 @@ typedef enum { CblasRowOffset = 101, CblasColOffset = 102, CblasFixOffset = 103 
  * equivalents.
  */
 
-inline CBLAS_TRANSPOSE convert_to_cblas_trans(oneapi::mkl::transpose trans) {
-    if (trans == oneapi::mkl::transpose::trans)
+inline CBLAS_TRANSPOSE convert_to_cblas_trans(oneapi::math::transpose trans) {
+    if (trans == oneapi::math::transpose::trans)
         return CBLAS_TRANSPOSE::CblasTrans;
-    else if (trans == oneapi::mkl::transpose::conjtrans)
+    else if (trans == oneapi::math::transpose::conjtrans)
         return CBLAS_TRANSPOSE::CblasConjTrans;
     else
         return CBLAS_TRANSPOSE::CblasNoTrans;
 }
 
-inline CBLAS_UPLO convert_to_cblas_uplo(oneapi::mkl::uplo is_upper) {
-    return is_upper == oneapi::mkl::uplo::upper ? CBLAS_UPLO::CblasUpper : CBLAS_UPLO::CblasLower;
+inline CBLAS_UPLO convert_to_cblas_uplo(oneapi::math::uplo is_upper) {
+    return is_upper == oneapi::math::uplo::upper ? CBLAS_UPLO::CblasUpper : CBLAS_UPLO::CblasLower;
 }
 
-inline CBLAS_DIAG convert_to_cblas_diag(oneapi::mkl::diag is_unit) {
-    return is_unit == oneapi::mkl::diag::unit ? CBLAS_DIAG::CblasUnit : CBLAS_DIAG::CblasNonUnit;
+inline CBLAS_DIAG convert_to_cblas_diag(oneapi::math::diag is_unit) {
+    return is_unit == oneapi::math::diag::unit ? CBLAS_DIAG::CblasUnit : CBLAS_DIAG::CblasNonUnit;
 }
 
-inline CBLAS_SIDE convert_to_cblas_side(oneapi::mkl::side is_left) {
-    return is_left == oneapi::mkl::side::left ? CBLAS_SIDE::CblasLeft : CBLAS_SIDE::CblasRight;
+inline CBLAS_SIDE convert_to_cblas_side(oneapi::math::side is_left) {
+    return is_left == oneapi::math::side::left ? CBLAS_SIDE::CblasLeft : CBLAS_SIDE::CblasRight;
 }
 
-inline CBLAS_OFFSET convert_to_cblas_offset(oneapi::mkl::offset offsetc) {
-    if (offsetc == oneapi::mkl::offset::fix)
+inline CBLAS_OFFSET convert_to_cblas_offset(oneapi::math::offset offsetc) {
+    if (offsetc == oneapi::math::offset::fix)
         return CBLAS_OFFSET::CblasFixOffset;
-    else if (offsetc == oneapi::mkl::offset::column)
+    else if (offsetc == oneapi::math::offset::column)
         return CBLAS_OFFSET::CblasColOffset;
     else
         return CBLAS_OFFSET::CblasRowOffset;
 }
 
-inline CBLAS_LAYOUT convert_to_cblas_layout(oneapi::mkl::layout is_column) {
-    return is_column == oneapi::mkl::layout::col_major ? CBLAS_LAYOUT::CblasColMajor
+inline CBLAS_LAYOUT convert_to_cblas_layout(oneapi::math::layout is_column) {
+    return is_column == oneapi::math::layout::col_major ? CBLAS_LAYOUT::CblasColMajor
                                                        : CBLAS_LAYOUT::CblasRowMajor;
 }
 

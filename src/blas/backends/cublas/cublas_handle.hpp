@@ -22,7 +22,7 @@
 #include <unordered_map>
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace cublas {
 
@@ -55,7 +55,7 @@ struct cublas_handle {
 
 } // namespace cublas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // CUBLAS_HANDLE_HPP

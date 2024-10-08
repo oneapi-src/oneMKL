@@ -35,7 +35,7 @@
 #define GET_MULTI_PTR template get_multi_ptr<sycl::access::decorated::yes>().get_raw()
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace netlib {
 
@@ -97,7 +97,7 @@ static inline void host_task(H &cgh, F f) {
 
 } // namespace netlib
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_NETLIB_COMMON_HPP_

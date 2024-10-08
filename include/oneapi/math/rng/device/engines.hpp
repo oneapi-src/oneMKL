@@ -26,11 +26,11 @@
 #include "oneapi/math/rng/device/functions.hpp"
 #include "oneapi/math/rng/device/detail/engine_base.hpp"
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 // PSEUDO-RANDOM NUMBER DEVICE-SIDE ENGINES
 
-// Class template oneapi::mkl::rng::device::philox4x32x10
+// Class template oneapi::math::rng::device::philox4x32x10
 //
 // Represents Philox4x32-10 counter-based pseudorandom number generator
 //
@@ -71,7 +71,7 @@ private:
     friend class detail::distribution_base;
 };
 
-// Class oneapi::mkl::rng::device::mrg32k3a
+// Class oneapi::math::rng::device::mrg32k3a
 //
 // Represents the combined recurcive pseudorandom number generator
 //
@@ -111,7 +111,7 @@ private:
     friend class detail::distribution_base;
 };
 
-// Class oneapi::mkl::rng::device::mcg31m1
+// Class oneapi::math::rng::device::mcg31m1
 //
 //
 //
@@ -138,7 +138,7 @@ private:
     friend class detail::distribution_base;
 };
 
-// Class oneapi::mkl::rng::device::mcg59
+// Class oneapi::math::rng::device::mcg59
 //
 //
 //
@@ -165,6 +165,6 @@ private:
     friend class detail::distribution_base;
 };
 
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #endif // _MKL_RNG_DEVICE_ENGINES_HPP_

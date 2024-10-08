@@ -22,7 +22,7 @@
 
 #include <string>
 
-namespace oneapi::mkl::sparse::detail {
+namespace oneapi::math::sparse::detail {
 
 enum data_type { none, int32, int64, real_fp32, real_fp64, complex_fp32, complex_fp64 };
 
@@ -64,6 +64,6 @@ constexpr data_type get_data_type() {
     }
 }
 
-} // namespace oneapi::mkl::sparse::detail
+} // namespace oneapi::math::sparse::detail
 
 #endif // _ONEMATH_SRC_SPARSE_BLAS_ENUM_DATA_TYPES_HPP_

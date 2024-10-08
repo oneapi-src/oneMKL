@@ -10,7 +10,7 @@
 #include "rocrand_helper.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 namespace rocrand {
 #ifdef __HIPSYCL__
@@ -84,7 +84,7 @@ static inline void onemath_rocrand_host_task(H &cgh, Engine e, F f) {
 
 } // namespace rocrand
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif

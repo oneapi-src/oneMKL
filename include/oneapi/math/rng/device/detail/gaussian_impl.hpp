@@ -22,7 +22,7 @@
 
 #include "vm_wrappers.hpp"
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 // sqrt(2)
 template <typename RealType = float>
@@ -37,7 +37,7 @@ constexpr inline double sqrt2<double>() {
 
 template <typename RealType>
 class distribution_base<
-    oneapi::mkl::rng::device::gaussian<RealType, gaussian_method::box_muller2>> {
+    oneapi::math::rng::device::gaussian<RealType, gaussian_method::box_muller2>> {
 public:
     struct param_type {
         param_type(RealType mean, RealType stddev) : mean_(mean), stddev_(stddev) {}
@@ -49,7 +49,7 @@ public:
         flag_ = false;
 #ifndef __SYCL_DEVICE_ONLY__
         if (stddev <= RealType(0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gaussian", "stddev <= 0");
+            throw oneapi::math::invalid_argument("rng", "gaussian", "stddev <= 0");
         }
 #endif
     }
@@ -69,7 +69,7 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.stddev_ <= RealType(0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gaussian", "stddev <= 0");
+            throw oneapi::math::invalid_argument("rng", "gaussian", "stddev <= 0");
         }
 #endif
         mean_ = pt.mean_;
@@ -185,17 +185,17 @@ protected:
     RealType u2_;
 
     friend class distribution_base<
-        oneapi::mkl::rng::device::lognormal<RealType, lognormal_method::box_muller2>>;
+        oneapi::math::rng::device::lognormal<RealType, lognormal_method::box_muller2>>;
     friend class distribution_base<
-        oneapi::mkl::rng::device::poisson<std::int32_t, poisson_method::devroye>>;
+        oneapi::math::rng::device::poisson<std::int32_t, poisson_method::devroye>>;
     friend class distribution_base<
-        oneapi::mkl::rng::device::poisson<std::uint32_t, poisson_method::devroye>>;
+        oneapi::math::rng::device::poisson<std::uint32_t, poisson_method::devroye>>;
 };
 
 #if MKL_RNG_USE_BINARY_CODE
 
 template <typename RealType>
-class distribution_base<oneapi::mkl::rng::device::gaussian<RealType, gaussian_method::icdf>> {
+class distribution_base<oneapi::math::rng::device::gaussian<RealType, gaussian_method::icdf>> {
 public:
     struct param_type {
         param_type(RealType mean, RealType stddev) : mean_(mean), stddev_(stddev) {}
@@ -206,7 +206,7 @@ public:
     distribution_base(RealType mean, RealType stddev) : mean_(mean), stddev_(stddev) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (stddev <= RealType(0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gaussian", "stddev <= 0");
+            throw oneapi::math::invalid_argument("rng", "gaussian", "stddev <= 0");
         }
 #endif
     }
@@ -226,7 +226,7 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.stddev_ <= RealType(0)) {
-            throw oneapi::mkl::invalid_argument("rng", "gaussian", "stddev <= 0");
+            throw oneapi::math::invalid_argument("rng", "gaussian", "stddev <= 0");
         }
 #endif
         mean_ = pt.mean_;
@@ -265,6 +265,6 @@ protected:
 };
 #endif
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_GAUSSIAN_IMPL_HPP_

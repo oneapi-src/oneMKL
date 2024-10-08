@@ -38,10 +38,10 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
-inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
-    oneapi::mkl::device device_id;
+inline oneapi::math::device get_device_id(sycl::queue &queue) {
+    oneapi::math::device device_id;
     if (queue.get_device().is_cpu())
         device_id = device::x86cpu;
 #ifdef __HIPSYCL__
@@ -67,7 +67,7 @@ inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
     return device_id;
 }
 
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_ONEMATH_GET_DEVICE_ID_HPP_

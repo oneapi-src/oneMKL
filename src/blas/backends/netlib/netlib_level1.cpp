@@ -222,7 +222,7 @@ void cblas_zrotg(std::complex<double> *ca, const std::complex<double> *cb, doubl
 }
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace netlib {
 namespace column_major {
@@ -241,5 +241,5 @@ namespace row_major {
 } // namespace row_major
 } // namespace netlib
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

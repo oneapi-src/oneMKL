@@ -31,7 +31,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 #ifndef __HIPSYCL__
 using bfloat16 = sycl::ext::oneapi::bfloat16;
@@ -116,7 +116,7 @@ enum class order : char {
     E = 1,
 };
 
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_ONEMATH_TYPES_HPP_

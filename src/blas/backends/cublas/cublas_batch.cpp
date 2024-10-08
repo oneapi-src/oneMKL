@@ -22,7 +22,7 @@
 #include "oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace cublas {
 namespace column_major {
@@ -155,7 +155,7 @@ inline void gemm_batch_impl(sycl::queue &queue, transpose transa, transpose tran
     cublasGemmAlgo_t cublas_gemm_algo = CUBLAS_GEMM_DEFAULT;
     queue.submit([&](sycl::handler &cgh) {
         if (!verify_support<sycl::half, Ta, Tb, Tc, Ts>(queue, sycl::aspect::fp16)) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
         }
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
@@ -625,7 +625,7 @@ inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose tra
     cublasGemmAlgo_t cublas_gemm_algo = CUBLAS_GEMM_DEFAULT;
     auto done = queue.submit([&](sycl::handler &cgh) {
         if (!verify_support<sycl::half, Ta, Tb, Tc, Ts>(queue, sycl::aspect::fp16)) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
         }
         int64_t num_events = dependencies.size();
@@ -711,7 +711,7 @@ inline sycl::event gemm_batch_usm_impl(sycl::queue &queue, transpose *transa, tr
     cublasGemmAlgo_t cublas_gemm_algo = CUBLAS_GEMM_DEFAULT;
     auto done = queue.submit([&](sycl::handler &cgh) {
         if (!verify_support<sycl::half, Ta, Tb, Tc, Ts>(queue, sycl::aspect::fp16)) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "blas", "sycl::half", "half is not supported by the device or the sycl compiler");
         }
         int64_t num_events = dependencies.size();
@@ -1888,5 +1888,5 @@ sycl::event imatcopy_batch(sycl::queue &queue, transpose *trans, int64_t *m, int
 } // namespace row_major
 } // namespace cublas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

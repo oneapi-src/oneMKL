@@ -35,7 +35,7 @@
 
 #include <cufft.h>
 
-namespace oneapi::mkl::dft::cufft {
+namespace oneapi::math::dft::cufft {
 
 namespace detail {
 //forward declaration
@@ -64,7 +64,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "DFT", func_name,
                 "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
@@ -91,7 +91,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
 template <typename descriptor_type>
 ONEMATH_EXPORT void compute_forward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
                                    sycl::buffer<scalar<descriptor_type>, 1> &) {
-    throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, inout_re, inout_im)",
+    throw oneapi::math::unimplemented("DFT", "compute_forward(desc, inout_re, inout_im)",
                                      "cuFFT does not support real-real complex storage.");
 }
 
@@ -109,7 +109,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<desc
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "DFT", func_name,
                 "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
@@ -143,7 +143,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &, sycl::buffer<scalar<descr
                                    sycl::buffer<scalar<descriptor_type>, 1> &,
                                    sycl::buffer<scalar<descriptor_type>, 1> &,
                                    sycl::buffer<scalar<descriptor_type>, 1> &) {
-    throw oneapi::mkl::unimplemented("DFT", "compute_forward(desc, in_re, in_im, out_re, out_im)",
+    throw oneapi::math::unimplemented("DFT", "compute_forward(desc, in_re, in_im, out_re, out_im)",
                                      "cuFFT does not support real-real complex storage.");
 }
 
@@ -163,7 +163,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "DFT", func_name,
                 "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
@@ -190,7 +190,7 @@ template <typename descriptor_type>
 ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &, scalar<descriptor_type> *,
                                           scalar<descriptor_type> *,
                                           const std::vector<sycl::event> &) {
-    throw oneapi::mkl::unimplemented("DFT",
+    throw oneapi::math::unimplemented("DFT",
                                      "compute_forward(desc, inout_re, inout_im, dependencies)",
                                      "cuFFT does not support real-real complex storage.");
 }
@@ -210,7 +210,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
 
     if constexpr (std::is_floating_point_v<fwd<descriptor_type>>) {
         if (offsets[0] % 2 != 0) {
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "DFT", func_name,
                 "cuFFT requires offset (first value in strides) to be multiple of 2!");
         }
@@ -237,7 +237,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &, scalar<descriptor_
                                           scalar<descriptor_type> *, scalar<descriptor_type> *,
                                           scalar<descriptor_type> *,
                                           const std::vector<sycl::event> &) {
-    throw oneapi::mkl::unimplemented(
+    throw oneapi::math::unimplemented(
         "DFT", "compute_forward(desc, in_re, in_im, out_re, out_im, dependencies)",
         "cuFFT does not support real-real complex storage.");
 }
@@ -245,4 +245,4 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &, scalar<descriptor_
 // Template function instantiations
 #include "dft/backends/backend_forward_instantiations.cxx"
 
-} // namespace oneapi::mkl::dft::cufft
+} // namespace oneapi::math::dft::cufft

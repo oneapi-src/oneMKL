@@ -35,7 +35,7 @@
 #include "oneapi/math/blas/detail/mklgpu/onemath_blas_mklgpu.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace column_major {
 
@@ -52,7 +52,7 @@ namespace row_major {
 
 } //namespace row_major
 } //namespace blas
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_DETAIL_MKLGPU_BLAS_CT_HPP_

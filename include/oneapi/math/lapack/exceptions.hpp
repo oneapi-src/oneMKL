@@ -20,12 +20,12 @@
 #pragma once
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 
 class exception {
 public:
-    exception(oneapi::mkl::exception *_ex, std::int64_t info, std::int64_t detail = 0)
+    exception(oneapi::math::exception *_ex, std::int64_t info, std::int64_t detail = 0)
             : _info(info),
               _detail(detail),
               _ex(_ex) {}
@@ -42,27 +42,27 @@ public:
 private:
     std::int64_t _info;
     std::int64_t _detail;
-    mkl::exception *_ex;
+    math::exception *_ex;
 };
 
-class computation_error : public oneapi::mkl::computation_error,
-                          public oneapi::mkl::lapack::exception {
+class computation_error : public oneapi::math::computation_error,
+                          public oneapi::math::lapack::exception {
 public:
     computation_error(const std::string &function, const std::string &info, std::int64_t code)
-            : oneapi::mkl::computation_error("LAPACK", function, info),
-              oneapi::mkl::lapack::exception(this, code) {}
-    using oneapi::mkl::computation_error::what;
+            : oneapi::math::computation_error("LAPACK", function, info),
+              oneapi::math::lapack::exception(this, code) {}
+    using oneapi::math::computation_error::what;
 };
 
-class batch_error : public oneapi::mkl::batch_error, public oneapi::mkl::lapack::exception {
+class batch_error : public oneapi::math::batch_error, public oneapi::math::lapack::exception {
 public:
     batch_error(const std::string &function, const std::string &info, std::int64_t num_errors,
                 std::vector<std::int64_t> ids = {}, std::vector<std::exception_ptr> exceptions = {})
-            : oneapi::mkl::batch_error("LAPACK", function, info),
-              oneapi::mkl::lapack::exception(this, num_errors),
+            : oneapi::math::batch_error("LAPACK", function, info),
+              oneapi::math::lapack::exception(this, num_errors),
               _ids(ids),
               _exceptions(exceptions) {}
-    using oneapi::mkl::batch_error::what;
+    using oneapi::math::batch_error::what;
     const std::vector<std::int64_t> &ids() const {
         return _ids;
     }
@@ -75,16 +75,16 @@ private:
     std::vector<std::exception_ptr> _exceptions;
 };
 
-class invalid_argument : public oneapi::mkl::invalid_argument,
-                         public oneapi::mkl::lapack::exception {
+class invalid_argument : public oneapi::math::invalid_argument,
+                         public oneapi::math::lapack::exception {
 public:
     invalid_argument(const std::string &function, const std::string &info,
                      std::int64_t arg_position = 0, std::int64_t detail = 0)
-            : oneapi::mkl::invalid_argument("LAPACK", function, info),
-              oneapi::mkl::lapack::exception(this, arg_position, detail) {}
-    using oneapi::mkl::invalid_argument::what;
+            : oneapi::math::invalid_argument("LAPACK", function, info),
+              oneapi::math::lapack::exception(this, arg_position, detail) {}
+    using oneapi::math::invalid_argument::what;
 };
 
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

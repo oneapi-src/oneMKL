@@ -10,7 +10,7 @@
 #include "curand_helper.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 namespace curand {
 #ifdef __HIPSYCL__
@@ -84,7 +84,7 @@ static inline void onemath_curand_host_task(H &cgh, Engine e, F f) {
 
 } // namespace curand
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif

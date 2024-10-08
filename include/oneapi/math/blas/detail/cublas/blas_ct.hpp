@@ -34,7 +34,7 @@
 #include "oneapi/math/blas/detail/blas_ct_backends.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace column_major {
 
@@ -51,7 +51,7 @@ namespace row_major {
 
 } //namespace row_major
 } //namespace blas
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_DETAIL_CUBLAS_BLAS_CT_HPP_

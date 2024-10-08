@@ -31,7 +31,7 @@
 #include "oneapi/math/detail/export.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace cusolver {
 
@@ -39,7 +39,7 @@ namespace cusolver {
 
 } // namespace cusolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_LAPACK_CUSOLVER_HPP_

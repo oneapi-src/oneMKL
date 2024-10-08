@@ -20,7 +20,7 @@
 #include "rocblas_scope_handle.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace rocblas {
 
@@ -163,5 +163,5 @@ sycl::context RocblasScopedContextHandler::get_context(const sycl::queue &queue)
 
 } // namespace rocblas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

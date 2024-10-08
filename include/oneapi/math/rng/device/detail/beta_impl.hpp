@@ -22,7 +22,7 @@
 
 #include "vm_wrappers.hpp"
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 enum class beta_algorithm { Johnk = 0, Atkinson1, Atkinson2, Atkinson3, Cheng, p1, q1, p1q1 };
 
@@ -54,7 +54,7 @@ inline DataType beta_c() {
 }
 
 template <typename RealType, typename Method>
-class distribution_base<oneapi::mkl::rng::device::beta<RealType, Method>> {
+class distribution_base<oneapi::math::rng::device::beta<RealType, Method>> {
 public:
     struct param_type {
         param_type(RealType p, RealType q, RealType a, RealType b) : p_(p), q_(q), a_(a), b_(b) {}
@@ -73,13 +73,13 @@ public:
         set_algorithm();
 #ifndef __SYCL_DEVICE_ONLY__
         if (p <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "beta", "p <= 0");
+            throw oneapi::math::invalid_argument("rng", "beta", "p <= 0");
         }
         else if (q <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "beta", "q <= 0");
+            throw oneapi::math::invalid_argument("rng", "beta", "q <= 0");
         }
         else if (b <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "beta", "b <= 0");
+            throw oneapi::math::invalid_argument("rng", "beta", "b <= 0");
         }
 #endif
     }
@@ -111,13 +111,13 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.p_ <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "beta", "p <= 0");
+            throw oneapi::math::invalid_argument("rng", "beta", "p <= 0");
         }
         else if (pt.q_ <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "beta", "q <= 0");
+            throw oneapi::math::invalid_argument("rng", "beta", "q <= 0");
         }
         else if (pt.b_ <= RealType(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "beta", "b <= 0");
+            throw oneapi::math::invalid_argument("rng", "beta", "b <= 0");
         }
 #endif
         p_ = pt.p_;
@@ -463,6 +463,6 @@ protected:
     beta_algorithm algorithm_;
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_BETA_IMPL_HPP_

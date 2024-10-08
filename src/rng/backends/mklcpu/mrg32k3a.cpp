@@ -33,26 +33,26 @@
 #include "cpu_common.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 namespace mklcpu {
 
-class mrg32k3a_impl : public oneapi::mkl::rng::detail::engine_impl {
+class mrg32k3a_impl : public oneapi::math::rng::detail::engine_impl {
 public:
     mrg32k3a_impl(sycl::queue queue, std::uint32_t seed)
-            : oneapi::mkl::rng::detail::engine_impl(queue) {
+            : oneapi::math::rng::detail::engine_impl(queue) {
         vslNewStream(&stream_, VSL_BRNG_MRG32K3A, seed);
         state_size_ = vslGetStreamSize(stream_);
     }
 
     mrg32k3a_impl(sycl::queue queue, std::initializer_list<std::uint32_t> seed)
-            : oneapi::mkl::rng::detail::engine_impl(queue) {
+            : oneapi::math::rng::detail::engine_impl(queue) {
         vslNewStreamEx(&stream_, VSL_BRNG_MRG32K3A, 2 * seed.size(),
                        reinterpret_cast<const std::uint32_t*>(seed.begin()));
         state_size_ = vslGetStreamSize(stream_);
     }
 
-    mrg32k3a_impl(const mrg32k3a_impl* other) : oneapi::mkl::rng::detail::engine_impl(*other) {
+    mrg32k3a_impl(const mrg32k3a_impl* other) : oneapi::math::rng::detail::engine_impl(*other) {
         vslCopyStream(&stream_, other->stream_);
         state_size_ = vslGetStreamSize(stream_);
     }
@@ -545,7 +545,7 @@ public:
         });
     }
 
-    virtual oneapi::mkl::rng::detail::engine_impl* copy_state() override {
+    virtual oneapi::math::rng::detail::engine_impl* copy_state() override {
         return new mrg32k3a_impl(this);
     }
 
@@ -558,7 +558,7 @@ public:
     }
 
     virtual void leapfrog(std::uint64_t idx, std::uint64_t stride) override {
-        throw oneapi::mkl::unimplemented("rng", "leapfrog");
+        throw oneapi::math::unimplemented("rng", "leapfrog");
     }
 
     virtual ~mrg32k3a_impl() override {
@@ -570,16 +570,16 @@ private:
     std::int32_t state_size_;
 };
 
-oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue, std::uint32_t seed) {
+oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue, std::uint32_t seed) {
     return new mrg32k3a_impl(queue, seed);
 }
 
-oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
+oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
                                                        std::initializer_list<std::uint32_t> seed) {
     return new mrg32k3a_impl(queue, seed);
 }
 
 } // namespace mklcpu
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

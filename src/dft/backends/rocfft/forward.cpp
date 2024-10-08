@@ -36,7 +36,7 @@
 #include <rocfft.h>
 #include <hip/hip_runtime_api.h>
 
-namespace oneapi::mkl::dft::rocfft {
+namespace oneapi::math::dft::rocfft {
 
 namespace detail {
 //forward declaration
@@ -73,7 +73,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
         offsets[1] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -106,7 +106,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
     auto offsets = detail::get_offsets_fwd(commit);
 
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -228,7 +228,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
         offsets[1] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -262,7 +262,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descrip
     auto offsets = detail::get_offsets_fwd(commit);
 
     if (offsets[0] != offsets[1]) {
-        throw oneapi::mkl::unimplemented(
+        throw oneapi::math::unimplemented(
             "DFT", func_name,
             "rocFFT requires input and output offsets (first value in strides) to be equal for in-place transforms!");
     }
@@ -348,4 +348,4 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, scalar<descrip
 // Template function instantiations
 #include "dft/backends/backend_forward_instantiations.cxx"
 
-} // namespace oneapi::mkl::dft::rocfft
+} // namespace oneapi::math::dft::rocfft

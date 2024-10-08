@@ -30,7 +30,7 @@
 */
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace sparse {
 
 enum class matrix_property {
@@ -66,7 +66,7 @@ enum class spsv_alg {
 };
 
 } // namespace sparse
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_SPARSE_BLAS_TYPES_HPP_

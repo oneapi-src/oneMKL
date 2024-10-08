@@ -32,7 +32,7 @@
 #include <complex>
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace dft {
 namespace detail {
 
@@ -228,7 +228,7 @@ public:
 
 } // namespace detail
 } // namespace dft
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_DETAIL_TYPES_IMPL_HPP_

@@ -36,7 +36,7 @@
 #include "oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 
 #define LAPACK_BACKEND rocsolver
@@ -44,7 +44,7 @@ namespace lapack {
 #undef LAPACK_BACKEND
 
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_DETAIL_ROCSOLVER_LAPACK_CT_HPP_

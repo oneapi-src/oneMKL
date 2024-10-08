@@ -29,7 +29,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace internal {
 
@@ -93,5 +93,5 @@ using is_complex_floating_point = typename enable_if<is_cfp<fp>::value>::type*;
 
 } // namespace internal
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

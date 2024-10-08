@@ -27,7 +27,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 namespace detail {
 
@@ -75,7 +75,7 @@ sycl::event generate(sycl::queue& queue, const DistrType& distr,
 } // namespace gpu
 } // namespace detail
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_MKL_INTERNAL_RNG_GPU_HPP_

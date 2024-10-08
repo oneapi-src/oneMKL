@@ -22,7 +22,7 @@
 
 #include <limits>
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 // Implementation of Poisson distribution uses 3 methods depending on lambda parameter:
 //    - table-lookup method [1] for small lambdas (lambda < 60)
@@ -126,7 +126,7 @@ struct poisson_parameters {
 };
 
 template <typename IntType>
-class distribution_base<oneapi::mkl::rng::device::poisson<IntType, poisson_method::devroye>> {
+class distribution_base<oneapi::math::rng::device::poisson<IntType, poisson_method::devroye>> {
 public:
     struct param_type {
         param_type(double lambda) : lambda_(lambda) {}
@@ -136,7 +136,7 @@ public:
     distribution_base(double lambda) : lambda_(lambda) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (lambda_ <= 0.0) {
-            throw oneapi::mkl::invalid_argument("rng", "poisson", "lambda <= 0");
+            throw oneapi::math::invalid_argument("rng", "poisson", "lambda <= 0");
         }
 #endif
         params_.set_lambda(lambda_);
@@ -153,7 +153,7 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.lambda_ <= 0.0) {
-            throw oneapi::mkl::invalid_argument("rng", "poisson", "lambda <= 0");
+            throw oneapi::math::invalid_argument("rng", "poisson", "lambda <= 0");
         }
 #endif
         lambda_ = pt.lambda_;
@@ -344,12 +344,12 @@ protected:
         return res;
     }
 
-    distribution_base<oneapi::mkl::rng::device::gaussian<double>> gaussian_ = { 0.0, 1.0 };
-    distribution_base<oneapi::mkl::rng::device::exponential<double>> exponential_ = { 0.0, 1.0 };
+    distribution_base<oneapi::math::rng::device::gaussian<double>> gaussian_ = { 0.0, 1.0 };
+    distribution_base<oneapi::math::rng::device::exponential<double>> exponential_ = { 0.0, 1.0 };
     poisson_parameters params_;
     double lambda_;
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_POISSON_IMPL_HPP_

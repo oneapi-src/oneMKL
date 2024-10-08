@@ -22,8 +22,8 @@
 #include "sparse_blas/backends/mkl_common/mkl_helper.hpp"
 #include "sparse_blas/backends/mkl_common/mkl_handles.hpp"
 
-namespace oneapi::mkl::sparse::mklcpu {
+namespace oneapi::math::sparse::mklcpu {
 
 #include "sparse_blas/backends/mkl_common/mkl_handles.cxx"
 
-} // namespace oneapi::mkl::sparse::mklcpu
+} // namespace oneapi::math::sparse::mklcpu

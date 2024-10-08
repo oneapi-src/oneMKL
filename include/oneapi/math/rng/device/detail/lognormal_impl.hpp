@@ -20,10 +20,10 @@
 #ifndef _MKL_RNG_DEVICE_LOGNORMAL_IMPL_HPP_
 #define _MKL_RNG_DEVICE_LOGNORMAL_IMPL_HPP_
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 template <typename RealType, typename Method>
-class distribution_base<oneapi::mkl::rng::device::lognormal<RealType, Method>> {
+class distribution_base<oneapi::math::rng::device::lognormal<RealType, Method>> {
 public:
     struct param_type {
         param_type(RealType m, RealType s, RealType displ, RealType scale)
@@ -43,7 +43,7 @@ public:
               scale_(scale) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (scale <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "lognormal", "scale <= 0");
+            throw oneapi::math::invalid_argument("rng", "lognormal", "scale <= 0");
         }
 #endif
     }
@@ -71,7 +71,7 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.scale_ <= static_cast<RealType>(0.0)) {
-            throw oneapi::mkl::invalid_argument("rng", "lognormal", "scale <= 0");
+            throw oneapi::math::invalid_argument("rng", "lognormal", "scale <= 0");
         }
 #endif
         gaussian_.param({ pt.m_, pt.s_ });
@@ -94,12 +94,12 @@ protected:
         return sycl::exp(res) * scale_ + displ_;
     }
 
-    distribution_base<oneapi::mkl::rng::device::gaussian<RealType, gaussian_method::box_muller2>>
+    distribution_base<oneapi::math::rng::device::gaussian<RealType, gaussian_method::box_muller2>>
         gaussian_;
     RealType displ_;
     RealType scale_;
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_LOGNORMAL_IMPL_HPP_

@@ -46,7 +46,7 @@ extern std::vector<sycl::device*> devices;
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alpha) {
+int test(device* dev, oneapi::math::layout layout, int N, int incx, fp_scalar alpha) {
     // Prepare data.
     vector<fp> x, x_ref;
 
@@ -84,22 +84,22 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alp
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                oneapi::mkl::blas::column_major::scal(main_queue, N, alpha, x_buffer, incx);
+            case oneapi::math::layout::col_major:
+                oneapi::math::blas::column_major::scal(main_queue, N, alpha, x_buffer, incx);
                 break;
-            case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::scal(main_queue, N, alpha, x_buffer, incx);
+            case oneapi::math::layout::row_major:
+                oneapi::math::blas::row_major::scal(main_queue, N, alpha, x_buffer, incx);
                 break;
             default: break;
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::scal, N, alpha,
+            case oneapi::math::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::scal, N, alpha,
                                         x_buffer, incx);
                 break;
-            case oneapi::mkl::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::scal, N, alpha,
+            case oneapi::math::layout::row_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::scal, N, alpha,
                                         x_buffer, incx);
                 break;
             default: break;
@@ -111,7 +111,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alp
         print_error_code(e);
     }
 
-    catch (const oneapi::mkl::unimplemented& e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
@@ -126,7 +126,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, fp_scalar alp
     return (int)good;
 }
 
-class ScalTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
+class ScalTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(ScalTests, RealSinglePrecision) {
@@ -180,8 +180,8 @@ TEST_P(ScalTests, ComplexRealDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(ScalTestSuite, ScalTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::col_major,
-                                                            oneapi::mkl::layout::row_major)),
+                                            testing::Values(oneapi::math::layout::col_major,
+                                                            oneapi::math::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

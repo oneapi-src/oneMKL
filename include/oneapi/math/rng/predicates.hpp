@@ -31,7 +31,7 @@
 #include "oneapi/math/types.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace rng {
 
 // Buffer APIs
@@ -41,7 +41,7 @@ inline void generate_precondition(const Distr& /*distr*/, Engine& /*engine*/, st
                                   sycl::buffer<typename Distr::result_type, 1>& r) {
 #ifndef ONEMATH_DISABLE_PREDICATES
     if (n < 0 || n > r.size()) {
-        throw oneapi::mkl::invalid_argument("rng", "generate", "n");
+        throw oneapi::math::invalid_argument("rng", "generate", "n");
     }
 #endif
 }
@@ -54,16 +54,16 @@ inline void generate_precondition(const Distr& /*distr*/, Engine& /*engine*/, st
                                   const std::vector<sycl::event>& /*dependencies*/) {
 #ifndef ONEMATH_DISABLE_PREDICATES
     if (n < 0) {
-        throw oneapi::mkl::invalid_argument("rng", "generate", "n");
+        throw oneapi::math::invalid_argument("rng", "generate", "n");
     }
     if (r == nullptr) {
-        throw oneapi::mkl::invalid_argument("rng", "generate", "r is nullptr");
+        throw oneapi::math::invalid_argument("rng", "generate", "r is nullptr");
     }
 #endif
 }
 
 } // namespace rng
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_RNG_PREDICATES_HPP_

@@ -20,7 +20,7 @@
 #ifndef _MKL_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
 #define _MKL_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 namespace mrg32k3a_impl {
 
 constexpr std::size_t quantity_of_3x3_matrices = 455; // number of 3x3 matrices for skipping
@@ -3663,6 +3663,6 @@ static const std::uint32_t skip_ahead_matrix[2][quantity_of_3x3_matrices][3][3] 
 };
 
 } // namespace mrg32k3a_impl
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_

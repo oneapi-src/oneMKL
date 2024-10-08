@@ -22,7 +22,7 @@
 
 #include <utility> // std::pair
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 template <std::int32_t VecSize = 1>
 class philox4x32x10;
@@ -30,7 +30,7 @@ class philox4x32x10;
 namespace detail {
 
 template <std::int32_t VecSize>
-struct engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>> {
+struct engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>> {
     std::uint32_t key[2];
     std::uint32_t counter[4];
     std::uint32_t part;
@@ -119,7 +119,7 @@ static inline void round_10(std::uint32_t* cnt, std::uint32_t* k) {
 }
 
 template <std::int32_t VecSize>
-static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>>& state,
+static inline void skip_ahead(engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state,
                               std::uint64_t num_to_skip) {
     std::uint64_t num_to_skip_tmp = num_to_skip;
     std::uint64_t c_inc;
@@ -157,7 +157,7 @@ static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::philox4x32x
 }
 
 template <std::int32_t VecSize>
-static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>>& state,
+static inline void skip_ahead(engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state,
                               std::uint64_t n, const std::uint64_t* num_to_skip_ptr) {
     constexpr std::uint64_t uint_max = 0xFFFFFFFFFFFFFFFF;
     std::uint64_t post_buffer, pre_buffer;
@@ -250,7 +250,7 @@ static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::philox4x32x
 }
 
 template <std::int32_t VecSize>
-static inline void init(engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>>& state,
+static inline void init(engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state,
                         std::uint64_t n, const std::uint64_t* seed_ptr, std::uint64_t offset) {
     state.key[0] = static_cast<std::uint32_t>(seed_ptr[0]);
     state.key[1] = static_cast<std::uint32_t>(seed_ptr[0] >> 32);
@@ -270,7 +270,7 @@ static inline void init(engine_state<oneapi::mkl::rng::device::philox4x32x10<Vec
 }
 
 template <std::int32_t VecSize>
-static inline void init(engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>>& state,
+static inline void init(engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state,
                         std::uint64_t n, const std::uint64_t* seed_ptr, std::uint64_t n_offset,
                         const std::uint64_t* offset_ptr) {
     state.key[0] = static_cast<std::uint32_t>(seed_ptr[0]);
@@ -293,7 +293,7 @@ static inline void init(engine_state<oneapi::mkl::rng::device::philox4x32x10<Vec
 // for VecSize > 4
 template <std::int32_t VecSize>
 __attribute__((always_inline)) static inline sycl::vec<std::uint32_t, VecSize> generate_full(
-    engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>>& state) {
+    engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state) {
     const std::int32_t num_elements = VecSize;
     sycl::vec<std::uint32_t, VecSize> res;
 
@@ -347,7 +347,7 @@ __attribute__((always_inline)) static inline sycl::vec<std::uint32_t, VecSize> g
 // for VecSize <= 4
 template <std::int32_t VecSize>
 __attribute__((always_inline)) static inline sycl::vec<std::uint32_t, VecSize> generate_small(
-    engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>>& state) {
+    engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state) {
     const std::int32_t num_elements = VecSize;
     sycl::vec<std::uint32_t, VecSize> res;
 
@@ -383,7 +383,7 @@ __attribute__((always_inline)) static inline sycl::vec<std::uint32_t, VecSize> g
 
 template <int VecSize>
 __attribute__((always_inline)) static inline std::uint32_t generate_single(
-    engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>>& state) {
+    engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state) {
     std::uint32_t res;
 
     std::uint32_t counter[4];
@@ -413,7 +413,7 @@ __attribute__((always_inline)) static inline std::uint32_t generate_single(
 } // namespace philox4x32x10_impl
 
 template <std::int32_t VecSize>
-class engine_base<oneapi::mkl::rng::device::philox4x32x10<VecSize>> {
+class engine_base<oneapi::math::rng::device::philox4x32x10<VecSize>> {
 protected:
     engine_base(std::uint64_t seed, std::uint64_t offset = 0) {
         philox4x32x10_impl::init(this->state_, 1, &seed, offset);
@@ -543,10 +543,10 @@ protected:
                                                num_to_skip.begin());
     }
 
-    engine_state<oneapi::mkl::rng::device::philox4x32x10<VecSize>> state_;
+    engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>> state_;
 };
 
 } // namespace detail
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #endif // _MKL_RNG_DEVICE_PHILOX4X32X10_IMPL_HPP_

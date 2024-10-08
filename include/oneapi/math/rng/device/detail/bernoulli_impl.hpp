@@ -20,10 +20,10 @@
 #ifndef _MKL_RNG_DEVICE_BERNOULLI_IMPL_HPP_
 #define _MKL_RNG_DEVICE_BERNOULLI_IMPL_HPP_
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 template <typename IntType, typename Method>
-class distribution_base<oneapi::mkl::rng::device::bernoulli<IntType, Method>> {
+class distribution_base<oneapi::math::rng::device::bernoulli<IntType, Method>> {
 public:
     struct param_type {
         param_type(float p) : p_(p) {}
@@ -33,7 +33,7 @@ public:
     distribution_base(float p) : p_(p) {
 #ifndef __SYCL_DEVICE_ONLY__
         if ((p > 1.0f) || (p < 0.0f)) {
-            throw oneapi::mkl::invalid_argument("rng", "bernoulli", "p < 0 || p > 1");
+            throw oneapi::math::invalid_argument("rng", "bernoulli", "p < 0 || p > 1");
         }
 #endif
     }
@@ -49,7 +49,7 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if ((pt.p_ > 1.0f) || (pt.p_ < 0.0f)) {
-            throw oneapi::mkl::invalid_argument("rng", "bernoulli", "p < 0 || p > 1");
+            throw oneapi::math::invalid_argument("rng", "bernoulli", "p < 0 || p > 1");
         }
 #endif
         p_ = pt.p_;
@@ -84,6 +84,6 @@ protected:
     float p_;
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_BERNOULLI_IMPL_HPP_

@@ -32,7 +32,7 @@
 #include "oneapi/math/detail/get_device_id.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 template <backend Backend>
 inline void backend_selector_precondition(sycl::queue&) {}
@@ -144,7 +144,7 @@ inline void backend_selector_precondition<backend::rocsolver>(sycl::queue& queue
     }
 #endif
 }
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif //_ONEMATH_BACKEND_SELECTOR_PREDICATES_HPP_

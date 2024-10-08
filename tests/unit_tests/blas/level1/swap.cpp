@@ -46,7 +46,7 @@ extern std::vector<sycl::device*> devices;
 namespace {
 
 template <typename fp>
-int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
+int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy) {
     // Prepare data.
     vector<fp> x, x_ref, y, y_ref;
     rand_vector(x, N, incx);
@@ -84,23 +84,23 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     try {
 #ifdef CALL_RT_API
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                oneapi::mkl::blas::column_major::swap(main_queue, N, x_buffer, incx, y_buffer,
+            case oneapi::math::layout::col_major:
+                oneapi::math::blas::column_major::swap(main_queue, N, x_buffer, incx, y_buffer,
                                                       incy);
                 break;
-            case oneapi::mkl::layout::row_major:
-                oneapi::mkl::blas::row_major::swap(main_queue, N, x_buffer, incx, y_buffer, incy);
+            case oneapi::math::layout::row_major:
+                oneapi::math::blas::row_major::swap(main_queue, N, x_buffer, incx, y_buffer, incy);
                 break;
             default: break;
         }
 #else
         switch (layout) {
-            case oneapi::mkl::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::column_major::swap, N,
+            case oneapi::math::layout::col_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::swap, N,
                                         x_buffer, incx, y_buffer, incy);
                 break;
-            case oneapi::mkl::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::mkl::blas::row_major::swap, N, x_buffer,
+            case oneapi::math::layout::row_major:
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::swap, N, x_buffer,
                                         incx, y_buffer, incy);
                 break;
             default: break;
@@ -112,7 +112,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
         print_error_code(e);
     }
 
-    catch (const oneapi::mkl::unimplemented& e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
@@ -131,7 +131,7 @@ int test(device* dev, oneapi::mkl::layout layout, int N, int incx, int incy) {
     return (int)good;
 }
 
-class SwapTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::mkl::layout>> {
+class SwapTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(SwapTests, RealSinglePrecision) {
@@ -167,8 +167,8 @@ TEST_P(SwapTests, ComplexDoublePrecision) {
 
 INSTANTIATE_TEST_SUITE_P(SwapTestSuite, SwapTests,
                          ::testing::Combine(testing::ValuesIn(devices),
-                                            testing::Values(oneapi::mkl::layout::col_major,
-                                                            oneapi::mkl::layout::row_major)),
+                                            testing::Values(oneapi::math::layout::col_major,
+                                                            oneapi::math::layout::row_major)),
                          ::LayoutDeviceNamePrint());
 
 } // anonymous namespace

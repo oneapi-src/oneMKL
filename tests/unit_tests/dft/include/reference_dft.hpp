@@ -121,7 +121,7 @@ void reference_forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn 
         case 2: detail::reference<TypeIn, TypeOut, 2>::forward_dft(unsigned_sizes, in, out); break;
         case 3: detail::reference<TypeIn, TypeOut, 3>::forward_dft(unsigned_sizes, in, out); break;
         default:
-            throw oneapi::mkl::unimplemented(
+            throw oneapi::math::unimplemented(
                 "reference_dft", "forward_dft",
                 "dft with size " + std::to_string(unsigned_sizes.size()));
     }

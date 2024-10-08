@@ -34,13 +34,13 @@
 #include "oneapi/math/detail/export.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
-using oneapi::mkl::transpose;
-using oneapi::mkl::uplo;
-using oneapi::mkl::side;
-using oneapi::mkl::diag;
-using oneapi::mkl::offset;
+using oneapi::math::transpose;
+using oneapi::math::uplo;
+using oneapi::math::side;
+using oneapi::math::diag;
+using oneapi::math::offset;
 
 namespace blas {
 namespace netlib {
@@ -56,7 +56,7 @@ namespace row_major {
 } //namespace row_major
 } //namespace netlib
 } //namespace blas
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_ONEMATH_BLAS_NETLIB_HPP_

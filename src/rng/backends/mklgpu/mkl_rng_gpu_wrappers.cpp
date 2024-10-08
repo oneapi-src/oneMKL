@@ -23,7 +23,7 @@
 #define WRAPPER_VERSION 1
 
 extern "C" ONEMATH_EXPORT rng_function_table_t mkl_rng_table = {
-    WRAPPER_VERSION, oneapi::mkl::rng::mklgpu::create_philox4x32x10,
-    oneapi::mkl::rng::mklgpu::create_philox4x32x10, oneapi::mkl::rng::mklgpu::create_mrg32k3a,
-    oneapi::mkl::rng::mklgpu::create_mrg32k3a
+    WRAPPER_VERSION, oneapi::math::rng::mklgpu::create_philox4x32x10,
+    oneapi::math::rng::mklgpu::create_philox4x32x10, oneapi::math::rng::mklgpu::create_mrg32k3a,
+    oneapi::math::rng::mklgpu::create_mrg32k3a
 };

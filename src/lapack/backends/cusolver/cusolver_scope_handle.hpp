@@ -52,7 +52,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace cusolver {
 
@@ -127,6 +127,6 @@ public:
 
 } // namespace cusolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 #endif //_CUSOLVER_SCOPED_HANDLE_HPP_

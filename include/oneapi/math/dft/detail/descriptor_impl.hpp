@@ -33,7 +33,7 @@
 #include "oneapi/math/dft/detail/commit_impl.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace dft {
 namespace detail {
 // Forward declaration:
@@ -118,7 +118,7 @@ inline commit_impl<prec, dom>* get_commit(descriptor<prec, dom>& desc) {
 
 } // namespace detail
 } // namespace dft
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_DFT_DETAIL_DESCRIPTOR_IMPL_HPP_

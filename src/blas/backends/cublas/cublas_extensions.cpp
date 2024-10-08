@@ -22,7 +22,7 @@
 #include "oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace blas {
 namespace cublas {
 namespace column_major {
@@ -94,8 +94,8 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
-        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
-        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? n : m);
+        const int64_t logical_m = (trans == oneapi::math::transpose::nontrans ? m : n);
+        const int64_t logical_n = (trans == oneapi::math::transpose::nontrans ? n : m);
         onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -272,8 +272,8 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
     overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
-        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? n : m);
+        const int64_t logical_m = (trans == oneapi::math::transpose::nontrans ? m : n);
+        const int64_t logical_n = (trans == oneapi::math::transpose::nontrans ? n : m);
         onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
@@ -457,8 +457,8 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
-        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? n : m);
-        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? m : n);
+        const int64_t logical_m = (trans == oneapi::math::transpose::nontrans ? n : m);
+        const int64_t logical_n = (trans == oneapi::math::transpose::nontrans ? m : n);
         onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
@@ -635,8 +635,8 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
     overflow_check(m, n, lda, ldb);
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? n : m);
-        const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? m : n);
+        const int64_t logical_m = (trans == oneapi::math::transpose::nontrans ? n : m);
+        const int64_t logical_n = (trans == oneapi::math::transpose::nontrans ? m : n);
         onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
@@ -752,5 +752,5 @@ OMATADD_LAUNCHER_USM(std::complex<double>, cublasZgeam)
 } // namespace row_major
 } // namespace cublas
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

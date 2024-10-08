@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 template <typename DataType>
 static inline DataType sqrt_wrapper(DataType a) {
@@ -70,6 +70,6 @@ template <typename DataType>
 static inline DataType exp_wrapper(DataType a) {
     return sycl::exp(a);
 }
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_VM_WRAPPERS_HPP_

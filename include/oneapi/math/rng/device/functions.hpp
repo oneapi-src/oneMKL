@@ -24,7 +24,7 @@
 
 #include "oneapi/math/rng/device/detail/distribution_base.hpp"
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 // GENERATE FUNCTIONS
 
@@ -47,6 +47,6 @@ void skip_ahead(Engine& engine, std::initializer_list<std::uint64_t> num_to_skip
     engine.skip_ahead(num_to_skip);
 }
 
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #endif // _MKL_RNG_DEVICE_FUNCTIONS_HPP_

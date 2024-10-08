@@ -25,7 +25,7 @@
 #include "oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace rocsolver {
 
@@ -211,7 +211,7 @@ void getri(sycl::queue &queue, std::int64_t n, sycl::buffer<std::complex<double>
 
 template <typename Func, typename T>
 inline void getrs(const char *func_name, Func func, sycl::queue &queue,
-                  oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
+                  oneapi::math::transpose trans, std::int64_t n, std::int64_t nrhs,
                   sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<std::int64_t> &ipiv,
                   sycl::buffer<T> &b, std::int64_t ldb, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -249,7 +249,7 @@ inline void getrs(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define GETRS_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void getrs(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,                  \
+    void getrs(sycl::queue &queue, oneapi::math::transpose trans, std::int64_t n,                  \
                std::int64_t nrhs, sycl::buffer<TYPE> &a, std::int64_t lda,                        \
                sycl::buffer<std::int64_t> &ipiv, sycl::buffer<TYPE> &b, std::int64_t ldb,         \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                    \
@@ -265,8 +265,8 @@ GETRS_LAUNCHER(std::complex<double>, rocsolver_zgetrs)
 #undef GETRS_LAUNCHER
 
 template <typename Func, typename T_A, typename T_B>
-inline void gesvd(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::jobsvd jobu,
-                  oneapi::mkl::jobsvd jobvt, std::int64_t m, std::int64_t n, sycl::buffer<T_A> &a,
+inline void gesvd(const char *func_name, Func func, sycl::queue &queue, oneapi::math::jobsvd jobu,
+                  oneapi::math::jobsvd jobvt, std::int64_t m, std::int64_t n, sycl::buffer<T_A> &a,
                   std::int64_t lda, sycl::buffer<T_B> &s, sycl::buffer<T_A> &u, std::int64_t ldu,
                   sycl::buffer<T_A> &vt, std::int64_t ldvt, sycl::buffer<T_A> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -300,7 +300,7 @@ inline void gesvd(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define GESVD_LAUNCHER(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                                         \
-    void gesvd(sycl::queue &queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt,           \
+    void gesvd(sycl::queue &queue, oneapi::math::jobsvd jobu, oneapi::math::jobsvd jobvt,           \
                std::int64_t m, std::int64_t n, sycl::buffer<TYPE_A> &a, std::int64_t lda,         \
                sycl::buffer<TYPE_B> &s, sycl::buffer<TYPE_A> &u, std::int64_t ldu,                \
                sycl::buffer<TYPE_A> &vt, std::int64_t ldvt, sycl::buffer<TYPE_A> &scratchpad,     \
@@ -317,8 +317,8 @@ GESVD_LAUNCHER(std::complex<double>, double, rocsolver_zgesvd)
 #undef GESVD_LAUNCHER
 
 template <typename Func, typename T_A, typename T_B>
-inline void heevd(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::job jobz,
-                  oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<T_A> &a, std::int64_t lda,
+inline void heevd(const char *func_name, Func func, sycl::queue &queue, oneapi::math::job jobz,
+                  oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<T_A> &a, std::int64_t lda,
                   sycl::buffer<T_B> &w, sycl::buffer<T_A> &scratchpad,
                   std::int64_t scratchpad_size) {
     using rocmDataType_A = typename RocmEquivalentType<T_A>::Type;
@@ -346,7 +346,7 @@ inline void heevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define HEEVD_LAUNCHER(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                                         \
-    void heevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, \
+    void heevd(sycl::queue &queue, oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n, \
                sycl::buffer<TYPE_A> &a, std::int64_t lda, sycl::buffer<TYPE_B> &w,                \
                sycl::buffer<TYPE_A> &scratchpad, std::int64_t scratchpad_size) {                  \
         heevd(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, jobz, uplo, n, a, lda, w, scratchpad, \
@@ -360,7 +360,7 @@ HEEVD_LAUNCHER(std::complex<double>, double, rocsolver_zheevd)
 
 template <typename Func, typename T_A, typename T_B>
 inline void hegvd(const char *func_name, Func func, sycl::queue &queue, std::int64_t itype,
-                  oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n,
+                  oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n,
                   sycl::buffer<T_A> &a, std::int64_t lda, sycl::buffer<T_A> &b, std::int64_t ldb,
                   sycl::buffer<T_B> &w, sycl::buffer<T_A> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -391,8 +391,8 @@ inline void hegvd(const char *func_name, Func func, sycl::queue &queue, std::int
 }
 
 #define HEGVD_LAUNCHER(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                                         \
-    void hegvd(sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz,                     \
-               oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE_A> &a, std::int64_t lda, \
+    void hegvd(sycl::queue &queue, std::int64_t itype, oneapi::math::job jobz,                     \
+               oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE_A> &a, std::int64_t lda, \
                sycl::buffer<TYPE_A> &b, std::int64_t ldb, sycl::buffer<TYPE_B> &w,                \
                sycl::buffer<TYPE_A> &scratchpad, std::int64_t scratchpad_size) {                  \
         hegvd(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, itype, jobz, uplo, n, a, lda, b, ldb, \
@@ -405,7 +405,7 @@ HEGVD_LAUNCHER(std::complex<double>, double, rocsolver_zhegvd)
 #undef HEGVD_LAUNCHER
 
 template <typename Func, typename T_A, typename T_B>
-inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, sycl::buffer<T_A> &a, std::int64_t lda, sycl::buffer<T_B> &d,
                   sycl::buffer<T_B> &e, sycl::buffer<T_A> &tau, sycl::buffer<T_A> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -431,7 +431,7 @@ inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define HETRD_LAUNCHER(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                               \
-    void hetrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,              \
+    void hetrd(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,              \
                sycl::buffer<TYPE_A> &a, std::int64_t lda, sycl::buffer<TYPE_B> &d,      \
                sycl::buffer<TYPE_B> &e, sycl::buffer<TYPE_A> &tau,                      \
                sycl::buffer<TYPE_A> &scratchpad, std::int64_t scratchpad_size) {        \
@@ -444,12 +444,12 @@ HETRD_LAUNCHER(std::complex<double>, double, rocsolver_zhetrd)
 
 #undef HETRD_LAUNCHER
 
-void hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
+void hetrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,
            sycl::buffer<std::complex<float>> &a, std::int64_t lda, sycl::buffer<std::int64_t> &ipiv,
            sycl::buffer<std::complex<float>> &scratchpad, std::int64_t scratchpad_size) {
     throw unimplemented("lapack", "hetrf");
 }
-void hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
+void hetrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,
            sycl::buffer<std::complex<double>> &a, std::int64_t lda,
            sycl::buffer<std::int64_t> &ipiv, sycl::buffer<std::complex<double>> &scratchpad,
            std::int64_t scratchpad_size) {
@@ -457,7 +457,7 @@ void hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
 }
 
 template <typename Func, typename T>
-inline void orgbr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::generate vec,
+inline void orgbr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::generate vec,
                   std::int64_t m, std::int64_t n, std::int64_t k, sycl::buffer<T> &a,
                   std::int64_t lda, sycl::buffer<T> &tau, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -478,7 +478,7 @@ inline void orgbr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define ORGBR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                    \
-    void orgbr(sycl::queue &queue, oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,      \
+    void orgbr(sycl::queue &queue, oneapi::math::generate vec, std::int64_t m, std::int64_t n,      \
                std::int64_t k, sycl::buffer<TYPE> &a, std::int64_t lda, sycl::buffer<TYPE> &tau,   \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                     \
         orgbr(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, vec, m, n, k, a, lda, tau, scratchpad, \
@@ -523,7 +523,7 @@ ORGQR_LAUNCHER(double, rocsolver_dorgqr)
 #undef ORGQR_LAUNCHER
 
 template <typename Func, typename T>
-inline void orgtr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void orgtr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &tau,
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -543,7 +543,7 @@ inline void orgtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define ORGTR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void orgtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
+    void orgtr(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
                std::int64_t lda, sycl::buffer<TYPE> &tau, sycl::buffer<TYPE> &scratchpad,         \
                std::int64_t scratchpad_size) {                                                    \
         orgtr(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, tau, scratchpad,     \
@@ -556,8 +556,8 @@ ORGTR_LAUNCHER(double, rocsolver_dorgtr)
 #undef ORGTR_LAUNCHER
 
 template <typename Func, typename T>
-inline void ormtr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::side side,
-                  oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, std::int64_t m,
+inline void ormtr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::side side,
+                  oneapi::math::uplo uplo, oneapi::math::transpose trans, std::int64_t m,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &tau,
                   sycl::buffer<T> &c, std::int64_t ldc, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -581,8 +581,8 @@ inline void ormtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define ORMTR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void ormtr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,                \
-               oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,                      \
+    void ormtr(sycl::queue &queue, oneapi::math::side side, oneapi::math::uplo uplo,                \
+               oneapi::math::transpose trans, std::int64_t m, std::int64_t n,                      \
                sycl::buffer<TYPE> &a, std::int64_t lda, sycl::buffer<TYPE> &tau,                  \
                sycl::buffer<TYPE> &c, std::int64_t ldc, sycl::buffer<TYPE> &scratchpad,           \
                std::int64_t scratchpad_size) {                                                    \
@@ -595,13 +595,13 @@ ORMTR_LAUNCHER(double, rocsolver_dormtr)
 
 #undef ORMTR_LAUNCHER
 
-void ormrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
+void ormrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m,
            std::int64_t n, std::int64_t k, sycl::buffer<float> &a, std::int64_t lda,
            sycl::buffer<float> &tau, sycl::buffer<float> &c, std::int64_t ldc,
            sycl::buffer<float> &scratchpad, std::int64_t scratchpad_size) {
     throw unimplemented("lapack", "ormrq");
 }
-void ormrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
+void ormrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m,
            std::int64_t n, std::int64_t k, sycl::buffer<double> &a, std::int64_t lda,
            sycl::buffer<double> &tau, sycl::buffer<double> &c, std::int64_t ldc,
            sycl::buffer<double> &scratchpad, std::int64_t scratchpad_size) {
@@ -609,8 +609,8 @@ void ormrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose tr
 }
 
 template <typename Func, typename T>
-inline void ormqr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::side side,
-                  oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
+inline void ormqr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::side side,
+                  oneapi::math::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &tau, sycl::buffer<T> &c,
                   std::int64_t ldc, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -633,7 +633,7 @@ inline void ormqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define ORMQR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                    \
-    void ormqr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,           \
+    void ormqr(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,           \
                std::int64_t m, std::int64_t n, std::int64_t k, sycl::buffer<TYPE> &a,              \
                std::int64_t lda, sycl::buffer<TYPE> &tau, sycl::buffer<TYPE> &c, std::int64_t ldc, \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                     \
@@ -647,7 +647,7 @@ ORMQR_LAUNCHER(double, rocsolver_dormqr)
 #undef ORMQR_LAUNCHER
 
 template <typename Func, typename T>
-inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -669,7 +669,7 @@ inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define POTRF_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void potrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
+    void potrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
                std::int64_t lda, sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {  \
         potrf(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, scratchpad,          \
               scratchpad_size);                                                                   \
@@ -683,7 +683,7 @@ POTRF_LAUNCHER(std::complex<double>, rocsolver_zpotrf)
 #undef POTRF_LAUNCHER
 
 template <typename Func, typename T>
-inline void potri(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void potri(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -705,7 +705,7 @@ inline void potri(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define POTRI_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void potri(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
+    void potri(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
                std::int64_t lda, sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {  \
         potri(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, scratchpad,          \
               scratchpad_size);                                                                   \
@@ -719,7 +719,7 @@ POTRI_LAUNCHER(std::complex<double>, rocsolver_zpotri)
 #undef POTRI_LAUNCHER
 
 template <typename Func, typename T>
-inline void potrs(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void potrs(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, std::int64_t nrhs, sycl::buffer<T> &a, std::int64_t lda,
                   sycl::buffer<T> &b, std::int64_t ldb, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -740,7 +740,7 @@ inline void potrs(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define POTRS_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                  \
-    void potrs(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,    \
+    void potrs(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, std::int64_t nrhs,    \
                sycl::buffer<TYPE> &a, std::int64_t lda, sycl::buffer<TYPE> &b, std::int64_t ldb, \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                   \
         potrs(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, nrhs, a, lda, b, ldb,       \
@@ -755,8 +755,8 @@ POTRS_LAUNCHER(std::complex<double>, rocsolver_zpotrs)
 #undef POTRS_LAUNCHER
 
 template <typename Func, typename T>
-inline void syevd(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::job jobz,
-                  oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<T> &a, std::int64_t lda,
+inline void syevd(const char *func_name, Func func, sycl::queue &queue, oneapi::math::job jobz,
+                  oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<T> &a, std::int64_t lda,
                   sycl::buffer<T> &w, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
     overflow_check(n, lda, scratchpad_size);
@@ -782,7 +782,7 @@ inline void syevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define SYEVD_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void syevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, \
+    void syevd(sycl::queue &queue, oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n, \
                sycl::buffer<TYPE> &a, std::int64_t lda, sycl::buffer<TYPE> &w,                    \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                    \
         syevd(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, jobz, uplo, n, a, lda, w, scratchpad, \
@@ -796,7 +796,7 @@ SYEVD_LAUNCHER(double, rocsolver_dsyevd)
 
 template <typename Func, typename T>
 inline void sygvd(const char *func_name, Func func, sycl::queue &queue, std::int64_t itype,
-                  oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<T> &a,
+                  oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<T> &a,
                   std::int64_t lda, sycl::buffer<T> &b, std::int64_t ldb, sycl::buffer<T> &w,
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -825,8 +825,8 @@ inline void sygvd(const char *func_name, Func func, sycl::queue &queue, std::int
 }
 
 #define SYGVD_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void sygvd(sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz,                     \
-               oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, std::int64_t lda,   \
+    void sygvd(sycl::queue &queue, std::int64_t itype, oneapi::math::job jobz,                     \
+               oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, std::int64_t lda,   \
                sycl::buffer<TYPE> &b, std::int64_t ldb, sycl::buffer<TYPE> &w,                    \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                    \
         sygvd(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, itype, jobz, uplo, n, a, lda, b, ldb, \
@@ -839,7 +839,7 @@ SYGVD_LAUNCHER(double, rocsolver_dsygvd)
 #undef SYGVD_LAUNCH
 
 template <typename Func, typename T>
-inline void sytrd(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void sytrd(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &d,
                   sycl::buffer<T> &e, sycl::buffer<T> &tau, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -864,7 +864,7 @@ inline void sytrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define SYTRD_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void sytrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
+    void sytrd(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
                std::int64_t lda, sycl::buffer<TYPE> &d, sycl::buffer<TYPE> &e,                    \
                sycl::buffer<TYPE> &tau, sycl::buffer<TYPE> &scratchpad,                           \
                std::int64_t scratchpad_size) {                                                    \
@@ -878,7 +878,7 @@ SYTRD_LAUNCHER(double, rocsolver_dsytrd)
 #undef SYTRD_LAUNCHER
 
 template <typename Func, typename T>
-inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda,
                   sycl::buffer<std::int64_t> &ipiv, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -920,7 +920,7 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define SYTRF_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                    \
-    void sytrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a,  \
+    void sytrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a,  \
                std::int64_t lda, sycl::buffer<std::int64_t> &ipiv, sycl::buffer<TYPE> &scratchpad, \
                std::int64_t scratchpad_size) {                                                     \
         sytrf(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, ipiv, scratchpad,     \
@@ -934,27 +934,27 @@ SYTRF_LAUNCHER(std::complex<double>, rocsolver_zsytrf)
 
 #undef SYTRF_LAUNCHER
 
-void trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-           oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
+void trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+           oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs,
            sycl::buffer<std::complex<float>> &a, std::int64_t lda,
            sycl::buffer<std::complex<float>> &b, std::int64_t ldb,
            sycl::buffer<std::complex<float>> &scratchpad, std::int64_t scratchpad_size) {
     throw unimplemented("lapack", "trtrs");
 }
-void trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-           oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, sycl::buffer<double> &a,
+void trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+           oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs, sycl::buffer<double> &a,
            std::int64_t lda, sycl::buffer<double> &b, std::int64_t ldb,
            sycl::buffer<double> &scratchpad, std::int64_t scratchpad_size) {
     throw unimplemented("lapack", "trtrs");
 }
-void trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-           oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, sycl::buffer<float> &a,
+void trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+           oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs, sycl::buffer<float> &a,
            std::int64_t lda, sycl::buffer<float> &b, std::int64_t ldb,
            sycl::buffer<float> &scratchpad, std::int64_t scratchpad_size) {
     throw unimplemented("lapack", "trtrs");
 }
-void trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-           oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
+void trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+           oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs,
            sycl::buffer<std::complex<double>> &a, std::int64_t lda,
            sycl::buffer<std::complex<double>> &b, std::int64_t ldb,
            sycl::buffer<std::complex<double>> &scratchpad, std::int64_t scratchpad_size) {
@@ -962,7 +962,7 @@ void trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose tr
 }
 
 template <typename Func, typename T>
-inline void ungbr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::generate vec,
+inline void ungbr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::generate vec,
                   std::int64_t m, std::int64_t n, std::int64_t k, sycl::buffer<T> &a,
                   std::int64_t lda, sycl::buffer<T> &tau, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -983,7 +983,7 @@ inline void ungbr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define UNGBR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                    \
-    void ungbr(sycl::queue &queue, oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,      \
+    void ungbr(sycl::queue &queue, oneapi::math::generate vec, std::int64_t m, std::int64_t n,      \
                std::int64_t k, sycl::buffer<TYPE> &a, std::int64_t lda, sycl::buffer<TYPE> &tau,   \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                     \
         ungbr(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, vec, m, n, k, a, lda, tau, scratchpad, \
@@ -1028,7 +1028,7 @@ UNGQR_LAUNCHER(std::complex<double>, rocsolver_zungqr)
 #undef UNGQR_LAUNCHER
 
 template <typename Func, typename T>
-inline void ungtr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::uplo uplo,
+inline void ungtr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::uplo uplo,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &tau,
                   sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -1048,7 +1048,7 @@ inline void ungtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define UNGTR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void ungtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
+    void ungtr(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<TYPE> &a, \
                std::int64_t lda, sycl::buffer<TYPE> &tau, sycl::buffer<TYPE> &scratchpad,         \
                std::int64_t scratchpad_size) {                                                    \
         ungtr(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, tau, scratchpad,     \
@@ -1060,14 +1060,14 @@ UNGTR_LAUNCHER(std::complex<double>, rocsolver_zungtr)
 
 #undef UNGTR_LAUNCHER
 
-void unmrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
+void unmrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m,
            std::int64_t n, std::int64_t k, sycl::buffer<std::complex<float>> &a, std::int64_t lda,
            sycl::buffer<std::complex<float>> &tau, sycl::buffer<std::complex<float>> &c,
            std::int64_t ldc, sycl::buffer<std::complex<float>> &scratchpad,
            std::int64_t scratchpad_size) {
     throw unimplemented("lapack", "unmrq");
 }
-void unmrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
+void unmrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m,
            std::int64_t n, std::int64_t k, sycl::buffer<std::complex<double>> &a, std::int64_t lda,
            sycl::buffer<std::complex<double>> &tau, sycl::buffer<std::complex<double>> &c,
            std::int64_t ldc, sycl::buffer<std::complex<double>> &scratchpad,
@@ -1076,8 +1076,8 @@ void unmrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose tr
 }
 
 template <typename Func, typename T>
-inline void unmqr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::side side,
-                  oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
+inline void unmqr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::side side,
+                  oneapi::math::transpose trans, std::int64_t m, std::int64_t n, std::int64_t k,
                   sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &tau, sycl::buffer<T> &c,
                   std::int64_t ldc, sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -1100,7 +1100,7 @@ inline void unmqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define UNMQR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                    \
-    void unmqr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,           \
+    void unmqr(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,           \
                std::int64_t m, std::int64_t n, std::int64_t k, sycl::buffer<TYPE> &a,              \
                std::int64_t lda, sycl::buffer<TYPE> &tau, sycl::buffer<TYPE> &c, std::int64_t ldc, \
                sycl::buffer<TYPE> &scratchpad, std::int64_t scratchpad_size) {                     \
@@ -1114,8 +1114,8 @@ UNMQR_LAUNCHER(std::complex<double>, rocsolver_zunmqr)
 #undef UNMQR_LAUNCHER
 
 template <typename Func, typename T>
-inline void unmtr(const char *func_name, Func func, sycl::queue &queue, oneapi::mkl::side side,
-                  oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, std::int64_t m,
+inline void unmtr(const char *func_name, Func func, sycl::queue &queue, oneapi::math::side side,
+                  oneapi::math::uplo uplo, oneapi::math::transpose trans, std::int64_t m,
                   std::int64_t n, sycl::buffer<T> &a, std::int64_t lda, sycl::buffer<T> &tau,
                   sycl::buffer<T> &c, std::int64_t ldc, sycl::buffer<T> &scratchpad,
                   std::int64_t scratchpad_size) {
@@ -1139,8 +1139,8 @@ inline void unmtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
 }
 
 #define UNMTR_LAUNCHER(TYPE, ROCSOLVER_ROUTINE)                                                   \
-    void unmtr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,                \
-               oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n,                      \
+    void unmtr(sycl::queue &queue, oneapi::math::side side, oneapi::math::uplo uplo,                \
+               oneapi::math::transpose trans, std::int64_t m, std::int64_t n,                      \
                sycl::buffer<TYPE> &a, std::int64_t lda, sycl::buffer<TYPE> &tau,                  \
                sycl::buffer<TYPE> &c, std::int64_t ldc, sycl::buffer<TYPE> &scratchpad,           \
                std::int64_t scratchpad_size) {                                                    \
@@ -1343,7 +1343,7 @@ sycl::event getri(sycl::queue &queue, std::int64_t n, std::complex<double> *a, s
 
 template <typename Func, typename T>
 inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs, T *a,
+                         oneapi::math::transpose trans, std::int64_t n, std::int64_t nrhs, T *a,
                          std::int64_t lda, std::int64_t *ipiv, T *b, std::int64_t ldb,
                          T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -1387,7 +1387,7 @@ inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define GETRS_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                              \
-    sycl::event getrs(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,          \
+    sycl::event getrs(sycl::queue &queue, oneapi::math::transpose trans, std::int64_t n,          \
                       std::int64_t nrhs, TYPE *a, std::int64_t lda, std::int64_t *ipiv, TYPE *b, \
                       std::int64_t ldb, TYPE *scratchpad, std::int64_t scratchpad_size,          \
                       const std::vector<sycl::event> &dependencies) {                            \
@@ -1404,7 +1404,7 @@ GETRS_LAUNCHER_USM(std::complex<double>, rocsolver_zgetrs)
 
 template <typename Func, typename T_A, typename T_B>
 inline sycl::event gesvd(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m,
+                         oneapi::math::jobsvd jobu, oneapi::math::jobsvd jobvt, std::int64_t m,
                          std::int64_t n, T_A *a, std::int64_t lda, T_B *s, T_A *u, std::int64_t ldu,
                          T_A *vt, std::int64_t ldvt, T_A *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -1438,7 +1438,7 @@ inline sycl::event gesvd(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define GESVD_LAUNCHER_USM(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                                    \
-    sycl::event gesvd(sycl::queue &queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt,   \
+    sycl::event gesvd(sycl::queue &queue, oneapi::math::jobsvd jobu, oneapi::math::jobsvd jobvt,   \
                       std::int64_t m, std::int64_t n, TYPE_A *a, std::int64_t lda, TYPE_B *s,    \
                       TYPE_A *u, std::int64_t ldu, TYPE_A *vt, std::int64_t ldvt,                \
                       TYPE_A *scratchpad, std::int64_t scratchpad_size,                          \
@@ -1456,7 +1456,7 @@ GESVD_LAUNCHER_USM(std::complex<double>, double, rocsolver_zgesvd)
 
 template <typename Func, typename T_A, typename T_B>
 inline sycl::event heevd(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, T_A *&a,
+                         oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n, T_A *&a,
                          std::int64_t lda, T_B *&w, T_A *&scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType_A = typename RocmEquivalentType<T_A>::Type;
@@ -1486,7 +1486,7 @@ inline sycl::event heevd(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define HEEVD_LAUNCHER_USM(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                                     \
-    sycl::event heevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,          \
+    sycl::event heevd(sycl::queue &queue, oneapi::math::job jobz, oneapi::math::uplo uplo,          \
                       std::int64_t n, TYPE_A *a, std::int64_t lda, TYPE_B *w, TYPE_A *scratchpad, \
                       std::int64_t scratchpad_size,                                               \
                       const std::vector<sycl::event> &dependencies) {                             \
@@ -1501,7 +1501,7 @@ HEEVD_LAUNCHER_USM(std::complex<double>, double, rocsolver_zheevd)
 
 template <typename Func, typename T_A, typename T_B>
 inline sycl::event hegvd(const char *func_name, Func func, sycl::queue &queue, std::int64_t itype,
-                         oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, T_A *&a,
+                         oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n, T_A *&a,
                          std::int64_t lda, T_A *&b, std::int64_t ldb, T_B *&w, T_A *&scratchpad,
                          std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -1533,8 +1533,8 @@ inline sycl::event hegvd(const char *func_name, Func func, sycl::queue &queue, s
 }
 
 #define HEGVD_LAUNCHER_USM(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                                    \
-    sycl::event hegvd(sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz,             \
-                      oneapi::mkl::uplo uplo, std::int64_t n, TYPE_A *a, std::int64_t lda,       \
+    sycl::event hegvd(sycl::queue &queue, std::int64_t itype, oneapi::math::job jobz,             \
+                      oneapi::math::uplo uplo, std::int64_t n, TYPE_A *a, std::int64_t lda,       \
                       TYPE_A *b, std::int64_t ldb, TYPE_B *w, TYPE_A *scratchpad,                \
                       std::int64_t scratchpad_size,                                              \
                       const std::vector<sycl::event> &dependencies) {                            \
@@ -1549,7 +1549,7 @@ HEGVD_LAUNCHER_USM(std::complex<double>, double, rocsolver_zhegvd)
 
 template <typename Func, typename T_A, typename T_B>
 inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, T_A *a, std::int64_t lda, T_B *d,
+                         oneapi::math::uplo uplo, std::int64_t n, T_A *a, std::int64_t lda, T_B *d,
                          T_B *e, T_A *tau, T_A *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType_A = typename RocmEquivalentType<T_A>::Type;
@@ -1575,7 +1575,7 @@ inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define HETRD_LAUNCHER_USM(TYPE_A, TYPE_B, ROCSOLVER_ROUTINE)                                  \
-    sycl::event hetrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE_A *a,   \
+    sycl::event hetrd(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE_A *a,   \
                       std::int64_t lda, TYPE_B *d, TYPE_B *e, TYPE_A *tau, TYPE_A *scratchpad, \
                       std::int64_t scratchpad_size,                                            \
                       const std::vector<sycl::event> &dependencies) {                          \
@@ -1588,13 +1588,13 @@ HETRD_LAUNCHER_USM(std::complex<double>, double, rocsolver_zhetrd)
 
 #undef HETRD_LAUNCHER_USM
 
-sycl::event hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
+sycl::event hetrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,
                   std::complex<float> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event> &dependencies) {
     throw unimplemented("lapack", "hetrf");
 }
-sycl::event hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
+sycl::event hetrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,
                   std::complex<double> *a, std::int64_t lda, std::int64_t *ipiv,
                   std::complex<double> *scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event> &dependencies) {
@@ -1603,7 +1603,7 @@ sycl::event hetrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,
 
 template <typename Func, typename T>
 inline sycl::event orgbr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::generate vec, std::int64_t m, std::int64_t n, std::int64_t k,
+                         oneapi::math::generate vec, std::int64_t m, std::int64_t n, std::int64_t k,
                          T *a, std::int64_t lda, T *tau, T *scratchpad,
                          std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -1627,7 +1627,7 @@ inline sycl::event orgbr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define ORGBR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                           \
-    sycl::event orgbr(sycl::queue &queue, oneapi::mkl::generate vec, std::int64_t m,          \
+    sycl::event orgbr(sycl::queue &queue, oneapi::math::generate vec, std::int64_t m,          \
                       std::int64_t n, std::int64_t k, TYPE *a, std::int64_t lda, TYPE *tau,   \
                       TYPE *scratchpad, std::int64_t scratchpad_size,                         \
                       const std::vector<sycl::event> &dependencies) {                         \
@@ -1678,7 +1678,7 @@ ORGQR_LAUNCHER_USM(double, rocsolver_dorgqr)
 
 template <typename Func, typename T>
 inline sycl::event orgtr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda, T *tau,
+                         oneapi::math::uplo uplo, std::int64_t n, T *a, std::int64_t lda, T *tau,
                          T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -1701,7 +1701,7 @@ inline sycl::event orgtr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define ORGTR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                                \
-    sycl::event orgtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a,         \
+    sycl::event orgtr(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE *a,         \
                       std::int64_t lda, TYPE *tau, TYPE *scratchpad, std::int64_t scratchpad_size, \
                       const std::vector<sycl::event> &dependencies) {                              \
         return orgtr(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, tau,           \
@@ -1715,8 +1715,8 @@ ORGTR_LAUNCHER_USM(double, rocsolver_dorgtr)
 
 template <typename Func, typename T>
 inline sycl::event ormtr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::side side, oneapi::mkl::uplo uplo,
-                         oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, T *a,
+                         oneapi::math::side side, oneapi::math::uplo uplo,
+                         oneapi::math::transpose trans, std::int64_t m, std::int64_t n, T *a,
                          std::int64_t lda, T *tau, T *c, std::int64_t ldc, T *scratchpad,
                          std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -1742,8 +1742,8 @@ inline sycl::event ormtr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define ORMTR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                             \
-    sycl::event ormtr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,       \
-                      oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, TYPE *a,    \
+    sycl::event ormtr(sycl::queue &queue, oneapi::math::side side, oneapi::math::uplo uplo,       \
+                      oneapi::math::transpose trans, std::int64_t m, std::int64_t n, TYPE *a,    \
                       std::int64_t lda, TYPE *tau, TYPE *c, std::int64_t ldc, TYPE *scratchpad, \
                       std::int64_t scratchpad_size,                                             \
                       const std::vector<sycl::event> &dependencies) {                           \
@@ -1756,13 +1756,13 @@ ORMTR_LAUNCHER_USM(double, rocsolver_dormtr)
 
 #undef ORMTR_LAUNCHER_USM
 
-sycl::event ormrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,
+sycl::event ormrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,
                   std::int64_t m, std::int64_t n, std::int64_t k, float *a, std::int64_t lda,
                   float *tau, float *c, std::int64_t ldc, float *scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     throw unimplemented("lapack", "ormrq");
 }
-sycl::event ormrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,
+sycl::event ormrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,
                   std::int64_t m, std::int64_t n, std::int64_t k, double *a, std::int64_t lda,
                   double *tau, double *c, std::int64_t ldc, double *scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
@@ -1771,7 +1771,7 @@ sycl::event ormrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::trans
 
 template <typename Func, typename T>
 inline sycl::event ormqr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
+                         oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m,
                          std::int64_t n, std::int64_t k, T *a, std::int64_t lda, T *tau, T *c,
                          std::int64_t ldc, T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -1797,7 +1797,7 @@ inline sycl::event ormqr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define ORMQR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                              \
-    sycl::event ormqr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,  \
+    sycl::event ormqr(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,  \
                       std::int64_t m, std::int64_t n, std::int64_t k, TYPE *a, std::int64_t lda, \
                       TYPE *tau, TYPE *c, std::int64_t ldc, TYPE *scratchpad,                    \
                       std::int64_t scratchpad_size,                                              \
@@ -1813,7 +1813,7 @@ ORMQR_LAUNCHER_USM(double, rocsolver_dormqr)
 
 template <typename Func, typename T>
 inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
+                         oneapi::math::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
                          T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -1839,7 +1839,7 @@ inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define POTRF_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                             \
-    sycl::event potrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a,      \
+    sycl::event potrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE *a,      \
                       std::int64_t lda, TYPE *scratchpad, std::int64_t scratchpad_size,         \
                       const std::vector<sycl::event> &dependencies) {                           \
         return potrf(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, scratchpad, \
@@ -1855,7 +1855,7 @@ POTRF_LAUNCHER_USM(std::complex<double>, rocsolver_zpotrf)
 
 template <typename Func, typename T>
 inline sycl::event potri(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
+                         oneapi::math::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
                          T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -1882,7 +1882,7 @@ inline sycl::event potri(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define POTRI_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                             \
-    sycl::event potri(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a,      \
+    sycl::event potri(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE *a,      \
                       std::int64_t lda, TYPE *scratchpad, std::int64_t scratchpad_size,         \
                       const std::vector<sycl::event> &dependencies) {                           \
         return potri(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, scratchpad, \
@@ -1898,7 +1898,7 @@ POTRI_LAUNCHER_USM(std::complex<double>, rocsolver_zpotri)
 
 template <typename Func, typename T>
 inline sycl::event potrs(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, T *a,
+                         oneapi::math::uplo uplo, std::int64_t n, std::int64_t nrhs, T *a,
                          std::int64_t lda, T *b, std::int64_t ldb, T *scratchpad,
                          std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -1922,7 +1922,7 @@ inline sycl::event potrs(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define POTRS_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                               \
-    sycl::event potrs(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,                 \
+    sycl::event potrs(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,                 \
                       std::int64_t nrhs, TYPE *a, std::int64_t lda, TYPE *b, std::int64_t ldb,    \
                       TYPE *scratchpad, std::int64_t scratchpad_size,                             \
                       const std::vector<sycl::event> &dependencies) {                             \
@@ -1939,7 +1939,7 @@ POTRS_LAUNCHER_USM(std::complex<double>, rocsolver_zpotrs)
 
 template <typename Func, typename T>
 inline sycl::event syevd(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, T *a,
+                         oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n, T *a,
                          std::int64_t lda, T *w, T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -1968,7 +1968,7 @@ inline sycl::event syevd(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define SYEVD_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                          \
-    sycl::event syevd(sycl::queue &queue, oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,     \
+    sycl::event syevd(sycl::queue &queue, oneapi::math::job jobz, oneapi::math::uplo uplo,     \
                       std::int64_t n, TYPE *a, std::int64_t lda, TYPE *w, TYPE *scratchpad,  \
                       std::int64_t scratchpad_size,                                          \
                       const std::vector<sycl::event> &dependencies) {                        \
@@ -1983,7 +1983,7 @@ SYEVD_LAUNCHER_USM(double, rocsolver_dsyevd)
 
 template <typename Func, typename T>
 inline sycl::event sygvd(const char *func_name, Func func, sycl::queue &queue, std::int64_t itype,
-                         oneapi::mkl::job jobz, oneapi::mkl::uplo uplo, std::int64_t n, T *a,
+                         oneapi::math::job jobz, oneapi::math::uplo uplo, std::int64_t n, T *a,
                          std::int64_t lda, T *b, std::int64_t ldb, T *w, T *scratchpad,
                          std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -2014,8 +2014,8 @@ inline sycl::event sygvd(const char *func_name, Func func, sycl::queue &queue, s
 }
 
 #define SYGVD_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                               \
-    sycl::event sygvd(sycl::queue &queue, std::int64_t itype, oneapi::mkl::job jobz,              \
-                      oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a, std::int64_t lda, TYPE *b, \
+    sycl::event sygvd(sycl::queue &queue, std::int64_t itype, oneapi::math::job jobz,              \
+                      oneapi::math::uplo uplo, std::int64_t n, TYPE *a, std::int64_t lda, TYPE *b, \
                       std::int64_t ldb, TYPE *w, TYPE *scratchpad, std::int64_t scratchpad_size,  \
                       const std::vector<sycl::event> &dependencies) {                             \
         return sygvd(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, itype, jobz, uplo, n, a, lda,  \
@@ -2029,7 +2029,7 @@ SYGVD_LAUNCHER_USM(double, rocsolver_dsygvd)
 
 template <typename Func, typename T>
 inline sycl::event sytrd(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda, T *d, T *e,
+                         oneapi::math::uplo uplo, std::int64_t n, T *a, std::int64_t lda, T *d, T *e,
                          T *tau, T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -2054,7 +2054,7 @@ inline sycl::event sytrd(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define SYTRD_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                            \
-    sycl::event sytrd(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a,     \
+    sycl::event sytrd(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE *a,     \
                       std::int64_t lda, TYPE *d, TYPE *e, TYPE *tau, TYPE *scratchpad,         \
                       std::int64_t scratchpad_size,                                            \
                       const std::vector<sycl::event> &dependencies) {                          \
@@ -2069,7 +2069,7 @@ SYTRD_LAUNCHER_USM(double, rocsolver_dsytrd)
 
 template <typename Func, typename T>
 inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
+                         oneapi::math::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
                          std::int64_t *ipiv, T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -2113,7 +2113,7 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define SYTRF_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                        \
-    sycl::event sytrf(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a, \
+    sycl::event sytrf(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE *a, \
                       std::int64_t lda, std::int64_t *ipiv, TYPE *scratchpad,              \
                       std::int64_t scratchpad_size,                                        \
                       const std::vector<sycl::event> &dependencies) {                      \
@@ -2128,27 +2128,27 @@ SYTRF_LAUNCHER_USM(std::complex<double>, rocsolver_zsytrf)
 
 #undef SYTRF_LAUNCHER_USM
 
-sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-                  oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, std::complex<float> *a,
+sycl::event trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+                  oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs, std::complex<float> *a,
                   std::int64_t lda, std::complex<float> *b, std::int64_t ldb,
                   std::complex<float> *scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event> &dependencies) {
     throw unimplemented("lapack", "trtrs");
 }
-sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-                  oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, double *a,
+sycl::event trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+                  oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs, double *a,
                   std::int64_t lda, double *b, std::int64_t ldb, double *scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     throw unimplemented("lapack", "trtrs");
 }
-sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-                  oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, float *a,
+sycl::event trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+                  oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs, float *a,
                   std::int64_t lda, float *b, std::int64_t ldb, float *scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {
     throw unimplemented("lapack", "trtrs");
 }
-sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-                  oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
+sycl::event trtrs(sycl::queue &queue, oneapi::math::uplo uplo, oneapi::math::transpose trans,
+                  oneapi::math::diag diag, std::int64_t n, std::int64_t nrhs,
                   std::complex<double> *a, std::int64_t lda, std::complex<double> *b,
                   std::int64_t ldb, std::complex<double> *scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event> &dependencies) {
@@ -2157,7 +2157,7 @@ sycl::event trtrs(sycl::queue &queue, oneapi::mkl::uplo uplo, oneapi::mkl::trans
 
 template <typename Func, typename T>
 inline sycl::event ungbr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::generate vec, std::int64_t m, std::int64_t n, std::int64_t k,
+                         oneapi::math::generate vec, std::int64_t m, std::int64_t n, std::int64_t k,
                          T *a, std::int64_t lda, T *tau, T *scratchpad,
                          std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -2181,7 +2181,7 @@ inline sycl::event ungbr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define UNGBR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                           \
-    sycl::event ungbr(sycl::queue &queue, oneapi::mkl::generate vec, std::int64_t m,          \
+    sycl::event ungbr(sycl::queue &queue, oneapi::math::generate vec, std::int64_t m,          \
                       std::int64_t n, std::int64_t k, TYPE *a, std::int64_t lda, TYPE *tau,   \
                       TYPE *scratchpad, std::int64_t scratchpad_size,                         \
                       const std::vector<sycl::event> &dependencies) {                         \
@@ -2232,7 +2232,7 @@ UNGQR_LAUNCHER_USM(std::complex<double>, rocsolver_zungqr)
 
 template <typename Func, typename T>
 inline sycl::event ungtr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda, T *tau,
+                         oneapi::math::uplo uplo, std::int64_t n, T *a, std::int64_t lda, T *tau,
                          T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
     using rocmDataType = typename RocmEquivalentType<T>::Type;
@@ -2255,7 +2255,7 @@ inline sycl::event ungtr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define UNGTR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                                \
-    sycl::event ungtr(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a,         \
+    sycl::event ungtr(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE *a,         \
                       std::int64_t lda, TYPE *tau, TYPE *scratchpad, std::int64_t scratchpad_size, \
                       const std::vector<sycl::event> &dependencies) {                              \
         return ungtr(#ROCSOLVER_ROUTINE, ROCSOLVER_ROUTINE, queue, uplo, n, a, lda, tau,           \
@@ -2267,14 +2267,14 @@ UNGTR_LAUNCHER_USM(std::complex<double>, rocsolver_zungtr)
 
 #undef UNGTR_LAUNCHER_USM
 
-sycl::event unmrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,
+sycl::event unmrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,
                   std::int64_t m, std::int64_t n, std::int64_t k, std::complex<float> *a,
                   std::int64_t lda, std::complex<float> *tau, std::complex<float> *c,
                   std::int64_t ldc, std::complex<float> *scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event> &dependencies) {
     throw unimplemented("lapack", "unmrq");
 }
-sycl::event unmrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,
+sycl::event unmrq(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,
                   std::int64_t m, std::int64_t n, std::int64_t k, std::complex<double> *a,
                   std::int64_t lda, std::complex<double> *tau, std::complex<double> *c,
                   std::int64_t ldc, std::complex<double> *scratchpad, std::int64_t scratchpad_size,
@@ -2284,7 +2284,7 @@ sycl::event unmrq(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::trans
 
 template <typename Func, typename T>
 inline sycl::event unmqr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m,
+                         oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m,
                          std::int64_t n, std::int64_t k, T *a, std::int64_t lda, T *tau, T *c,
                          std::int64_t ldc, T *scratchpad, std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -2310,7 +2310,7 @@ inline sycl::event unmqr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define UNMQR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                              \
-    sycl::event unmqr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,  \
+    sycl::event unmqr(sycl::queue &queue, oneapi::math::side side, oneapi::math::transpose trans,  \
                       std::int64_t m, std::int64_t n, std::int64_t k, TYPE *a, std::int64_t lda, \
                       TYPE *tau, TYPE *c, std::int64_t ldc, TYPE *scratchpad,                    \
                       std::int64_t scratchpad_size,                                              \
@@ -2326,8 +2326,8 @@ UNMQR_LAUNCHER_USM(std::complex<double>, rocsolver_zunmqr)
 
 template <typename Func, typename T>
 inline sycl::event unmtr(const char *func_name, Func func, sycl::queue &queue,
-                         oneapi::mkl::side side, oneapi::mkl::uplo uplo,
-                         oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, T *a,
+                         oneapi::math::side side, oneapi::math::uplo uplo,
+                         oneapi::math::transpose trans, std::int64_t m, std::int64_t n, T *a,
                          std::int64_t lda, T *tau, T *c, std::int64_t ldc, T *scratchpad,
                          std::int64_t scratchpad_size,
                          const std::vector<sycl::event> &dependencies) {
@@ -2353,8 +2353,8 @@ inline sycl::event unmtr(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define UNMTR_LAUNCHER_USM(TYPE, ROCSOLVER_ROUTINE)                                             \
-    sycl::event unmtr(sycl::queue &queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,       \
-                      oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, TYPE *a,    \
+    sycl::event unmtr(sycl::queue &queue, oneapi::math::side side, oneapi::math::uplo uplo,       \
+                      oneapi::math::transpose trans, std::int64_t m, std::int64_t n, TYPE *a,    \
                       std::int64_t lda, TYPE *tau, TYPE *c, std::int64_t ldc, TYPE *scratchpad, \
                       std::int64_t scratchpad_size,                                             \
                       const std::vector<sycl::event> &dependencies) {                           \
@@ -2421,7 +2421,7 @@ GEQRF_LAUNCHER_SCRATCH(std::complex<double>)
 #define GESVD_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
     std::int64_t gesvd_scratchpad_size<TYPE>(                                                     \
-        sycl::queue & queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt, std::int64_t m, \
+        sycl::queue & queue, oneapi::math::jobsvd jobu, oneapi::math::jobsvd jobvt, std::int64_t m, \
         std::int64_t n, std::int64_t lda, std::int64_t ldu, std::int64_t ldvt) {                  \
         return std::min(m, n) - 1;                                                                \
     }
@@ -2468,7 +2468,7 @@ std::int64_t getri_scratchpad_size<std::complex<double>>(sycl::queue &queue, std
 
 #define GETRS_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
-    std::int64_t getrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::transpose trans,   \
+    std::int64_t getrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::transpose trans,   \
                                              std::int64_t n, std::int64_t nrhs, std::int64_t lda, \
                                              std::int64_t ldb) {                                  \
         return 0;                                                                                 \
@@ -2483,8 +2483,8 @@ GETRS_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define HEEVD_LAUNCHER_SCRATCH(TYPE)                                                     \
     template <>                                                                          \
-    std::int64_t heevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
-                                             oneapi::mkl::uplo uplo, std::int64_t n,     \
+    std::int64_t heevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::job jobz, \
+                                             oneapi::math::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
         return n;                                                                        \
     }
@@ -2497,7 +2497,7 @@ HEEVD_LAUNCHER_SCRATCH(std::complex<double>)
 #define HEGVD_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t hegvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
-                                             oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
+                                             oneapi::math::job jobz, oneapi::math::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
         return n;                                                                                  \
     }
@@ -2509,7 +2509,7 @@ HEGVD_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define HETRD_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
-    std::int64_t hetrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
+    std::int64_t hetrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
@@ -2520,19 +2520,19 @@ HETRD_LAUNCHER_SCRATCH(std::complex<double>)
 #undef HETRD_LAUNCHER_SCRATCH
 
 template <>
-std::int64_t hetrf_scratchpad_size<std::complex<float>>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t hetrf_scratchpad_size<std::complex<float>>(sycl::queue &queue, oneapi::math::uplo uplo,
                                                         std::int64_t n, std::int64_t lda) {
     throw unimplemented("lapack", "hetrf_scratchpad_size");
 }
 template <>
-std::int64_t hetrf_scratchpad_size<std::complex<double>>(sycl::queue &queue, oneapi::mkl::uplo uplo,
+std::int64_t hetrf_scratchpad_size<std::complex<double>>(sycl::queue &queue, oneapi::math::uplo uplo,
                                                          std::int64_t n, std::int64_t lda) {
     throw unimplemented("lapack", "hetrf_scratchpad_size");
 }
 
 #define ORGBR_LAUNCHER_SCRATCH(TYPE)                                                         \
     template <>                                                                              \
-    std::int64_t orgbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec, \
+    std::int64_t orgbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::generate vec, \
                                              std::int64_t m, std::int64_t n, std::int64_t k, \
                                              std::int64_t lda) {                             \
         return 0;                                                                            \
@@ -2545,7 +2545,7 @@ ORGBR_LAUNCHER_SCRATCH(double)
 
 #define ORGTR_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
-    std::int64_t orgtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
+    std::int64_t orgtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
@@ -2568,15 +2568,15 @@ ORGQR_LAUNCHER_SCRATCH(double)
 #undef ORGQR_LAUNCHER_SCRATCH
 
 template <>
-std::int64_t ormrq_scratchpad_size<float>(sycl::queue &queue, oneapi::mkl::side side,
-                                          oneapi::mkl::transpose trans, std::int64_t m,
+std::int64_t ormrq_scratchpad_size<float>(sycl::queue &queue, oneapi::math::side side,
+                                          oneapi::math::transpose trans, std::int64_t m,
                                           std::int64_t n, std::int64_t k, std::int64_t lda,
                                           std::int64_t ldc) {
     throw unimplemented("lapack", "ormrq_scratchpad_size");
 }
 template <>
-std::int64_t ormrq_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side side,
-                                           oneapi::mkl::transpose trans, std::int64_t m,
+std::int64_t ormrq_scratchpad_size<double>(sycl::queue &queue, oneapi::math::side side,
+                                           oneapi::math::transpose trans, std::int64_t m,
                                            std::int64_t n, std::int64_t k, std::int64_t lda,
                                            std::int64_t ldc) {
     throw unimplemented("lapack", "ormrq_scratchpad_size");
@@ -2585,7 +2585,7 @@ std::int64_t ormrq_scratchpad_size<double>(sycl::queue &queue, oneapi::mkl::side
 #define ORMQRF_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                    \
     std::int64_t ormqr_scratchpad_size<TYPE>(                                                      \
-        sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
+        sycl::queue & queue, oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m, \
         std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {                      \
         return 0;                                                                                  \
     }
@@ -2597,8 +2597,8 @@ ORMQRF_LAUNCHER_SCRATCH(double)
 
 #define ORMTR_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
-    std::int64_t ormtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::side side,          \
-                                             oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
+    std::int64_t ormtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::side side,          \
+                                             oneapi::math::uplo uplo, oneapi::math::transpose trans, \
                                              std::int64_t m, std::int64_t n, std::int64_t lda,     \
                                              std::int64_t ldc) {                                   \
         return 0;                                                                                  \
@@ -2611,7 +2611,7 @@ ORMTR_LAUNCHER_SCRATCH(double)
 
 #define POTRF_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
-    std::int64_t potrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
+    std::int64_t potrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
@@ -2625,7 +2625,7 @@ POTRF_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define POTRS_LAUNCHER_SCRATCH(TYPE)                                                              \
     template <>                                                                                   \
-    std::int64_t potrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo,         \
+    std::int64_t potrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo,         \
                                              std::int64_t n, std::int64_t nrhs, std::int64_t lda, \
                                              std::int64_t ldb) {                                  \
         return 0;                                                                                 \
@@ -2640,7 +2640,7 @@ POTRS_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define POTRI_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
-    std::int64_t potri_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
+    std::int64_t potri_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
@@ -2654,7 +2654,7 @@ POTRI_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define SYTRF_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
-    std::int64_t sytrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
+    std::int64_t sytrf_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
@@ -2668,8 +2668,8 @@ SYTRF_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define SYEVD_LAUNCHER_SCRATCH(TYPE)                                                     \
     template <>                                                                          \
-    std::int64_t syevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::job jobz, \
-                                             oneapi::mkl::uplo uplo, std::int64_t n,     \
+    std::int64_t syevd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::job jobz, \
+                                             oneapi::math::uplo uplo, std::int64_t n,     \
                                              std::int64_t lda) {                         \
         return n;                                                                        \
     }
@@ -2682,7 +2682,7 @@ SYEVD_LAUNCHER_SCRATCH(double)
 #define SYGVD_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t sygvd_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t itype,              \
-                                             oneapi::mkl::job jobz, oneapi::mkl::uplo uplo,        \
+                                             oneapi::math::job jobz, oneapi::math::uplo uplo,        \
                                              std::int64_t n, std::int64_t lda, std::int64_t ldb) { \
         return n;                                                                                  \
     }
@@ -2694,7 +2694,7 @@ SYGVD_LAUNCHER_SCRATCH(double)
 
 #define SYTRD_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
-    std::int64_t sytrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
+    std::int64_t sytrd_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
@@ -2706,8 +2706,8 @@ SYTRD_LAUNCHER_SCRATCH(double)
 
 #define TRTRS_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
-    std::int64_t trtrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo,          \
-                                             oneapi::mkl::transpose trans, oneapi::mkl::diag diag, \
+    std::int64_t trtrs_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo,          \
+                                             oneapi::math::transpose trans, oneapi::math::diag diag, \
                                              std::int64_t n, std::int64_t nrhs, std::int64_t lda,  \
                                              std::int64_t ldb) {                                   \
         return 0;                                                                                  \
@@ -2722,7 +2722,7 @@ TRTRS_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define UNGBR_LAUNCHER_SCRATCH(TYPE)                                                         \
     template <>                                                                              \
-    std::int64_t ungbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::generate vec, \
+    std::int64_t ungbr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::generate vec, \
                                              std::int64_t m, std::int64_t n, std::int64_t k, \
                                              std::int64_t lda) {                             \
         return 0;                                                                            \
@@ -2747,7 +2747,7 @@ UNGQR_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define UNGTR_LAUNCHER_SCRATCH(TYPE)                                                      \
     template <>                                                                           \
-    std::int64_t ungtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::uplo uplo, \
+    std::int64_t ungtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::uplo uplo, \
                                              std::int64_t n, std::int64_t lda) {          \
         return 0;                                                                         \
     }
@@ -2758,16 +2758,16 @@ UNGTR_LAUNCHER_SCRATCH(std::complex<double>)
 #undef UNGTR_LAUNCHER_SCRATCH
 
 template <>
-std::int64_t unmrq_scratchpad_size<std::complex<float>>(sycl::queue &queue, oneapi::mkl::side side,
-                                                        oneapi::mkl::transpose trans,
+std::int64_t unmrq_scratchpad_size<std::complex<float>>(sycl::queue &queue, oneapi::math::side side,
+                                                        oneapi::math::transpose trans,
                                                         std::int64_t m, std::int64_t n,
                                                         std::int64_t k, std::int64_t lda,
                                                         std::int64_t ldc) {
     throw unimplemented("lapack", "unmrq_scratchpad_size");
 }
 template <>
-std::int64_t unmrq_scratchpad_size<std::complex<double>>(sycl::queue &queue, oneapi::mkl::side side,
-                                                         oneapi::mkl::transpose trans,
+std::int64_t unmrq_scratchpad_size<std::complex<double>>(sycl::queue &queue, oneapi::math::side side,
+                                                         oneapi::math::transpose trans,
                                                          std::int64_t m, std::int64_t n,
                                                          std::int64_t k, std::int64_t lda,
                                                          std::int64_t ldc) {
@@ -2777,7 +2777,7 @@ std::int64_t unmrq_scratchpad_size<std::complex<double>>(sycl::queue &queue, one
 #define UNMQR_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
     std::int64_t unmqr_scratchpad_size<TYPE>(                                                      \
-        sycl::queue & queue, oneapi::mkl::side side, oneapi::mkl::transpose trans, std::int64_t m, \
+        sycl::queue & queue, oneapi::math::side side, oneapi::math::transpose trans, std::int64_t m, \
         std::int64_t n, std::int64_t k, std::int64_t lda, std::int64_t ldc) {                      \
         return 0;                                                                                  \
     }
@@ -2789,8 +2789,8 @@ UNMQR_LAUNCHER_SCRATCH(std::complex<double>)
 
 #define UNMTR_LAUNCHER_SCRATCH(TYPE)                                                               \
     template <>                                                                                    \
-    std::int64_t unmtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::mkl::side side,          \
-                                             oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans, \
+    std::int64_t unmtr_scratchpad_size<TYPE>(sycl::queue & queue, oneapi::math::side side,          \
+                                             oneapi::math::uplo uplo, oneapi::math::transpose trans, \
                                              std::int64_t m, std::int64_t n, std::int64_t lda,     \
                                              std::int64_t ldc) {                                   \
         return 0;                                                                                  \
@@ -2803,5 +2803,5 @@ UNMTR_LAUNCHER_SCRATCH(std::complex<double>)
 
 } // namespace rocsolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

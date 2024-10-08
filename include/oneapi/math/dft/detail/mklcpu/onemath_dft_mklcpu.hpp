@@ -29,10 +29,10 @@
 #include "oneapi/math/detail/export.hpp"
 #include "oneapi/math/dft/detail/types_impl.hpp"
 
-namespace oneapi::mkl::dft::mklcpu {
+namespace oneapi::math::dft::mklcpu {
 
 #include "oneapi/math/dft/detail/dft_ct.hxx"
 
-} // namespace oneapi::mkl::dft::mklcpu
+} // namespace oneapi::math::dft::mklcpu
 
 #endif // _ONEMATH_DFT_MKLCPU_HPP_

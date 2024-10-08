@@ -29,11 +29,11 @@
 #include "descriptor_impl.hpp"
 #include "external_workspace_helper.hpp"
 
-namespace oneapi::mkl {
+namespace oneapi::math {
 enum class backend;
 }
 
-namespace oneapi::mkl::dft::detail {
+namespace oneapi::math::dft::detail {
 
 template <precision prec, domain dom>
 class dft_values;
@@ -41,10 +41,10 @@ class dft_values;
 template <precision prec, domain dom>
 class commit_impl {
     sycl::queue queue_;
-    mkl::backend backend_;
+    math::backend backend_;
 
 public:
-    using descriptor_type = typename oneapi::mkl::dft::detail::descriptor<prec, dom>;
+    using descriptor_type = typename oneapi::math::dft::detail::descriptor<prec, dom>;
     using fwd_type = typename descriptor_info<descriptor_type>::forward_type;
     using bwd_type = typename descriptor_info<descriptor_type>::backward_type;
     using scalar_type = typename descriptor_info<descriptor_type>::scalar_type;
@@ -53,7 +53,7 @@ protected:
     external_workspace_helper<prec, dom> external_workspace_helper_;
 
 public:
-    commit_impl(sycl::queue queue, mkl::backend backend,
+    commit_impl(sycl::queue queue, math::backend backend,
                 const dft::detail::dft_values<prec, dom> &config_values)
             : queue_(queue),
               backend_(backend),
@@ -69,7 +69,7 @@ public:
         return queue_;
     }
 
-    mkl::backend get_backend() const noexcept {
+    math::backend get_backend() const noexcept {
         return backend_;
     }
 
@@ -179,6 +179,6 @@ protected:
     }
 };
 
-} // namespace oneapi::mkl::dft::detail
+} // namespace oneapi::math::dft::detail
 
 #endif //_ONEMATH_DFT_COMMIT_IMPL_HPP_

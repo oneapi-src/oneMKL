@@ -24,7 +24,7 @@
 #include "oneapi/math/lapack/detail/cusolver/onemath_lapack_cusolver.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace cusolver {
 
@@ -185,7 +185,7 @@ GETRI_STRIDED_BATCH_LAUNCHER(std::complex<double>, cublasZgetriBatched)
 
 template <typename Func, typename T>
 inline void getrs_batch(const char *func_name, Func func, sycl::queue &queue,
-                        oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
+                        oneapi::math::transpose trans, std::int64_t n, std::int64_t nrhs,
                         sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a,
                         sycl::buffer<std::int64_t> &ipiv, std::int64_t stride_ipiv,
                         sycl::buffer<T> &b, std::int64_t ldb, std::int64_t stride_b,
@@ -235,7 +235,7 @@ inline void getrs_batch(const char *func_name, Func func, sycl::queue &queue,
 }
 
 #define GETRS_STRIDED_BATCH_LAUNCHER(TYPE, CUSOLVER_ROUTINE)                                      \
-    void getrs_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,            \
+    void getrs_batch(sycl::queue &queue, oneapi::math::transpose trans, std::int64_t n,            \
                      std::int64_t nrhs, sycl::buffer<TYPE> &a, std::int64_t lda,                  \
                      std::int64_t stride_a, sycl::buffer<std::int64_t> &ipiv,                     \
                      std::int64_t stride_ipiv, sycl::buffer<TYPE> &b, std::int64_t ldb,           \
@@ -366,7 +366,7 @@ ORGQR_STRIDED_BATCH_LAUNCHER(double, cusolverDnDorgqr)
 
 template <typename Func, typename T>
 inline void potrf_batch(const char *func_name, Func func, sycl::queue &queue,
-                        oneapi::mkl::uplo uplo, std::int64_t n, sycl::buffer<T> &a,
+                        oneapi::math::uplo uplo, std::int64_t n, sycl::buffer<T> &a,
                         std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size,
                         sycl::buffer<T> &scratchpad, std::int64_t scratchpad_size) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
@@ -401,7 +401,7 @@ inline void potrf_batch(const char *func_name, Func func, sycl::queue &queue,
 
 // Scratchpad memory not needed as parts of buffer a is used as workspace memory
 #define POTRF_STRIDED_BATCH_LAUNCHER(TYPE, CUSOLVER_ROUTINE)                                      \
-    void potrf_batch(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,                  \
+    void potrf_batch(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,                  \
                      sycl::buffer<TYPE> &a, std::int64_t lda, std::int64_t stride_a,              \
                      std::int64_t batch_size, sycl::buffer<TYPE> &scratchpad,                     \
                      std::int64_t scratchpad_size) {                                              \
@@ -418,7 +418,7 @@ POTRF_STRIDED_BATCH_LAUNCHER(std::complex<double>, cusolverDnZpotrfBatched)
 
 template <typename Func, typename T>
 inline void potrs_batch(const char *func_name, Func func, sycl::queue &queue,
-                        oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
+                        oneapi::math::uplo uplo, std::int64_t n, std::int64_t nrhs,
                         sycl::buffer<T> &a, std::int64_t lda, std::int64_t stride_a,
                         sycl::buffer<T> &b, std::int64_t ldb, std::int64_t stride_b,
                         std::int64_t batch_size, sycl::buffer<T> &scratchpad,
@@ -468,7 +468,7 @@ inline void potrs_batch(const char *func_name, Func func, sycl::queue &queue,
 
 // Scratchpad memory not needed as parts of buffer a is used as workspace memory
 #define POTRS_STRIDED_BATCH_LAUNCHER(TYPE, CUSOLVER_ROUTINE)                                     \
-    void potrs_batch(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n,                 \
+    void potrs_batch(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n,                 \
                      std::int64_t nrhs, sycl::buffer<TYPE> &a, std::int64_t lda,                 \
                      std::int64_t stride_a, sycl::buffer<TYPE> &b, std::int64_t ldb,             \
                      std::int64_t stride_b, std::int64_t batch_size,                             \
@@ -936,7 +936,7 @@ sycl::event getri_batch(sycl::queue &queue, std::int64_t *n, std::complex<double
 
 template <typename Func, typename T>
 inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &queue,
-                               oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs,
+                               oneapi::math::transpose trans, std::int64_t n, std::int64_t nrhs,
                                T *a, std::int64_t lda, std::int64_t stride_a, std::int64_t *ipiv,
                                std::int64_t stride_ipiv, T *b, std::int64_t ldb,
                                std::int64_t stride_b, std::int64_t batch_size, T *scratchpad,
@@ -986,7 +986,7 @@ inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &qu
 }
 
 #define GETRS_STRIDED_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                  \
-    sycl::event getrs_batch(sycl::queue &queue, oneapi::mkl::transpose trans, std::int64_t n,     \
+    sycl::event getrs_batch(sycl::queue &queue, oneapi::math::transpose trans, std::int64_t n,     \
                             std::int64_t nrhs, TYPE *a, std::int64_t lda, std::int64_t stride_a,  \
                             std::int64_t *ipiv, std::int64_t stride_ipiv, TYPE *b,                \
                             std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,     \
@@ -1006,7 +1006,7 @@ GETRS_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, cusolverDnZgetrs)
 
 template <typename Func, typename T>
 inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &queue,
-                               oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
+                               oneapi::math::transpose *trans, std::int64_t *n, std::int64_t *nrhs,
                                T **a, std::int64_t *lda, std::int64_t **ipiv, T **b,
                                std::int64_t *ldb, std::int64_t group_count,
                                std::int64_t *group_sizes, T *scratchpad,
@@ -1081,7 +1081,7 @@ inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &qu
 
 #define GETRS_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                        \
     sycl::event getrs_batch(                                                                    \
-        sycl::queue &queue, oneapi::mkl::transpose *trans, std::int64_t *n, std::int64_t *nrhs, \
+        sycl::queue &queue, oneapi::math::transpose *trans, std::int64_t *n, std::int64_t *nrhs, \
         TYPE **a, std::int64_t *lda, std::int64_t **ipiv, TYPE **b, std::int64_t *ldb,          \
         std::int64_t group_count, std::int64_t *group_sizes, TYPE *scratchpad,                  \
         std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {           \
@@ -1200,7 +1200,7 @@ ORGQR_BATCH_LAUNCHER_USM(double, cusolverDnDorgqr)
 
 template <typename Func, typename T>
 inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &queue,
-                               oneapi::mkl::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
+                               oneapi::math::uplo uplo, std::int64_t n, T *a, std::int64_t lda,
                                std::int64_t stride_a, std::int64_t batch_size, T *scratchpad,
                                std::int64_t scratchpad_size,
                                const std::vector<sycl::event> &dependencies) {
@@ -1237,7 +1237,7 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
 
 // Scratchpad memory not needed as parts of buffer a is used as workspace memory
 #define POTRF_STRIDED_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                  \
-    sycl::event potrf_batch(sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, TYPE *a,  \
+    sycl::event potrf_batch(sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, TYPE *a,  \
                             std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size,     \
                             TYPE *scratchpad, std::int64_t scratchpad_size,                       \
                             const std::vector<sycl::event> &dependencies) {                       \
@@ -1254,7 +1254,7 @@ POTRF_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, cusolverDnZpotrfBatched)
 
 template <typename Func, typename T>
 inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &queue,
-                               oneapi::mkl::uplo *uplo, std::int64_t *n, T **a, std::int64_t *lda,
+                               oneapi::math::uplo *uplo, std::int64_t *n, T **a, std::int64_t *lda,
                                std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad,
                                std::int64_t scratchpad_size,
                                const std::vector<sycl::event> &dependencies) {
@@ -1300,7 +1300,7 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
 // Scratchpad memory not needed as parts of buffer a is used as workspace memory
 #define POTRF_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                           \
     sycl::event potrf_batch(                                                                       \
-        sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, TYPE **a, std::int64_t *lda, \
+        sycl::queue &queue, oneapi::math::uplo *uplo, std::int64_t *n, TYPE **a, std::int64_t *lda, \
         std::int64_t group_count, std::int64_t *group_sizes, TYPE *scratchpad,                     \
         std::int64_t scratchpad_size, const std::vector<sycl::event> &dependencies) {              \
         return potrf_batch(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, uplo, n, a, lda,            \
@@ -1316,7 +1316,7 @@ POTRF_BATCH_LAUNCHER_USM(std::complex<double>, cusolverDnZpotrfBatched)
 
 template <typename Func, typename T>
 inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &queue,
-                               oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, T *a,
+                               oneapi::math::uplo uplo, std::int64_t n, std::int64_t nrhs, T *a,
                                std::int64_t lda, std::int64_t stride_a, T *b, std::int64_t ldb,
                                std::int64_t stride_b, std::int64_t batch_size, T *scratchpad,
                                std::int64_t scratchpad_size,
@@ -1365,7 +1365,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
 // Scratchpad memory not needed as parts of buffer a is used as workspace memory
 #define POTRS_STRIDED_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                   \
     sycl::event potrs_batch(                                                                       \
-        sycl::queue &queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs, TYPE *a,    \
+        sycl::queue &queue, oneapi::math::uplo uplo, std::int64_t n, std::int64_t nrhs, TYPE *a,    \
         std::int64_t lda, std::int64_t stride_a, TYPE *b, std::int64_t ldb, std::int64_t stride_b, \
         std::int64_t batch_size, TYPE *scratchpad, std::int64_t scratchpad_size,                   \
         const std::vector<sycl::event> &dependencies) {                                            \
@@ -1383,7 +1383,7 @@ POTRS_STRIDED_BATCH_LAUNCHER_USM(std::complex<double>, cusolverDnZpotrsBatched)
 
 template <typename Func, typename T>
 inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &queue,
-                               oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs, T **a,
+                               oneapi::math::uplo *uplo, std::int64_t *n, std::int64_t *nrhs, T **a,
                                std::int64_t *lda, T **b, std::int64_t *ldb,
                                std::int64_t group_count, std::int64_t *group_sizes, T *scratchpad,
                                std::int64_t scratchpad_size,
@@ -1440,7 +1440,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
 // Scratchpad memory not needed as parts of buffer a is used as workspace memory
 #define POTRS_BATCH_LAUNCHER_USM(TYPE, CUSOLVER_ROUTINE)                                         \
     sycl::event potrs_batch(                                                                     \
-        sycl::queue &queue, oneapi::mkl::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,        \
+        sycl::queue &queue, oneapi::math::uplo *uplo, std::int64_t *n, std::int64_t *nrhs,        \
         TYPE **a, std::int64_t *lda, TYPE **b, std::int64_t *ldb, std::int64_t group_count,      \
         std::int64_t *group_sizes, TYPE *scratchpad, std::int64_t scratchpad_size,               \
         const std::vector<sycl::event> &dependencies) {                                          \
@@ -1614,7 +1614,7 @@ GETRI_STRIDED_BATCH_LAUNCHER_SCRATCH(std::complex<double>)
 #define GETRS_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE)                                            \
     template <>                                                                               \
     std::int64_t getrs_batch_scratchpad_size<TYPE>(                                           \
-        sycl::queue & queue, oneapi::mkl::transpose trans, std::int64_t n, std::int64_t nrhs, \
+        sycl::queue & queue, oneapi::math::transpose trans, std::int64_t n, std::int64_t nrhs, \
         std::int64_t lda, std::int64_t stride_a, std::int64_t stride_ipiv, std::int64_t ldb,  \
         std::int64_t stride_b, std::int64_t batch_size) {                                     \
         return 0;                                                                             \
@@ -1665,7 +1665,7 @@ GEQRF_STRIDED_BATCH_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZgeqrf_buff
 #define POTRF_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE)                                     \
     template <>                                                                        \
     std::int64_t potrf_batch_scratchpad_size<TYPE>(                                    \
-        sycl::queue & queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t lda, \
+        sycl::queue & queue, oneapi::math::uplo uplo, std::int64_t n, std::int64_t lda, \
         std::int64_t stride_a, std::int64_t batch_size) {                              \
         return 0;                                                                      \
     }
@@ -1681,7 +1681,7 @@ POTRF_STRIDED_BATCH_LAUNCHER_SCRATCH(std::complex<double>)
 #define POTRS_STRIDED_BATCH_LAUNCHER_SCRATCH(TYPE)                                        \
     template <>                                                                           \
     std::int64_t potrs_batch_scratchpad_size<TYPE>(                                       \
-        sycl::queue & queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,   \
+        sycl::queue & queue, oneapi::math::uplo uplo, std::int64_t n, std::int64_t nrhs,   \
         std::int64_t lda, std::int64_t stride_a, std::int64_t ldb, std::int64_t stride_b, \
         std::int64_t batch_size) {                                                        \
         return 0;                                                                         \
@@ -1828,7 +1828,7 @@ GETRI_GROUP_LAUNCHER_SCRATCH(std::complex<double>)
 #define GETRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                     \
     template <>                                                                                \
     std::int64_t getrs_batch_scratchpad_size<TYPE>(                                            \
-        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * n,                 \
+        sycl::queue & queue, oneapi::math::transpose * trans, std::int64_t * n,                 \
         std::int64_t * nrhs, std::int64_t * lda, std::int64_t * ldb, std::int64_t group_count, \
         std::int64_t * group_sizes) {                                                          \
         return 0;                                                                              \
@@ -1928,7 +1928,7 @@ ORGQR_GROUP_LAUNCHER_SCRATCH(double, cusolverDnDorgqr_bufferSize)
 #define POTRF_GROUP_LAUNCHER_SCRATCH(TYPE)                                                   \
     template <>                                                                              \
     std::int64_t potrf_batch_scratchpad_size<TYPE>(                                          \
-        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t * n, std::int64_t * lda, \
+        sycl::queue & queue, oneapi::math::uplo * uplo, std::int64_t * n, std::int64_t * lda, \
         std::int64_t group_count, std::int64_t * group_sizes) {                              \
         return 0;                                                                            \
     }
@@ -1944,7 +1944,7 @@ POTRF_GROUP_LAUNCHER_SCRATCH(std::complex<double>)
 #define POTRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                    \
     template <>                                                                               \
     std::int64_t potrs_batch_scratchpad_size<TYPE>(                                           \
-        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t * n, std::int64_t * nrhs, \
+        sycl::queue & queue, oneapi::math::uplo * uplo, std::int64_t * n, std::int64_t * nrhs, \
         std::int64_t * lda, std::int64_t * ldb, std::int64_t group_count,                     \
         std::int64_t * group_sizes) {                                                         \
         return 0;                                                                             \
@@ -2000,5 +2000,5 @@ UNGQR_GROUP_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZungqr_bufferSize)
 
 } // namespace cusolver
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

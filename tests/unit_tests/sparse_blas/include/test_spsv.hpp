@@ -49,18 +49,18 @@
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper_with_format(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64,
                              sycl::device *dev, sparse_matrix_format_t format,
-                             oneapi::mkl::transpose transpose_val, int &num_passed,
+                             oneapi::math::transpose transpose_val, int &num_passed,
                              int &num_skipped) {
     double density_A_matrix = 0.144;
     fpType alpha = set_fp_value<fpType>()(1.f, 0.f);
     int m = 277;
-    oneapi::mkl::index_base index_zero = oneapi::mkl::index_base::zero;
-    oneapi::mkl::sparse::spsv_alg default_alg = oneapi::mkl::sparse::spsv_alg::default_alg;
-    oneapi::mkl::sparse::spsv_alg no_optimize_alg = oneapi::mkl::sparse::spsv_alg::no_optimize_alg;
-    oneapi::mkl::sparse::matrix_view default_A_view(oneapi::mkl::sparse::matrix_descr::triangular);
-    oneapi::mkl::sparse::matrix_view upper_A_view(oneapi::mkl::sparse::matrix_descr::triangular);
-    upper_A_view.uplo_view = oneapi::mkl::uplo::upper;
-    std::set<oneapi::mkl::sparse::matrix_property> no_properties;
+    oneapi::math::index_base index_zero = oneapi::math::index_base::zero;
+    oneapi::math::sparse::spsv_alg default_alg = oneapi::math::sparse::spsv_alg::default_alg;
+    oneapi::math::sparse::spsv_alg no_optimize_alg = oneapi::math::sparse::spsv_alg::no_optimize_alg;
+    oneapi::math::sparse::matrix_view default_A_view(oneapi::math::sparse::matrix_descr::triangular);
+    oneapi::math::sparse::matrix_view upper_A_view(oneapi::math::sparse::matrix_descr::triangular);
+    upper_A_view.uplo_view = oneapi::math::uplo::upper;
+    std::set<oneapi::math::sparse::matrix_property> no_properties;
     bool no_reset_data = false;
     bool no_scalars_on_device = false;
 
@@ -81,7 +81,7 @@ void test_helper_with_format(testFunctorI32 test_functor_i32, testFunctorI64 tes
         num_passed, num_skipped);
     // Test index_base 1
     EXPECT_TRUE_OR_FUTURE_SKIP(
-        test_functor_i32(dev, format, m, density_A_matrix, oneapi::mkl::index_base::one,
+        test_functor_i32(dev, format, m, density_A_matrix, oneapi::math::index_base::one,
                          transpose_val, alpha, default_alg, default_A_view, no_properties,
                          no_reset_data, no_scalars_on_device),
         num_passed, num_skipped);
@@ -91,16 +91,16 @@ void test_helper_with_format(testFunctorI32 test_functor_i32, testFunctorI64 tes
                                                 no_properties, no_reset_data, no_scalars_on_device),
                                num_passed, num_skipped);
     // Test lower triangular unit diagonal matrix
-    oneapi::mkl::sparse::matrix_view triangular_unit_A_view(
-        oneapi::mkl::sparse::matrix_descr::triangular);
-    triangular_unit_A_view.diag_view = oneapi::mkl::diag::unit;
+    oneapi::math::sparse::matrix_view triangular_unit_A_view(
+        oneapi::math::sparse::matrix_descr::triangular);
+    triangular_unit_A_view.diag_view = oneapi::math::diag::unit;
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, m, density_A_matrix, index_zero, transpose_val, alpha,
                          default_alg, triangular_unit_A_view, no_properties, no_reset_data,
                          no_scalars_on_device),
         num_passed, num_skipped);
     // Test upper triangular unit diagonal matrix
-    triangular_unit_A_view.uplo_view = oneapi::mkl::uplo::upper;
+    triangular_unit_A_view.uplo_view = oneapi::math::uplo::upper;
     EXPECT_TRUE_OR_FUTURE_SKIP(
         test_functor_i32(dev, format, m, density_A_matrix, index_zero, transpose_val, alpha,
                          default_alg, triangular_unit_A_view, no_properties, no_reset_data,
@@ -158,7 +158,7 @@ void test_helper_with_format(testFunctorI32 test_functor_i32, testFunctorI64 tes
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64,
-                 sycl::device *dev, oneapi::mkl::transpose transpose_val, int &num_passed,
+                 sycl::device *dev, oneapi::math::transpose transpose_val, int &num_passed,
                  int &num_skipped) {
     test_helper_with_format<fpType>(test_functor_i32, test_functor_i64, dev,
                                     sparse_matrix_format_t::CSR, transpose_val, num_passed,
@@ -172,8 +172,8 @@ void test_helper(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i6
 template <typename fpType, typename intType>
 void prepare_reference_spsv_data(sparse_matrix_format_t format, const intType *ia,
                                  const intType *ja, const fpType *a, intType m, intType nnz,
-                                 intType indexing, oneapi::mkl::transpose opA, const fpType *x,
-                                 fpType alpha, oneapi::mkl::sparse::matrix_view A_view,
+                                 intType indexing, oneapi::math::transpose opA, const fpType *x,
+                                 fpType alpha, oneapi::math::sparse::matrix_view A_view,
                                  fpType *y_ref) {
     std::size_t mu = static_cast<std::size_t>(m);
     auto dense_opa = sparse_to_dense(format, ia, ja, a, mu, mu, static_cast<std::size_t>(nnz),
@@ -187,7 +187,7 @@ void prepare_reference_spsv_data(sparse_matrix_format_t format, const intType *i
     // Compute each element of the reference one after the other starting from 0 (resp. the end) for a lower (resp. upper) triangular matrix.
     // A matrix is considered lowered if it is lower and not transposed or upper and transposed.
     const bool is_lower =
-        (A_view.uplo_view == oneapi::mkl::uplo::lower) == (opA == oneapi::mkl::transpose::nontrans);
+        (A_view.uplo_view == oneapi::math::uplo::lower) == (opA == oneapi::math::transpose::nontrans);
     for (std::size_t row = 0; row < mu; row++) {
         std::size_t uplo_row = is_lower ? row : (mu - 1 - row);
         fpType rhs = alpha * x[uplo_row];

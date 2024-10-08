@@ -29,11 +29,11 @@
 #include "oneapi/math/detail/export.hpp"
 #include "oneapi/math/dft/detail/types_impl.hpp"
 
-namespace oneapi::mkl::dft::portfft {
+namespace oneapi::math::dft::portfft {
 
 // We don't need the forward declarations of compute_xxxward templates (just need the create_commit template), but it doesn't hurt and keeps things simple.
 #include "oneapi/math/dft/detail/dft_ct.hxx"
 
-} // namespace oneapi::mkl::dft::portfft
+} // namespace oneapi::math::dft::portfft
 
 #endif // _ONEMATH_DFT_PORTFFT_HPP_

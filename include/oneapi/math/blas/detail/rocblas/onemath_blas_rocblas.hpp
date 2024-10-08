@@ -32,12 +32,12 @@
 #include "oneapi/math/detail/config.hpp"
 
 namespace oneapi {
-namespace mkl {
-using oneapi::mkl::diag;
-using oneapi::mkl::offset;
-using oneapi::mkl::side;
-using oneapi::mkl::transpose;
-using oneapi::mkl::uplo;
+namespace math {
+using oneapi::math::diag;
+using oneapi::math::offset;
+using oneapi::math::side;
+using oneapi::math::transpose;
+using oneapi::math::uplo;
 namespace blas {
 namespace rocblas {
 namespace column_major {
@@ -52,7 +52,7 @@ namespace row_major {
 } //namespace row_major
 } //namespace rocblas
 } //namespace blas
-} //namespace mkl
+} //namespace math
 } //namespace oneapi
 
 #endif //_ONEMATH_BLAS_ROCBLAS_HPP_

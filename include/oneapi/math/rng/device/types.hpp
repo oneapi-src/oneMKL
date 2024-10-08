@@ -20,7 +20,7 @@
 #ifndef _MKL_RNG_DEVICE_TYPES_HPP_
 #define _MKL_RNG_DEVICE_TYPES_HPP_
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 // METHODS FOR DISTRIBUTIONS
 
@@ -69,6 +69,6 @@ struct marsaglia_accurate {};
 using by_default = marsaglia;
 } // namespace gamma_method
 
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #endif // _MKL_RNG_DEVICE_TYPES_HPP_

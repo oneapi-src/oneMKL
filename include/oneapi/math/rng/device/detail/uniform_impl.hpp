@@ -24,7 +24,7 @@
 #include <cmath>
 #include "engine_base.hpp"
 
-namespace oneapi::mkl::rng::device::detail {
+namespace oneapi::math::rng::device::detail {
 
 static inline std::uint64_t umul_hi_64(const std::uint64_t a, const std::uint64_t b) {
     const std::uint64_t a_lo = a & 0xFFFFFFFFULL;
@@ -63,7 +63,7 @@ static inline void generate_leftover(std::uint64_t range, Generator generate, st
 }
 
 template <typename Type, typename Method>
-class distribution_base<oneapi::mkl::rng::device::uniform<Type, Method>> {
+class distribution_base<oneapi::math::rng::device::uniform<Type, Method>> {
 public:
     struct param_type {
         param_type(Type a, Type b) : a_(a), b_(b) {}
@@ -74,7 +74,7 @@ public:
     distribution_base(Type a, Type b) : a_(a), b_(b) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (a >= b) {
-            throw oneapi::mkl::invalid_argument("rng", "uniform", "a >= b");
+            throw oneapi::math::invalid_argument("rng", "uniform", "a >= b");
         }
 #endif
     }
@@ -94,7 +94,7 @@ public:
     void param(const param_type& pt) {
 #ifndef __SYCL_DEVICE_ONLY__
         if (pt.a_ >= pt.b_) {
-            throw oneapi::mkl::invalid_argument("rng", "uniform", "a >= b");
+            throw oneapi::math::invalid_argument("rng", "uniform", "a >= b");
         }
 #endif
         a_ = pt.a_;
@@ -318,6 +318,6 @@ protected:
     Type b_;
 };
 
-} // namespace oneapi::mkl::rng::device::detail
+} // namespace oneapi::math::rng::device::detail
 
 #endif // _MKL_RNG_DEVICE_UNIFORM_IMPL_HPP_

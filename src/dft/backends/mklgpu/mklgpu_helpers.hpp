@@ -32,7 +32,7 @@
 #endif
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace dft {
 namespace mklgpu {
 namespace detail {
@@ -78,7 +78,7 @@ inline constexpr dft::config_param to_mklgpu(dft::detail::config_param param) {
         case iparam::WORKSPACE_EXTERNAL_BYTES: return oparam::WORKSPACE_BYTES;
         case iparam::COMMIT_STATUS: return oparam::COMMIT_STATUS;
         default:
-            throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
+            throw math::invalid_argument("dft", "MKLGPU descriptor set_value()",
                                         "Invalid config param.");
             return static_cast<oparam>(0);
     }
@@ -98,7 +98,7 @@ inline constexpr int to_mklgpu<dft::detail::config_param::COMPLEX_STORAGE>(
         return DFTI_COMPLEX_COMPLEX;
     }
     else {
-        throw mkl::unimplemented("dft", "MKLGPU descriptor set_value()",
+        throw math::unimplemented("dft", "MKLGPU descriptor set_value()",
                                  "MKLGPU only supports complex-complex for complex storage.");
         return 0;
     }
@@ -111,7 +111,7 @@ inline constexpr int to_mklgpu<dft::detail::config_param::CONJUGATE_EVEN_STORAGE
         return DFTI_COMPLEX_COMPLEX;
     }
     else {
-        throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
+        throw math::invalid_argument("dft", "MKLGPU descriptor set_value()",
                                     "Invalid config value for conjugate even storage.");
         return 0;
     }
@@ -127,7 +127,7 @@ inline constexpr int to_mklgpu<dft::detail::config_param::PLACEMENT>(
         return DFTI_NOT_INPLACE;
     }
     else {
-        throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
+        throw math::invalid_argument("dft", "MKLGPU descriptor set_value()",
                                     "Invalid config value for inplace.");
         return 0;
     }
@@ -140,7 +140,7 @@ inline constexpr int to_mklgpu<dft::detail::config_param::PACKED_FORMAT>(
         return DFTI_CCE_FORMAT;
     }
     else {
-        throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
+        throw math::invalid_argument("dft", "MKLGPU descriptor set_value()",
                                     "Invalid config value for packed format.");
         return 0;
     }
@@ -165,7 +165,7 @@ to_mklgpu_config_value<dft::detail::config_param::WORKSPACE_PLACEMENT>(
         return dft::config_value::WORKSPACE_EXTERNAL;
     }
     else {
-        throw mkl::invalid_argument("dft", "MKLGPU descriptor set_value()",
+        throw math::invalid_argument("dft", "MKLGPU descriptor set_value()",
                                     "Invalid config value for workspace placement.");
         return dft::config_value::WORKSPACE_INTERNAL;
     }
@@ -173,7 +173,7 @@ to_mklgpu_config_value<dft::detail::config_param::WORKSPACE_PLACEMENT>(
 } // namespace detail
 } // namespace mklgpu
 } // namespace dft
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_DFT_SRC_MKLGPU_HELPERS_HPP_

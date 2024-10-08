@@ -28,7 +28,7 @@
 #include "mkl_dfti.h"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace dft {
 namespace mklcpu {
 namespace detail {
@@ -82,7 +82,7 @@ using commit_derived_t = detail::commit_derived_impl<prec, dom>;
 } // namespace detail
 } // namespace mklcpu
 } // namespace dft
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_DFT_COMMIT_DERIVED_IMPL_HPP_

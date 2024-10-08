@@ -32,7 +32,7 @@
 #include "sparse_blas/enum_data_types.hpp"
 #include "sparse_blas/macros.hpp"
 
-namespace oneapi::mkl::sparse::detail {
+namespace oneapi::math::sparse::detail {
 
 /// Return whether a pointer is accessible on the host
 template <typename T>
@@ -47,7 +47,7 @@ inline void check_ptr_is_host_accessible(const std::string &function_name,
                                          const std::string &scalar_name,
                                          bool is_ptr_accessible_on_host) {
     if (!is_ptr_accessible_on_host) {
-        throw mkl::invalid_argument(
+        throw math::invalid_argument(
             "sparse_blas", function_name,
             "Scalar " + scalar_name + " must be accessible on the host for buffer functions.");
     }
@@ -92,7 +92,7 @@ inline sycl::event collapse_dependencies(sycl::queue &queue,
         case detail::data_type::complex_fp64:                                                      \
             return op_functor<std::complex<double>>(__VA_ARGS__);                                  \
         default:                                                                                   \
-            throw oneapi::mkl::exception(                                                          \
+            throw oneapi::math::exception(                                                          \
                 "sparse_blas", function_name,                                                      \
                 "Internal error: unsupported type " + data_type_to_str(value_type));               \
     }
@@ -100,12 +100,12 @@ inline sycl::event collapse_dependencies(sycl::queue &queue,
 #define CHECK_DESCR_MATCH(descr, argument, optimize_func_name)                                    \
     do {                                                                                          \
         if (descr->last_optimized_##argument != argument) {                                       \
-            throw mkl::invalid_argument(                                                          \
+            throw math::invalid_argument(                                                          \
                 "sparse_blas", __func__,                                                          \
                 #argument " argument must match with the previous call to " #optimize_func_name); \
         }                                                                                         \
     } while (0)
 
-} // namespace oneapi::mkl::sparse::detail
+} // namespace oneapi::math::sparse::detail
 
 #endif // _ONEMATH_SRC_SPARSE_BLAS_BACKENDS_MKL_COMMON_MKL_HELPER_HPP_

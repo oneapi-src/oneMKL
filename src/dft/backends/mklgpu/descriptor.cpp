@@ -22,7 +22,7 @@
 
 #include "oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp"
 
-namespace oneapi::mkl::dft::detail {
+namespace oneapi::math::dft::detail {
 
 template <precision prec, domain dom>
 void descriptor<prec, dom>::commit(backend_selector<backend::mklgpu> selector) {
@@ -44,4 +44,4 @@ template void descriptor<precision::DOUBLE, domain::COMPLEX>::commit(
 template void descriptor<precision::DOUBLE, domain::REAL>::commit(
     backend_selector<backend::mklgpu>);
 
-} //namespace oneapi::mkl::dft::detail
+} //namespace oneapi::math::dft::detail

@@ -55,7 +55,7 @@ interface of this oneMath library. Consequently, the types under dft::TYPE are
 Intel oneMKL types, and types under dft::detail::TYPE are from this library.
 **/
 
-namespace oneapi::mkl::dft::mklgpu {
+namespace oneapi::math::dft::mklgpu {
 namespace detail {
 
 /// Commit impl class specialization for MKLGPU.
@@ -77,14 +77,14 @@ private:
 
 public:
     mklgpu_commit(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
-            : oneapi::mkl::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu,
+            : oneapi::math::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu,
                                                                config_values),
               handle(std::make_shared<mklgpu_descriptor_t>(config_values.dimensions), nullptr) {
         handle.second = handle.first; // Make sure the bwd pointer is valid.
         // MKLGPU does not throw an informative exception for the following:
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
-                throw mkl::exception("dft/backends/mklgpu", "commit",
+                throw math::exception("dft/backends/mklgpu", "commit",
                                      "Device does not support double precision.");
             }
         }
@@ -92,9 +92,9 @@ public:
 
     virtual void commit(const dft::detail::dft_values<prec, dom>& config_values) override {
         this->external_workspace_helper_ =
-            oneapi::mkl::dft::detail::external_workspace_helper<prec, dom>(
+            oneapi::math::dft::detail::external_workspace_helper<prec, dom>(
                 config_values.workspace_placement ==
-                oneapi::mkl::dft::detail::config_value::WORKSPACE_EXTERNAL);
+                oneapi::math::dft::detail::config_value::WORKSPACE_EXTERNAL);
 
         auto stride_choice = dft::detail::get_stride_api(config_values);
         throw_on_invalid_stride_api("MKLGPU commit", stride_choice);
@@ -115,7 +115,7 @@ public:
             // Catching the real Intel oneMKL exception causes headaches with naming
             forward_good = false;
             if (one_descriptor) {
-                throw mkl::exception("dft/backends/mklgpu"
+                throw math::exception("dft/backends/mklgpu"
                                      "commit",
                                      mkl_exception.what());
             }
@@ -131,7 +131,7 @@ public:
             catch (const std::exception& mkl_exception) {
                 // Catching the real Intel oneMKL exception causes headaches with naming.
                 if (!forward_good) {
-                    throw mkl::exception("dft/backends/mklgpu"
+                    throw math::exception("dft/backends/mklgpu"
                                          "commit",
                                          mkl_exception.what());
                 }
@@ -183,7 +183,7 @@ private:
         desc.set_value(backend_param::COMPLEX_STORAGE,
                        to_mklgpu<onemath_param::COMPLEX_STORAGE>(config.complex_storage));
         if (config.real_storage != dft::detail::config_value::REAL_REAL) {
-            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+            throw math::invalid_argument("dft/backends/mklgpu", "commit",
                                         "MKLGPU only supports real-real real storage.");
         }
         desc.set_value(backend_param::CONJUGATE_EVEN_STORAGE,
@@ -193,7 +193,7 @@ private:
 
         if (stride_choice == dft::detail::stride_api::FB_STRIDES) {
             if (config.fwd_strides[0] != 0 || config.fwd_strides[0] != 0) {
-                throw mkl::unimplemented("dft/backends/mklgpu", "commit",
+                throw math::unimplemented("dft/backends/mklgpu", "commit",
                                          "MKLGPU does not support nonzero offsets.");
             }
             desc.set_value(backend_param::FWD_STRIDES, config.fwd_strides.data());
@@ -201,7 +201,7 @@ private:
         }
         else {
             if (config.input_strides[0] != 0 || config.output_strides[0] != 0) {
-                throw mkl::unimplemented("dft/backends/mklgpu", "commit",
+                throw math::unimplemented("dft/backends/mklgpu", "commit",
                                          "MKLGPU does not support nonzero offsets.");
             }
             if (assume_fwd_dft) {
@@ -223,12 +223,12 @@ private:
         }
         // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.ordering != dft::detail::config_value::ORDERED) {
-            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+            throw math::invalid_argument("dft/backends/mklgpu", "commit",
                                         "MKLGPU only supports ordered ordering.");
         }
         // Setting the transpose causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.transpose != false) {
-            throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
+            throw math::invalid_argument("dft/backends/mklgpu", "commit",
                                         "MKLGPU only supports non-transposed.");
         }
     }
@@ -266,4 +266,4 @@ create_commit(
     const dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>&,
     sycl::queue&);
 
-} // namespace oneapi::mkl::dft::mklgpu
+} // namespace oneapi::math::dft::mklgpu

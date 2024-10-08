@@ -27,7 +27,7 @@
 
 #include "oneapi/math/rng/device/detail/mrg32k3a_skip_ahead_matrix.hpp"
 
-namespace oneapi::mkl::rng::device {
+namespace oneapi::math::rng::device {
 
 template <std::int32_t VecSize = 1>
 class mrg32k3a;
@@ -35,7 +35,7 @@ class mrg32k3a;
 namespace detail {
 
 template <std::int32_t VecSize>
-struct engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>> {
+struct engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>> {
     std::uint32_t s[6];
 };
 
@@ -176,12 +176,12 @@ static inline void vec3_pow_mod(
 }
 
 template <std::int32_t VecSize>
-static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>>& state,
+static inline void skip_ahead(engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>>& state,
                               std::uint64_t n, const std::uint64_t* num_to_skip_ptr) {
     if (n > 3) {
         n = 3;
 #ifndef __SYCL_DEVICE_ONLY__
-        throw oneapi::mkl::invalid_argument("rng", "mrg32k3a",
+        throw oneapi::math::invalid_argument("rng", "mrg32k3a",
                                             "period is 2 ^ 191, skip on more than 2^192");
 #endif
     }
@@ -190,7 +190,7 @@ static inline void skip_ahead(engine_state<oneapi::mkl::rng::device::mrg32k3a<Ve
 }
 
 template <std::int32_t VecSize>
-static inline void validate_seed(engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>>& state) {
+static inline void validate_seed(engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>>& state) {
     int i;
     for (i = 0; i < 3; i++) {
         if (state.s[i] >= mrg32k3a_params::m1) {
@@ -212,7 +212,7 @@ static inline void validate_seed(engine_state<oneapi::mkl::rng::device::mrg32k3a
 }
 
 template <std::int32_t VecSize>
-static inline void init(engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>>& state,
+static inline void init(engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>>& state,
                         std::uint64_t n, const std::uint32_t* seed_ptr, std::uint64_t n_offset,
                         const std::uint64_t* offset_ptr) {
     std::uint64_t i;
@@ -231,7 +231,7 @@ static inline void init(engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>
 
 template <std::int32_t VecSize>
 static inline sycl::vec<std::uint32_t, VecSize> generate(
-    engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>>& state) {
+    engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>>& state) {
     const std::int32_t num_elements = VecSize;
     sycl::vec<std::uint32_t, VecSize> res;
     std::int64_t x, y;
@@ -270,7 +270,7 @@ static inline sycl::vec<std::uint32_t, VecSize> generate(
 
 template <std::int32_t VecSize>
 static inline std::uint32_t generate_single(
-    engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>>& state) {
+    engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>>& state) {
     std::uint32_t res;
     std::int64_t x, y;
     x = mrg32k3a_params::a12 * static_cast<std::int64_t>(state.s[1]) -
@@ -307,7 +307,7 @@ static inline std::uint32_t generate_single(
 } // namespace mrg32k3a_impl
 
 template <std::int32_t VecSize>
-class engine_base<oneapi::mkl::rng::device::mrg32k3a<VecSize>> {
+class engine_base<oneapi::math::rng::device::mrg32k3a<VecSize>> {
 protected:
     engine_base(std::uint32_t seed, std::uint64_t offset = 0) {
         mrg32k3a_impl::init(this->state_, 1, &seed, 1, &offset);
@@ -375,10 +375,10 @@ protected:
         detail::mrg32k3a_impl::skip_ahead(this->state_, num_to_skip.size(), num_to_skip.begin());
     }
 
-    engine_state<oneapi::mkl::rng::device::mrg32k3a<VecSize>> state_;
+    engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>> state_;
 };
 
 } // namespace detail
-} // namespace oneapi::mkl::rng::device
+} // namespace oneapi::math::rng::device
 
 #endif // _MKL_RNG_DEVICE_MRG32K3A_IMPL_HPP_

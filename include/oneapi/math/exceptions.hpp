@@ -33,7 +33,7 @@
 // These are oneAPI oneMath Specification exceptions
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 class exception : public std::exception {
     std::string msg_;
 
@@ -52,79 +52,79 @@ public:
     }
 };
 
-class unsupported_device : public oneapi::mkl::exception {
+class unsupported_device : public oneapi::math::exception {
 public:
     unsupported_device(const std::string &domain, const std::string &function,
                        const sycl::device &device)
-            : oneapi::mkl::exception(
+            : oneapi::math::exception(
                   domain, function,
                   device.get_info<sycl::info::device::name>() + " is not supported") {}
 };
 
-class host_bad_alloc : public oneapi::mkl::exception {
+class host_bad_alloc : public oneapi::math::exception {
 public:
     host_bad_alloc(const std::string &domain, const std::string &function)
-            : oneapi::mkl::exception(domain, function, "cannot allocate memory on host") {}
+            : oneapi::math::exception(domain, function, "cannot allocate memory on host") {}
 };
 
-class device_bad_alloc : public oneapi::mkl::exception {
+class device_bad_alloc : public oneapi::math::exception {
 public:
     device_bad_alloc(const std::string &domain, const std::string &function,
                      const sycl::device &device)
-            : oneapi::mkl::exception(
+            : oneapi::math::exception(
                   domain, function,
                   "cannot allocate memory on " + device.get_info<sycl::info::device::name>()) {}
 };
 
-class unimplemented : public oneapi::mkl::exception {
+class unimplemented : public oneapi::math::exception {
 public:
     unimplemented(const std::string &domain, const std::string &function,
                   const std::string &info = "")
-            : oneapi::mkl::exception(domain, function, "function is not implemented " + info) {}
+            : oneapi::math::exception(domain, function, "function is not implemented " + info) {}
 };
 
-class invalid_argument : public oneapi::mkl::exception {
+class invalid_argument : public oneapi::math::exception {
 public:
     invalid_argument(const std::string &domain, const std::string &function,
                      const std::string &info = "")
-            : oneapi::mkl::exception(domain, function, "invalid argument " + info) {}
+            : oneapi::math::exception(domain, function, "invalid argument " + info) {}
 };
 
-class uninitialized : public oneapi::mkl::exception {
+class uninitialized : public oneapi::math::exception {
 public:
     uninitialized(const std::string &domain, const std::string &function,
                   const std::string &info = "")
-            : oneapi::mkl::exception(domain, function,
+            : oneapi::math::exception(domain, function,
                                      "handle/descriptor is not initialized " + info) {}
 };
 
-class computation_error : public oneapi::mkl::exception {
+class computation_error : public oneapi::math::exception {
 public:
     computation_error(const std::string &domain, const std::string &function,
                       const std::string &info = "")
-            : oneapi::mkl::exception(
+            : oneapi::math::exception(
                   domain, function,
                   "computation error" + ((info.length() != 0) ? (": " + info) : "")) {}
 };
 
-class batch_error : public oneapi::mkl::exception {
+class batch_error : public oneapi::math::exception {
 public:
     batch_error(const std::string &domain, const std::string &function,
                 const std::string &info = "")
-            : oneapi::mkl::exception(domain, function,
+            : oneapi::math::exception(domain, function,
                                      "batch error" + ((info.length() != 0) ? (": " + info) : "")) {}
 };
 
-class library_not_found : public oneapi::mkl::exception {
+class library_not_found : public oneapi::math::exception {
 public:
     library_not_found(const std::string &domain, const std::string &function,
                       const std::string &info = "")
-            : oneapi::mkl::exception(
+            : oneapi::math::exception(
                   domain, function,
                   "library not found" + ((info.length() != 0) ? (": " + info) : "")) {}
 };
 
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
 
 #endif // _ONEMATH_EXCEPTIONS_HPP_

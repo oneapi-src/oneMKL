@@ -29,7 +29,7 @@
 #include "../mkl_common/mkl_lapack_backend.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace mklgpu {
 
@@ -37,5 +37,5 @@ namespace mklgpu {
 
 } // namespace mklgpu
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

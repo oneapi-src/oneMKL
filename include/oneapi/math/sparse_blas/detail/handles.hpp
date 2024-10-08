@@ -20,7 +20,7 @@
 #ifndef _ONEMATH_SPARSE_BLAS_DETAIL_HANDLES_HPP_
 #define _ONEMATH_SPARSE_BLAS_DETAIL_HANDLES_HPP_
 
-namespace oneapi::mkl::sparse {
+namespace oneapi::math::sparse {
 
 // Each backend can create its own handle type or re-use the native handle types that will be reinterpret_cast'ed to the types below
 
@@ -33,6 +33,6 @@ using dense_vector_handle_t = dense_vector_handle*;
 struct matrix_handle;
 using matrix_handle_t = matrix_handle*;
 
-} // namespace oneapi::mkl::sparse
+} // namespace oneapi::math::sparse
 
 #endif // _ONEMATH_SPARSE_BLAS_DETAIL_HANDLES_HPP_

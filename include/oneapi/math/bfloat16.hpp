@@ -25,7 +25,7 @@
 #include <type_traits>
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 namespace bfloat16_impl {
 
@@ -222,7 +222,7 @@ inline bfloat16::operator float() const {
     return bfloat16_impl::raw_to_float(raw << 16);
 }
 
-} /* namespace mkl */
+} /* namespace math */
 } // namespace oneapi
 
 #endif /* _BFLOAT16_HPP__ */

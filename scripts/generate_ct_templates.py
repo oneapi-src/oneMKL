@@ -65,7 +65,7 @@ def print_funcs(func_list):
     code=""
     for data in func_list:
         code +="""
-template <oneapi::mkl::backend backend> static inline {ret_type} {name}{par_str};
+template <oneapi::math::backend backend> static inline {ret_type} {name}{par_str};
 """.format(**data)
     return code
 
