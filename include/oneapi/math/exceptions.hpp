@@ -30,7 +30,7 @@
 
 #include "oneapi/math/types.hpp"
 
-// These are oneAPI oneMKL Specification exceptions
+// These are oneAPI oneMath Specification exceptions
 
 namespace oneapi {
 namespace mkl {
@@ -40,7 +40,7 @@ class exception : public std::exception {
 public:
     exception(const std::string &domain, const std::string &function, const std::string &info = "")
             : std::exception() {
-        msg_ = std::string("oneMKL: ") + domain +
+        msg_ = std::string("oneMath: ") + domain +
                ((domain.length() != 0 && function.length() != 0) ? "/" : "") + function +
                ((info.length() != 0)
                     ? (((domain.length() + function.length() != 0) ? ": " : "") + info)

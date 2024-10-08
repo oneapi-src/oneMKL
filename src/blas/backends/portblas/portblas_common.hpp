@@ -44,10 +44,10 @@ using buffer_iterator_t = ::blas::BufferIterator<ElemT>;
 template <typename ElemT>
 using sycl_complex_t = sycl::ext::oneapi::experimental::complex<ElemT>;
 
-/** A trait for obtaining equivalent portBLAS API types from oneMKL API
+/** A trait for obtaining equivalent portBLAS API types from oneMath API
  *  types.
  * 
- *  @tparam InputT is the oneMKL type.
+ *  @tparam InputT is the oneMath type.
  *  portblas_type<InputT>::type should be the equivalent portBLAS type.
 **/
 template <typename InputT>
@@ -101,10 +101,10 @@ struct portblas_type<std::vector<sycl::event>> {
     using type = std::vector<sycl::event>;
 };
 
-/** Convert a OneMKL argument to the type required for portBLAS.
+/** Convert a oneMath argument to the type required for portBLAS.
  *  
- *  @tparam InputT The OneMKL type.
- *  @param input The value of the oneMKL type.
+ *  @tparam InputT The oneMath type.
+ *  @param input The value of the oneMath type.
  *  @return The portBLAS value with appropriate type.
 **/
 template <typename InputT>

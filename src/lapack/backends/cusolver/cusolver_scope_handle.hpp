@@ -71,7 +71,7 @@ https://docs.nvidia.com/cuda/cusolver/index.html#thread-safety
  using the same host thread.
 
 The advice above is for using cublas with the cuda runtime API. Given that cusolver is based on cublas the advice is 
-transferable. The cusolver_scope_handle is based on the oneMKL cublas_scope_handle. The NVIDIA runtime API creates a 
+transferable. The cusolver_scope_handle is based on the oneMath cublas_scope_handle. The NVIDIA runtime API creates a 
 default context for users. The cusolverDnCreate function in uses the context located on top of the stack for each thread. 
 Then, the cuSolver routine uses this context for resource allocation/access. Calling a cuSolver function with a handle 
 created for context A and memories/queue created for context B results in a segmentation fault. Thus we need to create 

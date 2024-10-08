@@ -17,7 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-// These are oneAPI Math Kernel Library (oneMKL) Interfaces specific exceptions
+// These are oneMath specific exceptions with no equivalent in Intel(R) oneMKL
 
 #ifndef _ONEMATH_DETAIL_EXCEPTIONS_HPP_
 #define _ONEMATH_DETAIL_EXCEPTIONS_HPP_
@@ -50,7 +50,7 @@ public:
     specification_mismatch(const std::string &info = "")
             : oneapi::mkl::exception(
                   "", "",
-                  ((info.length() != 0) ? info : "Loaded oneMKL specification version mismatch")) {}
+                  ((info.length() != 0) ? info : "Loaded oneMath specification version mismatch")) {}
 };
 
 } // namespace mkl

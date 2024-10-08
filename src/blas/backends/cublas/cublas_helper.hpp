@@ -43,7 +43,7 @@ namespace blas {
 namespace cublas {
 
 // The static assert to make sure that all index types used in
-// src/oneMKL/backend/cublas/blas.hpp interface are int64_t
+// src/oneMath/backend/cublas/blas.hpp interface are int64_t
 template <typename... Next>
 struct is_int64 : std::false_type {};
 
@@ -75,7 +75,7 @@ struct Overflow<Index, T...> {
 
 template <typename Index, typename... Next>
 void overflow_check(Index index, Next... indices) {
-    static_assert(is_int64<Index, Next...>::value, "oneMKL index type must be 64 bit integer.");
+    static_assert(is_int64<Index, Next...>::value, "oneMath index type must be 64 bit integer.");
     Overflow<Index, Next...>::check(index, indices...);
 }
 

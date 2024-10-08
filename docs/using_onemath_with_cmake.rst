@@ -1,39 +1,39 @@
-.. _using_onemath_interface_library_with_cmake:
+.. _using_onemath_library_with_cmake:
 
-Using the oneMKL Interfaces in your project with CMake
-=============================================================
+Using oneMath in your project with CMake
+========================================
 
-The CMake build tool can help you use oneMKL Interfaces in your own project.
-Instead of manually linking and including directories, you can use the CMake targets
-exported by the oneMKL Interfaces project. You can use oneMKL in one of two
-forms, with the target names depending on the approach taken: 
+The CMake build tool can help you use oneMath in your own project. Instead of
+manually linking and including directories, you can use the CMake targets
+exported by the oneMath project. You can use oneMath in one of two forms, with
+the target names depending on the approach taken: 
 
 * you can use a previously installed copy, either from a binary distribution or
   built from source. This can be imported using CMake's ``find_package``
   command. See the section `using_from_installed_binary`_.
-* or you can have CMake automatically download and build oneMKL as part of the
+* or you can have CMake automatically download and build oneMath as part of the
   build process using CMake's FetchContent_ functionality.
   See the section `using_with_fetchcontent`_.
 
 
 .. _using_from_installed_binary:
 
-Using an installed oneMKL Interfaces
-####################################
+Using an installed oneMath
+##########################
 
-If the oneMKL Interfaces have been previously installed, either by building from
-source or as a distributed binary, they can be consumed using CMake using
-``find_package(oneMKL REQUIRED)``. The compiler used for the target library or
-application should match that used to build oneMKL Interfaces.
+If oneMath has been previously installed, either by building from source or as a
+distributed binary, they can be consumed using CMake using
+``find_package(oneMath REQUIRED)``. The compiler used for the target library or
+application should match that used to build oneMath.
 
 For example:
 
 .. code-block:: cmake
 
-    find_package(oneMKL REQUIRED)
+    find_package(oneMath REQUIRED)
     target_link_libraries(myTarget PRIVATE MKL::onemath)
 
-Different targets can be used depending on the requirements of oneMKL. 
+Different targets can be used depending on the requirements of oneMath. 
 To link against the entire library, the ``MKL::onemath`` target should be used.
 For specific domains, ``MKL::onemath_<domain>`` should be used.
 And for specific backends, ``MKL::onemath_<domain>_<backend>`` should be used.
@@ -47,7 +47,7 @@ during the build. To check for the existence of backends, CMake's ``if(TARGET
     if(TARGET MKL::onemath_dft_cufft)
         target_link_libraries(myTarget PRIVATE MKL::onemath_dft_cufft)
     else()
-        message(FATAL_ERROR "oneMKL Interfaces was not built with CuFFT backend")
+        message(FATAL_ERROR "oneMath was not built with CuFFT backend")
     endif()
 
 .. _using_with_fetchcontent:
@@ -57,7 +57,7 @@ Using CMake's FetchContent
 
 
 The FetchContent_ functionality of CMake can be used to download, build and
-install oneMKL Interfaces as part of the build.
+install oneMath as part of the build.
 
 For example:
 
@@ -68,11 +68,11 @@ For example:
     set(BUILD_EXAMPLES False)
     set(ENABLE_<BACKEND_NAME>_BACKEND True)
     FetchContent_Declare(
-            onemath_interface_library
-            GIT_REPOSITORY https://github.com/oneapi-src/oneMKL.git
+            onemath_library
+            GIT_REPOSITORY https://github.com/oneapi-src/oneMath.git
             GIT_TAG develop
     )
-    FetchContent_MakeAvailable(onemath_interface_library)
+    FetchContent_MakeAvailable(onemath_library)
 
     target_link_libraries(myTarget PRIVATE onemath)
 

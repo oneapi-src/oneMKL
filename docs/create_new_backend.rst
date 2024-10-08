@@ -3,12 +3,12 @@
 
 .. _create_backend_wrappers:
 
-Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMKL) Interfaces
+Integrating a Third-Party Library to oneAPI Math Kernel Library (oneMath) Interfaces
 ====================================================================================
 
-This step-by-step tutorial provides examples for enabling new third-party libraries in oneMKL.
+This step-by-step tutorial provides examples for enabling new third-party libraries in oneMath.
 
-oneMKL has a header-based implementation of the interface layer (``include`` directory) and a source-based implementation of the backend layer for each third-party library (``src`` directory). To enable a third-party library, you must update both parts of oneMKL and integrate the new third-party library to the oneMKL build and test systems.
+oneMath has a header-based implementation of the interface layer (``include`` directory) and a source-based implementation of the backend layer for each third-party library (``src`` directory). To enable a third-party library, you must update both parts of oneMath and integrate the new third-party library to the oneMath build and test systems.
 
 For the new backend library and header naming please use the following template:
 
@@ -38,7 +38,7 @@ If there is no need for multiple wrappers only ``<domain>`` and ``<3rd-party lib
 For each new backend library, you should create the following two header files:
 
 * Header file with a declaration of entry points to the new third-party library wrappers
-* Compiler-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_) for new third-party libraries
+* Compiler-time dispatching interface (see `oneMath Usage Models <../README.md#supported-usage-models>`_) for new third-party libraries
 
 **Header File Example**: command to generate the header file with a declaration of BLAS entry points in the oneapi::mkl::newlib namespace 
 
@@ -95,37 +95,37 @@ Code snippet of the generated header file ``include/oneapi/math/blas/detail/newl
 2. Integrate Header Files
 -------------------------
 
-Below you can see structure of oneMKL top-level include directory:
+Below you can see structure of oneMath top-level include directory:
 
 ::
 
     include/
         oneapi/
             math/
-                math.hpp -> oneMKL spec APIs
-                types.hpp  -> oneMKL spec types
-                blas.hpp   -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
+                math.hpp -> oneMath spec APIs
+                types.hpp  -> oneMath spec types
+                blas.hpp   -> oneMath BLAS APIs w/ pre-check/dispatching/post-check
                 detail/    -> implementation specific header files
-                    exceptions.hpp        -> oneMKL exception classes
-                    backends.hpp          -> list of oneMKL backends
+                    exceptions.hpp        -> oneMath exception classes
+                    backends.hpp          -> list of oneMath backends
                     backends_table.hpp    -> table of backend libraries for each domain and device
                     get_device_id.hpp     -> function to query device information from queue for Run-time dispatching
                 blas/
-                    predicates.hpp -> oneMKL BLAS pre-check post-check
+                    predicates.hpp -> oneMath BLAS pre-check post-check
                     detail/        -> BLAS domain specific implementation details
-                        blas_loader.hpp       -> oneMKL Run-time BLAS API
-                        blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
+                        blas_loader.hpp       -> oneMath Run-time BLAS API
+                        blas_ct_templates.hpp -> oneMath Compile-time BLAS API general templates
                         cublas/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas>
+                            blas_ct.hpp            -> oneMath Compile-time BLAS API template instantiations for <cublas>
                             onemath_blas_cublas.hpp -> backend wrappers library API
                         mklcpu/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <mklcpu>
+                            blas_ct.hpp            -> oneMath Compile-time BLAS API template instantiations for <mklcpu>
                             onemath_blas_mklcpu.hpp -> backend wrappers library API
                         <other backends>/
                 <other domains>/
 
 
-To integrate the new third-party library to a oneMKL header-based part, following files from this structure should be updated:
+To integrate the new third-party library to a oneMath header-based part, following files from this structure should be updated:
 
 * ``include/oneapi/math/detail/backends.hpp``: add the new backend
 
@@ -179,7 +179,7 @@ To integrate the new third-party library to a oneMKL header-based part, followin
      +      if (queue.is_host())
      +          device_id=device::newdevice;
 
-* ``include/oneapi/math/blas.hpp``: include the generated header file for the compile-time dispatching interface (see `oneMKL Usage Models <../README.md#supported-usage-models>`_)
+* ``include/oneapi/math/blas.hpp``: include the generated header file for the compile-time dispatching interface (see `oneMath Usage Models <../README.md#supported-usage-models>`_)
 
   **Example**: add ``include/oneapi/math/blas/detail/newlib/blas_ct.hpp`` generated at the `1. Create Header Files`_ step
     
@@ -197,20 +197,20 @@ The new files generated at the `1. Create Header Files`_ step result in the foll
     include/
         oneapi/
             math/
-                blas.hpp -> oneMKL BLAS APIs w/ pre-check/dispatching/post-check
+                blas.hpp -> oneMath BLAS APIs w/ pre-check/dispatching/post-check
                 blas/
-                    predicates.hpp -> oneMKL BLAS pre-check post-check
+                    predicates.hpp -> oneMath BLAS pre-check post-check
                     detail/        -> BLAS domain specific implementation details
-                        blas_loader.hpp       -> oneMKL Run-time BLAS API
-                        blas_ct_templates.hpp -> oneMKL Compile-time BLAS API general templates
+                        blas_loader.hpp       -> oneMath Run-time BLAS API
+                        blas_ct_templates.hpp -> oneMath Compile-time BLAS API general templates
                         cublas/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <cublas>
+                            blas_ct.hpp            -> oneMath Compile-time BLAS API template instantiations for <cublas>
                             onemath_blas_cublas.hpp -> backend wrappers library API
                         mklcpu/
-                            blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <mklcpu>
+                            blas_ct.hpp            -> oneMath Compile-time BLAS API template instantiations for <mklcpu>
                             onemath_blas_mklcpu.hpp -> backend wrappers library API
         +              newlib/
-        +                  blas_ct.hpp            -> oneMKL Compile-time BLAS API template instantiations for <newbackend>
+        +                  blas_ct.hpp            -> oneMath Compile-time BLAS API template instantiations for <newbackend>
         +                  onemath_blas_newlib.hpp -> backend wrappers library API
                         <other backends>/
                 <other domains>/
@@ -219,7 +219,7 @@ The new files generated at the `1. Create Header Files`_ step result in the foll
 
 3. Create Wrappers
 ------------------
-Wrappers convert Data Parallel C++ (DPC++) input data types to third-party library data types and call corresponding implementation from the third-party library. Wrappers for each third-party library are built to separate oneMKL backend libraries. The ``libonemkl.so`` dispatcher library loads the wrappers at run-time if you are using the interface for run-time dispatching, or you will link with them directly in case you are using the interface for compile-time dispatching (for more information see `oneMKL Usage Models <../README.md#supported-usage-models>`_).
+Wrappers convert Data Parallel C++ (DPC++) input data types to third-party library data types and call corresponding implementation from the third-party library. Wrappers for each third-party library are built to separate oneMath backend libraries. The ``libonemath.so`` dispatcher library loads the wrappers at run-time if you are using the interface for run-time dispatching, or you will link with them directly in case you are using the interface for compile-time dispatching (for more information see `oneMath Usage Models <../README.md#supported-usage-models>`_).
 
 All wrappers and dispatcher library implementations are in the ``src`` directory:
 
@@ -327,7 +327,7 @@ Updated structure of the ``src`` folder with the ``newlib`` wrappers:
 
 4. Integrate Wrappers to the Build System
 -----------------------------------------
-Here is the list of files that should be created/updated to integrate the new wrappers for the third-party library to the oneMKL build system:
+Here is the list of files that should be created/updated to integrate the new wrappers for the third-party library to the oneMath build system:
 
 * Add the new option ``ENABLE_XXX_BACKEND`` for the new third-party library to the top of the ``CMakeList.txt`` file.
 

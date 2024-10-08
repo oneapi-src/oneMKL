@@ -27,4 +27,4 @@ if(NOT ${SYCL_FOUND})
   find_package(Compiler REQUIRED)
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/oneMKLTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/oneMathTargets.cmake")

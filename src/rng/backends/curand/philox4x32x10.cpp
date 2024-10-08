@@ -103,7 +103,7 @@ namespace curand {
  * consumed in other kernels without requiring the random numbers to be written
  * to, and read from, global memory.
  *
- * Here we utilize the host API since this is most aligned with how oneMKL
+ * Here we utilize the host API since this is most aligned with how oneMath
  * generates random numbers.
  *
  */

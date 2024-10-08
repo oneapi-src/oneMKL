@@ -85,7 +85,7 @@ private:
     using scalar_type = typename dft::detail::commit_impl<prec, dom>::scalar_type;
     // For real to complex transforms, the "transform_type" arg also encodes the direction (e.g. rocfft_transform_type_*_forward vs rocfft_transform_type_*_backward)
     // in the plan so we must have one for each direction.
-    // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while rocFFT uses a directional "in_distance" and "out_distance".
+    // We also need this because oneMath uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while rocFFT uses a directional "in_distance" and "out_distance".
     // The same is also true for "FORWARD_SCALE" and "BACKWARD_SCALE".
     // handles[0] is forward, handles[1] is backward
     std::array<rocfft_handle, 2> handles{};
@@ -180,7 +180,7 @@ public:
 
         constexpr std::size_t max_supported_dims = 3;
         std::array<std::size_t, max_supported_dims> lengths;
-        // rocfft does dimensions in the reverse order to oneMKL
+        // rocfft does dimensions in the reverse order to oneMath
         std::copy(config_values.dimensions.crbegin(), config_values.dimensions.crend(),
                   lengths.data());
 

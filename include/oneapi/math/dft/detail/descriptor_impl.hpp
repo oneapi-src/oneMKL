@@ -55,9 +55,9 @@ public:
     // Syntax for d-dimensional DFT
     descriptor(std::vector<std::int64_t> dimensions);
 
-    // Copy operations are included in the oneAPI oneMKL specification, but not yet
+    // Copy operations are included in the oneAPI oneMath specification, but not yet
     // implemented here. If you need copies, please open an issue at
-    // https://github.com/oneapi-src/oneMKL/issues
+    // https://github.com/oneapi-src/oneMath/issues
 
     descriptor(descriptor&&);
 

@@ -135,7 +135,7 @@ else()
 endif()
 
 # If find_package doesn't work, download portBLAS from Github. This is
-# intended to make OneMKL easier to use.
+# intended to make oneMath easier to use.
 message(STATUS "Looking for portBLAS")
 find_package(PORTBLAS QUIET)
 if (NOT PORTBLAS_FOUND)
@@ -214,8 +214,8 @@ set_target_properties(${LIB_NAME} PROPERTIES
 list(APPEND CMAKE_BUILD_RPATH $<TARGET_FILE_DIR:${LIB_NAME}>)
 
 # Add the library to install package
-install(TARGETS ${LIB_OBJ} EXPORT oneMKLTargets)
-install(TARGETS ${LIB_NAME} EXPORT oneMKLTargets
+install(TARGETS ${LIB_OBJ} EXPORT oneMathTargets)
+install(TARGETS ${LIB_NAME} EXPORT oneMathTargets
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

@@ -91,7 +91,7 @@ void spsv_buffer_size(sycl::queue &queue, oneapi::mkl::transpose opA, const void
                       oneapi::mkl::sparse::dense_vector_handle_t y_handle,
                       oneapi::mkl::sparse::spsv_alg alg,
                       oneapi::mkl::sparse::spsv_descr_t spsv_descr, std::size_t &temp_buffer_size) {
-    // TODO: Add support for external workspace once the close-source oneMKL backend supports it.
+    // TODO: Add support for external workspace once the close-source oneMath backend supports it.
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     check_valid_spsv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,
                      alg);

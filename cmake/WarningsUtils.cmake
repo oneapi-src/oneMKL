@@ -45,4 +45,4 @@ message(VERBOSE "Domains with warnings enabled use: ${ONEMATH_WARNINGS}")
 target_compile_options(onemath_warnings INTERFACE ${ONEMATH_WARNINGS})
 
 # Add the library to install package
-install(TARGETS onemath_warnings EXPORT oneMKLTargets)
+install(TARGETS onemath_warnings EXPORT oneMathTargets)

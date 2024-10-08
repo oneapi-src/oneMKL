@@ -58,14 +58,14 @@ class uniform : detail::distribution_base<uniform<Type, Method>> {
 public:
     static_assert(std::is_same<Method, uniform_method::standard>::value ||
                       std::is_same<Method, uniform_method::accurate>::value,
-                  "oneMKL: rng/uniform: method is incorrect");
+                  "oneMath: rng/uniform: method is incorrect");
 
     static_assert(std::is_same<Type, float>::value || std::is_same<Type, double>::value ||
                       std::is_same<Type, std::int32_t>::value ||
                       std::is_same<Type, std::uint32_t>::value ||
                       std::is_same<Type, std::int64_t>::value ||
                       std::is_same<Type, std::uint64_t>::value,
-                  "oneMKL: rng/uniform: type is not supported");
+                  "oneMath: rng/uniform: type is not supported");
 
     using method_type = Method;
     using result_type = Type;
@@ -136,12 +136,12 @@ public:
                       || std::is_same<Method, gaussian_method::icdf>::value
 #endif
                   ,
-                  "oneMKL: rng/gaussian: method is incorrect");
+                  "oneMath: rng/gaussian: method is incorrect");
 #if !MKL_RNG_USE_BINARY_CODE
     static_assert(!std::is_same<Method, gaussian_method::icdf>::value, "icdf method not supported");
 #endif
     static_assert(std::is_same<RealType, float>::value || std::is_same<RealType, double>::value,
-                  "oneMKL: rng/gaussian: type is not supported");
+                  "oneMath: rng/gaussian: type is not supported");
 
     using method_type = Method;
     using result_type = RealType;
@@ -200,10 +200,10 @@ template <typename RealType, typename Method>
 class lognormal : detail::distribution_base<lognormal<RealType, Method>> {
 public:
     static_assert(std::is_same<Method, lognormal_method::box_muller2>::value,
-                  "oneMKL: rng/lognormal: method is incorrect");
+                  "oneMath: rng/lognormal: method is incorrect");
 
     static_assert(std::is_same<RealType, float>::value || std::is_same<RealType, double>::value,
-                  "oneMKL: rng/lognormal: type is not supported");
+                  "oneMath: rng/lognormal: type is not supported");
 
     using method_type = Method;
     using result_type = RealType;
@@ -275,10 +275,10 @@ class beta : detail::distribution_base<beta<RealType, Method>> {
 public:
     static_assert(std::is_same<Method, beta_method::cja>::value ||
                       std::is_same<Method, beta_method::cja_accurate>::value,
-                  "oneMKL: rng/beta: method is incorrect");
+                  "oneMath: rng/beta: method is incorrect");
 
     static_assert(std::is_same<RealType, float>::value || std::is_same<RealType, double>::value,
-                  "oneMKL: rng/beta: type is not supported");
+                  "oneMath: rng/beta: type is not supported");
 
     using method_type = Method;
     using result_type = RealType;
@@ -352,10 +352,10 @@ class gamma : detail::distribution_base<gamma<RealType, Method>> {
 public:
     static_assert(std::is_same<Method, gamma_method::marsaglia>::value ||
                       std::is_same<Method, gamma_method::marsaglia_accurate>::value,
-                  "oneMKL: rng/gamma: method is incorrect");
+                  "oneMath: rng/gamma: method is incorrect");
 
     static_assert(std::is_same<RealType, float>::value || std::is_same<RealType, double>::value,
-                  "oneMKL: rng/gamma: type is not supported");
+                  "oneMath: rng/gamma: type is not supported");
 
     using method_type = Method;
     using result_type = RealType;
@@ -416,7 +416,7 @@ class uniform_bits : detail::distribution_base<uniform_bits<UIntType>> {
 public:
     static_assert(std::is_same<UIntType, std::uint32_t>::value ||
                       std::is_same<UIntType, std::uint64_t>::value,
-                  "oneMKL: rng/uniform_bits: type is not supported");
+                  "oneMath: rng/uniform_bits: type is not supported");
     using result_type = UIntType;
 
 private:
@@ -442,7 +442,7 @@ class bits : detail::distribution_base<bits<UIntType>> {
 public:
     static_assert(std::is_same<UIntType, std::uint32_t>::value ||
                       std::is_same<UIntType, std::uint64_t>::value,
-                  "oneMKL: rng/bits: type is not supported");
+                  "oneMath: rng/bits: type is not supported");
     using result_type = UIntType;
 
 private:
@@ -476,10 +476,10 @@ class exponential : detail::distribution_base<exponential<RealType, Method>> {
 public:
     static_assert(std::is_same<Method, exponential_method::icdf>::value ||
                       std::is_same<Method, exponential_method::icdf_accurate>::value,
-                  "oneMKL: rng/exponential: method is incorrect");
+                  "oneMath: rng/exponential: method is incorrect");
 
     static_assert(std::is_same<RealType, float>::value || std::is_same<RealType, double>::value,
-                  "oneMKL: rng/exponential: type is not supported");
+                  "oneMath: rng/exponential: type is not supported");
 
     using method_type = Method;
     using result_type = RealType;
@@ -538,11 +538,11 @@ template <typename IntType, typename Method>
 class poisson : detail::distribution_base<poisson<IntType, Method>> {
 public:
     static_assert(std::is_same<Method, poisson_method::devroye>::value,
-                  "oneMKL: rng/poisson: method is incorrect");
+                  "oneMath: rng/poisson: method is incorrect");
 
     static_assert(std::is_same<IntType, std::int32_t>::value ||
                       std::is_same<IntType, std::uint32_t>::value,
-                  "oneMKL: rng/poisson: type is not supported");
+                  "oneMath: rng/poisson: type is not supported");
 
     using method_type = Method;
     using result_type = IntType;
@@ -592,7 +592,7 @@ template <typename IntType, typename Method>
 class bernoulli : detail::distribution_base<bernoulli<IntType, Method>> {
 public:
     static_assert(std::is_same<Method, bernoulli_method::icdf>::value,
-                  "oneMKL: rng/bernoulli: method is incorrect");
+                  "oneMath: rng/bernoulli: method is incorrect");
 
     static_assert(std::is_same<IntType, std::int32_t>::value ||
                       std::is_same<IntType, std::uint32_t>::value ||
@@ -600,7 +600,7 @@ public:
                       std::is_same<IntType, std::uint16_t>::value ||
                       std::is_same<IntType, std::int8_t>::value ||
                       std::is_same<IntType, std::uint8_t>::value,
-                  "oneMKL: rng/bernoulli: type is not supported");
+                  "oneMath: rng/bernoulli: type is not supported");
 
     using method_type = Method;
     using result_type = IntType;

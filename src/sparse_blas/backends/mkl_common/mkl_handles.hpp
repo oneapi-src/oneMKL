@@ -30,7 +30,7 @@
 namespace oneapi::mkl::sparse {
 
 // Complete the definition of incomplete types dense_vector_handle and
-// dense_matrix_handle as they don't exist in oneMKL backends yet.
+// dense_matrix_handle as they don't exist in oneMath backends yet.
 
 struct dense_vector_handle : public detail::generic_dense_vector_handle<void*> {
     template <typename T>
@@ -70,7 +70,7 @@ namespace oneapi::mkl::sparse::detail {
  */
 using sparse_matrix_handle = detail::generic_sparse_handle<matrix_handle_t>;
 
-/// Cast to oneMKL's interface handle type
+/// Cast to oneMath's internal handle type
 inline auto get_internal_handle(matrix_handle_t handle) {
     return reinterpret_cast<sparse_matrix_handle*>(handle);
 }

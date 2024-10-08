@@ -45,13 +45,13 @@
 
 // MKL 2024.1 deprecates input/output strides.
 #if INTEL_MKL_VERSION < 20240001
-#error MKLGPU requires oneMKL 2024.1 or later
+#error MKLGPU requires oneMath 2024.1 or later
 #endif
 
 /**
-Note that in this file, the Intel oneMKL closed-source library's interface mirrors the interface
-of this OneMKL open-source library. Consequently, the types under dft::TYPE are closed-source oneMKL types,
-and types under dft::detail::TYPE are from this library.
+Note that in this file, the Intel oneMKL-GPU library's interface mirrors the
+interface of this oneMath library. Consequently, the types under dft::TYPE are
+Intel oneMKL types, and types under dft::detail::TYPE are from this library.
 **/
 
 namespace oneapi::mkl::dft::mklgpu {
@@ -61,12 +61,12 @@ namespace detail {
 template <dft::detail::precision prec, dft::detail::domain dom>
 class mklgpu_commit final : public dft::detail::commit_impl<prec, dom> {
 private:
-    // Equivalent MKLGPU precision and domain from OneMKL's precision / domain.
+    // Equivalent MKLGPU precision and domain from oneMath's precision / domain.
     static constexpr dft::precision mklgpu_prec = to_mklgpu(prec);
     static constexpr dft::domain mklgpu_dom = to_mklgpu(dom);
 
     // A pair of descriptors are needed because of the [[deprecated]]IN/OUTPUT_STRIDES vs F/BWD_STRIDES API.
-    // Of the pair [0] is fwd DFT, [1] is backward DFT. If possible, the pointers refer to the same desciptor.
+    // Of the pair [0] is fwd DFT, [1] is backward DFT. If possible, the pointers refer to the same descriptor.
     // Both pointers must be valid.
     using mklgpu_descriptor_t = dft::descriptor<mklgpu_prec, mklgpu_dom>;
     using descriptor_shptr_t = std::shared_ptr<mklgpu_descriptor_t>;

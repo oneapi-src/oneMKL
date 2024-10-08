@@ -47,7 +47,7 @@ set_target_properties(${LIB_OBJ} PROPERTIES
 )
 target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 
-#Set oneMKL libraries as not transitive for dynamic
+#Set oneMath libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
     INTERFACE_LINK_LIBRARIES ONEMATH::SYCL::SYCL
@@ -63,8 +63,8 @@ set_target_properties(${LIB_NAME} PROPERTIES
 list(APPEND CMAKE_BUILD_RPATH $<TARGET_FILE_DIR:${LIB_NAME}>)
 
 # Add the library to install package
-install(TARGETS ${LIB_OBJ} EXPORT oneMKLTargets)
-install(TARGETS ${LIB_NAME} EXPORT oneMKLTargets
+install(TARGETS ${LIB_OBJ} EXPORT oneMathTargets)
+install(TARGETS ${LIB_NAME} EXPORT oneMathTargets
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-# Define common build flags for oneMKL libraries
+# Define common build flags for oneMath libraries
 set(ONEMATH_BUILD_COPT "")
 if(WIN32 AND BUILD_SHARED_LIBS)
   list(APPEND ONEMATH_BUILD_COPT "-Donemath_EXPORTS")
@@ -89,7 +89,7 @@ if(BUILD_SHARED_LIBS)
   set_target_properties(onemath PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
-  # w/a for setting oneMKL Interfaces installed headers as -I instead of -isystem for cmake >= 3.25 for workable find_package(MKL) combination
+  # w/a for setting oneMath installed headers as -I instead of -isystem for cmake >= 3.25 for workable find_package(MKL) combination
   if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.25.0")
     set_target_properties(onemath PROPERTIES EXPORT_NO_SYSTEM true)
   endif()
@@ -105,9 +105,9 @@ if(BUILD_SHARED_LIBS)
 
   # Add the library to install package
   foreach(domain_lib ${ONEMATH_LIBS})
-    install(TARGETS ${domain_lib} EXPORT oneMKLTargets)
+    install(TARGETS ${domain_lib} EXPORT oneMathTargets)
   endforeach()
-  install(TARGETS onemath EXPORT oneMKLTargets
+  install(TARGETS onemath EXPORT oneMathTargets
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib

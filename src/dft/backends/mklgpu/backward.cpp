@@ -61,7 +61,7 @@ inline auto compute_backward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&.
         throw mkl::invalid_argument("DFT", "compute_backward",
                                     "MKLGPU DFT descriptor was not successfully committed.");
     }
-    // The MKLGPU backend's iterface contains fewer function signatures than in this
+    // The MKLGPU backend's interface contains fewer function signatures than in this
     // open-source library. Consequently, it is not required to forward template arguments
     // to resolve to the correct function.
     return dft::compute_backward(*mklgpu_desc, std::forward<ArgTs>(args)...);

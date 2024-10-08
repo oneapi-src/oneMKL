@@ -33,7 +33,7 @@ protected:
         typename std::conditional<EngineType::vec_size == 1, UIntType,
                                   sycl::vec<UIntType, EngineType::vec_size>>::type>::type {
         static_assert(std::is_same<UIntType, uint32_t>::value,
-                      "oneMKL: bits works only with std::uint32_t");
+                      "oneMath: bits works only with std::uint32_t");
         return engine.generate();
     }
 
@@ -43,7 +43,7 @@ protected:
         typename std::conditional<EngineType::vec_size == 1, UIntType,
                                   sycl::vec<UIntType, EngineType::vec_size>>::type>::type {
         static_assert(std::is_same<UIntType, uint64_t>::value,
-                      "oneMKL: bits for mcg59 works only with std::uint64_t");
+                      "oneMath: bits for mcg59 works only with std::uint64_t");
         return engine.generate_bits();
     }
 
@@ -52,7 +52,7 @@ protected:
                             UIntType>::type
     generate_single(EngineType& engine) {
         static_assert(std::is_same<UIntType, uint32_t>::value,
-                      "oneMKL: bits works only with std::uint32_t");
+                      "oneMath: bits works only with std::uint32_t");
         return engine.generate_single();
     }
 
@@ -61,7 +61,7 @@ protected:
                             UIntType>::type
     generate_single(EngineType& engine) {
         static_assert(std::is_same<UIntType, uint64_t>::value,
-                      "oneMKL: bits for mcg59 works only with std::uint64_t");
+                      "oneMath: bits for mcg59 works only with std::uint64_t");
         return engine.generate_single();
     }
 };

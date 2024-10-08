@@ -41,9 +41,8 @@
 
 /**
 Note that in this file, the Intel oneMKL-GPU library's interface mirrors the
-interface of this OneMKL library. Consequently, the types under dft::TYPE are
-closed-source Intel oneMKL types, and types under dft::detail::TYPE are from
-this library.
+interface of this oneMath library. Consequently, the types under dft::TYPE are
+Intel oneMKL types, and types under dft::detail::TYPE are from this library.
 **/
 
 namespace oneapi::mkl::dft::mklgpu {
@@ -68,7 +67,7 @@ inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&..
         throw mkl::invalid_argument("DFT", "compute_forward",
                                     "MKLGPU DFT descriptor was not successfully committed.");
     }
-    // The MKLGPU backend's iterface contains fewer function signatures than in this
+    // The MKLGPU backend's interface contains fewer function signatures than in this
     // open-source library. Consequently, it is not required to forward template arguments
     // to resolve to the correct function.
     return dft::compute_forward(*mklgpu_desc, std::forward<ArgTs>(args)...);

@@ -41,7 +41,7 @@
 #include <iostream>
 #include <vector>
 
-// oneMKL/SYCL includes
+// oneMath/SYCL includes
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else

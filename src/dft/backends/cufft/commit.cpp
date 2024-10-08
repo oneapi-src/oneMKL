@@ -49,7 +49,7 @@ private:
     using scalar_type = typename dft::detail::commit_impl<prec, dom>::scalar_type;
 
     // For real to complex transforms, the "type" arg also encodes the direction (e.g. CUFFT_R2C vs CUFFT_C2R) in the plan so we must have one for each direction.
-    // We also need this because oneMKL uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
+    // We also need this because oneMath uses a directionless "FWD_DISTANCE" and "BWD_DISTANCE" while cuFFT uses a directional "idist" and "odist".
     // plans[0] is forward, plans[1] is backward
     std::array<std::optional<cufftHandle>, 2> plans = { std::nullopt, std::nullopt };
     std::int64_t offset_fwd_in, offset_fwd_out, offset_bwd_in, offset_bwd_out;

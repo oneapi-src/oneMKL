@@ -378,7 +378,7 @@ bool set_matrix_property(sycl::queue & /*queue*/, oneapi::mkl::sparse::matrix_ha
     // Store the matrix property internally for better error checking
     internal_smhandle->set_matrix_property(property);
     // Set the matrix property on the backend handle
-    // Backend and oneMKL interface types for the property don't match
+    // Backend and oneMath types for the property don't match
     switch (property) {
         case oneapi::mkl::sparse::matrix_property::symmetric:
             oneapi::mkl::sparse::set_matrix_property(internal_smhandle->backend_handle,

@@ -38,7 +38,7 @@ option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
 option(ENABLE_MKLCPU_BACKEND "Enable the Intel oneMKL CPU backend for supported interfaces" ON)
 option(ENABLE_MKLGPU_BACKEND "Enable the Intel oneMKL GPU backend for supported interfaces" ON)
 if(ENABLE_MKLCPU_BACKEND)
-  option(ENABLE_MKLCPU_THREAD_TBB "Enable the use of Intel TBB with the oneMKL CPU backend" ON)
+  option(ENABLE_MKLCPU_THREAD_TBB "Enable the use of Intel TBB with the oneMath CPU backend" ON)
 endif()
 
 # blas
@@ -185,7 +185,7 @@ else()
   endif()
 endif()
 
-project(oneMKL VERSION 0.5.0 LANGUAGES CXX)
+project(oneMath VERSION 0.5.0 LANGUAGES CXX)
 
 # Override default CXX compile/link lines for Windows after project
 if(WIN32 AND ONEMATH_SYCL_IMPLEMENTATION STREQUAL "dpc++")
@@ -229,7 +229,7 @@ else()
 endif()
 message(STATUS "TARGET_DOMAINS: ${TARGET_DOMAINS}")
 
-# Include Intel oneMKL
+# Include Intel(R) oneAPI Math Kernel Library (oneMKL)
 if(ENABLE_MKLGPU_BACKEND OR ENABLE_MKLCPU_BACKEND)
   set(MKL_ARCH intel64)
   set(MKL_INTERFACE ilp64)
@@ -326,7 +326,7 @@ install(DIRECTORY include/
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/oneMKLConfigVersion.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/oneMathConfigVersion.cmake"
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
@@ -335,21 +335,21 @@ export(EXPORT oneMathTargets
   FILE "${CMAKE_CURRENT_BINARY_DIR}/oneMathTargets.cmake"
   NAMESPACE ONEMATH::
 )
-configure_file("${PROJECT_SOURCE_DIR}/cmake/oneMKLConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/oneMKLConfig.cmake"
+configure_file("${PROJECT_SOURCE_DIR}/cmake/oneMathConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/oneMathConfig.cmake"
   COPYONLY
 )
 
 set(config_package_location "lib/cmake/${PROJECT_NAME}")
-install(EXPORT oneMKLTargets
-  FILE oneMKLTargets.cmake
+install(EXPORT oneMathTargets
+  FILE oneMathTargets.cmake
   NAMESPACE MKL::
   DESTINATION ${config_package_location}
 )
 install(
   FILES
-  "${PROJECT_SOURCE_DIR}/cmake/oneMKLConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/oneMKLConfigVersion.cmake"
+  "${PROJECT_SOURCE_DIR}/cmake/oneMathConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/oneMathConfigVersion.cmake"
   DESTINATION ${config_package_location}
   COMPONENT Devel
 )

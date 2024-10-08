@@ -27,15 +27,15 @@ jobs:
           domain: dft
           build_options: -DENABLE_PORTFFT_BACKEND=ON -DENABLE_MKLCPU_BACKEND=OFF
           test_options: -R 'DFT/CT/.*ComputeTests_in_place_COMPLEX.COMPLEX_SINGLE_in_place_buffer.sizes_8_batches_1*'
-        - config: MKL BLAS
+        - config: oneMath BLAS
           domain: blas
           build_options: -DREF_BLAS_ROOT=${PWD}/lapack/install
-        - config: MKL DFT
+        - config: oneMath DFT
           domain: dft
-        - config: MKL LAPACK
+        - config: oneMath LAPACK
           domain: lapack
           build_options: -DREF_LAPACK_ROOT=${PWD}/lapack/install
-        - config: MKL RNG
+        - config: oneMath RNG
           domain: rng
     name: unit tests ${{ matrix.config }} CPU
     steps:
