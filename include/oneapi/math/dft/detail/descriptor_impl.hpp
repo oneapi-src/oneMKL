@@ -57,7 +57,7 @@ public:
 
     // Copy operations are included in the oneAPI oneMath specification, but not yet
     // implemented here. If you need copies, please open an issue at
-    // https://github.com/oneapi-src/oneMath/issues
+    // https://github.com/uxlfoundation/oneMath/issues
 
     descriptor(descriptor&&);
 

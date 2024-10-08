@@ -90,7 +90,7 @@ html_favicon = f'{static_dir}/favicons.png'
 
 # Theme options
 html_theme_options = {
-'repository_url': 'https://github.com/oneapi-src/oneMath',
+'repository_url': 'https://github.com/uxlfoundation/oneMath',
 'path_to_docs': 'docs',
 'use_issues_button': True,
 'use_edit_page_button': True,

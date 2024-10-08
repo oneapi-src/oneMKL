@@ -37,7 +37,7 @@ For the new API to become a part of the open source project, it should be accept
 ### Request for Comments Process
 
 For changes impacting the public API or any significant changes in the library, such as adding new backend or changes to the architecture,
-please follow the [RFC process](https://github.com/oneapi-src/oneMKL/tree/rfcs).
+please follow the [RFC process](https://github.com/uxlfoundation/oneMKL/tree/rfcs).
 
 Please also provide the following details as part of the RFC:
 
@@ -51,7 +51,7 @@ Please also provide the following details as part of the RFC:
 
 ## Bug Reporting
 
-If you find a bug or problem, please open a request under [Issues](https://github.com/oneapi-src/oneMKL/issues).
+If you find a bug or problem, please open a request under [Issues](https://github.com/uxlfoundation/oneMKL/issues).
 
 
 ## Security Issues
@@ -64,14 +64,14 @@ For GitHub questions, issues, RFCs, or PRs you can contact maintainers via one o
 
 | GitHub team name | Description |
 :-----------|:------------|
-| @oneapi-src/onemkl-maintain  | All oneMKL Interfaces maintainers |
-| @oneapi-src/onemkl-arch-write | oneMKL Interfaces Architecture maintainers |
-| @oneapi-src/onemkl-blas-write | oneMKL Interfaces BLAS maintainers |
-| @oneapi-src/onemkl-dft-write | oneMKL Interfaces DFT maintainers |
-| @oneapi-src/onemkl-lapack-write | oneMKL Interfaces LAPACK maintainers |
-| @oneapi-src/onemkl-rng-write | oneMKL Interfaces RNG maintainers |
-| @oneapi-src/onemkl-sparse-write | oneMKL Interfaces Sparse Algebra maintainers |
-| @oneapi-src/onemkl-vm-write | oneMKL Interfaces Vector Math maintainers |
+| @uxlfoundation/onemath-maintain  | All oneMKL Interfaces maintainers |
+| @uxlfoundation/onemath-arch-write | oneMKL Interfaces Architecture maintainers |
+| @uxlfoundation/onemath-blas-write | oneMKL Interfaces BLAS maintainers |
+| @uxlfoundation/onemath-dft-write | oneMKL Interfaces DFT maintainers |
+| @uxlfoundation/onemath-lapack-write | oneMKL Interfaces LAPACK maintainers |
+| @uxlfoundation/onemath-rng-write | oneMKL Interfaces RNG maintainers |
+| @uxlfoundation/onemath-sparse-write | oneMKL Interfaces Sparse Algebra maintainers |
+| @uxlfoundation/onemath-vm-write | oneMKL Interfaces Vector Math maintainers |
 
 Please read [MAINTAINERS page](MAINTAINERS.md) for more information about maintainer roles, responsibilities, and how to become one of them.
 
@@ -342,6 +342,6 @@ for (int i = 0; i < loop_size; i++) ...;
 
 ## Unit Tests
 
-oneMKL uses GoogleTest for functional testing. For more information about how to build and run Unit Tests please see [Building and Running Tests](https://oneapi-src.github.io/oneMKL/building_and_running_tests.html).
+oneMKL uses GoogleTest for functional testing. For more information about how to build and run Unit Tests please see [Building and Running Tests](https://uxlfoundation.github.io/oneMKL/building_and_running_tests.html).
 
 Be sure to extend the existing tests when fixing an issue, adding a new interface or new implementation under existing interfaces.

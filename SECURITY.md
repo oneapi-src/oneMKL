@@ -60,6 +60,6 @@ If you have any suggestions on how this Policy could be improved, please submit
 an issue or a pull request to this repository. Please **do not** report
 potential vulnerabilities or security flaws via a pull request.
 
-[1]: https://github.com/oneapi-src/oneMath/releases/latest
-[2]: https://github.com/oneapi-src/oneMath/security/advisories/new
-[3]: https://github.com/oneapi-src/oneMath/security/advisories
+[1]: https://github.com/uxlfoundation/oneMath/releases/latest
+[2]: https://github.com/uxlfoundation/oneMath/security/advisories/new
+[3]: https://github.com/uxlfoundation/oneMath/security/advisories

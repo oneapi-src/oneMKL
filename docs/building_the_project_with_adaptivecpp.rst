@@ -20,7 +20,7 @@ Environment Setup
 
 #. 
    Download and install the `required dependencies
-   <https://github.com/oneapi-src/oneMath?tab=readme-ov-file#software-requirements>`_
+   <https://github.com/uxlfoundation/oneMath?tab=readme-ov-file#software-requirements>`_
    manually.
 
 Build Commands
@@ -50,7 +50,7 @@ each desired backend. By default, the ``MKLGPU`` and ``MKLCPU`` backends are
 enabled, but ``MKLGPU`` must be disabled with AdaptiveCpp. The supported
 backends for the compilers are given in the table at `oneMath supported
 configurations table
-<https://github.com/oneapi-src/oneMath?tab=readme-ov-file#supported-configurations>`_,
+<https://github.com/uxlfoundation/oneMath?tab=readme-ov-file#supported-configurations>`_,
 and the CMake option names are given in the table below. Some backends may
 require additional parameters to be set. See the relevant section below for
 additional guidance. The target architectures must be specified with

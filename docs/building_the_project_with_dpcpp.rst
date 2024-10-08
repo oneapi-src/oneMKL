@@ -23,7 +23,7 @@ Environment Setup
 
 #. 
    Build and install all `required dependencies
-   <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#software-requirements>`_. 
+   <https://github.com/uxlfoundation/oneMKL?tab=readme-ov-file#software-requirements>`_. 
 
 .. _build_introduction_with_dpcpp:
 
@@ -63,7 +63,7 @@ are enabled. Multiple backends for multiple device vendors can be enabled at
 once (albeit with limitations when using portBLAS and portFFT). The supported
 backends for the compilers are given in the table at `oneMKL supported
 configurations table
-<https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#supported-configurations>`_,
+<https://github.com/uxlfoundation/oneMKL?tab=readme-ov-file#supported-configurations>`_,
 and the CMake option names are given in the table below. Some backends may
 require additional parameters to be set. See the relevant section below for
 additional guidance.
@@ -348,7 +348,7 @@ The following table provides details of CMake options and their default values:
 
 .. note::
   When building with ``BUILD_FUNCTIONAL_TESTS=True`` (default option) only single CUDA backend can be built
-  (`#270 <https://github.com/oneapi-src/oneMKL/issues/270>`_).
+  (`#270 <https://github.com/uxlfoundation/oneMKL/issues/270>`_).
 
 
 .. _build_invocation_examples_dpcpp:
@@ -479,7 +479,7 @@ Building for Windows
 ####################
 
 The Windows build is similar to the Linux build, albeit that `fewer backends are
-supported <https://github.com/oneapi-src/oneMKL?tab=readme-ov-file#windows>`_.
+supported <https://github.com/uxlfoundation/oneMKL?tab=readme-ov-file#windows>`_.
 Additionally, the Ninja build system must be used. For example:
 
 .. code-block:: bash

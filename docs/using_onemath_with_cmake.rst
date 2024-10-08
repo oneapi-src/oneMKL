@@ -69,7 +69,7 @@ For example:
     set(ENABLE_<BACKEND_NAME>_BACKEND True)
     FetchContent_Declare(
             onemath_library
-            GIT_REPOSITORY https://github.com/oneapi-src/oneMath.git
+            GIT_REPOSITORY https://github.com/uxlfoundation/oneMath.git
             GIT_TAG develop
     )
     FetchContent_MakeAvailable(onemath_library)

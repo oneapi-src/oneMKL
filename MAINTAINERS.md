@@ -72,12 +72,12 @@ The process of becoming a Domain maintainer is:
 
 | GitHub team name | Domain maintainers |
 :-----------|:------------|
-| @oneapi-src/onemath-blas-write | oneMath BLAS maintainers |
-| @oneapi-src/onemath-dft-write | oneMath DFT maintainers |
-| @oneapi-src/onemath-lapack-write | oneMath LAPACK maintainers |
-| @oneapi-src/onemath-rng-write | oneMath RNG maintainers |
-| @oneapi-src/onemath-sparse-write | oneMath Sparse Algebra maintainers |
-| @oneapi-src/onemath-vm-write | oneMath Vector Math maintainers |
+| @uxlfoundation/onemath-blas-write | oneMath BLAS maintainers |
+| @uxlfoundation/onemath-dft-write | oneMath DFT maintainers |
+| @uxlfoundation/onemath-lapack-write | oneMath LAPACK maintainers |
+| @uxlfoundation/onemath-rng-write | oneMath RNG maintainers |
+| @uxlfoundation/onemath-sparse-write | oneMath Sparse Algebra maintainers |
+| @uxlfoundation/onemath-vm-write | oneMath Vector Math maintainers |
 
 ## Architecture Maintainer
 Architecture maintainers are the most established contributors who are responsible for the
@@ -108,6 +108,6 @@ Privileges:
 
 Process of becoming a maintainer:
 1. A Contributor or Domain maintainer requests to join oneMath Architecture maintainers GitHub team
-(@oneapi-src/onemath-arch-write).
+(@uxlfoundation/onemath-arch-write).
 2. At least one of Architecture maintainers approves the request.
 

@@ -141,7 +141,7 @@ There are two oneMKL selector layer implementations:
   $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemath_blas_mklcpu –lonemath_blas_cublas
   ```
   
-*Refer to [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html) for the choice between `icpx/icx` and `clang++` compilers.*
+*Refer to [Selecting a Compiler](https://uxlfoundation.github.io/oneMKL/selecting_a_compiler.html) for the choice between `icpx/icx` and `clang++` compilers.*
 
 #### Device API
 
@@ -534,16 +534,16 @@ Product | Supported Version | License
 ---
 
 ## Documentation
-- [Contents](https://oneapi-src.github.io/oneMKL/)
-- [About](https://oneapi-src.github.io/oneMKL/introduction.html)
+- [Contents](https://uxlfoundation.github.io/oneMKL/)
+- [About](https://uxlfoundation.github.io/oneMKL/introduction.html)
 - Get Started
-  - [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html)
-  - [Building the Project with DPC++](https://oneapi-src.github.io/oneMKL/building_the_project_with_dpcpp.html)
-  - [Building the Project with AdaptiveCpp](https://oneapi-src.github.io/oneMKL/building_the_project_with_adaptivecpp.html)
+  - [Selecting a Compiler](https://uxlfoundation.github.io/oneMKL/selecting_a_compiler.html)
+  - [Building the Project with DPC++](https://uxlfoundation.github.io/oneMKL/building_the_project_with_dpcpp.html)
+  - [Building the Project with AdaptiveCpp](https://uxlfoundation.github.io/oneMKL/building_the_project_with_adaptivecpp.html)
 - Developer Reference
-  - [oneMKL Defined Datatypes](https://oneapi-src.github.io/oneMKL/onemkl-datatypes.html)
-  - [Dense Linear Algebra](https://oneapi-src.github.io/oneMKL/domains/dense_linear_algebra.html)
-- [Integrating a Third-Party Library](https://oneapi-src.github.io/oneMKL/create_new_backend.html)
+  - [oneMKL Defined Datatypes](https://uxlfoundation.github.io/oneMKL/onemkl-datatypes.html)
+  - [Dense Linear Algebra](https://uxlfoundation.github.io/oneMKL/domains/dense_linear_algebra.html)
+- [Integrating a Third-Party Library](https://uxlfoundation.github.io/oneMKL/create_new_backend.html)
 
 ---
 
@@ -573,13 +573,13 @@ Distributed under the Apache license 2.0. See [LICENSE](LICENSE) for more inform
 
 **Q: What is the difference between the following oneMKL items?**
    - The [oneAPI Specification for oneMKL](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/)
-   - The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/oneapi-src/oneMKL) Project
+   - The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/uxlfoundation/oneMKL) Project
    - The [Intel(R) oneAPI Math Kernel Library (oneMKL)](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html) Product
 
 **A:**
 - The [oneAPI Specification for oneMKL](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/) defines the DPC++ interfaces for performance math library functions. The oneMKL specification can evolve faster and more frequently than implementations of the specification.
 
-- The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/oneapi-src/oneMKL) Project is an open source implementation of the specification. The project goal is to demonstrate how the DPC++ interfaces documented in the oneMKL specification can be implemented for any math library and work for any target hardware. While the implementation provided here may not yet be the full implementation of the specification, the goal is to build it out over time. We encourage the community to contribute to this project and help to extend support to multiple hardware targets and other math libraries.
+- The [oneAPI Math Kernel Library (oneMKL) Interfaces](https://github.com/uxlfoundation/oneMKL) Project is an open source implementation of the specification. The project goal is to demonstrate how the DPC++ interfaces documented in the oneMKL specification can be implemented for any math library and work for any target hardware. While the implementation provided here may not yet be the full implementation of the specification, the goal is to build it out over time. We encourage the community to contribute to this project and help to extend support to multiple hardware targets and other math libraries.
 
 - The [Intel(R) oneAPI Math Kernel Library (oneMKL)](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html) product is the Intel product implementation of the specification (with DPC++ interfaces) as well as similar functionality with C and Fortran interfaces, and is provided as part of Intel® oneAPI Base Toolkit. It is highly optimized for Intel CPU and Intel GPU hardware.
 
