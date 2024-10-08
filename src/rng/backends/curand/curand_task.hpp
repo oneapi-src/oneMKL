@@ -47,6 +47,10 @@ static inline void host_task_internal(H &cgh, A acc, E e, F f) {
         auto r_ptr = reinterpret_cast<typename A::value_type *>(
             ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(acc));
         f(r_ptr);
+#ifndef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+        CUresult err;
+        CUDA_ERROR_FUNC(cuStreamSynchronize, err, stream);
+#endif
     });
 }
 
@@ -61,6 +65,10 @@ static inline void host_task_internal(H &cgh, E e, F f) {
         auto stream = ih.get_native_queue<sycl::backend::ext_oneapi_cuda>();
         CURAND_CALL(curandSetStream, status, e, stream);
         f(ih);
+#ifndef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
+        CUresult err;
+        CUDA_ERROR_FUNC(cuStreamSynchronize, err, stream);
+#endif
     });
 }
 #endif
