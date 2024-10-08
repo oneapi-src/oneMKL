@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SRC_SPARSE_BLAS_ENUM_DATA_TYPES_HPP_
-#define _ONEMKL_SRC_SPARSE_BLAS_ENUM_DATA_TYPES_HPP_
+#ifndef _ONEMATH_SRC_SPARSE_BLAS_ENUM_DATA_TYPES_HPP_
+#define _ONEMATH_SRC_SPARSE_BLAS_ENUM_DATA_TYPES_HPP_
 
 #include <string>
 
@@ -66,4 +66,4 @@ constexpr data_type get_data_type() {
 
 } // namespace oneapi::mkl::sparse::detail
 
-#endif // _ONEMKL_SRC_SPARSE_BLAS_ENUM_DATA_TYPES_HPP_
+#endif // _ONEMATH_SRC_SPARSE_BLAS_ENUM_DATA_TYPES_HPP_

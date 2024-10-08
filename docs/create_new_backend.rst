@@ -157,13 +157,13 @@ To integrate the new third-party library to a oneMKL header-based part, followin
             { domain::blas,
               { { device::x86cpu,
                   {
-        #ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+        #ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
                       LIB_NAME("blas_mklcpu")
         #endif
                    } },
      +          { device::newdevice,
      +            {
-     +  #ifdef ONEMKL_ENABLE_NEWLIB_BACKEND
+     +  #ifdef ONEMATH_ENABLE_NEWLIB_BACKEND
      +                 LIB_NAME("blas_newlib")
      +  #endif
      +             } },
@@ -368,8 +368,8 @@ Here is the list of files that should be created/updated to integrate the new wr
         include(FindPackageHandleStandardArgs)
         find_package_handle_standard_args(NEWLIB REQUIRED_VARS NEWLIB_LIBRARY)
         # Set cmake target for the library
-        add_library(ONEMKL::NEWLIB::NEWLIB UNKNOWN IMPORTED)
-        set_target_properties(ONEMKL::NEWLIB::NEWLIB PROPERTIES
+        add_library(ONEMATH::NEWLIB::NEWLIB UNKNOWN IMPORTED)
+        set_target_properties(ONEMATH::NEWLIB::NEWLIB PROPERTIES
             IMPORTED_LOCATION ${NEWLIB_LIBRARY})
 
 * Create the ``src/<domain>/backends/<new_directory>/CMakeList.txt`` cmake config file to specify how to build the backend layer for the new third-party library.
@@ -397,9 +397,9 @@ Here is the list of files that should be created/updated to integrate the new wr
   .. code-block:: diff
 
             target_link_libraries(${LIB_OBJ}
-                PUBLIC ONEMKL::SYCL::SYCL
+                PUBLIC ONEMATH::SYCL::SYCL
         -       # Add third-party library to link with here
-        +       PUBLIC ONEMKL::NEWLIB::NEWLIB
+        +       PUBLIC ONEMATH::NEWLIB::NEWLIB
             )
 
 Now you can build the backend library for ``newlib`` to make sure the third-party library integration was completed successfully (for more information, see `Build with cmake <../README.md#building-with-cmake>`_)
@@ -427,8 +427,8 @@ Update the following files to enable the new third-party library for unit tests:
 
   .. code-block:: diff
     
-        #cmakedefine ONEMKL_ENABLE_MKLCPU_BACKEND
-     +  #cmakedefine ONEMKL_ENABLE_NEWLIB_BACKEND
+        #cmakedefine ONEMATH_ENABLE_MKLCPU_BACKEND
+     +  #cmakedefine ONEMATH_ENABLE_NEWLIB_BACKEND
 
 * ``tests/unit_tests/CMakeLists.txt``: add instructions about how to link tests with the new backend library
 
@@ -439,22 +439,22 @@ Update the following files to enable the new third-party library for unit tests:
         if(ENABLE_MKLCPU_BACKEND)
             add_dependencies(test_main_ct onemath_blas_mklcpu)
             if(BUILD_SHARED_LIBS)
-                list(APPEND ONEMKL_LIBRARIES onemath_blas_mklcpu)
+                list(APPEND ONEMATH_LIBRARIES onemath_blas_mklcpu)
             else()
-                list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemath_blas_mklcpu.a)
+                list(APPEND ONEMATH_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemath_blas_mklcpu.a)
                 find_package(MKL REQUIRED)
-                list(APPEND ONEMKL_LIBRARIES ${MKL_LINK_C})
+                list(APPEND ONEMATH_LIBRARIES ${MKL_LINK_C})
             endif()
         endif()
      +
      +    if(ENABLE_NEWLIB_BACKEND)
      +       add_dependencies(test_main_ct onemath_blas_newlib)
      +       if(BUILD_SHARED_LIBS)
-     +           list(APPEND ONEMKL_LIBRARIES onemath_blas_newlib)
+     +           list(APPEND ONEMATH_LIBRARIES onemath_blas_newlib)
      +       else()
-     +           list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemath_blas_newlib.a)
+     +           list(APPEND ONEMATH_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libonemath_blas_newlib.a)
      +           find_package(NEWLIB REQUIRED)
-     +           list(APPEND ONEMKL_LIBRARIES ONEMKL::NEWLIB::NEWLIB)
+     +           list(APPEND ONEMATH_LIBRARIES ONEMATH::NEWLIB::NEWLIB)
      +       endif()
      +   endif()
 
@@ -464,14 +464,14 @@ Update the following files to enable the new third-party library for unit tests:
 
   .. code-block:: diff
     
-        #ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+        #ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
             #define TEST_RUN_INTELGPU(q, func, args) \
                 func<oneapi::mkl::backend::mklgpu> args
         #else
             #define TEST_RUN_INTELGPU(q, func, args)
         #endif
      +    
-     +  #ifdef ONEMKL_ENABLE_NEWLIB_BACKEND
+     +  #ifdef ONEMATH_ENABLE_NEWLIB_BACKEND
      +     #define TEST_RUN_NEWDEVICE(q, func, args) \
      +         func<oneapi::mkl::backend::newbackend> args
      +  #else
@@ -495,7 +495,7 @@ Update the following files to enable the new third-party library for unit tests:
                 }
             }
      +           
-     +  #ifdef ONEMKL_ENABLE_NEWLIB_BACKEND
+     +  #ifdef ONEMATH_ENABLE_NEWLIB_BACKEND
      +      devices.push_back(sycl::device(sycl::host_selector()));
      +  #endif
 

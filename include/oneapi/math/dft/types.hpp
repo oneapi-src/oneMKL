@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_TYPES_HPP_
-#define _ONEMKL_DFT_TYPES_HPP_
+#ifndef _ONEMATH_DFT_TYPES_HPP_
+#define _ONEMATH_DFT_TYPES_HPP_
 
 #include "detail/types_impl.hpp"
 
@@ -39,4 +39,4 @@ using DFT_ERROR = detail::DFT_ERROR;
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_TYPES_HPP_
+#endif //_ONEMATH_TYPES_HPP_

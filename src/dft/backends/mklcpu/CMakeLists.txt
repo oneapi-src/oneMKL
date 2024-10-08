@@ -33,32 +33,32 @@ add_library(${LIB_OBJ} OBJECT
 add_dependencies(onemath_backend_libs_dft ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
-  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
 )
 target_include_directories(${LIB_NAME}
-  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
 )
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
-          ${ONEMKL_GENERATED_INCLUDE_PATH}
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMATH_BUILD_COPT})
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
 endif()
 
 if(TARGET MKL::MKL_SYCL::DFT)
   target_link_libraries(${LIB_OBJ}
-    PUBLIC ONEMKL::SYCL::SYCL
+    PUBLIC ONEMATH::SYCL::SYCL
     PUBLIC MKL::MKL_SYCL::DFT
     PRIVATE onemath_warnings
   )
 else()
   target_link_libraries(${LIB_OBJ}
-    PUBLIC ONEMKL::SYCL::SYCL
+    PUBLIC ONEMATH::SYCL::SYCL
     PUBLIC MKL::MKL_DPCPP
     PRIVATE onemath_warnings
   )
@@ -72,7 +72,7 @@ target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 #Set oneMKL libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
-    INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
+    INTERFACE_LINK_LIBRARIES ONEMATH::SYCL::SYCL
   )
 endif()
 

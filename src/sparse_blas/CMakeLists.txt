@@ -27,11 +27,11 @@ if(BUILD_SHARED_LIBS)
             ${PROJECT_SOURCE_DIR}/src
             ${PROJECT_SOURCE_DIR}/src/include
             ${CMAKE_BINARY_DIR}/bin
-            ${ONEMKL_GENERATED_INCLUDE_PATH}
+            ${ONEMATH_GENERATED_INCLUDE_PATH}
             $<TARGET_FILE_DIR:onemath>
   )
 
-  target_compile_options(onemath_sparse_blas PRIVATE ${ONEMKL_BUILD_COPT})
+  target_compile_options(onemath_sparse_blas PRIVATE ${ONEMATH_BUILD_COPT})
 
   set_target_properties(onemath_sparse_blas PROPERTIES
     POSITION_INDEPENDENT_CODE ON
@@ -39,7 +39,7 @@ if(BUILD_SHARED_LIBS)
   if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
     add_sycl_to_target(TARGET onemath_sparse_blas SOURCES sparse_blas_loader.cpp)
   else()
-    target_link_libraries(onemath_sparse_blas PUBLIC ONEMKL::SYCL::SYCL)
+    target_link_libraries(onemath_sparse_blas PUBLIC ONEMATH::SYCL::SYCL)
   endif()
 
   include(WarningsUtils)

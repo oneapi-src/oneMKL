@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SRC_SPARSE_BLAS_GENERIC_CONTAINER_HPP_
-#define _ONEMKL_SRC_SPARSE_BLAS_GENERIC_CONTAINER_HPP_
+#ifndef _ONEMATH_SRC_SPARSE_BLAS_GENERIC_CONTAINER_HPP_
+#define _ONEMATH_SRC_SPARSE_BLAS_GENERIC_CONTAINER_HPP_
 
 #include <memory>
 #include <string>
@@ -331,4 +331,4 @@ sycl::event submit_release(sycl::queue& queue, T* ptr, const DependenciesT& depe
 
 } // namespace oneapi::mkl::sparse::detail
 
-#endif // _ONEMKL_SRC_SPARSE_BLAS_GENERIC_CONTAINER_HPP_
+#endif // _ONEMATH_SRC_SPARSE_BLAS_GENERIC_CONTAINER_HPP_

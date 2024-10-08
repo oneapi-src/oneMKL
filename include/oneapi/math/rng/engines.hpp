@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_RNG_ENGINES_HPP_
-#define _ONEMKL_RNG_ENGINES_HPP_
+#ifndef _ONEMATH_RNG_ENGINES_HPP_
+#define _ONEMATH_RNG_ENGINES_HPP_
 
 #include <cstdint>
 #include <limits>
@@ -35,16 +35,16 @@
 #include "oneapi/math/rng/detail/engine_impl.hpp"
 #include "oneapi/math/rng/detail/rng_loader.hpp"
 
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
 #include "oneapi/math/rng/detail/mklcpu/onemath_rng_mklcpu.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
 #include "oneapi/math/rng/detail/mklgpu/onemath_rng_mklgpu.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_CURAND_BACKEND
+#ifdef ONEMATH_ENABLE_CURAND_BACKEND
 #include "oneapi/math/rng/detail/curand/onemath_rng_curand.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_ROCRAND_BACKEND
+#ifdef ONEMATH_ENABLE_ROCRAND_BACKEND
 #include "oneapi/math/rng/detail/rocrand/onemath_rng_rocrand.hpp"
 #endif
 
@@ -68,7 +68,7 @@ public:
     philox4x32x10(sycl::queue queue, std::initializer_list<std::uint64_t> seed)
             : pimpl_(detail::create_philox4x32x10(get_device_id(queue), queue, seed)) {}
 
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
     philox4x32x10(backend_selector<backend::mklcpu> selector, std::uint64_t seed = default_seed)
             : pimpl_(mklcpu::create_philox4x32x10(selector.get_queue(), seed)) {}
 
@@ -77,7 +77,7 @@ public:
             : pimpl_(mklcpu::create_philox4x32x10(selector.get_queue(), seed)) {}
 #endif
 
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
     philox4x32x10(backend_selector<backend::mklgpu> selector, std::uint64_t seed = default_seed)
             : pimpl_(mklgpu::create_philox4x32x10(selector.get_queue(), seed)) {}
 
@@ -86,7 +86,7 @@ public:
             : pimpl_(mklgpu::create_philox4x32x10(selector.get_queue(), seed)) {}
 #endif
 
-#ifdef ONEMKL_ENABLE_CURAND_BACKEND
+#ifdef ONEMATH_ENABLE_CURAND_BACKEND
     philox4x32x10(backend_selector<backend::curand> selector, std::uint64_t seed = default_seed)
             : pimpl_(curand::create_philox4x32x10(selector.get_queue(), seed)) {}
 
@@ -94,7 +94,7 @@ public:
                   std::initializer_list<std::uint64_t> seed)
             : pimpl_(curand::create_philox4x32x10(selector.get_queue(), seed)) {}
 #endif
-#ifdef ONEMKL_ENABLE_ROCRAND_BACKEND
+#ifdef ONEMATH_ENABLE_ROCRAND_BACKEND
     philox4x32x10(backend_selector<backend::rocrand> selector, std::uint64_t seed = default_seed)
             : pimpl_(rocrand::create_philox4x32x10(selector.get_queue(), seed)) {}
 
@@ -160,7 +160,7 @@ public:
     mrg32k3a(sycl::queue queue, std::initializer_list<std::uint32_t> seed)
             : pimpl_(detail::create_mrg32k3a(get_device_id(queue), queue, seed)) {}
 
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
     mrg32k3a(backend_selector<backend::mklcpu> selector, std::uint32_t seed = default_seed)
             : pimpl_(mklcpu::create_mrg32k3a(selector.get_queue(), seed)) {}
 
@@ -168,7 +168,7 @@ public:
             : pimpl_(mklcpu::create_mrg32k3a(selector.get_queue(), seed)) {}
 #endif
 
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
     mrg32k3a(backend_selector<backend::mklgpu> selector, std::uint32_t seed = default_seed)
             : pimpl_(mklgpu::create_mrg32k3a(selector.get_queue(), seed)) {}
 
@@ -176,7 +176,7 @@ public:
             : pimpl_(mklgpu::create_mrg32k3a(selector.get_queue(), seed)) {}
 #endif
 
-#ifdef ONEMKL_ENABLE_CURAND_BACKEND
+#ifdef ONEMATH_ENABLE_CURAND_BACKEND
     mrg32k3a(backend_selector<backend::curand> selector, std::uint32_t seed = default_seed)
             : pimpl_(curand::create_mrg32k3a(selector.get_queue(), seed)) {}
 
@@ -184,7 +184,7 @@ public:
             : pimpl_(curand::create_mrg32k3a(selector.get_queue(), seed)) {}
 #endif
 
-#ifdef ONEMKL_ENABLE_ROCRAND_BACKEND
+#ifdef ONEMATH_ENABLE_ROCRAND_BACKEND
     mrg32k3a(backend_selector<backend::rocrand> selector, std::uint32_t seed = default_seed)
             : pimpl_(rocrand::create_mrg32k3a(selector.get_queue(), seed)) {}
 
@@ -240,4 +240,4 @@ using default_engine = philox4x32x10;
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_RNG_ENGINES_HPP_
+#endif //_ONEMATH_RNG_ENGINES_HPP_

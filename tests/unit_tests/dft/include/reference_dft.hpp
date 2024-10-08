@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef ONEMKL_REFERENCE_DFT_HPP
-#define ONEMKL_REFERENCE_DFT_HPP
+#ifndef ONEMATH_REFERENCE_DFT_HPP
+#define ONEMATH_REFERENCE_DFT_HPP
 
 #include <algorithm>
 #include <cmath>
@@ -127,4 +127,4 @@ void reference_forward_dft(const std::vector<std::int64_t> &sizes, const TypeIn 
     }
 }
 
-#endif //ONEMKL_REFERENCE_DFT_HPP
+#endif //ONEMATH_REFERENCE_DFT_HPP

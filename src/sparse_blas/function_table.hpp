@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_FUNCTION_TABLE_HPP_
-#define _ONEMKL_SPARSE_BLAS_FUNCTION_TABLE_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_FUNCTION_TABLE_HPP_
+#define _ONEMATH_SPARSE_BLAS_FUNCTION_TABLE_HPP_
 
 #include "oneapi/math/sparse_blas/types.hpp"
 #include "sparse_blas/macros.hpp"
@@ -264,4 +264,4 @@ typedef struct {
 #undef DEFINE_COO_MATRIX_FUNCS
 #undef DEFINE_CSR_MATRIX_FUNCS
 
-#endif // _ONEMKL_SPARSE_BLAS_FUNCTION_TABLE_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_FUNCTION_TABLE_HPP_

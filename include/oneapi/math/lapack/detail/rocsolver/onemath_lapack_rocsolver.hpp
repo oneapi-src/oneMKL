@@ -19,8 +19,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_LAPACK_ROCSOLVER_HPP_
-#define _ONEMKL_LAPACK_ROCSOLVER_HPP_
+#ifndef _ONEMATH_LAPACK_ROCSOLVER_HPP_
+#define _ONEMATH_LAPACK_ROCSOLVER_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -46,4 +46,4 @@ namespace rocsolver {
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_LAPACK_ROCSOLVER_HPP_
+#endif //_ONEMATH_LAPACK_ROCSOLVER_HPP_

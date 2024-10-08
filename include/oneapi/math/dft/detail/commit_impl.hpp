@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_COMMIT_IMPL_HPP_
-#define _ONEMKL_DFT_COMMIT_IMPL_HPP_
+#ifndef _ONEMATH_DFT_COMMIT_IMPL_HPP_
+#define _ONEMATH_DFT_COMMIT_IMPL_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -181,4 +181,4 @@ protected:
 
 } // namespace oneapi::mkl::dft::detail
 
-#endif //_ONEMKL_DFT_COMMIT_IMPL_HPP_
+#endif //_ONEMATH_DFT_COMMIT_IMPL_HPP_

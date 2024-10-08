@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_SRC_EXECUTE_HELPER_CUFFT_HPP_
-#define _ONEMKL_DFT_SRC_EXECUTE_HELPER_CUFFT_HPP_
+#ifndef _ONEMATH_DFT_SRC_EXECUTE_HELPER_CUFFT_HPP_
+#define _ONEMATH_DFT_SRC_EXECUTE_HELPER_CUFFT_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -149,4 +149,4 @@ inline CUstream setup_stream(const std::string &func, sycl::interop_handle ih, c
 
 } // namespace oneapi::mkl::dft::cufft::detail
 
-#endif // _ONEMKL_DFT_SRC_EXECUTE_HELPER_CUFFT_HPP_
+#endif // _ONEMATH_DFT_SRC_EXECUTE_HELPER_CUFFT_HPP_

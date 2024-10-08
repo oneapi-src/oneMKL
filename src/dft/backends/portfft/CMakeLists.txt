@@ -54,8 +54,8 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
   list(APPEND TARGETS_COMPILE_OPTIONS -fsycl-targets=${TARGETS_TRIPLES})
   list(APPEND TARGETS_LINK_OPTIONS -fsycl-targets=${TARGETS_TRIPLES})
 
-  target_compile_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGETS_COMPILE_OPTIONS})
-  target_link_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGETS_LINK_OPTIONS})
+  target_compile_options(ONEMATH::SYCL::SYCL INTERFACE ${TARGETS_COMPILE_OPTIONS})
+  target_link_options(ONEMATH::SYCL::SYCL INTERFACE ${TARGETS_LINK_OPTIONS})
 endif()
 
 set(LIB_NAME onemath_dft_portfft)
@@ -91,19 +91,19 @@ endif()
 target_link_libraries(${LIB_OBJ} PRIVATE onemath_warnings)
 
 target_include_directories(${LIB_OBJ}
-  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
 )
 target_include_directories(${LIB_NAME}
-  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
 )
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMATH_BUILD_COPT})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMATH::SYCL::SYCL)
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
@@ -113,7 +113,7 @@ target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 #Set oneMKL libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
-    INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
+    INTERFACE_LINK_LIBRARIES ONEMATH::SYCL::SYCL
   )
 endif()
 

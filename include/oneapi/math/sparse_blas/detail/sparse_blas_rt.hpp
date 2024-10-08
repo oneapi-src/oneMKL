@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_SPARSE_BLAS_RT_HPP_
-#define _ONEMKL_SPARSE_BLAS_DETAIL_SPARSE_BLAS_RT_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_DETAIL_SPARSE_BLAS_RT_HPP_
+#define _ONEMATH_SPARSE_BLAS_DETAIL_SPARSE_BLAS_RT_HPP_
 
 #include "oneapi/math/sparse_blas/detail/helper_types.hpp"
 #include "oneapi/math/sparse_blas/types.hpp"
@@ -205,4 +205,4 @@ sycl::event spsv(sycl::queue &queue, oneapi::mkl::transpose opA, const void *alp
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_SPARSE_BLAS_DETAIL_SPARSE_BLAS_RT_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_DETAIL_SPARSE_BLAS_RT_HPP_

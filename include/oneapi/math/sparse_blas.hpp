@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_HPP_
-#define _ONEMKL_SPARSE_BLAS_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_HPP_
+#define _ONEMATH_SPARSE_BLAS_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -28,13 +28,13 @@
 
 #include "oneapi/math/detail/config.hpp"
 
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
 #include "sparse_blas/detail/mklcpu/sparse_blas_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
 #include "sparse_blas/detail/mklgpu/sparse_blas_ct.hpp"
 #endif
 
 #include "sparse_blas/detail/sparse_blas_rt.hpp"
 
-#endif // _ONEMKL_SPARSE_BLAS_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_HPP_

@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_MKLGPU_ONEMKL_SPARSE_BLAS_MKLGPU_HPP_
-#define _ONEMKL_SPARSE_BLAS_DETAIL_MKLGPU_ONEMKL_SPARSE_BLAS_MKLGPU_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_DETAIL_MKLGPU_ONEMATH_SPARSE_BLAS_MKLGPU_HPP_
+#define _ONEMATH_SPARSE_BLAS_DETAIL_MKLGPU_ONEMATH_SPARSE_BLAS_MKLGPU_HPP_
 
 #include "oneapi/math/detail/export.hpp"
 #include "oneapi/math/sparse_blas/detail/helper_types.hpp"
@@ -32,4 +32,4 @@ namespace detail = oneapi::mkl::sparse::detail;
 
 } // namespace oneapi::mkl::sparse::mklgpu
 
-#endif // _ONEMKL_SPARSE_BLAS_DETAIL_MKLGPU_ONEMKL_SPARSE_BLAS_MKLGPU_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_DETAIL_MKLGPU_ONEMATH_SPARSE_BLAS_MKLGPU_HPP_

@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_MATRIX_VIEW_HPP_
-#define _ONEMKL_SPARSE_BLAS_MATRIX_VIEW_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_MATRIX_VIEW_HPP_
+#define _ONEMATH_SPARSE_BLAS_MATRIX_VIEW_HPP_
 
 #include "oneapi/math/types.hpp"
 
@@ -48,4 +48,4 @@ struct matrix_view {
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_SPARSE_BLAS_MATRIX_VIEW_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_MATRIX_VIEW_HPP_

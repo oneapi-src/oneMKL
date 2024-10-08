@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_SRC_MKLCPU_HELPERS_HPP_
-#define _ONEMKL_DFT_SRC_MKLCPU_HELPERS_HPP_
+#ifndef _ONEMATH_DFT_SRC_MKLCPU_HELPERS_HPP_
+#define _ONEMATH_DFT_SRC_MKLCPU_HELPERS_HPP_
 
 #include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/dft/detail/types_impl.hpp"
@@ -175,4 +175,4 @@ typename AccType::value_type* acc_to_ptr(AccType acc) {
 
 } // namespace oneapi::mkl::dft::mklcpu::detail
 
-#endif // _ONEMKL_DFT_SRC_MKLCPU_HELPERS_HPP_
+#endif // _ONEMATH_DFT_SRC_MKLCPU_HELPERS_HPP_

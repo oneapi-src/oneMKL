@@ -57,7 +57,7 @@ foreach(lapack_rt_source ${LAPACK_RT_SOURCES})
 
   target_link_libraries(example_${domain}_${lapack_rt_source} PUBLIC
       onemath
-      ONEMKL::SYCL::SYCL
+      ONEMATH::SYCL::SYCL
       ${CMAKE_DL_LIBS}
   )
 

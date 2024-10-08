@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BLAS_MKLCPU_HPP_
-#define _ONEMKL_BLAS_MKLCPU_HPP_
+#ifndef _ONEMATH_BLAS_MKLCPU_HPP_
+#define _ONEMATH_BLAS_MKLCPU_HPP_
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
@@ -53,4 +53,4 @@ namespace row_major {
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_BLAS_MKLCPU_HPP_
+#endif //_ONEMATH_BLAS_MKLCPU_HPP_

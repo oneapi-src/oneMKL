@@ -32,18 +32,18 @@ add_library(${LIB_OBJ} OBJECT
 add_dependencies(onemath_backend_libs_dft ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
-  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
 )
 target_include_directories(${LIB_NAME}
-  PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
 )
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
-          ${ONEMKL_GENERATED_INCLUDE_PATH}
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMATH_BUILD_COPT})
 
 find_package(HIP REQUIRED)
 # Require the minimum rocFFT version matching with ROCm 5.4.3.
@@ -64,7 +64,7 @@ find_path(
 )
 target_include_directories(${LIB_OBJ} PRIVATE ${rocfft_EXTRA_INCLUDE_DIR})
 
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMATH::SYCL::SYCL)
 
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON
@@ -74,7 +74,7 @@ target_link_libraries(${LIB_NAME} PUBLIC ${LIB_OBJ})
 # Set oneMKL libraries as not transitive for dynamic
 if(BUILD_SHARED_LIBS)
   set_target_properties(${LIB_NAME} PROPERTIES
-    INTERFACE_LINK_LIBRARIES ONEMKL::SYCL::SYCL
+    INTERFACE_LINK_LIBRARIES ONEMATH::SYCL::SYCL
   )
 endif()
 

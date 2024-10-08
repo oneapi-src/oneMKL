@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_RNG_LOADER_HPP_
-#define _ONEMKL_RNG_LOADER_HPP_
+#ifndef _ONEMATH_RNG_LOADER_HPP_
+#define _ONEMATH_RNG_LOADER_HPP_
 
 #include <cstdint>
 #if __has_include(<sycl/sycl.hpp>)
@@ -37,16 +37,16 @@ namespace mkl {
 namespace rng {
 namespace detail {
 
-ONEMKL_EXPORT engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, sycl::queue queue,
                                                 std::uint64_t seed);
 
-ONEMKL_EXPORT engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::mkl::device libkey, sycl::queue queue,
                                                 std::initializer_list<std::uint64_t> seed);
 
-ONEMKL_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, sycl::queue queue,
                                            std::uint32_t seed);
 
-ONEMKL_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, sycl::queue queue,
+ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, sycl::queue queue,
                                            std::initializer_list<std::uint32_t> seed);
 
 } // namespace detail
@@ -54,4 +54,4 @@ ONEMKL_EXPORT engine_impl* create_mrg32k3a(oneapi::mkl::device libkey, sycl::que
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_RNG_LOADER_HPP_
+#endif //_ONEMATH_RNG_LOADER_HPP_

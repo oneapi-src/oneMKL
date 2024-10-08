@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DETAIL_DESCRIPTOR_CONFIG_HELPER_HPP_
-#define _ONEMKL_DETAIL_DESCRIPTOR_CONFIG_HELPER_HPP_
+#ifndef _ONEMATH_DETAIL_DESCRIPTOR_CONFIG_HELPER_HPP_
+#define _ONEMATH_DETAIL_DESCRIPTOR_CONFIG_HELPER_HPP_
 
 #include <cstdint>
 #include <type_traits>
@@ -259,4 +259,4 @@ void set_value(dft_values<prec, dom>& vals,
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_DETAIL_DESCRIPTOR_CONFIG_HELPER_HPP_
+#endif //_ONEMATH_DETAIL_DESCRIPTOR_CONFIG_HELPER_HPP_

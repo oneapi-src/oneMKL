@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_FORWARD_HPP_
-#define _ONEMKL_DFT_FORWARD_HPP_
+#ifndef _ONEMATH_DFT_FORWARD_HPP_
+#define _ONEMATH_DFT_FORWARD_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -158,4 +158,4 @@ sycl::event compute_forward(descriptor_type &desc, input_type *in_re, input_type
 }
 } // namespace oneapi::mkl::dft
 
-#endif // _ONEMKL_DFT_FORWARD_HPP_
+#endif // _ONEMATH_DFT_FORWARD_HPP_

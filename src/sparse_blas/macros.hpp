@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_MACROS_HPP_
-#define _ONEMKL_SPARSE_BLAS_MACROS_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_MACROS_HPP_
+#define _ONEMATH_SPARSE_BLAS_MACROS_HPP_
 
 #define FOR_EACH_FP_TYPE(DEFINE_MACRO)      \
     DEFINE_MACRO(float, _rf);               \
@@ -42,4 +42,4 @@
                                  std::string(#PTR) + " must not be nullptr."); \
     }
 
-#endif // _ONEMKL_SPARSE_BLAS_MACROS_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_MACROS_HPP_

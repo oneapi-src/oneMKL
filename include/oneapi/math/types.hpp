@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_TYPES_HPP_
-#define _ONEMKL_TYPES_HPP_
+#ifndef _ONEMATH_TYPES_HPP_
+#define _ONEMATH_TYPES_HPP_
 
 #ifdef __HIPSYCL__
 #include "oneapi/math/bfloat16.hpp"
@@ -119,4 +119,4 @@ enum class order : char {
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_TYPES_HPP_
+#endif //_ONEMATH_TYPES_HPP_

@@ -35,7 +35,7 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
 
   # Inside <path to onemkl>
   mkdir build && cd build
-  cmake .. -DONEMKL_SYCL_IMPLEMENTATION=hipsycl    \ # Indicate that AdaptiveCpp is being used.
+  cmake .. -DONEMATH_SYCL_IMPLEMENTATION=hipsycl   \ # Indicate that AdaptiveCpp is being used.
           -DENABLE_MKLGPU_BACKEND=False            \ # MKLGPU backend is not supported by AdaptiveCpp
           -DENABLE_<BACKEND_NAME>_BACKEND=True     \ # Enable backend(s) (optional)
           -DENABLE_<BACKEND_NAME_2>_BACKEND=True   \ # Multiple backends can be enabled at once.

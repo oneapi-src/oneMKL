@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_TYPES_HPP_
-#define _ONEMKL_SPARSE_BLAS_TYPES_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_TYPES_HPP_
+#define _ONEMATH_SPARSE_BLAS_TYPES_HPP_
 
 #include "oneapi/math/types.hpp"
 #include "matrix_view.hpp"
@@ -69,4 +69,4 @@ enum class spsv_alg {
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_SPARSE_BLAS_TYPES_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_TYPES_HPP_

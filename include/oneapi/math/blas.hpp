@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BLAS_HPP_
-#define _ONEMKL_BLAS_HPP_
+#ifndef _ONEMATH_BLAS_HPP_
+#define _ONEMATH_BLAS_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -34,22 +34,22 @@
 #include "oneapi/math/detail/get_device_id.hpp"
 
 #include "oneapi/math/blas/detail/blas_loader.hpp"
-#ifdef ONEMKL_ENABLE_CUBLAS_BACKEND
+#ifdef ONEMATH_ENABLE_CUBLAS_BACKEND
 #include "oneapi/math/blas/detail/cublas/blas_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_ROCBLAS_BACKEND
+#ifdef ONEMATH_ENABLE_ROCBLAS_BACKEND
 #include "oneapi/math/blas/detail/rocblas/blas_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
 #include "oneapi/math/blas/detail/mklcpu/blas_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
 #include "oneapi/math/blas/detail/mklgpu/blas_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_NETLIB_BACKEND
+#ifdef ONEMATH_ENABLE_NETLIB_BACKEND
 #include "oneapi/math/blas/detail/netlib/blas_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_PORTBLAS_BACKEND
+#ifdef ONEMATH_ENABLE_PORTBLAS_BACKEND
 #include "oneapi/math/blas/detail/portblas/blas_ct.hpp"
 #endif
 
@@ -70,4 +70,4 @@ namespace row_major {
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_BLAS_LOADER_HPP_
+#endif //_ONEMATH_BLAS_LOADER_HPP_

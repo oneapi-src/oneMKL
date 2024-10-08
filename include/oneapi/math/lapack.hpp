@@ -21,16 +21,16 @@
 
 #include "oneapi/math/detail/config.hpp"
 
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
 #include "oneapi/math/lapack/detail/mklcpu/lapack_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
 #include "oneapi/math/lapack/detail/mklgpu/lapack_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_CUSOLVER_BACKEND
+#ifdef ONEMATH_ENABLE_CUSOLVER_BACKEND
 #include "oneapi/math/lapack/detail/cusolver/lapack_ct.hpp"
 #endif
-#ifdef ONEMKL_ENABLE_ROCSOLVER_BACKEND
+#ifdef ONEMATH_ENABLE_ROCSOLVER_BACKEND
 #include "oneapi/math/lapack/detail/rocsolver/lapack_ct.hpp"
 #endif
 

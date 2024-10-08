@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef ONEMKL_COMPUTE_OUT_OF_PLACE_REAL_REAL_HPP
-#define ONEMKL_COMPUTE_OUT_OF_PLACE_REAL_REAL_HPP
+#ifndef ONEMATH_COMPUTE_OUT_OF_PLACE_REAL_REAL_HPP
+#define ONEMATH_COMPUTE_OUT_OF_PLACE_REAL_REAL_HPP
 
 #include "compute_tester.hpp"
 
@@ -157,4 +157,4 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
     return !::testing::Test::HasFailure();
 }
 
-#endif //ONEMKL_COMPUTE_OUT_OF_PLACE_REAL_REAL_HPP
+#endif //ONEMATH_COMPUTE_OUT_OF_PLACE_REAL_REAL_HPP

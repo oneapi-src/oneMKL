@@ -58,8 +58,8 @@
  * so.
  ******************************************************************************/
 
-#ifndef _ONEMKL_RNG_ROCRAND_HPP_
-#define _ONEMKL_RNG_ROCRAND_HPP_
+#ifndef _ONEMATH_RNG_ROCRAND_HPP_
+#define _ONEMATH_RNG_ROCRAND_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -76,16 +76,16 @@ namespace mkl {
 namespace rng {
 namespace rocrand {
 
-ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
+ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
                                                                           std::uint64_t seed);
 
-ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
+ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_philox4x32x10(
     sycl::queue queue, std::initializer_list<std::uint64_t> seed);
 
-ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
+ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
                                                                      std::uint32_t seed);
 
-ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(
+ONEMATH_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(
     sycl::queue queue, std::initializer_list<std::uint32_t> seed);
 
 } // namespace rocrand
@@ -93,4 +93,4 @@ ONEMKL_EXPORT oneapi::mkl::rng::detail::engine_impl* create_mrg32k3a(
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_RNG_ROCRAND_HPP_
+#endif //_ONEMATH_RNG_ROCRAND_HPP_

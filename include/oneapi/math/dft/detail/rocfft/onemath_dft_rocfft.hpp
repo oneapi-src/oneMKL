@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_ROCFFT_HPP_
-#define _ONEMKL_DFT_ROCFFT_HPP_
+#ifndef _ONEMATH_DFT_ROCFFT_HPP_
+#define _ONEMATH_DFT_ROCFFT_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -35,4 +35,4 @@ namespace oneapi::mkl::dft::rocfft {
 
 } // namespace oneapi::mkl::dft::rocfft
 
-#endif // _ONEMKL_DFT_ROCFFT_HPP_
+#endif // _ONEMATH_DFT_ROCFFT_HPP_

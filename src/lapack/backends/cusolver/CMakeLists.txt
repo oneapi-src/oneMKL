@@ -23,7 +23,7 @@ find_package(cuSOLVER REQUIRED)
 find_package(cuBLAS REQUIRED)
 set(SOURCES     cusolver_lapack.cpp
                 cusolver_batch.cpp
-                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:cusolver_scope_handle.cpp >
+                $<$<STREQUAL:${ONEMATH_SYCL_IMPLEMENTATION},dpc++>:cusolver_scope_handle.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: cusolver_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
@@ -35,13 +35,13 @@ target_include_directories(${LIB_OBJ}
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/blas/backends/cublas
           ${CMAKE_BINARY_DIR}/bin
-          ${ONEMKL_GENERATED_INCLUDE_PATH}
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
 )
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMATH_BUILD_COPT})
 target_link_libraries(${LIB_OBJ} 
-  PUBLIC ONEMKL::SYCL::SYCL 
-         ONEMKL::cuSOLVER::cuSOLVER
-         ONEMKL::cuBLAS::cuBLAS)
+  PUBLIC ONEMATH::SYCL::SYCL 
+         ONEMATH::cuSOLVER::cuSOLVER
+         ONEMATH::cuBLAS::cuBLAS)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)

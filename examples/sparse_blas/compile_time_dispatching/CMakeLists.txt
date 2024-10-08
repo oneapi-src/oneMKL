@@ -36,7 +36,7 @@ foreach(backend ${SPARSE_BLAS_BACKENDS})
   )
 
   add_dependencies(${EXAMPLE_NAME} onemath_sparse_blas_${backend})
-  target_link_libraries(${EXAMPLE_NAME} PRIVATE ONEMKL::SYCL::SYCL onemath_sparse_blas_${backend})
+  target_link_libraries(${EXAMPLE_NAME} PRIVATE ONEMATH::SYCL::SYCL onemath_sparse_blas_${backend})
 
   # Register example as ctest
   add_test(NAME sparse_blas/EXAMPLE/CT/sparse_blas_spmv_usm_${backend} COMMAND ${EXAMPLE_NAME})

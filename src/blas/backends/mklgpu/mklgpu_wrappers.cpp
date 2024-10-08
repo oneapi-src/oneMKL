@@ -22,7 +22,7 @@
 
 #define WRAPPER_VERSION 1
 
-extern "C" ONEMKL_EXPORT blas_function_table_t mkl_blas_table = {
+extern "C" ONEMATH_EXPORT blas_function_table_t mkl_blas_table = {
     WRAPPER_VERSION,
 #define BACKEND mklgpu
 #define MAJOR   column_major

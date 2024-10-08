@@ -49,7 +49,7 @@ cufftHandle get_bwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
 
 //In-place transform
 template <typename descriptor_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<fwd<descriptor_type>, 1> &inout) {
     const std::string func_name = "compute_backward(desc, inout)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
@@ -86,7 +86,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
+ONEMATH_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
                                     sycl::buffer<scalar<descriptor_type>, 1> &) {
     throw oneapi::mkl::unimplemented("DFT", "compute_backward(desc, inout_re, inout_im)",
                                      "cuFFT does not support real-real complex storage.");
@@ -94,7 +94,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descr
 
 //Out-of-place transform
 template <typename descriptor_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
+ONEMATH_EXPORT void compute_backward(descriptor_type &desc,
                                     sycl::buffer<bwd<descriptor_type>, 1> &in,
                                     sycl::buffer<fwd<descriptor_type>, 1> &out) {
     const std::string func_name = "compute_backward(desc, in, out)";
@@ -137,7 +137,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
+ONEMATH_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
                                     sycl::buffer<scalar<descriptor_type>, 1> &,
                                     sycl::buffer<scalar<descriptor_type>, 1> &,
                                     sycl::buffer<scalar<descriptor_type>, 1> &) {
@@ -149,7 +149,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &, sycl::buffer<scalar<descr
 
 //In-place transform
 template <typename descriptor_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor_type> *inout,
+ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor_type> *inout,
                                            const std::vector<sycl::event> &dependencies) {
     const std::string func_name = "compute_backward(desc, inout, dependencies)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
@@ -185,7 +185,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, scalar<descriptor_type> *,
+ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &, scalar<descriptor_type> *,
                                            scalar<descriptor_type> *,
                                            const std::vector<sycl::event> &) {
     throw oneapi::mkl::unimplemented("DFT",
@@ -195,7 +195,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, scalar<descriptor_
 
 //Out-of-place transform
 template <typename descriptor_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor_type> *in,
+ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor_type> *in,
                                            fwd<descriptor_type> *out,
                                            const std::vector<sycl::event> &dependencies) {
     const std::string func_name = "compute_backward(desc, in, out, dependencies)";
@@ -231,7 +231,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &, scalar<descriptor_type> *,
+ONEMATH_EXPORT sycl::event compute_backward(descriptor_type &, scalar<descriptor_type> *,
                                            scalar<descriptor_type> *, scalar<descriptor_type> *,
                                            scalar<descriptor_type> *,
                                            const std::vector<sycl::event> &) {

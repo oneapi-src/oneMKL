@@ -29,15 +29,15 @@ target_include_directories(onemath_lapack
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
-          ${ONEMKL_GENERATED_INCLUDE_PATH}
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
           $<TARGET_FILE_DIR:onemath>
 )
 
-target_compile_options(onemath_lapack PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(onemath_lapack PRIVATE ${ONEMATH_BUILD_COPT})
 
 set_target_properties(onemath_lapack PROPERTIES
   POSITION_INDEPENDENT_CODE ON
 )
-target_link_libraries(onemath_lapack PUBLIC ONEMKL::SYCL::SYCL)
+target_link_libraries(onemath_lapack PUBLIC ONEMATH::SYCL::SYCL)
 endif()
 

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BLAS_LOADER_HPP_
-#define _ONEMKL_BLAS_LOADER_HPP_
+#ifndef _ONEMATH_BLAS_LOADER_HPP_
+#define _ONEMATH_BLAS_LOADER_HPP_
 
 #include <complex>
 #include <cstdint>
@@ -54,4 +54,4 @@ namespace detail {
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_BLAS_LOADER_HPP_
+#endif //_ONEMATH_BLAS_LOADER_HPP_

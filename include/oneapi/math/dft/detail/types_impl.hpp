@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DETAIL_TYPES_IMPL_HPP_
-#define _ONEMKL_DETAIL_TYPES_IMPL_HPP_
+#ifndef _ONEMATH_DETAIL_TYPES_IMPL_HPP_
+#define _ONEMATH_DETAIL_TYPES_IMPL_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -231,4 +231,4 @@ public:
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_DETAIL_TYPES_IMPL_HPP_
+#endif //_ONEMATH_DETAIL_TYPES_IMPL_HPP_

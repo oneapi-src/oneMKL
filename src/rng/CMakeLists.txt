@@ -29,11 +29,11 @@ target_include_directories(onemath_rng
           ${PROJECT_SOURCE_DIR}/src
           ${PROJECT_SOURCE_DIR}/src/include
           ${CMAKE_BINARY_DIR}/bin
-          ${ONEMKL_GENERATED_INCLUDE_PATH}
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
           $<TARGET_FILE_DIR:onemath>
 )
 
-target_compile_options(onemath_rng PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(onemath_rng PRIVATE ${ONEMATH_BUILD_COPT})
 
 set_target_properties(onemath_rng PROPERTIES
   POSITION_INDEPENDENT_CODE ON
@@ -41,7 +41,7 @@ set_target_properties(onemath_rng PROPERTIES
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET onemath_rng SOURCES rng_loader.cpp)
 else()
-  target_link_libraries(onemath_rng PUBLIC ONEMKL::SYCL::SYCL)
+  target_link_libraries(onemath_rng PUBLIC ONEMATH::SYCL::SYCL)
 endif()
 
 endif()

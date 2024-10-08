@@ -35,11 +35,11 @@ foreach(dft_ct_source ${DFT_CT_SOURCES})
 
   if(domain STREQUAL "dft" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUFFT_BACKEND)
     add_dependencies(${EXAMPLE_NAME} onemath_${domain}_mklcpu onemath_${domain}_cufft)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_mklcpu onemath_${domain}_cufft)
+    list(APPEND ONEMATH_LIBRARIES_${domain} onemath_${domain}_mklcpu onemath_${domain}_cufft)
   endif()
 
   target_link_libraries(${EXAMPLE_NAME} PUBLIC
-    ${ONEMKL_LIBRARIES_${domain}}
+    ${ONEMATH_LIBRARIES_${domain}}
     onemath_warnings
   )
 

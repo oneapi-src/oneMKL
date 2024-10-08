@@ -16,8 +16,8 @@
 *  limitations under the License.
 *
 **************************************************************************/
-#ifndef _ONEMKL_BLAS_CUBLAS_HPP_
-#define _ONEMKL_BLAS_CUBLAS_HPP_
+#ifndef _ONEMATH_BLAS_CUBLAS_HPP_
+#define _ONEMATH_BLAS_CUBLAS_HPP_
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
@@ -52,4 +52,4 @@ namespace row_major {
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_BLAS_CUBLAS_HPP_
+#endif //_ONEMATH_BLAS_CUBLAS_HPP_

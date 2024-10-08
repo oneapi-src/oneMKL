@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_RNG_PREDICATES_HPP_
-#define _ONEMKL_RNG_PREDICATES_HPP_
+#ifndef _ONEMATH_RNG_PREDICATES_HPP_
+#define _ONEMATH_RNG_PREDICATES_HPP_
 
 #include <cstdint>
 #if __has_include(<sycl/sycl.hpp>)
@@ -39,7 +39,7 @@ namespace rng {
 template <typename Distr, typename Engine>
 inline void generate_precondition(const Distr& /*distr*/, Engine& /*engine*/, std::int64_t n,
                                   sycl::buffer<typename Distr::result_type, 1>& r) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     if (n < 0 || n > r.size()) {
         throw oneapi::mkl::invalid_argument("rng", "generate", "n");
     }
@@ -52,7 +52,7 @@ template <typename Distr, typename Engine>
 inline void generate_precondition(const Distr& /*distr*/, Engine& /*engine*/, std::int64_t n,
                                   typename Distr::result_type* r,
                                   const std::vector<sycl::event>& /*dependencies*/) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     if (n < 0) {
         throw oneapi::mkl::invalid_argument("rng", "generate", "n");
     }
@@ -66,4 +66,4 @@ inline void generate_precondition(const Distr& /*distr*/, Engine& /*engine*/, st
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_RNG_PREDICATES_HPP_
+#endif //_ONEMATH_RNG_PREDICATES_HPP_

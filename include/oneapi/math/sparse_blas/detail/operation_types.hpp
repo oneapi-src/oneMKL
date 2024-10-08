@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
-#define _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
+#define _ONEMATH_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
 
 namespace oneapi::mkl::sparse {
 
@@ -35,4 +35,4 @@ using spsv_descr_t = spsv_descr*;
 
 } // namespace oneapi::mkl::sparse
 
-#endif // _ONEMKL_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_DETAIL_OPERATION_TYPES_HPP_

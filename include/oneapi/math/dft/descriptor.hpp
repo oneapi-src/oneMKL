@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_DESCRIPTOR_HPP_
-#define _ONEMKL_DFT_DESCRIPTOR_HPP_
+#ifndef _ONEMATH_DFT_DESCRIPTOR_HPP_
+#define _ONEMATH_DFT_DESCRIPTOR_HPP_
 
 #include "detail/descriptor_impl.hpp"
 #include "types.hpp"
@@ -35,4 +35,4 @@ using descriptor = detail::descriptor<prec, dom>;
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_DFT_DESCRIPTOR_HPP_
+#endif // _ONEMATH_DFT_DESCRIPTOR_HPP_

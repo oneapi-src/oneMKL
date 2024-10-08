@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef ONEMKL_COMPUTE_TESTER_HPP
-#define ONEMKL_COMPUTE_TESTER_HPP
+#ifndef ONEMATH_COMPUTE_TESTER_HPP
+#define ONEMATH_COMPUTE_TESTER_HPP
 
 #include <algorithm>
 
@@ -151,4 +151,4 @@ struct DFT_Test {
     int test_out_of_place_real_real_USM();
 };
 
-#endif //ONEMKL_COMPUTE_TESTER_HPP
+#endif //ONEMATH_COMPUTE_TESTER_HPP

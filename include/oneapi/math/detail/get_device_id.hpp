@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_GET_DEVICE_ID_HPP_
-#define _ONEMKL_GET_DEVICE_ID_HPP_
+#ifndef _ONEMATH_GET_DEVICE_ID_HPP_
+#define _ONEMATH_GET_DEVICE_ID_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -70,4 +70,4 @@ inline oneapi::mkl::device get_device_id(sycl::queue &queue) {
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_GET_DEVICE_ID_HPP_
+#endif //_ONEMATH_GET_DEVICE_ID_HPP_

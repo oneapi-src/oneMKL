@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_RNG_DISTRIBUTIONS_HPP_
-#define _ONEMKL_RNG_DISTRIBUTIONS_HPP_
+#ifndef _ONEMATH_RNG_DISTRIBUTIONS_HPP_
+#define _ONEMATH_RNG_DISTRIBUTIONS_HPP_
 
 #include <cstdint>
 #include <limits>
@@ -370,4 +370,4 @@ public:
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_RNG_DISTRIBUTIONS_HPP_
+#endif //_ONEMATH_RNG_DISTRIBUTIONS_HPP_

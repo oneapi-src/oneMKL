@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_RNG_HPP_
-#define _ONEMKL_RNG_HPP_
+#ifndef _ONEMATH_RNG_HPP_
+#define _ONEMATH_RNG_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -38,4 +38,4 @@
 #include "oneapi/math/rng/distributions.hpp"
 #include "oneapi/math/rng/engines.hpp"
 
-#endif // _ONEMKL_RNG_HPP_
+#endif // _ONEMATH_RNG_HPP_

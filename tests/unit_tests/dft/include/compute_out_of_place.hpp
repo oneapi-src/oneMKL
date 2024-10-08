@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef ONEMKL_COMPUTE_OUT_OF_PLACE_HPP
-#define ONEMKL_COMPUTE_OUT_OF_PLACE_HPP
+#ifndef ONEMATH_COMPUTE_OUT_OF_PLACE_HPP
+#define ONEMATH_COMPUTE_OUT_OF_PLACE_HPP
 
 #include "compute_tester.hpp"
 #include <numeric>
@@ -187,4 +187,4 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
     return !::testing::Test::HasFailure();
 }
 
-#endif //ONEMKL_COMPUTE_OUT_OF_PLACE_HPP
+#endif //ONEMATH_COMPUTE_OUT_OF_PLACE_HPP

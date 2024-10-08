@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_PORTFFT_HPP_
-#define _ONEMKL_DFT_PORTFFT_HPP_
+#ifndef _ONEMATH_DFT_PORTFFT_HPP_
+#define _ONEMATH_DFT_PORTFFT_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -36,4 +36,4 @@ namespace oneapi::mkl::dft::portfft {
 
 } // namespace oneapi::mkl::dft::portfft
 
-#endif // _ONEMKL_DFT_PORTFFT_HPP_
+#endif // _ONEMATH_DFT_PORTFFT_HPP_

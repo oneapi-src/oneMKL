@@ -25,8 +25,8 @@ set(SOURCES cublas_level1.cpp
                 cublas_level3.cpp 
                 cublas_batch.cpp 
                 cublas_extensions.cpp 
-                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:cublas_scope_handle.cpp >
-                $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},hipsycl>:cublas_scope_handle_hipsycl.cpp >
+                $<$<STREQUAL:${ONEMATH_SYCL_IMPLEMENTATION},dpc++>:cublas_scope_handle.cpp >
+                $<$<STREQUAL:${ONEMATH_SYCL_IMPLEMENTATION},hipsycl>:cublas_scope_handle_hipsycl.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: cublas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
@@ -36,17 +36,17 @@ target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src/include
           ${PROJECT_SOURCE_DIR}/src
-          ${ONEMKL_GENERATED_INCLUDE_PATH}
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
 )
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMATH_BUILD_COPT})
 
-if(NOT ${ONEMKL_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
-    target_compile_options(ONEMKL::SYCL::SYCL INTERFACE
+if(NOT ${ONEMATH_SYCL_IMPLEMENTATION} STREQUAL "hipsycl")
+    target_compile_options(ONEMATH::SYCL::SYCL INTERFACE
           -fsycl-targets=nvptx64-nvidia-cuda -fsycl-unnamed-lambda)
-    target_link_options(ONEMKL::SYCL::SYCL INTERFACE
+    target_link_options(ONEMATH::SYCL::SYCL INTERFACE
           -fsycl-targets=nvptx64-nvidia-cuda)
 endif()
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ONEMKL::cuBLAS::cuBLAS)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMATH::SYCL::SYCL ONEMATH::cuBLAS::cuBLAS)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_11)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)

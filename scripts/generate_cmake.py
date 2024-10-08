@@ -84,7 +84,7 @@ add_library(${{LIB_OBJ}} OBJECT
 
 for f in file_list:
     if re.search('_dyn.c', f):
-        out_file.write("""  $<$<BOOL:${{ONEMKL_BUILD_SHARED_LIBS}}>: {filename}>
+        out_file.write("""  $<$<BOOL:${{ONEMATH_BUILD_SHARED_LIBS}}>: {filename}>
 """.format(filename=f))
     else:
         out_file.write("""  {filename}
@@ -99,7 +99,7 @@ target_include_directories(${{LIB_OBJ}}
 )
 
 target_link_libraries(${{LIB_OBJ}}
-    PUBLIC ONEMKL::SYCL::SYCL
+    PUBLIC ONEMATH::SYCL::SYCL
     # Add third party library to link with here
 )
 

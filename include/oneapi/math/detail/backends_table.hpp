@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKENDS_TABLE_HPP_
-#define _ONEMKL_BACKENDS_TABLE_HPP_
+#ifndef _ONEMATH_BACKENDS_TABLE_HPP_
+#define _ONEMATH_BACKENDS_TABLE_HPP_
 
 #include <string>
 #include <vector>
@@ -47,40 +47,40 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
     { domain::blas,
       { { device::x86cpu,
           {
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
               LIB_NAME("blas_mklcpu"),
 #endif
-#ifdef ONEMKL_ENABLE_NETLIB_BACKEND
+#ifdef ONEMATH_ENABLE_NETLIB_BACKEND
               LIB_NAME("blas_netlib"),
 #endif
-#ifdef ONEMKL_ENABLE_PORTBLAS_BACKEND_INTEL_CPU
+#ifdef ONEMATH_ENABLE_PORTBLAS_BACKEND_INTEL_CPU
               LIB_NAME("blas_portblas"),
 #endif
           } },
         { device::intelgpu,
           {
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
               LIB_NAME("blas_mklgpu"),
 #endif
-#ifdef ONEMKL_ENABLE_PORTBLAS_BACKEND_INTEL_GPU
+#ifdef ONEMATH_ENABLE_PORTBLAS_BACKEND_INTEL_GPU
               LIB_NAME("blas_portblas"),
 #endif
           } },
         { device::amdgpu,
           {
-#ifdef ONEMKL_ENABLE_ROCBLAS_BACKEND
+#ifdef ONEMATH_ENABLE_ROCBLAS_BACKEND
               LIB_NAME("blas_rocblas"),
 #endif
-#ifdef ONEMKL_ENABLE_PORTBLAS_BACKEND_AMD_GPU
+#ifdef ONEMATH_ENABLE_PORTBLAS_BACKEND_AMD_GPU
               LIB_NAME("blas_portblas"),
 #endif
           } },
         { device::nvidiagpu,
           {
-#ifdef ONEMKL_ENABLE_CUBLAS_BACKEND
+#ifdef ONEMATH_ENABLE_CUBLAS_BACKEND
               LIB_NAME("blas_cublas"),
 #endif
-#ifdef ONEMKL_ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU
+#ifdef ONEMATH_ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU
               LIB_NAME("blas_portblas"),
 #endif
           } },
@@ -94,37 +94,37 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
     { domain::dft,
       { { device::x86cpu,
           {
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
               LIB_NAME("dft_mklcpu")
 #endif
-#ifdef ONEMKL_ENABLE_PORTFFT_BACKEND
+#ifdef ONEMATH_ENABLE_PORTFFT_BACKEND
                   LIB_NAME("dft_portfft")
 #endif
           } },
         { device::intelgpu,
           {
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
               LIB_NAME("dft_mklgpu")
 #endif
-#ifdef ONEMKL_ENABLE_PORTFFT_BACKEND
+#ifdef ONEMATH_ENABLE_PORTFFT_BACKEND
                   LIB_NAME("dft_portfft")
 #endif
           } },
         { device::amdgpu,
           {
-#ifdef ONEMKL_ENABLE_ROCFFT_BACKEND
+#ifdef ONEMATH_ENABLE_ROCFFT_BACKEND
               LIB_NAME("dft_rocfft")
 #endif
-#ifdef ONEMKL_ENABLE_PORTFFT_BACKEND
+#ifdef ONEMATH_ENABLE_PORTFFT_BACKEND
                   LIB_NAME("dft_portfft")
 #endif
           } },
         { device::nvidiagpu,
           {
-#ifdef ONEMKL_ENABLE_CUFFT_BACKEND
+#ifdef ONEMATH_ENABLE_CUFFT_BACKEND
               LIB_NAME("dft_cufft")
 #endif
-#ifdef ONEMKL_ENABLE_PORTFFT_BACKEND
+#ifdef ONEMATH_ENABLE_PORTFFT_BACKEND
                   LIB_NAME("dft_portfft")
 #endif
           } },
@@ -138,25 +138,25 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
     { domain::lapack,
       { { device::x86cpu,
           {
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
               LIB_NAME("lapack_mklcpu")
 #endif
           } },
         { device::intelgpu,
           {
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
               LIB_NAME("lapack_mklgpu")
 #endif
           } },
         { device::amdgpu,
           {
-#ifdef ONEMKL_ENABLE_ROCSOLVER_BACKEND
+#ifdef ONEMATH_ENABLE_ROCSOLVER_BACKEND
               LIB_NAME("lapack_rocsolver")
 #endif
           } },
         { device::nvidiagpu,
           {
-#ifdef ONEMKL_ENABLE_CUSOLVER_BACKEND
+#ifdef ONEMATH_ENABLE_CUSOLVER_BACKEND
               LIB_NAME("lapack_cusolver")
 #endif
           } } } },
@@ -164,25 +164,25 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
     { domain::rng,
       { { device::x86cpu,
           {
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
               LIB_NAME("rng_mklcpu")
 #endif
           } },
         { device::intelgpu,
           {
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
               LIB_NAME("rng_mklgpu")
 #endif
           } },
         { device::amdgpu,
           {
-#ifdef ONEMKL_ENABLE_ROCRAND_BACKEND
+#ifdef ONEMATH_ENABLE_ROCRAND_BACKEND
               LIB_NAME("rng_rocrand")
 #endif
           } },
         { device::nvidiagpu,
           {
-#ifdef ONEMKL_ENABLE_CURAND_BACKEND
+#ifdef ONEMATH_ENABLE_CURAND_BACKEND
               LIB_NAME("rng_curand")
 #endif
           } } } },
@@ -190,13 +190,13 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
     { domain::sparse_blas,
       { { device::x86cpu,
           {
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
               LIB_NAME("sparse_blas_mklcpu")
 #endif
           } },
         { device::intelgpu,
           {
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
               LIB_NAME("sparse_blas_mklgpu")
 #endif
           } } } },
@@ -212,4 +212,4 @@ static std::map<domain, const char*> table_names = { { domain::blas, "mkl_blas_t
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_BACKENDS_TABLE_HPP_
+#endif //_ONEMATH_BACKENDS_TABLE_HPP_

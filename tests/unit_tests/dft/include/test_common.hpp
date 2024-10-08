@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef ONEMKL_TEST_COMMON_HPP
-#define ONEMKL_TEST_COMMON_HPP
+#ifndef ONEMATH_TEST_COMMON_HPP
+#define ONEMATH_TEST_COMMON_HPP
 
 #include <cstdint>
 #include <cstdlib>
@@ -388,4 +388,4 @@ public:
     }
 };
 
-#endif //ONEMKL_TEST_COMMON_HPP
+#endif //ONEMATH_TEST_COMMON_HPP

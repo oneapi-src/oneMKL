@@ -27,7 +27,7 @@ find_package(Threads REQUIRED)
 
 set(SOURCES rocsolver_lapack.cpp
 		rocsolver_batch.cpp
-	        $<$<STREQUAL:${ONEMKL_SYCL_IMPLEMENTATION},dpc++>:rocsolver_scope_handle.cpp>
+	        $<$<STREQUAL:${ONEMATH_SYCL_IMPLEMENTATION},dpc++>:rocsolver_scope_handle.cpp>
           $<$<BOOL:${BUILD_SHARED_LIBS}>: rocsolver_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
@@ -38,11 +38,11 @@ target_include_directories(${LIB_OBJ}
           ${PROJECT_SOURCE_DIR}/src/include
           ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
-          ${ONEMKL_GENERATED_INCLUDE_PATH}
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
 )
-target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMATH_BUILD_COPT})
 target_link_libraries(${LIB_OBJ} PRIVATE roc::rocsolver hip::host Threads::Threads)
-target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL)
+target_link_libraries(${LIB_OBJ} PUBLIC ONEMATH::SYCL::SYCL)
 target_compile_features(${LIB_OBJ} PUBLIC cxx_std_17)
 set_target_properties(${LIB_OBJ} PROPERTIES
   POSITION_INDEPENDENT_CODE ON)

@@ -72,7 +72,7 @@ foreach(blas_rt_source ${BLAS_RT_SOURCES})
 
   target_link_libraries(example_${domain}_${blas_rt_source} PUBLIC
       onemath
-      ONEMKL::SYCL::SYCL
+      ONEMATH::SYCL::SYCL
       ${CMAKE_DL_LIBS}
   )
 

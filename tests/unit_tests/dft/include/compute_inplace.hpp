@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef ONEMKL_COMPUTE_INPLACE_HPP
-#define ONEMKL_COMPUTE_INPLACE_HPP
+#ifndef ONEMATH_COMPUTE_INPLACE_HPP
+#define ONEMATH_COMPUTE_INPLACE_HPP
 
 #include "compute_tester.hpp"
 #include <oneapi/math/exceptions.hpp>
@@ -211,4 +211,4 @@ int DFT_Test<precision, domain>::test_in_place_USM() {
     return !::testing::Test::HasFailure();
 }
 
-#endif //ONEMKL_COMPUTE_INPLACE_HPP
+#endif //ONEMATH_COMPUTE_INPLACE_HPP

@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_
-#define _ONEMKL_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_
+#define _ONEMATH_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_
 
 #include "oneapi/math/detail/backends.hpp"
 #include "oneapi/math/detail/backend_selector.hpp"
@@ -37,4 +37,4 @@ namespace sparse {
 } //namespace mkl
 } //namespace oneapi
 
-#endif // _ONEMKL_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_DETAIL_MKLCPU_SPARSE_BLAS_CT_HPP_

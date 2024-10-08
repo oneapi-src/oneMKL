@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
-#define _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
+#ifndef _ONEMATH_SPARSE_BLAS_DETAIL_HANDLES_HPP_
+#define _ONEMATH_SPARSE_BLAS_DETAIL_HANDLES_HPP_
 
 namespace oneapi::mkl::sparse {
 
@@ -35,4 +35,4 @@ using matrix_handle_t = matrix_handle*;
 
 } // namespace oneapi::mkl::sparse
 
-#endif // _ONEMKL_SPARSE_BLAS_DETAIL_HANDLES_HPP_
+#endif // _ONEMATH_SPARSE_BLAS_DETAIL_HANDLES_HPP_

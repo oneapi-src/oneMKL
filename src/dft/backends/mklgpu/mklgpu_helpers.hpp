@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_SRC_MKLGPU_HELPERS_HPP_
-#define _ONEMKL_DFT_SRC_MKLGPU_HELPERS_HPP_
+#ifndef _ONEMATH_DFT_SRC_MKLGPU_HELPERS_HPP_
+#define _ONEMATH_DFT_SRC_MKLGPU_HELPERS_HPP_
 
 #include "oneapi/math/detail/exceptions.hpp"
 #include "oneapi/math/dft/detail/types_impl.hpp"
@@ -176,4 +176,4 @@ to_mklgpu_config_value<dft::detail::config_param::WORKSPACE_PLACEMENT>(
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_DFT_SRC_MKLGPU_HELPERS_HPP_
+#endif // _ONEMATH_DFT_SRC_MKLGPU_HELPERS_HPP_

@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef ONEMKL_COMPUTE_INPLACE_REAL_REAL_HPP
-#define ONEMKL_COMPUTE_INPLACE_REAL_REAL_HPP
+#ifndef ONEMATH_COMPUTE_INPLACE_REAL_REAL_HPP
+#define ONEMATH_COMPUTE_INPLACE_REAL_REAL_HPP
 
 #include "compute_tester.hpp"
 
@@ -149,4 +149,4 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
     }
 }
 
-#endif //ONEMKL_COMPUTE_INPLACE_REAL_REAL_HPP
+#endif //ONEMATH_COMPUTE_INPLACE_REAL_REAL_HPP

@@ -17,24 +17,24 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef ONEMKL_EXPORT_H
-#define ONEMKL_EXPORT_H
+#ifndef ONEMATH_EXPORT_H
+#define ONEMATH_EXPORT_H
 
 #include "oneapi/math/detail/config.hpp"
 
-#if !defined(ONEMKL_BUILD_SHARED_LIBS) || !defined(_WIN64)
-#define ONEMKL_EXPORT
-#define ONEMKL_NO_EXPORT
+#if !defined(ONEMATH_BUILD_SHARED_LIBS) || !defined(_WIN64)
+#define ONEMATH_EXPORT
+#define ONEMATH_NO_EXPORT
 #else
-#ifndef ONEMKL_EXPORT
+#ifndef ONEMATH_EXPORT
 #ifdef onemath_EXPORTS
 /* We are building this library */
-#define ONEMKL_EXPORT __declspec(dllexport)
+#define ONEMATH_EXPORT __declspec(dllexport)
 #else
 /* We are using this library */
-#define ONEMKL_EXPORT __declspec(dllimport)
+#define ONEMATH_EXPORT __declspec(dllimport)
 #endif
 #endif
 #endif
 
-#endif /* ONEMKL_EXPORT_H */
+#endif /* ONEMATH_EXPORT_H */

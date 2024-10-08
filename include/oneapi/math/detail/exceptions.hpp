@@ -19,8 +19,8 @@
 
 // These are oneAPI Math Kernel Library (oneMKL) Interfaces specific exceptions
 
-#ifndef _ONEMKL_DETAIL_EXCEPTIONS_HPP_
-#define _ONEMKL_DETAIL_EXCEPTIONS_HPP_
+#ifndef _ONEMATH_DETAIL_EXCEPTIONS_HPP_
+#define _ONEMATH_DETAIL_EXCEPTIONS_HPP_
 
 #include <exception>
 #include <string>
@@ -56,4 +56,4 @@ public:
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_DETAIL_EXCEPTIONS_HPP_
+#endif // _ONEMATH_DETAIL_EXCEPTIONS_HPP_

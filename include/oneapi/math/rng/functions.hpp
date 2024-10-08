@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_RNG_FUNCTIONS_HPP_
-#define _ONEMKL_RNG_FUNCTIONS_HPP_
+#ifndef _ONEMATH_RNG_FUNCTIONS_HPP_
+#define _ONEMATH_RNG_FUNCTIONS_HPP_
 
 #include <cstdint>
 #if __has_include(<sycl/sycl.hpp>)
@@ -117,4 +117,4 @@ static inline void leapfrog(Engine& engine, std::uint64_t idx, std::uint64_t str
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_RNG_FUNCTIONS_HPP_
+#endif //_ONEMATH_RNG_FUNCTIONS_HPP_

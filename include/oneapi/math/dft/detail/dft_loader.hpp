@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_LOADER_HPP_
-#define _ONEMKL_DFT_LOADER_HPP_
+#ifndef _ONEMATH_DFT_LOADER_HPP_
+#define _ONEMATH_DFT_LOADER_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -41,7 +41,7 @@ template <precision prec, domain dom>
 class descriptor;
 
 template <precision prec, domain dom>
-ONEMKL_EXPORT commit_impl<prec, dom>* create_commit(const descriptor<prec, dom>& desc,
+ONEMATH_EXPORT commit_impl<prec, dom>* create_commit(const descriptor<prec, dom>& desc,
                                                     sycl::queue& queue);
 
 } // namespace detail
@@ -49,4 +49,4 @@ ONEMKL_EXPORT commit_impl<prec, dom>* create_commit(const descriptor<prec, dom>&
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_DFT_LOADER_HPP_
+#endif //_ONEMATH_DFT_LOADER_HPP_

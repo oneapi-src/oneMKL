@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKENDS_HPP_
-#define _ONEMKL_BACKENDS_HPP_
+#ifndef _ONEMATH_BACKENDS_HPP_
+#define _ONEMATH_BACKENDS_HPP_
 
 #include <map>
 #include <string>
@@ -58,4 +58,4 @@ static backendmap backend_map = {
 } //namespace mkl
 } //namespace oneapi
 
-#endif //_ONEMKL_BACKENDS_HPP_
+#endif //_ONEMATH_BACKENDS_HPP_

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKEND_SELECTOR_HPP_
-#define _ONEMKL_BACKEND_SELECTOR_HPP_
+#ifndef _ONEMATH_BACKEND_SELECTOR_HPP_
+#define _ONEMATH_BACKEND_SELECTOR_HPP_
 
 #include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/detail/backends.hpp"
@@ -44,4 +44,4 @@ private:
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_BACKEND_SELECTOR_HPP_
+#endif //_ONEMATH_BACKEND_SELECTOR_HPP_

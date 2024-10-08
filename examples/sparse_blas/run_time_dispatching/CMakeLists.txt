@@ -52,7 +52,7 @@ foreach(sparse_blas_rt_sources ${SPARSE_BLAS_RT_SOURCES})
 
   target_link_libraries(example_${sparse_blas_rt_sources}
       PUBLIC onemath
-      PUBLIC ONEMKL::SYCL::SYCL
+      PUBLIC ONEMATH::SYCL::SYCL
       PUBLIC ${CMAKE_DL_LIBS}
       PRIVATE onemath_warnings
   )

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_DETAIL_DESCRIPTOR_IMPL_HPP_
-#define _ONEMKL_DFT_DETAIL_DESCRIPTOR_IMPL_HPP_
+#ifndef _ONEMATH_DFT_DETAIL_DESCRIPTOR_IMPL_HPP_
+#define _ONEMATH_DFT_DETAIL_DESCRIPTOR_IMPL_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -71,23 +71,23 @@ public:
 
     void commit(sycl::queue& queue);
 
-#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLCPU_BACKEND
     void commit(backend_selector<backend::mklcpu> selector);
 #endif
 
-#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
+#ifdef ONEMATH_ENABLE_MKLGPU_BACKEND
     void commit(backend_selector<backend::mklgpu> selector);
 #endif
 
-#ifdef ONEMKL_ENABLE_CUFFT_BACKEND
+#ifdef ONEMATH_ENABLE_CUFFT_BACKEND
     void commit(backend_selector<backend::cufft> selector);
 #endif
 
-#ifdef ONEMKL_ENABLE_ROCFFT_BACKEND
+#ifdef ONEMATH_ENABLE_ROCFFT_BACKEND
     void commit(backend_selector<backend::rocfft> selector);
 #endif
 
-#ifdef ONEMKL_ENABLE_PORTFFT_BACKEND
+#ifdef ONEMATH_ENABLE_PORTFFT_BACKEND
     void commit(backend_selector<backend::portfft> selector);
 #endif
 
@@ -121,4 +121,4 @@ inline commit_impl<prec, dom>* get_commit(descriptor<prec, dom>& desc) {
 } // namespace mkl
 } // namespace oneapi
 
-#endif // _ONEMKL_DFT_DETAIL_DESCRIPTOR_IMPL_HPP_
+#endif // _ONEMATH_DFT_DETAIL_DESCRIPTOR_IMPL_HPP_

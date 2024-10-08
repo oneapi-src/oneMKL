@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_BACKEND_SELECTOR_PREDICATES_HPP_
-#define _ONEMKL_BACKEND_SELECTOR_PREDICATES_HPP_
+#ifndef _ONEMATH_BACKEND_SELECTOR_PREDICATES_HPP_
+#define _ONEMATH_BACKEND_SELECTOR_PREDICATES_HPP_
 
 #include <cstdint>
 #if __has_include(<sycl/sycl.hpp>)
@@ -39,7 +39,7 @@ inline void backend_selector_precondition(sycl::queue&) {}
 
 template <>
 inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
 #ifdef __HIPSYCL__
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
 #else
@@ -54,7 +54,7 @@ inline void backend_selector_precondition<backend::netlib>(sycl::queue& queue) {
 
 template <>
 inline void backend_selector_precondition<backend::mklcpu>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
 #ifdef __HIPSYCL__
     if (!(queue.is_host() || queue.get_device().is_cpu())) {
 #else
@@ -69,7 +69,7 @@ inline void backend_selector_precondition<backend::mklcpu>(sycl::queue& queue) {
 
 template <>
 inline void backend_selector_precondition<backend::mklgpu>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == INTEL_ID)) {
@@ -82,7 +82,7 @@ inline void backend_selector_precondition<backend::mklgpu>(sycl::queue& queue) {
 
 template <>
 inline void backend_selector_precondition<backend::cublas>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == NVIDIA_ID)) {
@@ -95,7 +95,7 @@ inline void backend_selector_precondition<backend::cublas>(sycl::queue& queue) {
 
 template <>
 inline void backend_selector_precondition<backend::cusolver>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == NVIDIA_ID)) {
@@ -108,7 +108,7 @@ inline void backend_selector_precondition<backend::cusolver>(sycl::queue& queue)
 
 template <>
 inline void backend_selector_precondition<backend::rocblas>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
@@ -121,7 +121,7 @@ inline void backend_selector_precondition<backend::rocblas>(sycl::queue& queue) 
 
 template <>
 inline void backend_selector_precondition<backend::rocrand>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
@@ -134,7 +134,7 @@ inline void backend_selector_precondition<backend::rocrand>(sycl::queue& queue) 
 
 template <>
 inline void backend_selector_precondition<backend::rocsolver>(sycl::queue& queue) {
-#ifndef ONEMKL_DISABLE_PREDICATES
+#ifndef ONEMATH_DISABLE_PREDICATES
     unsigned int vendor_id =
         static_cast<unsigned int>(queue.get_device().get_info<sycl::info::device::vendor_id>());
     if (!(queue.get_device().is_gpu() && vendor_id == AMD_ID)) {
@@ -147,4 +147,4 @@ inline void backend_selector_precondition<backend::rocsolver>(sycl::queue& queue
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_BACKEND_SELECTOR_PREDICATES_HPP_
+#endif //_ONEMATH_BACKEND_SELECTOR_PREDICATES_HPP_

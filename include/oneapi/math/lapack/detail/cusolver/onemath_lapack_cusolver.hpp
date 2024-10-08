@@ -16,8 +16,8 @@
 *  limitations under the License.
 *
 **************************************************************************/
-#ifndef _ONEMKL_LAPACK_CUSOLVER_HPP_
-#define _ONEMKL_LAPACK_CUSOLVER_HPP_
+#ifndef _ONEMATH_LAPACK_CUSOLVER_HPP_
+#define _ONEMATH_LAPACK_CUSOLVER_HPP_
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
 #else
@@ -42,4 +42,4 @@ namespace cusolver {
 } // namespace mkl
 } // namespace oneapi
 
-#endif //_ONEMKL_LAPACK_CUSOLVER_HPP_
+#endif //_ONEMATH_LAPACK_CUSOLVER_HPP_
