@@ -42,7 +42,7 @@ namespace netlib {
 typedef enum { CblasFixOffset = 101, CblasColOffset = 102, CblasRowOffset = 103 } CBLAS_OFFSET;
 
 /**
- * Helper methods for converting between onemath types and their BLAS
+ * Helper methods for converting between onemath types and their CBLAS
  * equivalents.
  */
 

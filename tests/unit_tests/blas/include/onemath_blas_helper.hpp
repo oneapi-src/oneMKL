@@ -27,7 +27,7 @@
 typedef enum { CblasRowOffset = 101, CblasColOffset = 102, CblasFixOffset = 103 } CBLAS_OFFSET;
 
 /**
- * Helper methods for converting between onemath types and their BLAS
+ * Helper methods for converting between onemath types and their CBLAS
  * equivalents.
  */
 
