@@ -43,7 +43,8 @@
 #include <oneapi/mkl/dft.hpp>
 #endif
 
-// MKL 2024.1 deprecates input/output strides.
+// Intel oneMKL 2024.1 deprecates input/output strides.
+#include "mkl_version.h"
 #if INTEL_MKL_VERSION < 20240001
 #error MKLGPU requires oneMath 2024.1 or later
 #endif
