@@ -1,11 +1,11 @@
 ..
   Copyright 2020-2024 Intel Corporation
 
-.. _onemkl:
+.. _onemath:
 
-*****************
-oneMKL Interfaces
-*****************
+*******
+oneMath
+*******
 
 Contents
 ========

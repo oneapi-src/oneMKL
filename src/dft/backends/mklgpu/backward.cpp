@@ -25,7 +25,7 @@
 
 #include "oneapi/math/exceptions.hpp"
 
-#include "oneapi/math/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
+#include "oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp"
 #include "oneapi/math/dft/detail/descriptor_impl.hpp"
 
 #include "mklgpu_helpers.hpp"

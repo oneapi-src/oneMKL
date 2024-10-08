@@ -30,7 +30,7 @@
 #include "oneapi/math/dft/detail/commit_impl.hpp"
 #include "oneapi/math/dft/detail/types_impl.hpp"
 #include "oneapi/math/dft/detail/descriptor_impl.hpp"
-#include "oneapi/math/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
+#include "oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp"
 
 #include "dft/backends/mklgpu/mklgpu_helpers.hpp"
 #include "../stride_helper.hpp"
@@ -170,7 +170,7 @@ private:
 
     void set_value(mklgpu_descriptor_t& desc, const dft::detail::dft_values<prec, dom>& config,
                    bool assume_fwd_dft, dft::detail::stride_api stride_choice) {
-        using onemkl_param = dft::detail::config_param;
+        using onemath_param = dft::detail::config_param;
         using backend_param = dft::config_param;
 
         // The following are read-only:
@@ -180,15 +180,15 @@ private:
         desc.set_value(backend_param::BACKWARD_SCALE, config.bwd_scale);
         desc.set_value(backend_param::NUMBER_OF_TRANSFORMS, config.number_of_transforms);
         desc.set_value(backend_param::COMPLEX_STORAGE,
-                       to_mklgpu<onemkl_param::COMPLEX_STORAGE>(config.complex_storage));
+                       to_mklgpu<onemath_param::COMPLEX_STORAGE>(config.complex_storage));
         if (config.real_storage != dft::detail::config_value::REAL_REAL) {
             throw mkl::invalid_argument("dft/backends/mklgpu", "commit",
                                         "MKLGPU only supports real-real real storage.");
         }
         desc.set_value(backend_param::CONJUGATE_EVEN_STORAGE,
-                       to_mklgpu<onemkl_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
+                       to_mklgpu<onemath_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
         desc.set_value(backend_param::PLACEMENT,
-                       to_mklgpu<onemkl_param::PLACEMENT>(config.placement));
+                       to_mklgpu<onemath_param::PLACEMENT>(config.placement));
 
         if (stride_choice == dft::detail::stride_api::FB_STRIDES) {
             if (config.fwd_strides[0] != 0 || config.fwd_strides[0] != 0) {
@@ -217,7 +217,7 @@ private:
         if (config.workspace_placement == dft::detail::config_value::WORKSPACE_EXTERNAL) {
             // Setting WORKSPACE_INTERNAL (default) causes FFT_INVALID_DESCRIPTOR.
             desc.set_value(backend_param::WORKSPACE,
-                           to_mklgpu_config_value<onemkl_param::WORKSPACE_PLACEMENT>(
+                           to_mklgpu_config_value<onemath_param::WORKSPACE_PLACEMENT>(
                                config.workspace_placement));
         }
         // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:

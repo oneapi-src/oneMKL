@@ -19,7 +19,7 @@
 *
 **************************************************************************/
 #include "blas/function_table.hpp"
-#include "oneapi/math/blas/detail/rocblas/onemkl_blas_rocblas.hpp"
+#include "oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp"
 
 #define WRAPPER_VERSION 1
 

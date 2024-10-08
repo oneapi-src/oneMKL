@@ -72,7 +72,7 @@ out_file.write("""#
 # generated file
 #
 
-set(LIB_NAME onemkl_blas_{libname})
+set(LIB_NAME onemath_blas_{libname})
 set(LIB_OBJ ${{LIB_NAME}}_obj)
 
 # Add third-party library

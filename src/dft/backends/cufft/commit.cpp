@@ -31,7 +31,7 @@
 
 #include "oneapi/math/dft/detail/commit_impl.hpp"
 #include "oneapi/math/dft/detail/descriptor_impl.hpp"
-#include "oneapi/math/dft/detail/cufft/onemkl_dft_cufft.hpp"
+#include "oneapi/math/dft/detail/cufft/onemath_dft_cufft.hpp"
 #include "oneapi/math/dft/types.hpp"
 
 #include "../stride_helper.hpp"

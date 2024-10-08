@@ -23,7 +23,7 @@
 #include "rocblas_task.hpp"
 
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/blas/detail/rocblas/onemkl_blas_rocblas.hpp"
+#include "oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -103,7 +103,7 @@ inline void omatcopy(Func func, sycl::queue &queue, transpose trans, int64_t m, 
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -183,7 +183,7 @@ inline void omatadd(Func func, sycl::queue &queue, transpose transa, transpose t
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -289,7 +289,7 @@ inline sycl::event omatcopy(Func func, sycl::queue &queue, transpose trans, int6
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -375,7 +375,7 @@ inline sycl::event omatadd(Func func, sycl::queue &queue, transpose transa, tran
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);

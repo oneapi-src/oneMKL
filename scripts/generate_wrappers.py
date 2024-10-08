@@ -40,7 +40,7 @@ Usage:
 
 Example:
 
-    {script}  include/oneapi/math/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp src/blas/function_table.hpp src/blas/backend/mklgpu/wrappers.cpp mklgpu
+    {script}  include/oneapi/math/blas/detail/mklgpu/onemath_blas_mklgpu.hpp src/blas/function_table.hpp src/blas/backend/mklgpu/wrappers.cpp mklgpu
 '''.format(script = argv[0]))
 
 if len(argv) <= 4:

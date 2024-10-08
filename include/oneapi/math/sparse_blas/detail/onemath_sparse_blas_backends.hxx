@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-// This file is meant to be included in each backend onemkl_sparse_blas_BACKEND.hpp files.
-// It is used to exports each symbol to the onemkl_sparse_blas_BACKEND library.
+// This file is meant to be included in each backend onemath_sparse_blas_BACKEND.hpp files.
+// It is used to exports each symbol to the onemath_sparse_blas_BACKEND library.
 
 // Dense vector
 template <typename dataType>

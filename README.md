@@ -138,7 +138,7 @@ There are two oneMKL selector layer implementations:
   
   ```cmd
   $> clang++ -fsycl –I$ONEMKL/include app.cpp
-  $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl_blas_mklcpu –lonemkl_blas_cublas
+  $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemath_blas_mklcpu –lonemath_blas_cublas
   ```
   
 *Refer to [Selecting a Compiler](https://oneapi-src.github.io/oneMKL/selecting_a_compiler.html) for the choice between `icpx/icx` and `clang++` compilers.*

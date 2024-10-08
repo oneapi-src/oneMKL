@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 #include "lapack/function_table.hpp"
-#include "oneapi/math/lapack/detail/mklgpu/onemkl_lapack_mklgpu.hpp"
+#include "oneapi/math/lapack/detail/mklgpu/onemath_lapack_mklgpu.hpp"
 
 #define WRAPPER_VERSION 1
 

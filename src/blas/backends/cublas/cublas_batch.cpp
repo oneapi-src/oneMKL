@@ -19,7 +19,7 @@
 #include "cublas_helper.hpp"
 #include "cublas_task.hpp"
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/blas/detail/cublas/onemkl_blas_cublas.hpp"
+#include "oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -161,7 +161,7 @@ inline void gemm_batch_impl(sycl::queue &queue, transpose transa, transpose tran
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuTypeA *>(a_acc);
             auto b_ = sc.get_mem<cuTypeB *>(b_acc);
@@ -513,7 +513,7 @@ inline sycl::event gemv_batch(const char *func_name, Func func, sycl::queue &que
     }
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             cublasStatus_t err;
@@ -632,7 +632,7 @@ inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose tra
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cublasStatus_t err;
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
@@ -718,7 +718,7 @@ inline sycl::event gemm_batch_usm_impl(sycl::queue &queue, transpose *transa, tr
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             cublasStatus_t err;
@@ -832,7 +832,7 @@ inline sycl::event trsm_batch(const char *func_name, Func func, sycl::queue &que
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             cublasStatus_t err;

@@ -23,7 +23,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/math/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
+#include "oneapi/math/blas/detail/mklcpu/onemath_blas_mklcpu.hpp"
 
 #include "../mkl_common/mkl_blas_backend.hpp"
 

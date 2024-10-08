@@ -20,7 +20,7 @@
 #include "oneapi/math/dft/descriptor.hpp"
 #include "../../descriptor.cxx"
 
-#include "oneapi/math/dft/detail/mklgpu/onemkl_dft_mklgpu.hpp"
+#include "oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp"
 
 namespace oneapi::mkl::dft::detail {
 

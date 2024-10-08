@@ -19,7 +19,7 @@
 *
 **************************************************************************/
 #include "lapack/function_table.hpp"
-#include "oneapi/math/lapack/detail/rocsolver/onemkl_lapack_rocsolver.hpp"
+#include "oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hpp"
 
 #define WRAPPER_VERSION 1
 

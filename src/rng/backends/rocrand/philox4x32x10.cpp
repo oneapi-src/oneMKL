@@ -75,7 +75,7 @@
 #include "rocrand_helper.hpp"
 #include "rocrand_task.hpp"
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/rng/detail/rocrand/onemkl_rng_rocrand.hpp"
+#include "oneapi/math/rng/detail/rocrand/onemath_rng_rocrand.hpp"
 #include "oneapi/math/rng/detail/engine_impl.hpp"
 // #include "oneapi/math/rng/engines.hpp"
 
@@ -144,7 +144,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform, status, engine_, r_ptr, n);
                 });
@@ -162,7 +162,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform_double, status, engine_, r_ptr, n);
                 });
@@ -181,7 +181,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = ib.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate, status, engine_, r_ptr, n);
                 });
@@ -199,7 +199,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform, status, engine_, r_ptr, n);
                 });
@@ -217,7 +217,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform_double, status, engine_, r_ptr, n);
                 });
@@ -235,7 +235,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_normal, status, engine_, r_ptr, n, distr.mean(),
                                  distr.stddev());
@@ -252,7 +252,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r_ptr, n,
                                  distr.mean(), distr.stddev());
@@ -269,7 +269,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_normal, status, engine_, r_ptr, n, distr.mean(),
                                  distr.stddev());
@@ -286,7 +286,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r_ptr, n,
                                  distr.mean(), distr.stddev());
@@ -303,7 +303,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r_ptr, n, distr.m(),
                                  distr.s());
@@ -320,7 +320,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r_ptr, n,
                                  distr.m(), distr.s());
@@ -337,7 +337,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](float* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r_ptr, n, distr.m(),
                                  distr.s());
@@ -354,7 +354,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](double* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r_ptr, n,
                                  distr.m(), distr.s());
@@ -384,7 +384,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](std::int32_t* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](std::int32_t* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_poisson, status, engine_, (std::uint32_t*)r_ptr,
                                  n, distr.lambda());
@@ -400,7 +400,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_poisson, status, engine_, r_ptr, n,
                                  distr.lambda());
@@ -416,7 +416,7 @@ public:
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.template get_access<sycl::access::mode::read_write>(cgh);
-                onemkl_rocrand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
+                onemath_rocrand_host_task(cgh, acc, engine_, [=](std::uint32_t* r_ptr) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate, status, engine_, r_ptr, n);
                 });
@@ -434,7 +434,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform, status, engine_, r, n);
                 });
@@ -452,7 +452,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform_double, status, engine_, r, n);
                 });
@@ -472,7 +472,7 @@ public:
             n * sizeof(std::uint32_t), queue_.get_device(), queue_.get_context());
         queue_
             .submit([&](sycl::handler& cgh) {
-                onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate, status, engine_, ib, n);
                 });
@@ -490,7 +490,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform, status, engine_, r, n);
                 });
@@ -508,7 +508,7 @@ public:
         sycl::event::wait_and_throw(dependencies);
         queue_
             .submit([&](sycl::handler& cgh) {
-                onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+                onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                     rocrand_status status;
                     ROCRAND_CALL(rocrand_generate_uniform_double, status, engine_, r, n);
                 });
@@ -526,7 +526,7 @@ public:
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_normal, status, engine_, r, n, distr.mean(),
                              distr.stddev());
@@ -544,7 +544,7 @@ public:
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r, n, distr.mean(),
                              distr.stddev());
@@ -561,7 +561,7 @@ public:
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_normal, status, engine_, r, n, distr.mean(),
                              distr.stddev());
@@ -578,7 +578,7 @@ public:
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_normal_double, status, engine_, r, n, distr.mean(),
                              distr.stddev());
@@ -596,7 +596,7 @@ public:
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r, n, distr.m(),
                              distr.s());
@@ -614,7 +614,7 @@ public:
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r, n, distr.m(),
                              distr.s());
@@ -631,7 +631,7 @@ public:
         std::int64_t n, float* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_log_normal, status, engine_, r, n, distr.m(),
                              distr.s());
@@ -648,7 +648,7 @@ public:
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_log_normal_double, status, engine_, r, n, distr.m(),
                              distr.s());
@@ -683,7 +683,7 @@ public:
         std::int32_t* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_poisson, status, engine_, (std::uint32_t*)r, n,
                              distr.lambda());
@@ -700,7 +700,7 @@ public:
         std::uint32_t* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate_poisson, status, engine_, r, n, distr.lambda());
             });
@@ -715,7 +715,7 @@ public:
                                  const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
-            onemkl_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
+            onemath_rocrand_host_task(cgh, engine_, [=](sycl::interop_handle ih) {
                 rocrand_status status;
                 ROCRAND_CALL(rocrand_generate, status, engine_, r, n);
             });

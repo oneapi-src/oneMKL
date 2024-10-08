@@ -29,7 +29,7 @@
 #include "oneapi/math/rng/detail/engine_impl.hpp"
 #include "oneapi/math/rng/engines.hpp"
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/rng/detail/mklgpu/onemkl_rng_mklgpu.hpp"
+#include "oneapi/math/rng/detail/mklgpu/onemath_rng_mklgpu.hpp"
 
 #include "mkl_internal_rng_gpu.hpp"
 

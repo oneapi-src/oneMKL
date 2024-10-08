@@ -53,9 +53,9 @@ using sycl_complex_t = sycl::ext::oneapi::experimental::complex<ElemT>;
 template <typename InputT>
 struct portblas_type;
 
-#define DEF_PORTBLAS_TYPE(onemkl_t, portblas_t) \
+#define DEF_PORTBLAS_TYPE(onemath_t, portblas_t) \
     template <>                                 \
-    struct portblas_type<onemkl_t> {            \
+    struct portblas_type<onemath_t> {            \
         using type = portblas_t;                \
     };
 

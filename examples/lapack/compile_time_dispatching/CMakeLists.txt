@@ -36,8 +36,8 @@ foreach(lapack_ct_source ${LAPACK_CT_SOURCES})
       PUBLIC ${CMAKE_BINARY_DIR}/bin
   )
   if(domain STREQUAL "lapack" AND ENABLE_MKLCPU_BACKEND AND ENABLE_CUSOLVER_BACKEND)
-    add_dependencies(example_${domain}_${lapack_ct_source} onemkl_${domain}_mklcpu onemkl_${domain}_cusolver)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu onemkl_${domain}_cusolver)
+    add_dependencies(example_${domain}_${lapack_ct_source} onemath_${domain}_mklcpu onemath_${domain}_cusolver)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_mklcpu onemath_${domain}_cusolver)
     target_link_libraries(example_${domain}_${lapack_ct_source} PUBLIC ${OPENCL_LIBRARY})
   endif()
   target_link_libraries(example_${domain}_${lapack_ct_source} PUBLIC

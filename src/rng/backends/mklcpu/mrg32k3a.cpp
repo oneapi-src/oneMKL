@@ -28,7 +28,7 @@
 
 #include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/rng/detail/engine_impl.hpp"
-#include "oneapi/math/rng/detail/mklcpu/onemkl_rng_mklcpu.hpp"
+#include "oneapi/math/rng/detail/mklcpu/onemath_rng_mklcpu.hpp"
 
 #include "cpu_common.hpp"
 

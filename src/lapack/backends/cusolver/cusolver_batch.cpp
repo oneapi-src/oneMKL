@@ -21,7 +21,7 @@
 #include "cusolver_task.hpp"
 
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/lapack/detail/cusolver/onemkl_lapack_cusolver.hpp"
+#include "oneapi/math/lapack/detail/cusolver/onemath_lapack_cusolver.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -44,7 +44,7 @@ inline void geqrf_batch(const char *func_name, Func func, sycl::queue &queue, st
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
 
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto tau_ = sc.get_mem<cuDataType *>(tau_acc);
@@ -110,7 +110,7 @@ inline void getri_batch(const char *func_name, Func func, sycl::queue &queue, st
         sycl::accessor ipiv32_acc{ ipiv32, cgh };
         sycl::accessor devInfo_acc{ devInfo, cgh, sycl::write_only };
 
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             cublasStatus_t err;
             CUresult cuda_result;
             cublasHandle_t cublas_handle;
@@ -214,7 +214,7 @@ inline void getrs_batch(const char *func_name, Func func, sycl::queue &queue,
         auto ipiv_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
 
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto ipiv_ = sc.get_mem<std::int32_t *>(ipiv_acc);
@@ -275,7 +275,7 @@ inline void getrf_batch(const char *func_name, Func func, sycl::queue &queue, st
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto ipiv_ = sc.get_mem<int *>(ipiv32_acc);
@@ -333,7 +333,7 @@ inline void orgqr_batch(const char *func_name, Func func, sycl::queue &queue, st
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
 
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto tau_ = sc.get_mem<cuDataType *>(tau_acc);
@@ -375,7 +375,7 @@ inline void potrf_batch(const char *func_name, Func func, sycl::queue &queue,
 
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             CUdeviceptr a_dev;
             CUresult cuda_result;
@@ -434,7 +434,7 @@ inline void potrs_batch(const char *func_name, Func func, sycl::queue &queue,
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             CUdeviceptr a_dev, b_dev;
             cusolverStatus_t err;
@@ -499,7 +499,7 @@ inline void ungqr_batch(const char *func_name, Func func, sycl::queue &queue, st
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
 
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto tau_ = sc.get_mem<cuDataType *>(tau_acc);
@@ -544,7 +544,7 @@ inline sycl::event geqrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
             auto tau_ = reinterpret_cast<cuDataType *>(tau);
@@ -595,7 +595,7 @@ inline sycl::event geqrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
             auto tau_ = reinterpret_cast<cuDataType **>(tau);
@@ -653,7 +653,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
@@ -735,7 +735,7 @@ inline sycl::event getrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
             auto scratch_ = reinterpret_cast<cuDataType *>(scratchpad);
@@ -835,7 +835,7 @@ sycl::event getri_batch(const char *func_name, Func func, sycl::queue &queue, st
         cgh.depends_on(done_casting);
         cgh.depends_on(dependencies);
 
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             cublasStatus_t err;
             CUresult cuda_result;
             cublasHandle_t cublas_handle;
@@ -961,7 +961,7 @@ inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &qu
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
         cgh.depends_on(done_casting);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
@@ -1049,7 +1049,7 @@ inline sycl::event getrs_batch(const char *func_name, Func func, sycl::queue &qu
         cgh.depends_on(dependencies);
         cgh.depends_on(casting_dependencies);
 
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
             auto b_ = reinterpret_cast<cuDataType **>(b);
@@ -1109,7 +1109,7 @@ inline sycl::event orgqr_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
             auto tau_ = reinterpret_cast<cuDataType *>(tau);
@@ -1159,7 +1159,7 @@ inline sycl::event orgqr_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
             auto tau_ = reinterpret_cast<cuDataType **>(tau);
@@ -1210,7 +1210,7 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             CUdeviceptr a_dev;
             cusolverStatus_t err;
@@ -1268,7 +1268,7 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             CUdeviceptr a_dev;
@@ -1331,7 +1331,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             CUresult cuda_result;
             CUdeviceptr a_dev, b_dev;
@@ -1414,7 +1414,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
         cgh.depends_on(dependencies);
         cgh.depends_on(done_cpy_a);
         cgh.depends_on(done_cpy_b);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             cusolverStatus_t err;
@@ -1468,7 +1468,7 @@ inline sycl::event ungqr_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType *>(a);
             auto tau_ = reinterpret_cast<cuDataType *>(tau);
@@ -1518,7 +1518,7 @@ inline sycl::event ungqr_batch(const char *func_name, Func func, sycl::queue &qu
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<cuDataType **>(a);
             auto tau_ = reinterpret_cast<cuDataType **>(tau);
@@ -1565,7 +1565,7 @@ inline void getrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t stride_a, std::int64_t stride_ipiv,
                                         std::int64_t batch_size, int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
 
@@ -1633,7 +1633,7 @@ inline void geqrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t stride_a, std::int64_t stride_tau,
                                         std::int64_t batch_size, int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
 
@@ -1701,7 +1701,7 @@ inline void orgqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t stride_tau, std::int64_t batch_size,
                                         int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
 
@@ -1735,7 +1735,7 @@ inline void ungqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t stride_tau, std::int64_t batch_size,
                                         int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             cusolverStatus_t err;
 
@@ -1768,7 +1768,7 @@ inline void getrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t group_count, std::int64_t *group_sizes,
                                         int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
             *scratch_size = 0;
@@ -1847,7 +1847,7 @@ inline void geqrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t group_count, std::int64_t *group_sizes,
                                         int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
             *scratch_size = 0;
@@ -1889,7 +1889,7 @@ inline void orgqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t *lda, std::int64_t group_count,
                                         std::int64_t *group_sizes, int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
             *scratch_size = 0;
@@ -1963,7 +1963,7 @@ inline void ungqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
                                         std::int64_t *lda, std::int64_t group_count,
                                         std::int64_t *group_sizes, int *scratch_size) {
     auto e = queue.submit([&](sycl::handler &cgh) {
-        onemkl_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
+        onemath_cusolver_host_task(cgh, queue, [=](CusolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int group_scratch_size = 0;
             *scratch_size = 0;

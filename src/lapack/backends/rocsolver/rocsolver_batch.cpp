@@ -22,7 +22,7 @@
 #include "rocsolver_task.hpp"
 
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/lapack/detail/rocsolver/onemkl_lapack_rocsolver.hpp"
+#include "oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -520,7 +520,7 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
             cgh.depends_on(dependencies[i]);
         }
         cgh.depends_on(done_cpy);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             rocblas_status err;
@@ -620,7 +620,7 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
         }
         cgh.depends_on(done_cpy_a);
         cgh.depends_on(done_cpy_b);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             int64_t offset = 0;
             rocblas_status err;

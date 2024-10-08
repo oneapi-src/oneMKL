@@ -23,7 +23,7 @@
 #include "rocblas_task.hpp"
 
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/blas/detail/rocblas/onemkl_blas_rocblas.hpp"
+#include "oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -43,7 +43,7 @@ inline void asum(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T1, 1> &
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
         auto res_acc = result.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the rocblas_pointer_mode_host
             // when the data is on buffer, it must be set to
@@ -86,7 +86,7 @@ inline void scal(Func func, sycl::queue &queue, int64_t n, T1 a, sycl::buffer<T2
 
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto x_ = sc.get_mem<rocDataType2 *>(x_acc);
             rocblas_status err;
@@ -119,7 +119,7 @@ inline void axpy(Func func, sycl::queue &queue, int64_t n, T alpha, sycl::buffer
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
         auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
@@ -177,7 +177,7 @@ inline void rotg(Func func, sycl::queue &queue, sycl::buffer<T1, 1> &a, sycl::bu
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
         auto s_acc = s.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the rocblas_pointer_mode_host
             // when the data is on buffer, it must be set to
@@ -222,7 +222,7 @@ inline void rotm(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &x
         auto x_acc = x.template get_access<sycl::access::mode::read_write>(cgh);
         auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
         auto param_acc = param.template get_access<sycl::access::mode::read>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             // By default the pointer mode is the rocblas_pointer_mode_host
@@ -264,7 +264,7 @@ inline void copy(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &x
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
         auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
@@ -298,7 +298,7 @@ inline void dot(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &x,
         auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
         auto y_acc = y.template get_access<sycl::access::mode::read>(cgh);
         auto res_acc = result.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             // By default the pointer mode is the rocblas_pointer_mode_host
@@ -351,7 +351,7 @@ inline void rot(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T1, 1> &x
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read_write>(cgh);
         auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             // By default the pointer mode is the rocblas_pointer_mode_host
             // when the data is on buffer, it must be set to
@@ -390,7 +390,7 @@ void sdsdot(sycl::queue &queue, int64_t n, float sb, sycl::buffer<float, 1> &x, 
         auto x_acc = x.get_access<sycl::access::mode::read>(cgh);
         auto y_acc = y.get_access<sycl::access::mode::read>(cgh);
         auto res_acc = result.get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             // By default the pointer mode is the rocblas_pointer_mode_host
@@ -428,7 +428,7 @@ inline void rotmg(Func func, sycl::queue &queue, sycl::buffer<T, 1> &d1, sycl::b
         auto x1_acc = x1.template get_access<sycl::access::mode::read_write>(cgh);
         auto y1_acc = y1_buff.template get_access<sycl::access::mode::read>(cgh);
         auto param_acc = param.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             // By default the pointer mode is the rocblas_pointer_mode_host
@@ -480,7 +480,7 @@ inline void iamax(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
         auto int_res_acc = int_res_buff.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             // By default the pointer mode is the rocblas_pointer_mode_host
@@ -532,7 +532,7 @@ inline void swap(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &x
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read_write>(cgh);
         auto y_acc = y.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
@@ -573,7 +573,7 @@ inline void iamin(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T, 1> &
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
         auto int_res_acc = int_res_buff.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             // By default the pointer mode is the rocblas_pointer_mode_host
@@ -626,7 +626,7 @@ inline void nrm2(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T1, 1> &
     queue.submit([&](sycl::handler &cgh) {
         auto x_acc = x.template get_access<sycl::access::mode::read>(cgh);
         auto res_acc = result.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             // By default the pointer mode is the rocblas_pointer_mode_host
@@ -672,7 +672,7 @@ inline sycl::event asum(Func func, sycl::queue &queue, int64_t n, const T1 *x, c
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             rocblas_set_pointer_mode(handle, rocblas_pointer_mode_device);
 
@@ -710,7 +710,7 @@ inline sycl::event scal(Func func, sycl::queue &queue, int64_t n, T1 a, T2 *x, i
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<rocDataType2 *>(x);
@@ -746,7 +746,7 @@ inline sycl::event axpy(Func func, sycl::queue &queue, int64_t n, T alpha, const
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<const rocDataType *>(x);
@@ -804,7 +804,7 @@ inline sycl::event rotg(Func func, sycl::queue &queue, T1 *a, T1 *b, T2 *c, T1 *
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<rocDataType1 *>(a);
@@ -840,7 +840,7 @@ inline sycl::event rotm(Func func, sycl::queue &queue, int64_t n, T *x, int64_t 
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<rocDataType *>(x);
@@ -873,7 +873,7 @@ inline sycl::event copy(Func func, sycl::queue &queue, int64_t n, const T *x, in
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<const rocDataType *>(x);
@@ -908,7 +908,7 @@ inline sycl::event dot(Func func, sycl::queue &queue, int64_t n, const T *x, con
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<const rocDataType *>(x);
@@ -953,7 +953,7 @@ inline sycl::event rot(Func func, sycl::queue &queue, int64_t n, T1 *x, const in
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<rocDataType1 *>(x);
@@ -989,7 +989,7 @@ sycl::event sdsdot(sycl::queue &queue, int64_t n, float sb, const float *x, int6
     // rocBLAS does not support sdot so we need to mimic sdot.
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<const float *>(x);
@@ -1012,7 +1012,7 @@ inline sycl::event rotmg(Func func, sycl::queue &queue, T *d1, T *d2, T *x1, T y
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto d1_ = reinterpret_cast<rocDataType *>(d1);
@@ -1055,7 +1055,7 @@ inline sycl::event iamax(Func func, sycl::queue &queue, int64_t n, const T *x, c
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             rocblas_set_pointer_mode(handle, rocblas_pointer_mode_device);
             auto x_ = reinterpret_cast<const rocDataType *>(x);
@@ -1094,7 +1094,7 @@ inline sycl::event swap(Func func, sycl::queue &queue, int64_t n, T *x, int64_t 
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto x_ = reinterpret_cast<rocDataType *>(x);
@@ -1136,7 +1136,7 @@ inline sycl::event iamin(Func func, sycl::queue &queue, int64_t n, const T *x, c
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             rocblas_set_pointer_mode(handle, rocblas_pointer_mode_device);
 
@@ -1177,7 +1177,7 @@ inline sycl::event nrm2(Func func, sycl::queue &queue, int64_t n, const T1 *x, c
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             rocblas_set_pointer_mode(handle, rocblas_pointer_mode_device);
 

@@ -17,7 +17,7 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#include "oneapi/math/dft/detail/rocfft/onemkl_dft_rocfft.hpp"
+#include "oneapi/math/dft/detail/rocfft/onemath_dft_rocfft.hpp"
 #include "dft/function_table.hpp"
 
 #define WRAPPER_VERSION 1

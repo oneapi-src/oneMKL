@@ -29,7 +29,7 @@
 
 #include "cblas.h"
 
-#include "oneapi/math/blas/detail/netlib/onemkl_blas_netlib.hpp"
+#include "oneapi/math/blas/detail/netlib/onemath_blas_netlib.hpp"
 #include "oneapi/math/types.hpp"
 
 #define GET_MULTI_PTR template get_multi_ptr<sycl::access::decorated::yes>().get_raw()
@@ -42,7 +42,7 @@ namespace netlib {
 typedef enum { CblasFixOffset = 101, CblasColOffset = 102, CblasRowOffset = 103 } CBLAS_OFFSET;
 
 /**
- * Helper methods for converting between onemkl types and their BLAS
+ * Helper methods for converting between onemath types and their BLAS
  * equivalents.
  */
 

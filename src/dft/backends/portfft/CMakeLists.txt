@@ -58,7 +58,7 @@ if (IS_DPCPP AND UNIX AND NOT FOUND_TARGETS)
   target_link_options(ONEMKL::SYCL::SYCL INTERFACE ${TARGETS_LINK_OPTIONS})
 endif()
 
-set(LIB_NAME onemkl_dft_portfft)
+set(LIB_NAME onemath_dft_portfft)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 add_library(${LIB_NAME})
@@ -67,7 +67,7 @@ add_library(${LIB_OBJ} OBJECT
   commit.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: portfft_wrappers.cpp>
 )
-add_dependencies(onemkl_backend_libs_dft ${LIB_NAME})
+add_dependencies(onemath_backend_libs_dft ${LIB_NAME})
 
 find_package(portfft QUIET)
 if (NOT portfft_FOUND)
@@ -88,7 +88,7 @@ else()
 	target_link_libraries(${LIB_OBJ} PRIVATE portfft::portfft)
 endif()
 
-target_link_libraries(${LIB_OBJ} PRIVATE onemkl_warnings)
+target_link_libraries(${LIB_OBJ} PRIVATE onemath_warnings)
 
 target_include_directories(${LIB_OBJ}
   PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}

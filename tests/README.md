@@ -8,4 +8,4 @@ See [Building and Running Tests](https://oneapi-src.github.io/oneMKL/building_an
 [GoogleTest](https://github.com/google/googletest) is used as the unit-testing framework.
 
 
-*Refer to `<path to onemkl>/deps/googletest/LICENSE` for GoogleTest license.*
+*Refer to `<path to onemath>/deps/googletest/LICENSE` for GoogleTest license.*

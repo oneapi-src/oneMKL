@@ -20,7 +20,7 @@
 # Define common build flags for oneMKL libraries
 set(ONEMKL_BUILD_COPT "")
 if(WIN32 AND BUILD_SHARED_LIBS)
-  list(APPEND ONEMKL_BUILD_COPT "-Donemkl_EXPORTS")
+  list(APPEND ONEMKL_BUILD_COPT "-Donemath_EXPORTS")
 endif()
 
 # store path to CMAKE_CURRENT_BINARY_DIR to use it later (makes FetchContent_Declare workable)
@@ -34,7 +34,7 @@ set(ONEMKL_INTERFACE_INCLUDE_DIRS
 )
 
 # Build loader and backends for each domain
-add_custom_target(onemkl_backend_libs)
+add_custom_target(onemath_backend_libs)
 foreach(domain ${TARGET_DOMAINS})
   add_subdirectory(${domain})
 endforeach()
@@ -73,32 +73,32 @@ endfunction()
 
 generate_header_file()
 
-# Add recipe for onemkl loader library
+# Add recipe for onemath loader library
 if(BUILD_SHARED_LIBS)
-  add_library(onemkl SHARED)
+  add_library(onemath SHARED)
 
   # The loader library depends on all the backend libraries as it uses
   # dlopen to load them at runtime.
   # Use add_dependencies to ensure that all the backend libraries are
   # (re-)built when compiling the loader or runtime binaries.
-  add_dependencies(onemkl onemkl_backend_libs)
+  add_dependencies(onemath onemath_backend_libs)
 
-  target_include_directories(onemkl
+  target_include_directories(onemath
     PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
   )
-  set_target_properties(onemkl PROPERTIES
+  set_target_properties(onemath PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
   )
   # w/a for setting oneMKL Interfaces installed headers as -I instead of -isystem for cmake >= 3.25 for workable find_package(MKL) combination
   if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.25.0")
-    set_target_properties(onemkl PROPERTIES EXPORT_NO_SYSTEM true)
+    set_target_properties(onemath PROPERTIES EXPORT_NO_SYSTEM true)
   endif()
 
   # Build dispatcher library
   set (ONEMKL_LIBS ${TARGET_DOMAINS})
-  list(TRANSFORM ONEMKL_LIBS PREPEND onemkl_)
-  target_link_libraries(onemkl PUBLIC ${ONEMKL_LIBS})
-  set_target_properties(onemkl PROPERTIES
+  list(TRANSFORM ONEMKL_LIBS PREPEND onemath_)
+  target_link_libraries(onemath PUBLIC ${ONEMKL_LIBS})
+  set_target_properties(onemath PROPERTIES
       INSTALL_RPATH "\$ORIGIN"
       BUILD_WITH_INSTALL_RPATH TRUE
   )
@@ -107,7 +107,7 @@ if(BUILD_SHARED_LIBS)
   foreach(domain_lib ${ONEMKL_LIBS})
     install(TARGETS ${domain_lib} EXPORT oneMKLTargets)
   endforeach()
-  install(TARGETS onemkl EXPORT oneMKLTargets
+  install(TARGETS onemath EXPORT oneMKLTargets
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib

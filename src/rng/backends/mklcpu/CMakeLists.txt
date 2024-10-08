@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(LIB_NAME onemkl_rng_mklcpu)
+set(LIB_NAME onemath_rng_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 set(SOURCES cpu_common.hpp
@@ -28,7 +28,7 @@ set(SOURCES cpu_common.hpp
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
-add_dependencies(onemkl_backend_libs_rng ${LIB_NAME})
+add_dependencies(onemath_backend_libs_rng ${LIB_NAME})
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src

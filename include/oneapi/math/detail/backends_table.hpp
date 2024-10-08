@@ -32,9 +32,9 @@
 #include "oneapi/math/detail/config.hpp"
 
 #ifdef __linux__
-#define LIB_NAME(a) "libonemkl_" a ".so"
+#define LIB_NAME(a) "libonemath_" a ".so"
 #elif defined(_WIN64)
-#define LIB_NAME(a) "onemkl_" a ".dll"
+#define LIB_NAME(a) "onemath_" a ".dll"
 #endif
 
 namespace oneapi {

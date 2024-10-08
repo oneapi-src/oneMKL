@@ -56,7 +56,7 @@
 # so.
 #=================================================================================
 
-set(LIB_NAME onemkl_rng_curand)
+set(LIB_NAME onemath_rng_curand)
 set(LIB_OBJ ${LIB_NAME}_obj)
 find_package(cuRAND REQUIRED)
 
@@ -66,7 +66,7 @@ set(SOURCES philox4x32x10.cpp
 
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
-add_dependencies(onemkl_backend_libs_rng ${LIB_NAME})
+add_dependencies(onemath_backend_libs_rng ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include

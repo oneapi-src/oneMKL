@@ -119,7 +119,7 @@ foreach(domain ${TEST_TARGET_DOMAINS})
       ${CMAKE_DL_LIBS}
       ${${domain}_TEST_LINK}
       ONEMKL::SYCL::SYCL
-      onemkl
+      onemath
       ${${domain}_TEST_LIST_RT}
     )
     if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
@@ -128,68 +128,68 @@ foreach(domain ${TEST_TARGET_DOMAINS})
   endif()
 
   if(ENABLE_MKLCPU_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_mklcpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklcpu)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_mklcpu)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_mklcpu)
   endif()
 
   if(ENABLE_MKLGPU_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_mklgpu)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_mklgpu)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_mklgpu)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_mklgpu)
   endif()
 
   if(domain STREQUAL "blas" AND ENABLE_CUBLAS_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_cublas)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cublas)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_cublas)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_cublas)
   endif()
 
   if(domain STREQUAL "blas" AND ENABLE_ROCBLAS_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_rocblas)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_rocblas)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_rocblas)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_rocblas)
   endif()
 
   if(domain STREQUAL "blas" AND ENABLE_NETLIB_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_netlib)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_netlib)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_netlib)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_netlib)
   endif()
 
   if(domain STREQUAL "blas" AND ENABLE_PORTBLAS_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_portblas)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_portblas)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_portblas)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_portblas)
   endif()
 
   if(domain STREQUAL "lapack" AND ENABLE_CUSOLVER_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_cusolver)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cusolver)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_cusolver)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_cusolver)
   endif()
 
   if(domain STREQUAL "lapack" AND ENABLE_ROCSOLVER_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_rocsolver)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_rocsolver)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_rocsolver)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_rocsolver)
   endif()
   
   if(domain STREQUAL "rng" AND ENABLE_CURAND_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_curand)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_curand)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_curand)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_curand)
   endif()
 
   if(domain STREQUAL "rng" AND ENABLE_ROCRAND_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_rocrand)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_rocrand)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_rocrand)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_rocrand)
   endif()
 
   if(domain STREQUAL "dft" AND ENABLE_CUFFT_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_${domain}_cufft)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_${domain}_cufft)
+    add_dependencies(test_main_${domain}_ct onemath_${domain}_cufft)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_${domain}_cufft)
   endif()
 
   if(domain STREQUAL "dft" AND ENABLE_ROCFFT_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_dft_rocfft)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_dft_rocfft)
+    add_dependencies(test_main_${domain}_ct onemath_dft_rocfft)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_dft_rocfft)
   endif()
 
   if(domain STREQUAL "dft" AND ENABLE_PORTFFT_BACKEND)
-    add_dependencies(test_main_${domain}_ct onemkl_dft_portfft)
-    list(APPEND ONEMKL_LIBRARIES_${domain} onemkl_dft_portfft)
+    add_dependencies(test_main_${domain}_ct onemath_dft_portfft)
+    list(APPEND ONEMKL_LIBRARIES_${domain} onemath_dft_portfft)
   endif()
 
   target_link_libraries(test_main_${domain}_ct PUBLIC
@@ -217,7 +217,7 @@ foreach(domain ${TEST_TARGET_DOMAINS})
 
   if(BUILD_SHARED_LIBS)
     set_target_properties(test_main_${domain}_rt
-      PROPERTIES BUILD_RPATH $<TARGET_FILE_DIR:onemkl>)
+      PROPERTIES BUILD_RPATH $<TARGET_FILE_DIR:onemath>)
   # Find individual tests within executable
     gtest_discover_tests(test_main_${domain}_rt
       PROPERTIES BUILD_RPATH ${CMAKE_BINARY_DIR}/lib

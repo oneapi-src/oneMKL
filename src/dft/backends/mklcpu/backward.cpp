@@ -26,7 +26,7 @@
 #include "oneapi/math/exceptions.hpp"
 
 #include "oneapi/math/dft/descriptor.hpp"
-#include "oneapi/math/dft/detail/mklcpu/onemkl_dft_mklcpu.hpp"
+#include "oneapi/math/dft/detail/mklcpu/onemath_dft_mklcpu.hpp"
 #include "oneapi/math/dft/types.hpp"
 
 #include "dft/backends/mklcpu/commit_derived_impl.hpp"

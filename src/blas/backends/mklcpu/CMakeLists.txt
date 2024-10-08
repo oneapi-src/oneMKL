@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(LIB_NAME onemkl_blas_mklcpu)
+set(LIB_NAME onemath_blas_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 set(SOURCES
@@ -25,7 +25,7 @@ set(SOURCES
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklcpu_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
-add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
+add_dependencies(onemath_backend_libs_blas ${LIB_NAME})
 if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
 endif()

@@ -25,7 +25,7 @@
 
 #include "oneapi/math/types.hpp"
 #include "oneapi/math/lapack/types.hpp"
-#include "oneapi/math/lapack/detail/mklcpu/onemkl_lapack_mklcpu.hpp"
+#include "oneapi/math/lapack/detail/mklcpu/onemath_lapack_mklcpu.hpp"
 #include "../mkl_common/mkl_lapack_backend.hpp"
 
 namespace oneapi {

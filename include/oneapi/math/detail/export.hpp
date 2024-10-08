@@ -27,7 +27,7 @@
 #define ONEMKL_NO_EXPORT
 #else
 #ifndef ONEMKL_EXPORT
-#ifdef onemkl_EXPORTS
+#ifdef onemath_EXPORTS
 /* We are building this library */
 #define ONEMKL_EXPORT __declspec(dllexport)
 #else

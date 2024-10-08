@@ -63,7 +63,7 @@ static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
 }
 
 template <typename H, typename F>
-static inline void onemkl_rocsolver_host_task(H &cgh, sycl::queue queue, F f) {
+static inline void onemath_rocsolver_host_task(H &cgh, sycl::queue queue, F f) {
     (void)host_task_internal(cgh, queue, f);
 }
 

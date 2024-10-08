@@ -19,7 +19,7 @@
 
 include_guard(GLOBAL)
 
-add_library(onemkl_warnings INTERFACE)
+add_library(onemath_warnings INTERFACE)
 
 set(ONEMKL_WARNINGS "")
 
@@ -41,8 +41,8 @@ add_warning("-Wpedantic")
 
 message(VERBOSE "Domains with warnings enabled use: ${ONEMKL_WARNINGS}")
 
-# The onemkl_warnings target can be linked to any other target to enable warnings.
-target_compile_options(onemkl_warnings INTERFACE ${ONEMKL_WARNINGS})
+# The onemath_warnings target can be linked to any other target to enable warnings.
+target_compile_options(onemath_warnings INTERFACE ${ONEMKL_WARNINGS})
 
 # Add the library to install package
-install(TARGETS onemkl_warnings EXPORT oneMKLTargets)
+install(TARGETS onemath_warnings EXPORT oneMKLTargets)

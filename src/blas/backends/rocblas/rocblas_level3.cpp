@@ -23,7 +23,7 @@
 #include "rocblas_task.hpp"
 
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/blas/detail/rocblas/onemkl_blas_rocblas.hpp"
+#include "oneapi/math/blas/detail/rocblas/onemath_blas_rocblas.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -44,7 +44,7 @@ inline void gemm(Func func, sycl::queue &queue, transpose transa, transpose tran
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -91,7 +91,7 @@ inline void gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE_C DT_C
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType_A *>(a_acc);
@@ -140,7 +140,7 @@ inline void symm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -180,7 +180,7 @@ inline void hemm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -217,7 +217,7 @@ inline void syrk(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -255,7 +255,7 @@ inline void herk(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -291,7 +291,7 @@ inline void syr2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -333,7 +333,7 @@ inline void her2k(Func func, sycl::queue &queue, uplo upper_lower, transpose tra
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -375,7 +375,7 @@ inline void trmm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -421,7 +421,7 @@ inline void trsm(Func func, sycl::queue &queue, side left_right, uplo upper_lowe
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = sc.get_mem<rocDataType *>(a_acc);
@@ -462,7 +462,7 @@ inline sycl::event gemm(Func func, sycl::queue &queue, transpose transa, transpo
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -509,7 +509,7 @@ inline sycl::event gemm_ex(Func func, DATATYPE_A DT_A, DATATYPE_B DT_B, DATATYPE
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType_A *>(a);
@@ -559,7 +559,7 @@ inline sycl::event symm(Func func, sycl::queue &queue, side left_right, uplo upp
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -600,7 +600,7 @@ inline sycl::event hemm(Func func, sycl::queue &queue, side left_right, uplo upp
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -639,7 +639,7 @@ inline sycl::event syrk(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -680,7 +680,7 @@ inline sycl::event herk(Func func, sycl::queue &queue, uplo upper_lower, transpo
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -719,7 +719,7 @@ inline sycl::event syr2k(Func func, sycl::queue &queue, uplo upper_lower, transp
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -762,7 +762,7 @@ inline sycl::event her2k(Func func, sycl::queue &queue, uplo upper_lower, transp
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -806,7 +806,7 @@ inline sycl::event trmm(Func func, sycl::queue &queue, side left_right, uplo upp
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);
@@ -854,7 +854,7 @@ inline sycl::event trsm(Func func, sycl::queue &queue, side left_right, uplo upp
 
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
+        onemath_rocblas_host_task(cgh, queue, [=](RocblasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
 
             auto a_ = reinterpret_cast<const rocDataType *>(a);

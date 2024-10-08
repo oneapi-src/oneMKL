@@ -22,7 +22,7 @@
 #include "rocsolver_task.hpp"
 
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/lapack/detail/rocsolver/onemkl_lapack_rocsolver.hpp"
+#include "oneapi/math/lapack/detail/rocsolver/onemath_lapack_rocsolver.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -46,7 +46,7 @@ inline void gebrd(const char *func_name, Func func, sycl::queue &queue, std::int
         auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
         auto tauq_acc = tauq.template get_access<sycl::access::mode::write>(cgh);
         auto taup_acc = taup.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
             auto d_ = sc.get_mem<rocmDataType_B *>(d_acc);
@@ -107,7 +107,7 @@ inline void geqrf(const char *func_name, Func func, sycl::queue &queue, std::int
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -150,7 +150,7 @@ void getrf(const char *func_name, Func func, sycl::queue &queue, std::int64_t m,
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto ipiv32_ = sc.get_mem<int *>(ipiv32_acc);
@@ -236,7 +236,7 @@ inline void getrs(const char *func_name, Func func, sycl::queue &queue,
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto ipiv_acc = ipiv32.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto ipiv_ = sc.get_mem<std::int32_t *>(ipiv_acc);
@@ -281,7 +281,7 @@ inline void gesvd(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto vt_acc = vt.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
             auto s_ = sc.get_mem<rocmDataType_B *>(s_acc);
@@ -330,7 +330,7 @@ inline void heevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
             auto w_ = sc.get_mem<rocmDataType_B *>(w_acc);
@@ -374,7 +374,7 @@ inline void hegvd(const char *func_name, Func func, sycl::queue &queue, std::int
         auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
             auto b_ = sc.get_mem<rocmDataType_A *>(b_acc);
@@ -417,7 +417,7 @@ inline void hetrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
         auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType_A *>(a_acc);
             auto d_ = sc.get_mem<rocmDataType_B *>(d_acc);
@@ -466,7 +466,7 @@ inline void orgbr(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -499,7 +499,7 @@ inline void orgqr(const char *func_name, Func func, sycl::queue &queue, std::int
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -531,7 +531,7 @@ inline void orgtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -567,7 +567,7 @@ inline void ormtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read_write>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -619,7 +619,7 @@ inline void ormqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -656,7 +656,7 @@ inline void potrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
@@ -692,7 +692,7 @@ inline void potri(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto devInfo_ = sc.get_mem<int *>(devInfo_acc);
@@ -728,7 +728,7 @@ inline void potrs(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto b_ = sc.get_mem<rocmDataType *>(b_acc);
@@ -766,7 +766,7 @@ inline void syevd(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto w_ = sc.get_mem<rocmDataType *>(w_acc);
@@ -808,7 +808,7 @@ inline void sygvd(const char *func_name, Func func, sycl::queue &queue, std::int
         auto w_acc = w.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
         auto scratch_acc = scratchpad.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto b_ = sc.get_mem<rocmDataType *>(b_acc);
@@ -850,7 +850,7 @@ inline void sytrd(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto d_acc = d.template get_access<sycl::access::mode::write>(cgh);
         auto e_acc = e.template get_access<sycl::access::mode::write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto d_ = sc.get_mem<rocmDataType *>(d_acc);
@@ -896,7 +896,7 @@ inline void sytrf(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto ipiv32_acc = ipiv32.template get_access<sycl::access::mode::write>(cgh);
         auto devInfo_acc = devInfo.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto ipiv32_ = sc.get_mem<int *>(ipiv32_acc);
@@ -971,7 +971,7 @@ inline void ungbr(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -1004,7 +1004,7 @@ inline void ungqr(const char *func_name, Func func, sycl::queue &queue, std::int
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -1036,7 +1036,7 @@ inline void ungtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
     queue.submit([&](sycl::handler &cgh) {
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -1086,7 +1086,7 @@ inline void unmqr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -1125,7 +1125,7 @@ inline void unmtr(const char *func_name, Func func, sycl::queue &queue, oneapi::
         auto a_acc = a.template get_access<sycl::access::mode::read_write>(cgh);
         auto tau_acc = tau.template get_access<sycl::access::mode::write>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<rocmDataType *>(a_acc);
             auto tau_ = sc.get_mem<rocmDataType *>(tau_acc);
@@ -1169,7 +1169,7 @@ inline sycl::event gebrd(const char *func_name, Func func, sycl::queue &queue, s
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType_A *>(a);
             auto d_ = reinterpret_cast<rocmDataType_B *>(d);
@@ -1233,7 +1233,7 @@ inline sycl::event geqrf(const char *func_name, Func func, sycl::queue &queue, s
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -1279,7 +1279,7 @@ inline sycl::event getrf(const char *func_name, Func func, sycl::queue &queue, s
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
@@ -1368,7 +1368,7 @@ inline sycl::event getrs(const char *func_name, Func func, sycl::queue &queue,
             cgh.depends_on(dependencies[i]);
         }
         cgh.depends_on(done_casting);
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
@@ -1417,7 +1417,7 @@ inline sycl::event gesvd(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType_A *>(a);
             auto s_ = reinterpret_cast<rocmDataType_B *>(s);
@@ -1468,7 +1468,7 @@ inline sycl::event heevd(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType_A *>(a);
             auto w_ = reinterpret_cast<rocmDataType_B *>(w);
@@ -1514,7 +1514,7 @@ inline sycl::event hegvd(const char *func_name, Func func, sycl::queue &queue, s
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType_A *>(a);
             auto b_ = reinterpret_cast<rocmDataType_A *>(b);
@@ -1560,7 +1560,7 @@ inline sycl::event hetrd(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType_A *>(a);
             auto d_ = reinterpret_cast<rocmDataType_B *>(d);
@@ -1614,7 +1614,7 @@ inline sycl::event orgbr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -1652,7 +1652,7 @@ inline sycl::event orgqr(const char *func_name, Func func, sycl::queue &queue, s
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -1688,7 +1688,7 @@ inline sycl::event orgtr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -1727,7 +1727,7 @@ inline sycl::event ormtr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -1782,7 +1782,7 @@ inline sycl::event ormqr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -1824,7 +1824,7 @@ inline sycl::event potrf(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto devInfo_ = reinterpret_cast<int *>(devInfo);
@@ -1866,7 +1866,7 @@ inline sycl::event potri(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto scratch_ = reinterpret_cast<rocmDataType *>(scratchpad);
@@ -1909,7 +1909,7 @@ inline sycl::event potrs(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto b_ = reinterpret_cast<rocmDataType *>(b);
@@ -1950,7 +1950,7 @@ inline sycl::event syevd(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto w_ = reinterpret_cast<rocmDataType *>(w);
@@ -1995,7 +1995,7 @@ inline sycl::event sygvd(const char *func_name, Func func, sycl::queue &queue, s
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto b_ = reinterpret_cast<rocmDataType *>(b);
@@ -2039,7 +2039,7 @@ inline sycl::event sytrd(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto d_ = reinterpret_cast<rocmDataType *>(d);
@@ -2087,7 +2087,7 @@ inline sycl::event sytrf(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto ipiv_ = reinterpret_cast<int *>(ipiv32);
@@ -2168,7 +2168,7 @@ inline sycl::event ungbr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -2206,7 +2206,7 @@ inline sycl::event ungqr(const char *func_name, Func func, sycl::queue &queue, s
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -2242,7 +2242,7 @@ inline sycl::event ungtr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -2295,7 +2295,7 @@ inline sycl::event unmqr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);
@@ -2338,7 +2338,7 @@ inline sycl::event unmtr(const char *func_name, Func func, sycl::queue &queue,
         for (int64_t i = 0; i < num_events; i++) {
             cgh.depends_on(dependencies[i]);
         }
-        onemkl_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
+        onemath_rocsolver_host_task(cgh, queue, [=](RocsolverScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<rocmDataType *>(a);
             auto tau_ = reinterpret_cast<rocmDataType *>(tau);

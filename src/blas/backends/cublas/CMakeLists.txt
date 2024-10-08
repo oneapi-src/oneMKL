@@ -17,7 +17,7 @@
 #
 #=========================================================================
 
-set(LIB_NAME onemkl_blas_cublas)
+set(LIB_NAME onemath_blas_cublas)
 set(LIB_OBJ ${LIB_NAME}_obj)
 find_package(cuBLAS REQUIRED)
 set(SOURCES cublas_level1.cpp 
@@ -30,7 +30,7 @@ set(SOURCES cublas_level1.cpp
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: cublas_wrappers.cpp>)
 add_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
-add_dependencies(onemkl_backend_libs_blas ${LIB_NAME})
+add_dependencies(onemath_backend_libs_blas ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include

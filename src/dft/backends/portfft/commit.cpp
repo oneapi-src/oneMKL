@@ -32,7 +32,7 @@
 
 #include "oneapi/math/dft/detail/commit_impl.hpp"
 #include "oneapi/math/dft/detail/descriptor_impl.hpp"
-#include "oneapi/math/dft/detail/portfft/onemkl_dft_portfft.hpp"
+#include "oneapi/math/dft/detail/portfft/onemath_dft_portfft.hpp"
 #include "oneapi/math/dft/types.hpp"
 
 #include "../stride_helper.hpp"

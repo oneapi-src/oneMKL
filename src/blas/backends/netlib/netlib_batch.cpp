@@ -25,7 +25,7 @@
 
 #include "netlib_common.hpp"
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/blas/detail/netlib/onemkl_blas_netlib.hpp"
+#include "oneapi/math/blas/detail/netlib/onemath_blas_netlib.hpp"
 
 namespace oneapi {
 namespace mkl {

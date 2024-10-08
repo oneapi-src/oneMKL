@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(LIB_NAME onemkl_dft_mklgpu)
+set(LIB_NAME onemath_dft_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 include(WarningsUtils)
@@ -30,7 +30,7 @@ add_library(${LIB_OBJ} OBJECT
   backward.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_dft_gpu_wrappers.cpp>
 )
-add_dependencies(onemkl_backend_libs_dft ${LIB_NAME})
+add_dependencies(onemath_backend_libs_dft ${LIB_NAME})
 
 target_include_directories(${LIB_NAME}
   PUBLIC ${ONEMKL_INTERFACE_INCLUDE_DIRS}
@@ -56,13 +56,13 @@ if(TARGET MKL::MKL_SYCL::DFT)
   target_link_libraries(${LIB_OBJ}
     PUBLIC ONEMKL::SYCL::SYCL
     PUBLIC MKL::MKL_SYCL::DFT
-    PRIVATE onemkl_warnings
+    PRIVATE onemath_warnings
   )
 else()
   target_link_libraries(${LIB_OBJ}
     PUBLIC ONEMKL::SYCL::SYCL
     PUBLIC MKL::MKL_DPCPP
-    PRIVATE onemkl_warnings
+    PRIVATE onemath_warnings
   )
 endif()
 

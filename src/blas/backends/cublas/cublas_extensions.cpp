@@ -19,7 +19,7 @@
 #include "cublas_helper.hpp"
 #include "cublas_task.hpp"
 #include "oneapi/math/exceptions.hpp"
-#include "oneapi/math/blas/detail/cublas/onemkl_blas_cublas.hpp"
+#include "oneapi/math/blas/detail/cublas/onemath_blas_cublas.hpp"
 
 namespace oneapi {
 namespace mkl {
@@ -96,7 +96,7 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
         const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
         const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? n : m);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
@@ -172,7 +172,7 @@ void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose tra
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
@@ -274,7 +274,7 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
         cgh.depends_on(dependencies);
         const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? m : n);
         const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? n : m);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<cuDataType *>(b);
@@ -356,7 +356,7 @@ inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue,
     overflow_check(m, n, lda, ldb, ldc);
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<const cuDataType *>(b);
@@ -459,7 +459,7 @@ void omatcopy(const char *func_name, Func func, sycl::queue &queue, transpose tr
         auto b_acc = b.template get_access<sycl::access::mode::read_write>(cgh);
         const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? n : m);
         const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? m : n);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
@@ -535,7 +535,7 @@ void omatadd(const char *func_name, Func func, sycl::queue &queue, transpose tra
         auto a_acc = a.template get_access<sycl::access::mode::read>(cgh);
         auto b_acc = b.template get_access<sycl::access::mode::read>(cgh);
         auto c_acc = c.template get_access<sycl::access::mode::read_write>(cgh);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = sc.get_mem<cuDataType *>(a_acc);
             auto b_ = sc.get_mem<cuDataType *>(b_acc);
@@ -637,7 +637,7 @@ sycl::event omatcopy(const char *func_name, Func func, sycl::queue &queue, trans
         cgh.depends_on(dependencies);
         const int64_t logical_m = (trans == oneapi::mkl::transpose::nontrans ? n : m);
         const int64_t logical_n = (trans == oneapi::mkl::transpose::nontrans ? m : n);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<cuDataType *>(b);
@@ -719,7 +719,7 @@ inline sycl::event omatadd(const char *func_name, Func func, sycl::queue &queue,
     overflow_check(m, n, lda, ldb, ldc);
     auto done = queue.submit([&](sycl::handler &cgh) {
         cgh.depends_on(dependencies);
-        onemkl_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
+        onemath_cublas_host_task(cgh, queue, [=](CublasScopedContextHandler &sc) {
             auto handle = sc.get_handle(queue);
             auto a_ = reinterpret_cast<const cuDataType *>(a);
             auto b_ = reinterpret_cast<const cuDataType *>(b);

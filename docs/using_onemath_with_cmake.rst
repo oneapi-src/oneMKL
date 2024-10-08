@@ -1,4 +1,4 @@
-.. _using_onemkl_interface_library_with_cmake:
+.. _using_onemath_interface_library_with_cmake:
 
 Using the oneMKL Interfaces in your project with CMake
 =============================================================
@@ -31,12 +31,12 @@ For example:
 .. code-block:: cmake
 
     find_package(oneMKL REQUIRED)
-    target_link_libraries(myTarget PRIVATE MKL::onemkl)
+    target_link_libraries(myTarget PRIVATE MKL::onemath)
 
 Different targets can be used depending on the requirements of oneMKL. 
-To link against the entire library, the ``MKL::onemkl`` target should be used.
-For specific domains, ``MKL::onemkl_<domain>`` should be used.
-And for specific backends, ``MKL::onemkl_<domain>_<backend>`` should be used.
+To link against the entire library, the ``MKL::onemath`` target should be used.
+For specific domains, ``MKL::onemath_<domain>`` should be used.
+And for specific backends, ``MKL::onemath_<domain>_<backend>`` should be used.
 
 When using a binary, it may be useful to know the backends that were enabled
 during the build. To check for the existence of backends, CMake's ``if(TARGET
@@ -44,8 +44,8 @@ during the build. To check for the existence of backends, CMake's ``if(TARGET
 
 .. code-block:: cmake
 
-    if(TARGET MKL::onemkl_dft_cufft)
-        target_link_libraries(myTarget PRIVATE MKL::onemkl_dft_cufft)
+    if(TARGET MKL::onemath_dft_cufft)
+        target_link_libraries(myTarget PRIVATE MKL::onemath_dft_cufft)
     else()
         message(FATAL_ERROR "oneMKL Interfaces was not built with CuFFT backend")
     endif()
@@ -68,23 +68,23 @@ For example:
     set(BUILD_EXAMPLES False)
     set(ENABLE_<BACKEND_NAME>_BACKEND True)
     FetchContent_Declare(
-            onemkl_interface_library
+            onemath_interface_library
             GIT_REPOSITORY https://github.com/oneapi-src/oneMKL.git
             GIT_TAG develop
     )
-    FetchContent_MakeAvailable(onemkl_interface_library)
+    FetchContent_MakeAvailable(onemath_interface_library)
 
-    target_link_libraries(myTarget PRIVATE onemkl)
+    target_link_libraries(myTarget PRIVATE onemath)
 
 The build parameters should be appropriately set before
 ``FetchContent_Declare``. See :ref:`building_the_project_with_dpcpp` or
 :ref:`building_the_project_with_adaptivecpp`.
 
 To link against the main library with run-time dispatching, use the target
-``onemkl``. To link against particular domains, use the target
-``onemkl_<domain>``. For example, ``onemkl_blas`` or ``onemkl_dft``. To link
+``onemath``. To link against particular domains, use the target
+``onemath_<domain>``. For example, ``onemath_blas`` or ``onemath_dft``. To link
 against particular backends (as required for static dispatch of oneAPI calls to
-a particular backend), use the target ``onemkl_<domain>_<backend>``. For
-example, ``onemkl_dft_cufft``.
+a particular backend), use the target ``onemath_<domain>_<backend>``. For
+example, ``onemath_dft_cufft``.
 
 .. _FetchContent: https://cmake.org/cmake/help/latest/module/FetchContent.html

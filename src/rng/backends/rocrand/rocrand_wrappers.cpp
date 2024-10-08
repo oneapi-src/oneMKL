@@ -58,7 +58,7 @@
  * so.
  ******************************************************************************/
 
-#include "oneapi/math/rng/detail/rocrand/onemkl_rng_rocrand.hpp"
+#include "oneapi/math/rng/detail/rocrand/onemath_rng_rocrand.hpp"
 #include "rng/function_table.hpp"
 
 #define WRAPPER_VERSION 1

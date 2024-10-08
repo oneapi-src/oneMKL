@@ -56,7 +56,7 @@
  * so.
  ******************************************************************************/
 
-#include "oneapi/math/rng/detail/curand/onemkl_rng_curand.hpp"
+#include "oneapi/math/rng/detail/curand/onemath_rng_curand.hpp"
 #include "rng/function_table.hpp"
 
 #define WRAPPER_VERSION 1

@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(LIB_NAME onemkl_lapack_mklgpu)
+set(LIB_NAME onemath_lapack_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 add_library(${LIB_NAME})
@@ -25,7 +25,7 @@ add_library(${LIB_OBJ} OBJECT
   mkl_lapack.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: lapack_gpu_wrappers.cpp>
 )
-add_dependencies(onemkl_backend_libs_lapack ${LIB_NAME})
+add_dependencies(onemath_backend_libs_lapack ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include

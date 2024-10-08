@@ -17,7 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #===============================================================================
 
-set(LIB_NAME onemkl_sparse_blas_mklgpu)
+set(LIB_NAME onemath_sparse_blas_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 include(WarningsUtils)
@@ -28,7 +28,7 @@ add_library(${LIB_OBJ} OBJECT
   mklgpu_operations.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklgpu_wrappers.cpp>
 )
-add_dependencies(onemkl_backend_libs_sparse_blas ${LIB_NAME})
+add_dependencies(onemath_backend_libs_sparse_blas ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -43,13 +43,13 @@ if(TARGET MKL::MKL_SYCL::SPARSE)
   target_link_libraries(${LIB_OBJ}
     PUBLIC ONEMKL::SYCL::SYCL
     PUBLIC MKL::MKL_SYCL::SPARSE
-    PRIVATE onemkl_warnings
+    PRIVATE onemath_warnings
   )
 else()
   target_link_libraries(${LIB_OBJ}
     PUBLIC ONEMKL::SYCL::SYCL
     PUBLIC MKL::MKL_DPCPP
-    PRIVATE onemkl_warnings
+    PRIVATE onemath_warnings
   )
 endif()
 

@@ -25,7 +25,7 @@
 
 #include "oneapi/math/exceptions.hpp"
 
-#include "oneapi/math/dft/detail/rocfft/onemkl_dft_rocfft.hpp"
+#include "oneapi/math/dft/detail/rocfft/onemath_dft_rocfft.hpp"
 #include "oneapi/math/dft/descriptor.hpp"
 
 #include "execute_helper.hpp"
