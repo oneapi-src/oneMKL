@@ -1,6 +1,6 @@
-### oneMKL documentation
+### oneMath documentation
 
-This folder contains oneMKL documentation in reStructuredText (rST) format.
+This folder contains oneMath documentation in reStructuredText (rST) format.
 
 The documentation build step is skipped by default.
 To enable building documentation from the main build, set `-DBUILD_DOC=ON`.
