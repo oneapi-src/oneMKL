@@ -18,7 +18,7 @@ oneMath is part of the [UXL Foundation](http://www.uxlfoundation.org).
     </thead>
     <tbody>
         <tr>
-            <td rowspan=12 align="center">oneMath interface</td>
+            <td rowspan=12 align="center">oneMath</td>
             <td rowspan=12 align="center">oneMath selector</td>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library (oneMKL)</a></td>
             <td align="center">x86 CPU, Intel GPU</td>

@@ -91,10 +91,10 @@ endif()
 target_link_libraries(${LIB_OBJ} PRIVATE onemath_warnings)
 
 target_include_directories(${LIB_OBJ}
-  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INCLUDE_DIRS}
 )
 target_include_directories(${LIB_NAME}
-  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INCLUDE_DIRS}
 )
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/src

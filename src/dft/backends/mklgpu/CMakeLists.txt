@@ -33,7 +33,7 @@ add_library(${LIB_OBJ} OBJECT
 add_dependencies(onemath_backend_libs_dft ${LIB_NAME})
 
 target_include_directories(${LIB_NAME}
-  PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
+  PUBLIC ${ONEMATH_INCLUDE_DIRS}
 )
 
 # Due to using the same file name for different headers in this library and in

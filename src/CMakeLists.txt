@@ -27,7 +27,7 @@ endif()
 set(ONEMATH_GENERATED_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 
-set(ONEMATH_INTERFACE_INCLUDE_DIRS
+set(ONEMATH_INCLUDE_DIRS
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:include>
@@ -84,7 +84,7 @@ if(BUILD_SHARED_LIBS)
   add_dependencies(onemath onemath_backend_libs)
 
   target_include_directories(onemath
-    PUBLIC ${ONEMATH_INTERFACE_INCLUDE_DIRS}
+    PUBLIC ${ONEMATH_INCLUDE_DIRS}
   )
   set_target_properties(onemath PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
