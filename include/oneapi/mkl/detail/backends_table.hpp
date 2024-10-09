@@ -127,6 +127,12 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
 #ifdef ENABLE_PORTFFT_BACKEND
                   LIB_NAME("dft_portfft")
 #endif
+          } },
+        { device::generic_device,
+          {
+#ifdef ENABLE_PORTFFT_BACKEND
+              LIB_NAME("dft_portfft"),
+#endif
           } } } },
 
     { domain::lapack,

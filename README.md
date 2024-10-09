@@ -66,7 +66,7 @@ oneMKL is part of the [UXL Foundation](http://www.uxlfoundation.org).
         </tr>
         <tr>
             <td align="center"><a href="https://github.com/codeplaysoftware/portFFT"> portFFT </a></td>
-            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU</td>
+            <td align="center">x86 CPU, Intel GPU, NVIDIA GPU, AMD GPU, Other SYCL devices (unsupported)</td>
         </tr>
     </tbody>
 </table>
@@ -278,7 +278,7 @@ Supported compilers include:
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td rowspan=8 align="center">DFT</td>
+            <td rowspan=9 align="center">DFT</td>
             <td rowspan=2 align="center">x86 CPU</td>
             <td align="center">Intel(R) oneMKL</td>
             <td align="center">Intel DPC++</td>
@@ -320,6 +320,12 @@ Supported compilers include:
         <tr>
             <td align="center">portFFT (<a href="https://github.com/codeplaysoftware/portFFT#supported-configurations">limited API support</a>)</td>
             <td align="center">Open DPC++</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td rowspan=1 align="center">Other SYCL devices (unsupported)</td>
+            <td align="center">portFFT</td>
+            <td align="center">Open DPC++</br>Open DPC++</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
