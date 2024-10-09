@@ -779,10 +779,10 @@ change in future versions.</p>
 <p>SYCL enables portable heterogeneous computing on a wide range of accelerators.
 Consequently, it is possible to use oneMKL Interfaces with accelerators not
 anticipated by the oneMKL Interfaces team.</p>
-<p>For generic SYCL devices, only the portBLAS backend is enabled. The user must
-set the appropriate <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> for their device, and also any
-<code class="docutils literal notranslate"><span class="pre">PORTBLAS_TUNING_TARGET</span></code> required for performance. See
-<a class="reference internal" href="#building-for-portblas">Building for portBLAS</a>. Extensive testing is strongly advised for these
+<p>For generic SYCL devices, only portBLAS and portFFT backend are enabled.
+The user must set the appropriate <code class="docutils literal notranslate"><span class="pre">-fsycl-targets</span></code> for their device, and also
+any other option required for performance. See <a class="reference internal" href="#building-for-portblas">Building for portBLAS</a> and
+<a class="reference internal" href="#building-for-portfft">Building for portFFT</a>. Extensive testing is strongly advised for these
 unsupported configurations.</p>
 </section>
 <section id="pure-sycl-backends-portblas-and-portfft">
@@ -949,6 +949,18 @@ functional testing was not disabled, tests would be built.</p>
 </div>
 <p>Note that this is not a tested configuration. This builds oneMKL Interfaces
 with the portBLAS backend only, for a generic SYCL device supported by the
+Open DPC++ project.</p>
+<p>Build oneMKL for the DFT domain on a generic SYCL device:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span><span class="nv">$ONEMKL_DIR</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>clang++<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_C_COMPILER<span class="o">=</span>clang<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLCPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_MKLGPU_BACKEND<span class="o">=</span>False<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DENABLE_PORTFFT_BACKEND<span class="o">=</span>True
+</pre></div>
+</div>
+<p>Note that this is not a tested configuration. This builds oneMKL Interfaces
+with the portFFT backend only, for a generic SYCL device supported by the
 Open DPC++ project.</p>
 </section>
 <section id="project-cleanup">
