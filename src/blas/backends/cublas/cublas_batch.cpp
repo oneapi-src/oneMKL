@@ -521,7 +521,7 @@ inline sycl::event gemv_batch(const char *func_name, Func func, sycl::queue &que
             auto **x_ = reinterpret_cast<const cuDataType **>(x);
             auto **y_ = reinterpret_cast<cuDataType **>(y);
             for (int64_t i = 0; i < group_count; i++) {
-                CUBLAS_ERROR_FUNC_T_SYNC(
+                cublas_native_named_func(
                     func_name, func, err, handle, get_cublas_operation(trans[i]),
                     (int)m[i], (int)n[i],
                     (cuDataType *)&alpha[i], a_ + offset, (int)lda[i], x_ + offset, (int)incx[i],
@@ -533,13 +533,14 @@ inline sycl::event gemv_batch(const char *func_name, Func func, sycl::queue &que
     return done;
 }
 
-#define GEMV_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
-    sycl::event gemv_batch(                                                                        \
-        sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n, TYPE *alpha, const TYPE **a, \
-        int64_t *lda, const TYPE **x, int64_t *incx, TYPE *beta, TYPE **y, int64_t *incy,          \
-        int64_t group_count, int64_t *group_size, const std::vector<sycl::event> &dependencies) {  \
-        return gemv_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, x, incx, beta, y,    \
-                          incy, group_count, group_size, dependencies);                            \
+#define GEMV_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                          \
+    sycl::event gemv_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,       \
+                           TYPE *alpha, const TYPE **a, int64_t *lda, const TYPE **x,          \
+                           int64_t *incx, TYPE *beta, TYPE **y, int64_t *incy,                 \
+                           int64_t group_count, int64_t *group_size,                           \
+                           const std::vector<sycl::event> &dependencies) {                     \
+        return gemv_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda,  \
+                          x, incx, beta, y, incy, group_count, group_size, dependencies);      \
     }
 
 GEMV_BATCH_LAUNCHER_USM(float, cublasSgemvBatched)
