@@ -62,8 +62,8 @@
  * @file rocrand_helper.cpp : contains the implementation of all the routines
  * for HIP backend
  */
-#ifndef _MKL_RNG_ROCRAND_HELPER_HPP_
-#define _MKL_RNG_ROCRAND_HELPER_HPP_
+#ifndef ONEMATH_RNG_ROCRAND_HELPER_HPP_
+#define ONEMATH_RNG_ROCRAND_HELPER_HPP_
 
 #include <rocrand.h>
 #include <complex>
@@ -332,4 +332,4 @@ public:
 } // namespace math
 } // namespace oneapi
 
-#endif // _MKL_RNG_ROCRAND_HELPER_HPP_
+#endif // ONEMATH_RNG_ROCRAND_HELPER_HPP_

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_LOGNORMAL_IMPL_HPP_
-#define _MKL_RNG_DEVICE_LOGNORMAL_IMPL_HPP_
+#ifndef ONEMATH_RNG_DEVICE_LOGNORMAL_IMPL_HPP_
+#define ONEMATH_RNG_DEVICE_LOGNORMAL_IMPL_HPP_
 
 namespace oneapi::math::rng::device::detail {
 
@@ -102,4 +102,4 @@ protected:
 
 } // namespace oneapi::math::rng::device::detail
 
-#endif // _MKL_RNG_DEVICE_LOGNORMAL_IMPL_HPP_
+#endif // ONEMATH_RNG_DEVICE_LOGNORMAL_IMPL_HPP_

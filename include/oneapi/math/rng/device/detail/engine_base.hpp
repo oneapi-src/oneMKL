@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_ENGINE_BASE_HPP_
-#define _MKL_RNG_DEVICE_ENGINE_BASE_HPP_
+#ifndef ONEMATH_RNG_DEVICE_ENGINE_BASE_HPP_
+#define ONEMATH_RNG_DEVICE_ENGINE_BASE_HPP_
 
 #include <cstdint>
 
@@ -40,4 +40,4 @@ class engine_base {};
 #include "oneapi/math/rng/device/detail/mcg31m1_impl.hpp"
 #include "oneapi/math/rng/device/detail/mcg59_impl.hpp"
 
-#endif // _MKL_RNG_DEVICE_ENGINE_BASE_HPP_
+#endif // ONEMATH_RNG_DEVICE_ENGINE_BASE_HPP_

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_PHILOX4X32X10_IMPL_HPP_
-#define _MKL_RNG_DEVICE_PHILOX4X32X10_IMPL_HPP_
+#ifndef ONEMATH_RNG_DEVICE_PHILOX4X32X10_IMPL_HPP_
+#define ONEMATH_RNG_DEVICE_PHILOX4X32X10_IMPL_HPP_
 
 #include <utility> // std::pair
 
@@ -549,4 +549,4 @@ protected:
 } // namespace detail
 } // namespace oneapi::math::rng::device
 
-#endif // _MKL_RNG_DEVICE_PHILOX4X32X10_IMPL_HPP_
+#endif // ONEMATH_RNG_DEVICE_PHILOX4X32X10_IMPL_HPP_

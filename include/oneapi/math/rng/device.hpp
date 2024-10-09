@@ -17,12 +17,12 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_SYCL_DEVICE_HPP__
-#define _MKL_RNG_SYCL_DEVICE_HPP__
+#ifndef ONEMATH_RNG_SYCL_DEVICE_HPP__
+#define ONEMATH_RNG_SYCL_DEVICE_HPP__
 
 #include "oneapi/math/rng/device/types.hpp"
 #include "oneapi/math/rng/device/functions.hpp"
 #include "oneapi/math/rng/device/distributions.hpp"
 #include "oneapi/math/rng/device/engines.hpp"
 
-#endif // _MKL_RNG_SYCL_DEVICE_HPP__
+#endif // ONEMATH_RNG_SYCL_DEVICE_HPP__

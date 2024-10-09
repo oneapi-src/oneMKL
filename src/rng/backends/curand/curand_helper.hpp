@@ -60,8 +60,8 @@
  * @file curand_helper.cpp : contains the implementation of all the routines
  * for CUDA backend
  */
-#ifndef _MKL_RNG_CURAND_HELPER_HPP_
-#define _MKL_RNG_CURAND_HELPER_HPP_
+#ifndef ONEMATH_RNG_CURAND_HELPER_HPP_
+#define ONEMATH_RNG_CURAND_HELPER_HPP_
 #include <cuda.h>
 #include <curand.h>
 
@@ -323,4 +323,4 @@ static inline sycl::event sample_bernoulli_from_uniform(sycl::queue& queue, floa
 } // namespace math
 } // namespace oneapi
 
-#endif // _MKL_RNG_CURAND_HELPER_HPP_
+#endif // ONEMATH_RNG_CURAND_HELPER_HPP_

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_TYPES_HPP_
-#define _MKL_RNG_DEVICE_TYPES_HPP_
+#ifndef ONEMATH_RNG_DEVICE_TYPES_HPP_
+#define ONEMATH_RNG_DEVICE_TYPES_HPP_
 
 namespace oneapi::math::rng::device {
 
@@ -71,4 +71,4 @@ using by_default = marsaglia;
 
 } // namespace oneapi::math::rng::device
 
-#endif // _MKL_RNG_DEVICE_TYPES_HPP_
+#endif // ONEMATH_RNG_DEVICE_TYPES_HPP_

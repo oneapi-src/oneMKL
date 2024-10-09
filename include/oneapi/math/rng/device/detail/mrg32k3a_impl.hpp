@@ -22,8 +22,8 @@
 // (2011). Parallelisation Techniques for Random Number Generators.
 // GPU Computing Gems Emerald Edition. 10.1016/B978-0-12-384988-5.00016-4
 
-#ifndef _MKL_RNG_DEVICE_MRG32K3A_IMPL_HPP_
-#define _MKL_RNG_DEVICE_MRG32K3A_IMPL_HPP_
+#ifndef ONEMATH_RNG_DEVICE_MRG32K3A_IMPL_HPP_
+#define ONEMATH_RNG_DEVICE_MRG32K3A_IMPL_HPP_
 
 #include "oneapi/math/rng/device/detail/mrg32k3a_skip_ahead_matrix.hpp"
 
@@ -381,4 +381,4 @@ protected:
 } // namespace detail
 } // namespace oneapi::math::rng::device
 
-#endif // _MKL_RNG_DEVICE_MRG32K3A_IMPL_HPP_
+#endif // ONEMATH_RNG_DEVICE_MRG32K3A_IMPL_HPP_

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_DISTRIBUTIONS_HPP_
-#define _MKL_RNG_DEVICE_DISTRIBUTIONS_HPP_
+#ifndef ONEMATH_RNG_DEVICE_DISTRIBUTIONS_HPP_
+#define ONEMATH_RNG_DEVICE_DISTRIBUTIONS_HPP_
 
 #include <limits>
 
@@ -634,4 +634,4 @@ public:
 
 } // namespace oneapi::math::rng::device
 
-#endif // _MKL_RNG_DEVICE_DISTRIBUTIONS_HPP_
+#endif // ONEMATH_RNG_DEVICE_DISTRIBUTIONS_HPP_

@@ -19,8 +19,8 @@
 *
 **************************************************************************/
 
-#ifndef _MKL_LAPACK_ROCSOLVER_TASK_HPP_
-#define _MKL_LAPACK_ROCSOLVER_TASK_HPP_
+#ifndef ONEMATH_LAPACK_ROCSOLVER_TASK_HPP_
+#define ONEMATH_LAPACK_ROCSOLVER_TASK_HPP_
 #include <hip/hip_runtime.h>
 #include <rocblas/rocblas.h>
 #include <rocsolver/rocsolver.h>
@@ -71,4 +71,4 @@ static inline void onemath_rocsolver_host_task(H &cgh, sycl::queue queue, F f) {
 } // namespace lapack
 } // namespace math
 } // namespace oneapi
-#endif // _MKL_LAPACK_ROCSOLVER_TASK_HPP_
+#endif // ONEMATH_LAPACK_ROCSOLVER_TASK_HPP_

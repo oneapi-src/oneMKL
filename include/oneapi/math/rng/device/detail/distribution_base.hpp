@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DISTRIBUTION_BASE_HPP_
-#define _MKL_RNG_DISTRIBUTION_BASE_HPP_
+#ifndef ONEMATH_RNG_DISTRIBUTION_BASE_HPP_
+#define ONEMATH_RNG_DISTRIBUTION_BASE_HPP_
 
 #include <sycl/sycl.hpp>
 
@@ -78,4 +78,4 @@ class bernoulli;
 #include "oneapi/math/rng/device/detail/beta_impl.hpp"
 #include "oneapi/math/rng/device/detail/gamma_impl.hpp"
 
-#endif // _MKL_RNG_DISTRIBUTION_BASE_HPP_
+#endif // ONEMATH_RNG_DISTRIBUTION_BASE_HPP_

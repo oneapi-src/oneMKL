@@ -1,5 +1,5 @@
-#ifndef _MKL_RNG_CURAND_TASK_HPP_
-#define _MKL_RNG_CURAND_TASK_HPP_
+#ifndef ONEMATH_RNG_CURAND_TASK_HPP_
+#define ONEMATH_RNG_CURAND_TASK_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>

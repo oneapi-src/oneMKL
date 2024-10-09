@@ -19,8 +19,8 @@
 *
 **************************************************************************/
 
-#ifndef _MKL_BLAS_CUBLAS_TASK_HPP_
-#define _MKL_BLAS_CUBLAS_TASK_HPP_
+#ifndef ONEMATH_BLAS_CUBLAS_TASK_HPP_
+#define ONEMATH_BLAS_CUBLAS_TASK_HPP_
 #include <cublas_v2.h>
 #include <cuda.h>
 #include <complex>
@@ -86,4 +86,4 @@ static inline void onemath_cublas_host_task(H &cgh, sycl::queue queue, F f) {
 } // namespace blas
 } // namespace math
 } // namespace oneapi
-#endif // _MKL_BLAS_CUBLAS_TASK_HPP_
+#endif // ONEMATH_BLAS_CUBLAS_TASK_HPP_

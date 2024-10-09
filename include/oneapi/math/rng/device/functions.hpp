@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_FUNCTIONS_HPP_
-#define _MKL_RNG_DEVICE_FUNCTIONS_HPP_
+#ifndef ONEMATH_RNG_DEVICE_FUNCTIONS_HPP_
+#define ONEMATH_RNG_DEVICE_FUNCTIONS_HPP_
 
 #include <sycl/sycl.hpp>
 
@@ -49,4 +49,4 @@ void skip_ahead(Engine& engine, std::initializer_list<std::uint64_t> num_to_skip
 
 } // namespace oneapi::math::rng::device
 
-#endif // _MKL_RNG_DEVICE_FUNCTIONS_HPP_
+#endif // ONEMATH_RNG_DEVICE_FUNCTIONS_HPP_

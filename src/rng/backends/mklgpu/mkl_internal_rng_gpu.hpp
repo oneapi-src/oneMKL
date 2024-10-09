@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_INTERNAL_RNG_GPU_HPP_
-#define _MKL_INTERNAL_RNG_GPU_HPP_
+#ifndef ONEMATH_INTERNAL_RNG_GPU_HPP_
+#define ONEMATH_INTERNAL_RNG_GPU_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>

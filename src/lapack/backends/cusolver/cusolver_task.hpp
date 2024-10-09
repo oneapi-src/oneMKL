@@ -17,8 +17,8 @@
 *
 **************************************************************************/
 
-#ifndef _MKL_LAPACK_CUSOLVER_TASK_HPP_
-#define _MKL_LAPACK_CUSOLVER_TASK_HPP_
+#ifndef ONEMATH_LAPACK_CUSOLVER_TASK_HPP_
+#define ONEMATH_LAPACK_CUSOLVER_TASK_HPP_
 #include <cuda.h>
 #include <cublas_v2.h>
 #include <cusolverDn.h>
@@ -69,4 +69,4 @@ static inline void onemath_cusolver_host_task(H &cgh, sycl::queue queue, F f) {
 } // namespace lapack
 } // namespace math
 } // namespace oneapi
-#endif // _MKL_LAPACK_CUSOLVER_TASK_HPP_
+#endif // ONEMATH_LAPACK_CUSOLVER_TASK_HPP_

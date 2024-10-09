@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_VM_WRAPPERS_HPP_
-#define _MKL_RNG_DEVICE_VM_WRAPPERS_HPP_
+#ifndef ONEMATH_RNG_DEVICE_VM_WRAPPERS_HPP_
+#define ONEMATH_RNG_DEVICE_VM_WRAPPERS_HPP_
 
 #include <cmath>
 
@@ -72,4 +72,4 @@ static inline DataType exp_wrapper(DataType a) {
 }
 } // namespace oneapi::math::rng::device::detail
 
-#endif // _MKL_RNG_DEVICE_VM_WRAPPERS_HPP_
+#endif // ONEMATH_RNG_DEVICE_VM_WRAPPERS_HPP_

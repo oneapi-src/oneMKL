@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _MKL_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
-#define _MKL_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
+#ifndef ONEMATH_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
+#define ONEMATH_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
 
 namespace oneapi::math::rng::device::detail {
 namespace mrg32k3a_impl {
@@ -3665,4 +3665,4 @@ static const std::uint32_t skip_ahead_matrix[2][quantity_of_3x3_matrices][3][3] 
 } // namespace mrg32k3a_impl
 } // namespace oneapi::math::rng::device::detail
 
-#endif // _MKL_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
+#endif // ONEMATH_RNG_DEVICE_MRG32K3A_SKIP_AHEAD_MATRIX_HPP_
