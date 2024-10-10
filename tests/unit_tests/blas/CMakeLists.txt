@@ -19,8 +19,8 @@
 
 # Add compile definitions for the reference libraries
 add_compile_definitions(
-  REF_BLAS_LIBNAME="${REF_BLAS_LIBNAME}"
-  REF_CBLAS_LIBNAME="${REF_CBLAS_LIBNAME}")
+  ONEAPI_ONEMKL_REF_BLAS_LIBNAME="${ONEAPI_ONEMKL_REF_BLAS_LIBNAME}"
+  ONEAPI_ONEMKL_REF_CBLAS_LIBNAME="${ONEAPI_ONEMKL_REF_CBLAS_LIBNAME}")
 
 add_subdirectory(level1)
 add_subdirectory(level2)
