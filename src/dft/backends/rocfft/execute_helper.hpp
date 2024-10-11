@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_SRC_ROCFFT_EXECUTE_HELPER_HPP_
-#define _ONEMKL_DFT_SRC_ROCFFT_EXECUTE_HELPER_HPP_
+#ifndef _ONEMKL_DFT_SRC_EXECUTE_HELPER_ROCFFT_HPP_
+#define _ONEMKL_DFT_SRC_EXECUTE_HELPER_ROCFFT_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -100,4 +100,4 @@ inline void execute_checked(const std::string &func, hipStream_t stream, const r
 
 } // namespace oneapi::mkl::dft::rocfft::detail
 
-#endif // _ONEMKL_DFT_SRC_ROCFFT_EXECUTE_HELPER_HPP_
+#endif // _ONEMKL_DFT_SRC_EXECUTE_HELPER_ROCFFT_HPP_
