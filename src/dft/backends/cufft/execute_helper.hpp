@@ -149,4 +149,4 @@ inline CUstream setup_stream(const std::string &func, sycl::interop_handle ih, c
 
 } // namespace oneapi::mkl::dft::cufft::detail
 
-#endif
+#endif // _ONEMKL_DFT_SRC_CUFFT_EXECUTE_HPP_

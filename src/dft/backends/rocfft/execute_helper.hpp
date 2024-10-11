@@ -100,4 +100,4 @@ inline void execute_checked(const std::string &func, hipStream_t stream, const r
 
 } // namespace oneapi::mkl::dft::rocfft::detail
 
-#endif
+#endif // _ONEMKL_DFT_SRC_ROCFFT_EXECUTE_HELPER_HPP_

@@ -17,8 +17,8 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMKL_DFT_SRC_CUFFT_EXECUTE_GENERIC_HPP_
-#define _ONEMKL_DFT_SRC_CUFFT_EXECUTE_GENERIC_HPP_
+#ifndef _ONEMKL_DFT_SRC_EXECUTE_GENERIC_HPP_
+#define _ONEMKL_DFT_SRC_EXECUTE_GENERIC_HPP_
 
 #if __has_include(<sycl/sycl.hpp>)
 #include <sycl/sycl.hpp>
@@ -50,4 +50,4 @@ static inline void fft_enqueue_task(HandlerT&& cgh, FnT&& f) {
 
 } // namespace oneapi::mkl::dft::detail
 
-#endif
+#endif // _ONEMKL_DFT_SRC_EXECUTE_GENERIC_HPP_
