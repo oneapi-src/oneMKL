@@ -23,6 +23,7 @@ set(LIB_OBJ ${LIB_NAME}_obj)
 include(WarningsUtils)
 
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   mklcpu_handles.cpp
   mklcpu_operations.cpp

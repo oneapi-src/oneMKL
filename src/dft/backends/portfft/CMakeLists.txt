@@ -62,6 +62,7 @@ set(LIB_NAME onemath_dft_portfft)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   descriptor.cpp
   commit.cpp

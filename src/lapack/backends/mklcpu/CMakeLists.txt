@@ -21,6 +21,7 @@ set(LIB_NAME onemath_lapack_mklcpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   mkl_lapack.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: lapack_cpu_wrappers.cpp>

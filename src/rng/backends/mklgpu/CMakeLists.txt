@@ -21,6 +21,7 @@ set(LIB_NAME onemath_rng_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   mkl_internal_rng_gpu.hpp
   philox4x32x10.cpp

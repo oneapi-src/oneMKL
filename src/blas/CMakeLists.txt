@@ -23,6 +23,7 @@ add_subdirectory(backends)
 # Recipe for BLAS loader object
 if(BUILD_SHARED_LIBS)
 add_library(onemath_blas OBJECT)
+add_deprecated_library(onemath_blas)
 target_sources(onemath_blas PRIVATE blas_loader.cpp)
 target_include_directories(onemath_blas
   PRIVATE ${PROJECT_SOURCE_DIR}/include

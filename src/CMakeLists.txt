@@ -33,6 +33,20 @@ set(ONEMATH_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include>
 )
 
+# Create a CMake library as a deprecated alias of target_name
+# The deprecated target name is based on the target_name with "onemath" replaced to "onemkl"
+# Deprecated targets are planned to be removed late 2025
+function(add_deprecated_library target_name)
+  string(REPLACE "onemath" "onemkl" deprecated_name "${target_name}")
+  if("${target_name}" EQUAL "${deprecated_name}")
+    message(FATAL_ERROR "Internal error: add_deprecated_library was not able to generate a deprecated target name")
+  endif()
+  # The INTERFACE IMPORTED target works like an alias which can have different properties
+  add_library(deprecated_name INTERFACE IMPORTED)
+  target_link_libraries(deprecated_name INTERFACE target_name)
+  set_target_properties(deprecated_name PROPERTIES DEPRECATION "${deprecated_name} target is deprecated, please use ${target_name} instead")
+endfunction()
+
 # Build loader and backends for each domain
 add_custom_target(onemath_backend_libs)
 foreach(domain ${TARGET_DOMAINS})
@@ -112,4 +126,6 @@ if(BUILD_SHARED_LIBS)
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
   )
+
+  add_deprecated_library(onemkl onemath)
 endif()

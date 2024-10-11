@@ -23,6 +23,7 @@ add_subdirectory(backends)
 # Recipe for RNG loader object
 if(BUILD_SHARED_LIBS)
 add_library(onemath_rng OBJECT)
+add_deprecated_library(onemath_rng)
 target_sources(onemath_rng PRIVATE rng_loader.cpp)
 target_include_directories(onemath_rng
   PRIVATE ${PROJECT_SOURCE_DIR}/include

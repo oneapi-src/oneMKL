@@ -34,6 +34,7 @@ set(SOURCES rocblas_level1.cpp
                 $<$<STREQUAL:${ONEMATH_SYCL_IMPLEMENTATION},hipsycl>:rocblas_scope_handle_hipsycl.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: rocblas_wrappers.cpp>)
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_blas ${LIB_NAME})
 

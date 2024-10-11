@@ -30,6 +30,7 @@ set(SOURCES rocsolver_lapack.cpp
 	        $<$<STREQUAL:${ONEMATH_SYCL_IMPLEMENTATION},dpc++>:rocsolver_scope_handle.cpp>
           $<$<BOOL:${BUILD_SHARED_LIBS}>: rocsolver_wrappers.cpp>)
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_lapack ${LIB_NAME})
 

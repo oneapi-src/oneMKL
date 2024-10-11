@@ -62,6 +62,7 @@ set(SOURCES philox4x32x10.cpp mrg32k3a.cpp $<$<BOOL:${BUILD_SHARED_LIBS}>:
             rocrand_wrappers.cpp>)
 
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_rng ${LIB_NAME})
 

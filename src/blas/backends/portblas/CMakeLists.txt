@@ -176,6 +176,7 @@ set(SOURCES
   portblas_batch.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: portblas_wrappers.cpp>)
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_blas ${LIB_NAME})
 

@@ -27,6 +27,7 @@ set(SOURCES cpu_common.hpp
 )
 
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_rng ${LIB_NAME})
 target_include_directories(${LIB_OBJ}

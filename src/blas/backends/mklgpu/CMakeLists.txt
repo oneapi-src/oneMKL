@@ -21,6 +21,7 @@ set(LIB_NAME onemath_blas_mklgpu)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
   mklgpu_level1.cpp mklgpu_level2.cpp mklgpu_level3.cpp mklgpu_batch.cpp mklgpu_extensions.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mklgpu_wrappers.cpp>

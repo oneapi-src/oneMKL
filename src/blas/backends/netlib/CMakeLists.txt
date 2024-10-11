@@ -28,6 +28,7 @@ set(SOURCES netlib_common.hpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: netlib_wrappers.cpp>
 )
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_blas ${LIB_NAME})
 

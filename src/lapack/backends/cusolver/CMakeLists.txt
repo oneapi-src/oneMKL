@@ -26,6 +26,7 @@ set(SOURCES     cusolver_lapack.cpp
                 $<$<STREQUAL:${ONEMATH_SYCL_IMPLEMENTATION},dpc++>:cusolver_scope_handle.cpp >
                 $<$<BOOL:${BUILD_SHARED_LIBS}>: cusolver_wrappers.cpp>)
 add_library(${LIB_NAME})
+add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_lapack ${LIB_NAME})
 

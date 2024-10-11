@@ -21,6 +21,7 @@ add_subdirectory(backends)
 
 if(BUILD_SHARED_LIBS)
   add_library(onemath_sparse_blas OBJECT)
+  add_deprecated_library(onemath_sparse_blas)
   target_sources(onemath_sparse_blas PRIVATE sparse_blas_loader.cpp)
   target_include_directories(onemath_sparse_blas
     PRIVATE ${PROJECT_SOURCE_DIR}/include
