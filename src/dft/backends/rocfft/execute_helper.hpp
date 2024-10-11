@@ -98,26 +98,6 @@ inline void execute_checked(const std::string &func, hipStream_t stream, const r
 #endif
 }
 
-/** Wrap interop API to launch interop host task.
- * 
- * @tparam HandlerT The command group handler type
- * @tparam FnT The body of the enqueued task
- *
- * Either uses host task interop API, or enqueue native command extension.
- * This extension avoids host synchronization after 
- * the CUDA call is complete.
- */
-template <typename HandlerT, typename FnT>
-static inline void rocfft_enqueue_task(HandlerT&& cgh, FnT&& f) {
-#ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih){
-#else
-    cgh.host_task([=](sycl::interop_handle ih){
-#endif
-        f(std::move(ih));
-    });
-}
-
 } // namespace oneapi::mkl::dft::rocfft::detail
 
 #endif

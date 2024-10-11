@@ -29,6 +29,7 @@
 #include "oneapi/mkl/dft/descriptor.hpp"
 
 #include "execute_helper.hpp"
+#include "../../execute_helper_generic.hpp"
 #include "rocfft_handle.hpp"
 
 #include <rocfft.h>
@@ -78,7 +79,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
 
             auto inout_native = reinterpret_cast<void *>(
@@ -112,7 +113,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto inout_im_acc = inout_im.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
 
             std::array<void *, 2> inout_native{
@@ -146,7 +147,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, in, out)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
@@ -181,7 +182,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
         auto out_im_acc = out_im.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_backward", cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, in_re, in_im, out_re, out_im)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
@@ -235,7 +236,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
         cgh.depends_on(deps);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
 
             void *inout_ptr = inout;
@@ -268,7 +269,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
         cgh.depends_on(deps);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, info);
 
             std::array<void *, 2> inout_native{ inout_re + offsets[0], inout_im + offsets[0] };
@@ -300,7 +301,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
         cgh.depends_on(deps);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             const std::string func_name = "compute_backward(desc, in, out, deps)";
             auto stream = detail::setup_stream(func_name, ih, info);
 
@@ -330,7 +331,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
         cgh.depends_on(deps);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
-        detail::rocfft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
+        dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             const std::string func_name =
                 "compute_backward(desc, in_re, in_im, out_re, out_im, deps)";
             auto stream = detail::setup_stream(func_name, ih, info);
