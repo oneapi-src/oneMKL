@@ -20,10 +20,8 @@
 #ifndef _ONEMATH_SRC_SPARSE_BLAS_BACKENDS_MKL_COMMON_MKL_HANDLES_HPP_
 #define _ONEMATH_SRC_SPARSE_BLAS_BACKENDS_MKL_COMMON_MKL_HANDLES_HPP_
 
-// MKLCPU and MKLGPU backends include
-// This include defines its own oneapi::math::sparse namespace with some of the
-// types that are used here: matrix_handle_t, index_base, transpose, uplo, diag.
-#include <oneapi/math/spblas.hpp>
+// Intel(R) oneMKL header
+#include <oneapi/mkl/spblas.hpp>
 
 #include "sparse_blas/generic_container.hpp"
 
