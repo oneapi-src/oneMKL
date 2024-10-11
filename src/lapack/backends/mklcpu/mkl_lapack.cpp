@@ -23,6 +23,9 @@
 #include <CL/sycl.hpp>
 #endif
 
+// Intel(R) oneMKL header
+#include <oneapi/mkl/lapack.hpp>
+
 #include "oneapi/math/types.hpp"
 #include "oneapi/math/lapack/types.hpp"
 #include "oneapi/math/lapack/detail/mklcpu/onemath_lapack_mklcpu.hpp"
