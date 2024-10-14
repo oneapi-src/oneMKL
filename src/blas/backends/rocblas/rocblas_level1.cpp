@@ -125,8 +125,7 @@ inline void axpy(Func func, sycl::queue &queue, int64_t n, T alpha, sycl::buffer
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
-            rocblas_native_func(func, err, handle, n, (rocDataType *)&alpha, x_, incx, y_,
-                                    incy);
+            rocblas_native_func(func, err, handle, n, (rocDataType *)&alpha, x_, incx, y_, incy);
         });
     });
 }
@@ -363,7 +362,7 @@ inline void rot(Func func, sycl::queue &queue, int64_t n, sycl::buffer<T1, 1> &x
             auto y_ = sc.get_mem<rocDataType1 *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, n, x_, incx, y_, incy, (rocDataType2 *)&c,
-                                    (rocDataType3 *)&s);
+                                (rocDataType3 *)&s);
         });
     });
 }
@@ -752,8 +751,7 @@ inline sycl::event axpy(Func func, sycl::queue &queue, int64_t n, T alpha, const
             auto x_ = reinterpret_cast<const rocDataType *>(x);
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
-            rocblas_native_func(func, err, handle, n, (rocDataType *)&alpha, x_, incx, y_,
-                                    incy);
+            rocblas_native_func(func, err, handle, n, (rocDataType *)&alpha, x_, incx, y_, incy);
         });
     });
 
@@ -960,7 +958,7 @@ inline sycl::event rot(Func func, sycl::queue &queue, int64_t n, T1 *x, const in
             auto y_ = reinterpret_cast<rocDataType1 *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, n, x_, incx, y_, incy, (rocDataType2 *)&c,
-                                    (rocDataType3 *)&s);
+                                (rocDataType3 *)&s);
         });
     });
 

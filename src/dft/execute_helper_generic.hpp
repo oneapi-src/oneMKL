@@ -40,9 +40,9 @@ namespace oneapi::mkl::dft::detail {
 template <typename HandlerT, typename FnT>
 static inline void fft_enqueue_task(HandlerT&& cgh, FnT&& f) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih){
+    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih) {
 #else
-    cgh.host_task([=](sycl::interop_handle ih){
+    cgh.host_task([=](sycl::interop_handle ih) {
 #endif
         f(std::move(ih));
     });

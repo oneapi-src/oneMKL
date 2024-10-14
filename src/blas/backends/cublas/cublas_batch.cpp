@@ -168,12 +168,12 @@ inline void gemm_batch_impl(sycl::queue &queue, transpose transa, transpose tran
             auto c_ = sc.get_mem<cuTypeC *>(c_acc);
             cublasStatus_t err;
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-            CUBLAS_ERROR_FUNC_T(
-                "cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err, handle,
-                get_cublas_operation(transa), get_cublas_operation(transb), m, n, k, &alpha, a_,
-                get_cublas_datatype<cuTypeA>(), lda, stride_a, b_, get_cublas_datatype<cuTypeB>(),
-                ldb, stride_b, &beta, c_, get_cublas_datatype<cuTypeC>(), ldc, stride_c, batch_size,
-                get_cublas_datatype<cuTypeS>(), cublas_gemm_algo);
+            CUBLAS_ERROR_FUNC_T("cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err,
+                                handle, get_cublas_operation(transa), get_cublas_operation(transb),
+                                m, n, k, &alpha, a_, get_cublas_datatype<cuTypeA>(), lda, stride_a,
+                                b_, get_cublas_datatype<cuTypeB>(), ldb, stride_b, &beta, c_,
+                                get_cublas_datatype<cuTypeC>(), ldc, stride_c, batch_size,
+                                get_cublas_datatype<cuTypeS>(), cublas_gemm_algo);
 #else
             CUBLAS_ERROR_FUNC_T_SYNC(
                 "cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err, handle,
@@ -503,10 +503,11 @@ sycl::event gemv_batch(sycl::queue &queue, transpose transa, int64_t m, int64_t 
 }
 
 template <typename Func, typename T>
-inline sycl::event gemv_batch(const char *func_name, Func func, sycl::queue &queue, transpose *trans, int64_t *m,
-                              int64_t *n, T *alpha, const T **a, int64_t *lda, const T **x,
-                              int64_t *incx, T *beta, T **y, int64_t *incy, int64_t group_count,
-                              int64_t *group_size, const std::vector<sycl::event> &dependencies) {
+inline sycl::event gemv_batch(const char *func_name, Func func, sycl::queue &queue,
+                              transpose *trans, int64_t *m, int64_t *n, T *alpha, const T **a,
+                              int64_t *lda, const T **x, int64_t *incx, T *beta, T **y,
+                              int64_t *incy, int64_t group_count, int64_t *group_size,
+                              const std::vector<sycl::event> &dependencies) {
     using cuDataType = typename CudaEquivalentType<T>::Type;
     for (int64_t i = 0; i < group_count; i++) {
         overflow_check(m[i], n[i], lda[i], incx[i], incy[i], group_size[i]);
@@ -521,11 +522,11 @@ inline sycl::event gemv_batch(const char *func_name, Func func, sycl::queue &que
             auto **x_ = reinterpret_cast<const cuDataType **>(x);
             auto **y_ = reinterpret_cast<cuDataType **>(y);
             for (int64_t i = 0; i < group_count; i++) {
-                cublas_native_named_func(
-                    func_name, func, err, handle, get_cublas_operation(trans[i]),
-                    (int)m[i], (int)n[i],
-                    (cuDataType *)&alpha[i], a_ + offset, (int)lda[i], x_ + offset, (int)incx[i],
-                    (cuDataType *)&beta[i], y_ + offset, (int)incy[i], (int)group_size[i]);
+                cublas_native_named_func(func_name, func, err, handle,
+                                         get_cublas_operation(trans[i]), (int)m[i], (int)n[i],
+                                         (cuDataType *)&alpha[i], a_ + offset, (int)lda[i],
+                                         x_ + offset, (int)incx[i], (cuDataType *)&beta[i],
+                                         y_ + offset, (int)incy[i], (int)group_size[i]);
                 offset += group_size[i];
             }
         });
@@ -533,14 +534,13 @@ inline sycl::event gemv_batch(const char *func_name, Func func, sycl::queue &que
     return done;
 }
 
-#define GEMV_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                          \
-    sycl::event gemv_batch(sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n,       \
-                           TYPE *alpha, const TYPE **a, int64_t *lda, const TYPE **x,          \
-                           int64_t *incx, TYPE *beta, TYPE **y, int64_t *incy,                 \
-                           int64_t group_count, int64_t *group_size,                           \
-                           const std::vector<sycl::event> &dependencies) {                     \
-        return gemv_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda,  \
-                          x, incx, beta, y, incy, group_count, group_size, dependencies);      \
+#define GEMV_BATCH_LAUNCHER_USM(TYPE, CUBLAS_ROUTINE)                                              \
+    sycl::event gemv_batch(                                                                        \
+        sycl::queue &queue, transpose *trans, int64_t *m, int64_t *n, TYPE *alpha, const TYPE **a, \
+        int64_t *lda, const TYPE **x, int64_t *incx, TYPE *beta, TYPE **y, int64_t *incy,          \
+        int64_t group_count, int64_t *group_size, const std::vector<sycl::event> &dependencies) {  \
+        return gemv_batch(#CUBLAS_ROUTINE, CUBLAS_ROUTINE, queue, trans, m, n, alpha, a, lda, x,   \
+                          incx, beta, y, incy, group_count, group_size, dependencies);             \
     }
 
 GEMV_BATCH_LAUNCHER_USM(float, cublasSgemvBatched)
@@ -636,12 +636,12 @@ inline sycl::event gemm_batch_strided_usm_impl(sycl::queue &queue, transpose tra
             auto handle = sc.get_handle(queue);
             cublasStatus_t err;
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-            CUBLAS_ERROR_FUNC_T(
-                "cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err, handle,
-                get_cublas_operation(transa), get_cublas_operation(transb), m, n, k, &alpha, a,
-                get_cublas_datatype<cuTypeA>(), lda, stride_a, b, get_cublas_datatype<cuTypeB>(),
-                ldb, stride_b, &beta, c, get_cublas_datatype<cuTypeC>(), ldc, stride_c, batch_size,
-                get_cublas_datatype<cuTypeS>(), cublas_gemm_algo);
+            CUBLAS_ERROR_FUNC_T("cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err,
+                                handle, get_cublas_operation(transa), get_cublas_operation(transb),
+                                m, n, k, &alpha, a, get_cublas_datatype<cuTypeA>(), lda, stride_a,
+                                b, get_cublas_datatype<cuTypeB>(), ldb, stride_b, &beta, c,
+                                get_cublas_datatype<cuTypeC>(), ldc, stride_c, batch_size,
+                                get_cublas_datatype<cuTypeS>(), cublas_gemm_algo);
 #else
             CUBLAS_ERROR_FUNC_T_SYNC(
                 "cublasGemmStridedBatchedEx", cublasGemmStridedBatchedEx, err, handle,

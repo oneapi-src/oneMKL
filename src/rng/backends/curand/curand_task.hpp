@@ -37,7 +37,7 @@ static inline void host_task_internal(H &cgh, E e, F f) {
 template <typename H, typename A, typename E, typename F>
 static inline void host_task_internal(H &cgh, A acc, E e, F f) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih){
+    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih) {
 #else
     cgh.host_task([=](sycl::interop_handle ih) {
 #endif
@@ -57,7 +57,7 @@ static inline void host_task_internal(H &cgh, A acc, E e, F f) {
 template <typename H, typename E, typename F>
 static inline void host_task_internal(H &cgh, E e, F f) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih){
+    cgh.ext_codeplay_enqueue_native_command([=](sycl::interop_handle ih) {
 #else
     cgh.host_task([=](sycl::interop_handle ih) {
 #endif

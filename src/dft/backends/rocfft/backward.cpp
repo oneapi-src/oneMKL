@@ -85,7 +85,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
             auto inout_native = reinterpret_cast<void *>(
                 reinterpret_cast<fwd<descriptor_type> *>(detail::native_mem(ih, inout_acc)) +
                 offsets[0]);
-            detail::execute_checked(func_name, stream,  plan, &inout_native, nullptr, info);
+            detail::execute_checked(func_name, stream, plan, &inout_native, nullptr, info);
         });
     });
 }
@@ -124,7 +124,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                              detail::native_mem(ih, inout_im_acc)) +
                                          offsets[0])
             };
-            detail::execute_checked(func_name, stream,  plan, inout_native.data(), nullptr, info);
+            detail::execute_checked(func_name, stream, plan, inout_native.data(), nullptr, info);
         });
     });
 }
@@ -157,7 +157,7 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
             auto out_native = reinterpret_cast<void *>(
                 reinterpret_cast<fwd<descriptor_type> *>(detail::native_mem(ih, out_acc)) +
                 offsets[1]);
-            detail::execute_checked(func_name, stream,  plan, &in_native, &out_native, info);
+            detail::execute_checked(func_name, stream, plan, &in_native, &out_native, info);
         });
     });
 }
@@ -202,7 +202,8 @@ ONEMKL_EXPORT void compute_backward(descriptor_type &desc,
                                              detail::native_mem(ih, out_im_acc)) +
                                          offsets[1])
             };
-            detail::execute_checked(func_name, stream,  plan, in_native.data(), out_native.data(), info);
+            detail::execute_checked(func_name, stream, plan, in_native.data(), out_native.data(),
+                                    info);
         });
     });
 }
@@ -240,7 +241,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, fwd<descriptor
             auto stream = detail::setup_stream(func_name, ih, info);
 
             void *inout_ptr = inout;
-            detail::execute_checked(func_name, stream,  plan, &inout_ptr, nullptr, info);
+            detail::execute_checked(func_name, stream, plan, &inout_ptr, nullptr, info);
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);
@@ -273,8 +274,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
             auto stream = detail::setup_stream(func_name, ih, info);
 
             std::array<void *, 2> inout_native{ inout_re + offsets[0], inout_im + offsets[0] };
-            detail::execute_checked(func_name, stream,  plan, inout_native.data(), nullptr, info);
-            
+            detail::execute_checked(func_name, stream, plan, inout_native.data(), nullptr, info);
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);
@@ -307,7 +307,7 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, bwd<descriptor
 
             void *in_ptr = in;
             void *out_ptr = out;
-            detail::execute_checked(func_name, stream,  plan, &in_ptr, &out_ptr, info);
+            detail::execute_checked(func_name, stream, plan, &in_ptr, &out_ptr, info);
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);
@@ -338,7 +338,8 @@ ONEMKL_EXPORT sycl::event compute_backward(descriptor_type &desc, scalar<descrip
 
             std::array<void *, 2> in_native{ in_re + offsets[0], in_im + offsets[0] };
             std::array<void *, 2> out_native{ out_re + offsets[1], out_im + offsets[1] };
-            detail::execute_checked(func_name, stream,  plan, in_native.data(), out_native.data(), info);
+            detail::execute_checked(func_name, stream, plan, in_native.data(), out_native.data(),
+                                    info);
         });
     });
     commit->set_last_usm_workspace_event_if_rqd(sycl_event);

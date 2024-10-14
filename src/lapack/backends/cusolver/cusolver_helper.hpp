@@ -201,9 +201,8 @@ public:
     CUSOLVER_SYNC(err, handle)
 
 template <class Func, class... Types>
-inline void cusolver_native_named_func(const char *func_name, Func func,
-                                 cusolverStatus_t err,
-                                 cusolverDnHandle_t handle, Types... args){
+inline void cusolver_native_named_func(const char *func_name, Func func, cusolverStatus_t err,
+                                       cusolverDnHandle_t handle, Types... args) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
     CUSOLVER_ERROR_FUNC_T(func_name, func, err, handle, args...)
 #else

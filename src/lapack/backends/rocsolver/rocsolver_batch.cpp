@@ -527,9 +527,9 @@ inline sycl::event potrf_batch(const char *func_name, Func func, sycl::queue &qu
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<rocmDataType **>(a_dev);
                 auto *info_ = reinterpret_cast<rocblas_int *>(info);
-                rocsolver_native_named_func(func_name, func, err, handle, get_rocblas_fill_mode(uplo[i]),
-                                       (int)n[i], a_ + offset, (int)lda[i], info_ + offset,
-                                       (int)group_sizes[i]);
+                rocsolver_native_named_func(func_name, func, err, handle,
+                                            get_rocblas_fill_mode(uplo[i]), (int)n[i], a_ + offset,
+                                            (int)lda[i], info_ + offset, (int)group_sizes[i]);
                 offset += group_sizes[i];
             }
         });
@@ -627,9 +627,10 @@ inline sycl::event potrs_batch(const char *func_name, Func func, sycl::queue &qu
             for (int64_t i = 0; i < group_count; i++) {
                 auto **a_ = reinterpret_cast<rocmDataType **>(a_dev);
                 auto **b_ = reinterpret_cast<rocmDataType **>(b_dev);
-                rocsolver_native_named_func(func_name, func, err, handle, get_rocblas_fill_mode(uplo[i]),
-                                       (int)n[i], (int)nrhs[i], a_ + offset, (int)lda[i],
-                                       b_ + offset, (int)ldb[i], (int)group_sizes[i]);
+                rocsolver_native_named_func(func_name, func, err, handle,
+                                            get_rocblas_fill_mode(uplo[i]), (int)n[i], (int)nrhs[i],
+                                            a_ + offset, (int)lda[i], b_ + offset, (int)ldb[i],
+                                            (int)group_sizes[i]);
                 offset += group_sizes[i];
             }
         });
@@ -1011,12 +1012,12 @@ std::int64_t orgqr_batch_scratchpad_size<double>(sycl::queue &queue, std::int64_
 }
 
 // rocsolverDnXpotrfBatched does not use scratchpad memory
-#define POTRF_GROUP_LAUNCHER_SCRATCH(TYPE)                                                   \
-    template <>                                                                              \
-    std::int64_t potrf_batch_scratchpad_size<TYPE>(                                          \
-        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t * n, std::int64_t * lda, \
-        std::int64_t group_count, std::int64_t * group_sizes) {                              \
-        return 0;                                                                            \
+#define POTRF_GROUP_LAUNCHER_SCRATCH(TYPE)                                                 \
+    template <>                                                                            \
+    std::int64_t potrf_batch_scratchpad_size<TYPE>(                                        \
+        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t *n, std::int64_t *lda, \
+        std::int64_t group_count, std::int64_t *group_sizes) {                             \
+        return 0;                                                                          \
     }
 
 POTRF_GROUP_LAUNCHER_SCRATCH(float)
@@ -1027,13 +1028,13 @@ POTRF_GROUP_LAUNCHER_SCRATCH(std::complex<double>)
 #undef POTRF_GROUP_LAUNCHER_SCRATCH
 
 // rocsolverDnXpotrsBatched does not use scratchpad memory
-#define POTRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                    \
-    template <>                                                                               \
-    std::int64_t potrs_batch_scratchpad_size<TYPE>(                                           \
-        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t * n, std::int64_t * nrhs, \
-        std::int64_t * lda, std::int64_t * ldb, std::int64_t group_count,                     \
-        std::int64_t * group_sizes) {                                                         \
-        return 0;                                                                             \
+#define POTRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                  \
+    template <>                                                                             \
+    std::int64_t potrs_batch_scratchpad_size<TYPE>(                                         \
+        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t *n, std::int64_t *nrhs, \
+        std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,                     \
+        std::int64_t *group_sizes) {                                                        \
+        return 0;                                                                           \
     }
 
 POTRS_GROUP_LAUNCHER_SCRATCH(float)

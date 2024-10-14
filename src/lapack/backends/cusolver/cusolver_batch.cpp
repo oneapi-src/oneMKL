@@ -137,8 +137,9 @@ inline void getri_batch(const char *func_name, Func func, sycl::queue &queue, st
                             sizeof(T *) * batch_size);
             auto **scratch_dev_ = reinterpret_cast<cuDataType **>(scratch_dev);
 
-            blas::cublas::cublas_native_named_func(func_name, func, err, cublas_handle, n, a_dev_, lda, ipiv32_,
-                                     scratch_dev_, lda, info_, batch_size);
+            blas::cublas::cublas_native_named_func(func_name, func, err, cublas_handle, n, a_dev_,
+                                                   lda, ipiv32_, scratch_dev_, lda, info_,
+                                                   batch_size);
 
             free(a_batched);
             free(scratch_batched);
@@ -859,8 +860,9 @@ sycl::event getri_batch(const char *func_name, Func func, sycl::queue &queue, st
                             sizeof(T *) * batch_size);
             auto **scratch_dev_ = reinterpret_cast<cuDataType **>(scratch_dev);
 
-            blas::cublas::cublas_native_named_func(func_name, func, err, cublas_handle, n, a_dev_, lda, ipiv32,
-                                     scratch_dev_, lda, devInfo, batch_size);
+            blas::cublas::cublas_native_named_func(func_name, func, err, cublas_handle, n, a_dev_,
+                                                   lda, ipiv32, scratch_dev_, lda, devInfo,
+                                                   batch_size);
 
             free(a_batched);
             free(scratch_batched);
@@ -1789,8 +1791,8 @@ inline void getrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
 #define GETRF_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                               \
     template <>                                                                            \
     std::int64_t getrf_batch_scratchpad_size<TYPE>(                                        \
-        sycl::queue & queue, std::int64_t * m, std::int64_t * n, std::int64_t * lda,       \
-        std::int64_t group_count, std::int64_t * group_sizes) {                            \
+        sycl::queue & queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda,          \
+        std::int64_t group_count, std::int64_t *group_sizes) {                             \
         int scratch_size;                                                                  \
         getrf_batch_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, lda, \
                                     group_count, group_sizes, &scratch_size);              \
@@ -1804,18 +1806,18 @@ GETRF_GROUP_LAUNCHER_SCRATCH(std::complex<double>, cusolverDnZgetrf_bufferSize)
 
 #undef GETRF_GROUP_LAUNCHER_SCRATCH
 
-#define GETRI_GROUP_LAUNCHER_SCRATCH(TYPE)                                                       \
-    template <>                                                                                  \
-    std::int64_t getri_batch_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t * n,        \
-                                                   std::int64_t * lda, std::int64_t group_count, \
-                                                   std::int64_t * group_sizes) {                 \
-        std::int64_t max_scratch_sz = 0;                                                         \
-        for (auto group_id = 0; group_id < group_count; ++group_id) {                            \
-            auto scratch_sz = lda[group_id] * n[group_id];                                       \
-            if (scratch_sz > max_scratch_sz)                                                     \
-                max_scratch_sz = scratch_sz;                                                     \
-        }                                                                                        \
-        return max_scratch_sz;                                                                   \
+#define GETRI_GROUP_LAUNCHER_SCRATCH(TYPE)                                                      \
+    template <>                                                                                 \
+    std::int64_t getri_batch_scratchpad_size<TYPE>(sycl::queue & queue, std::int64_t *n,        \
+                                                   std::int64_t *lda, std::int64_t group_count, \
+                                                   std::int64_t *group_sizes) {                 \
+        std::int64_t max_scratch_sz = 0;                                                        \
+        for (auto group_id = 0; group_id < group_count; ++group_id) {                           \
+            auto scratch_sz = lda[group_id] * n[group_id];                                      \
+            if (scratch_sz > max_scratch_sz)                                                    \
+                max_scratch_sz = scratch_sz;                                                    \
+        }                                                                                       \
+        return max_scratch_sz;                                                                  \
     }
 
 GETRI_GROUP_LAUNCHER_SCRATCH(float)
@@ -1825,13 +1827,13 @@ GETRI_GROUP_LAUNCHER_SCRATCH(std::complex<double>)
 
 #undef GETRI_GROUP_LAUNCHER_SCRATCH
 
-#define GETRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                     \
-    template <>                                                                                \
-    std::int64_t getrs_batch_scratchpad_size<TYPE>(                                            \
-        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t * n,                 \
-        std::int64_t * nrhs, std::int64_t * lda, std::int64_t * ldb, std::int64_t group_count, \
-        std::int64_t * group_sizes) {                                                          \
-        return 0;                                                                              \
+#define GETRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                        \
+    template <>                                                                                   \
+    std::int64_t getrs_batch_scratchpad_size<TYPE>(                                               \
+        sycl::queue & queue, oneapi::mkl::transpose * trans, std::int64_t *n, std::int64_t *nrhs, \
+        std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,                           \
+        std::int64_t *group_sizes) {                                                              \
+        return 0;                                                                                 \
     }
 
 GETRS_GROUP_LAUNCHER_SCRATCH(float)
@@ -1868,8 +1870,8 @@ inline void geqrf_batch_scratchpad_size(const char *func_name, Func func, sycl::
 #define GEQRF_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                               \
     template <>                                                                            \
     std::int64_t geqrf_batch_scratchpad_size<TYPE>(                                        \
-        sycl::queue & queue, std::int64_t * m, std::int64_t * n, std::int64_t * lda,       \
-        std::int64_t group_count, std::int64_t * group_sizes) {                            \
+        sycl::queue & queue, std::int64_t *m, std::int64_t *n, std::int64_t *lda,          \
+        std::int64_t group_count, std::int64_t *group_sizes) {                             \
         int scratch_size;                                                                  \
         geqrf_batch_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, lda, \
                                     group_count, group_sizes, &scratch_size);              \
@@ -1908,15 +1910,15 @@ inline void orgqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
     e.wait();
 }
 
-#define ORGQR_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                  \
-    template <>                                                                               \
-    std::int64_t orgqr_batch_scratchpad_size<TYPE>(                                           \
-        sycl::queue & queue, std::int64_t * m, std::int64_t * n, std::int64_t * k,            \
-        std::int64_t * lda, std::int64_t group_count, std::int64_t * group_sizes) {           \
-        int scratch_size;                                                                     \
-        orgqr_batch_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, k, lda, \
-                                    group_count, group_sizes, &scratch_size);                 \
-        return scratch_size;                                                                  \
+#define ORGQR_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
+    template <>                                                                                    \
+    std::int64_t orgqr_batch_scratchpad_size<TYPE>(                                                \
+        sycl::queue & queue, std::int64_t *m, std::int64_t *n, std::int64_t *k, std::int64_t *lda, \
+        std::int64_t group_count, std::int64_t *group_sizes) {                                     \
+        int scratch_size;                                                                          \
+        orgqr_batch_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, k, lda,      \
+                                    group_count, group_sizes, &scratch_size);                      \
+        return scratch_size;                                                                       \
     }
 
 ORGQR_GROUP_LAUNCHER_SCRATCH(float, cusolverDnSorgqr_bufferSize)
@@ -1925,12 +1927,12 @@ ORGQR_GROUP_LAUNCHER_SCRATCH(double, cusolverDnDorgqr_bufferSize)
 #undef ORGQR_GROUP_LAUNCHER_SCRATCH
 
 // cusolverDnXpotrfBatched does not use scratchpad memory
-#define POTRF_GROUP_LAUNCHER_SCRATCH(TYPE)                                                   \
-    template <>                                                                              \
-    std::int64_t potrf_batch_scratchpad_size<TYPE>(                                          \
-        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t * n, std::int64_t * lda, \
-        std::int64_t group_count, std::int64_t * group_sizes) {                              \
-        return 0;                                                                            \
+#define POTRF_GROUP_LAUNCHER_SCRATCH(TYPE)                                                 \
+    template <>                                                                            \
+    std::int64_t potrf_batch_scratchpad_size<TYPE>(                                        \
+        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t *n, std::int64_t *lda, \
+        std::int64_t group_count, std::int64_t *group_sizes) {                             \
+        return 0;                                                                          \
     }
 
 POTRF_GROUP_LAUNCHER_SCRATCH(float)
@@ -1941,13 +1943,13 @@ POTRF_GROUP_LAUNCHER_SCRATCH(std::complex<double>)
 #undef POTRF_GROUP_LAUNCHER_SCRATCH
 
 // cusolverDnXpotrsBatched does not use scratchpad memory
-#define POTRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                    \
-    template <>                                                                               \
-    std::int64_t potrs_batch_scratchpad_size<TYPE>(                                           \
-        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t * n, std::int64_t * nrhs, \
-        std::int64_t * lda, std::int64_t * ldb, std::int64_t group_count,                     \
-        std::int64_t * group_sizes) {                                                         \
-        return 0;                                                                             \
+#define POTRS_GROUP_LAUNCHER_SCRATCH(TYPE)                                                  \
+    template <>                                                                             \
+    std::int64_t potrs_batch_scratchpad_size<TYPE>(                                         \
+        sycl::queue & queue, oneapi::mkl::uplo * uplo, std::int64_t *n, std::int64_t *nrhs, \
+        std::int64_t *lda, std::int64_t *ldb, std::int64_t group_count,                     \
+        std::int64_t *group_sizes) {                                                        \
+        return 0;                                                                           \
     }
 
 POTRS_GROUP_LAUNCHER_SCRATCH(float)
@@ -1982,15 +1984,15 @@ inline void ungqr_batch_scratchpad_size(const char *func_name, Func func, sycl::
     e.wait();
 }
 
-#define UNGQR_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                  \
-    template <>                                                                               \
-    std::int64_t ungqr_batch_scratchpad_size<TYPE>(                                           \
-        sycl::queue & queue, std::int64_t * m, std::int64_t * n, std::int64_t * k,            \
-        std::int64_t * lda, std::int64_t group_count, std::int64_t * group_sizes) {           \
-        int scratch_size;                                                                     \
-        ungqr_batch_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, k, lda, \
-                                    group_count, group_sizes, &scratch_size);                 \
-        return scratch_size;                                                                  \
+#define UNGQR_GROUP_LAUNCHER_SCRATCH(TYPE, CUSOLVER_ROUTINE)                                       \
+    template <>                                                                                    \
+    std::int64_t ungqr_batch_scratchpad_size<TYPE>(                                                \
+        sycl::queue & queue, std::int64_t *m, std::int64_t *n, std::int64_t *k, std::int64_t *lda, \
+        std::int64_t group_count, std::int64_t *group_sizes) {                                     \
+        int scratch_size;                                                                          \
+        ungqr_batch_scratchpad_size(#CUSOLVER_ROUTINE, CUSOLVER_ROUTINE, queue, m, n, k, lda,      \
+                                    group_count, group_sizes, &scratch_size);                      \
+        return scratch_size;                                                                       \
     }
 
 UNGQR_GROUP_LAUNCHER_SCRATCH(std::complex<float>, cusolverDnCungqr_bufferSize)

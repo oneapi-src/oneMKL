@@ -19,11 +19,10 @@
 
 // Buffer APIs
 
-void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
-               int64_t m, int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a,
-               int64_t lda, int8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo,
-               float beta, sycl::buffer<int32_t, 1> &c, int64_t ldc,
-               sycl::buffer<int32_t, 1> &co) {
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
+               int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a, int64_t lda,
+               int8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo, float beta,
+               sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -32,11 +31,10 @@ void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset of
 #endif
 }
 
-void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
-               int64_t m, int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a,
-               int64_t lda, int8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo,
-               float beta, sycl::buffer<int32_t, 1> &c, int64_t ldc,
-               sycl::buffer<int32_t, 1> &co) {
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
+               int64_t n, int64_t k, float alpha, sycl::buffer<int8_t, 1> &a, int64_t lda,
+               int8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
+               sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -45,11 +43,10 @@ void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset of
 #endif
 }
 
-void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
-               int64_t m, int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a,
-               int64_t lda, uint8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo,
-               float beta, sycl::buffer<int32_t, 1> &c, int64_t ldc,
-               sycl::buffer<int32_t, 1> &co) {
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
+               int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a, int64_t lda,
+               uint8_t ao, sycl::buffer<int8_t, 1> &b, int64_t ldb, int8_t bo, float beta,
+               sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -58,11 +55,10 @@ void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset of
 #endif
 }
 
-void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
-               int64_t m, int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a,
-               int64_t lda, uint8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo,
-               float beta, sycl::buffer<int32_t, 1> &c, int64_t ldc,
-               sycl::buffer<int32_t, 1> &co) {
+void gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc, int64_t m,
+               int64_t n, int64_t k, float alpha, sycl::buffer<uint8_t, 1> &a, int64_t lda,
+               uint8_t ao, sycl::buffer<uint8_t, 1> &b, int64_t ldb, uint8_t bo, float beta,
+               sycl::buffer<int32_t, 1> &c, int64_t ldc, sycl::buffer<int32_t, 1> &co) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -294,11 +290,11 @@ void omatadd(sycl::queue &queue, transpose transa, transpose transb, int64_t m, 
 
 // USM APIs
 
-sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
-                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
-                          const int8_t *a, int64_t lda, int8_t ao, const int8_t *b, int64_t ldb,
-                          int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const std::vector<sycl::event> &dependencies) {
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      int64_t m, int64_t n, int64_t k, float alpha, const int8_t *a, int64_t lda,
+                      int8_t ao, const int8_t *b, int64_t ldb, int8_t bo, float beta, int32_t *c,
+                      int64_t ldc, const int32_t *co,
+                      const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -307,11 +303,11 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
 #endif
 }
 
-sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
-                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
-                          const int8_t *a, int64_t lda, int8_t ao, const uint8_t *b, int64_t ldb,
-                          uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const std::vector<sycl::event> &dependencies) {
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      int64_t m, int64_t n, int64_t k, float alpha, const int8_t *a, int64_t lda,
+                      int8_t ao, const uint8_t *b, int64_t ldb, uint8_t bo, float beta, int32_t *c,
+                      int64_t ldc, const int32_t *co,
+                      const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -320,11 +316,11 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
 #endif
 }
 
-sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
-                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
-                          const uint8_t *a, int64_t lda, uint8_t ao, const int8_t *b, int64_t ldb,
-                          int8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const std::vector<sycl::event> &dependencies) {
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      int64_t m, int64_t n, int64_t k, float alpha, const uint8_t *a, int64_t lda,
+                      uint8_t ao, const int8_t *b, int64_t ldb, int8_t bo, float beta, int32_t *c,
+                      int64_t ldc, const int32_t *co,
+                      const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -333,11 +329,11 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
 #endif
 }
 
-sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
-                          offset offsetc, int64_t m, int64_t n, int64_t k, float alpha,
-                          const uint8_t *a, int64_t lda, uint8_t ao, const uint8_t *b, int64_t ldb,
-                          uint8_t bo, float beta, int32_t *c, int64_t ldc, const int32_t *co,
-                          const std::vector<sycl::event> &dependencies) {
+sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb, offset offsetc,
+                      int64_t m, int64_t n, int64_t k, float alpha, const uint8_t *a, int64_t lda,
+                      uint8_t ao, const uint8_t *b, int64_t ldb, uint8_t bo, float beta, int32_t *c,
+                      int64_t ldc, const int32_t *co,
+                      const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemm_bias", "for column_major layout");
 #endif
@@ -347,9 +343,9 @@ sycl::event gemm_bias(sycl::queue &queue, transpose transa, transpose transb,
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
-                      int64_t n, int64_t k, float alpha, const float *a, int64_t lda,
-                      const float *b, int64_t ldb, float beta, float *c, int64_t ldc,
-                      const std::vector<sycl::event> &dependencies) {
+                  int64_t n, int64_t k, float alpha, const float *a, int64_t lda, const float *b,
+                  int64_t ldb, float beta, float *c, int64_t ldc,
+                  const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemmt", "for column_major layout");
 #endif
@@ -359,9 +355,9 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
-                      int64_t n, int64_t k, double alpha, const double *a, int64_t lda,
-                      const double *b, int64_t ldb, double beta, double *c, int64_t ldc,
-                      const std::vector<sycl::event> &dependencies) {
+                  int64_t n, int64_t k, double alpha, const double *a, int64_t lda, const double *b,
+                  int64_t ldb, double beta, double *c, int64_t ldc,
+                  const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemmt", "for column_major layout");
 #endif
@@ -371,10 +367,10 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
-                      int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
-                      int64_t lda, const std::complex<float> *b, int64_t ldb,
-                      std::complex<float> beta, std::complex<float> *c, int64_t ldc,
-                      const std::vector<sycl::event> &dependencies) {
+                  int64_t n, int64_t k, std::complex<float> alpha, const std::complex<float> *a,
+                  int64_t lda, const std::complex<float> *b, int64_t ldb, std::complex<float> beta,
+                  std::complex<float> *c, int64_t ldc,
+                  const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemmt", "for column_major layout");
 #endif
@@ -384,10 +380,10 @@ sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transp
 }
 
 sycl::event gemmt(sycl::queue &queue, uplo upper_lower, transpose transa, transpose transb,
-                      int64_t n, int64_t k, std::complex<double> alpha,
-                      const std::complex<double> *a, int64_t lda, const std::complex<double> *b,
-                      int64_t ldb, std::complex<double> beta, std::complex<double> *c, int64_t ldc,
-                      const std::vector<sycl::event> &dependencies) {
+                  int64_t n, int64_t k, std::complex<double> alpha, const std::complex<double> *a,
+                  int64_t lda, const std::complex<double> *b, int64_t ldb,
+                  std::complex<double> beta, std::complex<double> *c, int64_t ldc,
+                  const std::vector<sycl::event> &dependencies) {
 #ifdef COLUMN_MAJOR
     throw unimplemented("blas", "gemmt", "for column_major layout");
 #endif
@@ -581,5 +577,3 @@ sycl::event omatadd(sycl::queue &queue, transpose transa, transpose transb, int6
     throw unimplemented("blas", "omatadd", "for row_major layout");
 #endif
 }
-
-

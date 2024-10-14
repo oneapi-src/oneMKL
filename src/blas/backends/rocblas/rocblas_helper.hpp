@@ -174,12 +174,12 @@ public:
     HIP_ERROR_FUNC(hipStreamSynchronize, hip_err, currentStreamId);
 
 template <class Func, class... Types>
-inline void rocblas_native_func(Func func, rocblas_status err,
-                               rocblas_handle handle, Types... args) {
+inline void rocblas_native_func(Func func, rocblas_status err, rocblas_handle handle,
+                                Types... args) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-  ROCBLAS_ERROR_FUNC(func, err, handle, args...)
+    ROCBLAS_ERROR_FUNC(func, err, handle, args...)
 #else
-  ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, args...)
+    ROCBLAS_ERROR_FUNC_SYNC(func, err, handle, args...)
 #endif
 };
 

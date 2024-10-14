@@ -51,7 +51,7 @@ namespace detail {
 /// Forward a MKLGPU DFT call to the backend, checking that the commit impl is valid.
 /// Assumes backend descriptor values match those of the frontend.
 template <dft::detail::precision prec, dft::detail::domain dom, typename... ArgTs>
-inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&... args) {
+inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&...args) {
     using mklgpu_desc_t = dft::descriptor<to_mklgpu(prec), to_mklgpu(dom)>;
     using desc_shptr_t = std::shared_ptr<mklgpu_desc_t>;
     using handle_t = std::pair<desc_shptr_t, desc_shptr_t>;

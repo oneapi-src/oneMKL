@@ -76,15 +76,15 @@ inline hipStream_t setup_stream(const std::string &func, sycl::interop_handle &i
 }
 
 inline void sync_checked(const std::string &func, hipStream_t stream) {
-   auto result = hipStreamSynchronize(stream);
-   if (result != hipSuccess) {
-       throw oneapi::mkl::exception("dft/backends/rocfft", func,
-                                    "hipStreamSynchronize returned " + std::to_string(result));
-   }
+    auto result = hipStreamSynchronize(stream);
+    if (result != hipSuccess) {
+        throw oneapi::mkl::exception("dft/backends/rocfft", func,
+                                     "hipStreamSynchronize returned " + std::to_string(result));
+    }
 }
 
-inline void execute_checked(const std::string &func, hipStream_t stream, const rocfft_plan plan, void *in_buffer[],
-                            void *out_buffer[], rocfft_execution_info info) {
+inline void execute_checked(const std::string &func, hipStream_t stream, const rocfft_plan plan,
+                            void *in_buffer[], void *out_buffer[], rocfft_execution_info info) {
     auto result = rocfft_execute(plan, in_buffer, out_buffer, info);
     if (result != rocfft_status_success) {
         throw oneapi::mkl::exception("dft/backends/rocfft", func,
