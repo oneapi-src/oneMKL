@@ -20,9 +20,8 @@
 set(LIB_NAME onemkl_blas_portblas)
 set(LIB_OBJ ${LIB_NAME}_obj)
 
-if(NOT DEFINED PORTBLAS_TUNING_TARGET)
-  option(PORTBLAS_TUNING_TARGET "Set a TUNING_TARGET for portBLAS" "")
-endif()
+option(PORTBLAS_TUNING_TARGET "Set a TUNING_TARGET for portBLAS" "")
+option(PORTBLAS_ENABLE_HALF "Enable half support with the portBLAS backend" OFF)
 
 # Parse compiler flags and return a list of SYCL targets
 # The list is empty if no targets are set
@@ -152,6 +151,9 @@ if (NOT PORTBLAS_FOUND)
   # Following variable TUNING_TARGET will be used in portBLAS internal configuration
   set(TUNING_TARGET ${PORTBLAS_TUNING_TARGET})
   set(BLAS_ENABLE_COMPLEX ON)
+  if (PORTBLAS_ENABLE_HALF)
+    set(BLAS_ENABLE_HALF ON)
+  endif()
   # Set the policy to forward variables to portBLAS configure step
   set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
   set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/deps")

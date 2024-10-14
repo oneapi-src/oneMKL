@@ -120,7 +120,10 @@ struct ref_type_info<int32_t> {
 // Random initialization.
 template <typename fp>
 static fp rand_scalar() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-const-int-float-conversion"
     return fp(std::rand()) / fp(RAND_MAX) - fp(0.5);
+#pragma clang diagnostic pop
 }
 template <typename fp>
 static std::complex<fp> rand_complex_scalar() {

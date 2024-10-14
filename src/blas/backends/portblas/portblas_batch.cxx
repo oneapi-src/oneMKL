@@ -210,7 +210,12 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 sycl::half beta, sycl::buffer<sycl::half, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", " for complex");
+#ifdef ENABLE_PORTBLAS_HALF
+    CALL_PORTBLAS_FN(::blas::_gemm_strided_batched, queue, transa, transb, m, n, k, alpha, a, lda,
+                     stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);
+#else
+    throw unimplemented("blas", "gemm_batch", " for half");
+#endif
 }
 
 void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -219,7 +224,12 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<sycl::half, 1> &b, std::int64_t ldb, std::int64_t stride_b, float beta,
                 sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", " for unsupported dtype");
+#ifdef ENABLE_PORTBLAS_HALF
+    CALL_PORTBLAS_FN(::blas::_gemm_strided_batched, queue, transa, transb, m, n, k, alpha, a, lda,
+                     stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size);
+#else
+    throw unimplemented("blas", "gemm_batch", " for half");
+#endif
 }
 
 void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -228,7 +238,7 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<float, 1> &c, std::int64_t ldc, std::int64_t stride_c,
                 std::int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", " for unsupported dtype");
+    throw unimplemented("blas", "gemm_batch", " for int8");
 }
 
 void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::transpose transb,
@@ -237,7 +247,7 @@ void gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa, oneapi::mkl::
                 sycl::buffer<std::int8_t, 1> &b, std::int64_t ldb, std::int64_t stride_b,
                 float beta, sycl::buffer<std::int32_t, 1> &c, std::int64_t ldc,
                 std::int64_t stride_c, std::int64_t batch_size) {
-    throw unimplemented("blas", "gemm_batch", " for unsupported dtype");
+    throw unimplemented("blas", "gemm_batch", " for int8");
 }
 
 void trsm_batch(sycl::queue &queue, oneapi::mkl::side left_right, oneapi::mkl::uplo upper_lower,
@@ -686,7 +696,12 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        const float **b, std::int64_t *ldb, float *beta, float **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    if (group_count != 1) {
+        throw unimplemented("blas", "gemm_batch", " using group API and group_count != 1");
+    }
+    CALL_PORTBLAS_USM_FN(::blas::_gemm_batched, queue, transa[0], transb[0], m[0], n[0], k[0],
+                         alpha[0], a[0], lda[0], b[0], ldb[0], beta[0], c[0], ldc[0], group_size[0],
+                         ::blas::gemm_batch_type_t::strided, dependencies);
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
@@ -695,7 +710,12 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        const double **b, std::int64_t *ldb, double *beta, double **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    if (group_count != 1) {
+        throw unimplemented("blas", "gemm_batch", " using group API and group_count != 1");
+    }
+    CALL_PORTBLAS_USM_FN(::blas::_gemm_batched, queue, transa[0], transb[0], m[0], n[0], k[0],
+                         alpha[0], a[0], lda[0], b[0], ldb[0], beta[0], c[0], ldc[0], group_size[0],
+                         ::blas::gemm_batch_type_t::strided, dependencies);
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
@@ -705,7 +725,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        std::complex<float> *beta, std::complex<float> **c, std::int64_t *ldc,
                        std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using complex");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
@@ -715,7 +735,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        std::complex<double> *beta, std::complex<double> **c, std::int64_t *ldc,
                        std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using complex");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
@@ -724,7 +744,16 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        const sycl::half **b, std::int64_t *ldb, sycl::half *beta, sycl::half **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+#ifdef ENABLE_PORTBLAS_HALF
+    if (group_count != 1) {
+        throw unimplemented("blas", "gemm_batch", " using group API and group_count != 1");
+    }
+    CALL_PORTBLAS_USM_FN(::blas::_gemm_batched, queue, transa[0], transb[0], m[0], n[0], k[0],
+                         alpha[0], a[0], lda[0], b[0], ldb[0], beta[0], c[0], ldc[0], group_size[0],
+                         ::blas::gemm_batch_type_t::strided, dependencies);
+#else
+    throw unimplemented("blas", "gemm_batch", " for USM using half");
+#endif
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
@@ -733,7 +762,16 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        const sycl::half **b, std::int64_t *ldb, float *beta, float **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+#ifdef ENABLE_PORTBLAS_HALF
+    if (group_count != 1) {
+        throw unimplemented("blas", "gemm_batch", " using group API and group_count != 1");
+    }
+    CALL_PORTBLAS_USM_FN(::blas::_gemm_batched, queue, transa[0], transb[0], m[0], n[0], k[0],
+                         alpha[0], a[0], lda[0], b[0], ldb[0], beta[0], c[0], ldc[0], group_size[0],
+                         ::blas::gemm_batch_type_t::strided, dependencies);
+#else
+    throw unimplemented("blas", "gemm_batch", " for USM using half");
+#endif
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
@@ -742,7 +780,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        const std::int8_t **b, std::int64_t *ldb, float *beta, float **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using int8");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
@@ -751,7 +789,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose *transa,
                        const std::int8_t **b, std::int64_t *ldb, float *beta, std::int32_t **c,
                        std::int64_t *ldc, std::int64_t group_count, std::int64_t *group_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using int8");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -785,7 +823,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
                        std::int64_t ldb, std::int64_t stride_b, std::complex<float> beta,
                        std::complex<float> *c, std::int64_t ldc, std::int64_t stride_c,
                        std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using complex");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -795,7 +833,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
                        std::int64_t ldb, std::int64_t stride_b, std::complex<double> beta,
                        std::complex<double> *c, std::int64_t ldc, std::int64_t stride_c,
                        std::int64_t batch_size, const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using complex");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -805,7 +843,13 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
                        std::int64_t stride_b, sycl::half beta, sycl::half *c, std::int64_t ldc,
                        std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+#ifdef ENABLE_PORTBLAS_HALF
+    CALL_PORTBLAS_USM_FN(::blas::_gemm_strided_batched, queue, transa, transb, m, n, k, alpha, a,
+                         lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size,
+                         dependencies);
+#else
+    throw unimplemented("blas", "gemm_batch", " for USM using half");
+#endif
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -815,7 +859,13 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
                        std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
                        std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+#ifdef ENABLE_PORTBLAS_HALF
+    CALL_PORTBLAS_USM_FN(::blas::_gemm_strided_batched, queue, transa, transb, m, n, k, alpha, a,
+                         lda, stride_a, b, ldb, stride_b, beta, c, ldc, stride_c, batch_size,
+                         dependencies);
+#else
+    throw unimplemented("blas", "gemm_batch", " for USM using half");
+#endif
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -825,7 +875,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
                        std::int64_t stride_b, float beta, float *c, std::int64_t ldc,
                        std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using int8");
 }
 
 sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
@@ -835,7 +885,7 @@ sycl::event gemm_batch(sycl::queue &queue, oneapi::mkl::transpose transa,
                        std::int64_t stride_b, float beta, std::int32_t *c, std::int64_t ldc,
                        std::int64_t stride_c, std::int64_t batch_size,
                        const std::vector<sycl::event> &dependencies) {
-    throw unimplemented("blas", "gemm_batch", " for USM");
+    throw unimplemented("blas", "gemm_batch", " for USM using int8");
 }
 
 sycl::event trsm_batch(sycl::queue &queue, oneapi::mkl::side left_right,
