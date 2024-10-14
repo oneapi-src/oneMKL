@@ -171,7 +171,7 @@ void init_coo_matrix(sycl::queue &queue, oneapi::math::sparse::matrix_handle_t *
     // The backend handle must use the buffers from the internal handle as they will be kept alive until the handle is released.
     oneapi::mkl::sparse::set_coo_data(queue, mkl_handle, static_cast<intType>(num_rows),
                                       static_cast<intType>(num_cols), static_cast<intType>(nnz),
-                                      index, internal_smhandle->row_container.get_buffer<intType>(),
+                                      detail::get_onemkl_index_base(index), internal_smhandle->row_container.get_buffer<intType>(),
                                       internal_smhandle->col_container.get_buffer<intType>(),
                                       internal_smhandle->value_container.get_buffer<fpType>());
     *p_smhandle = reinterpret_cast<oneapi::math::sparse::matrix_handle_t>(internal_smhandle);
@@ -187,7 +187,7 @@ void init_coo_matrix(sycl::queue &queue, oneapi::math::sparse::matrix_handle_t *
     auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ind, col_ind, val);
     auto event = oneapi::mkl::sparse::set_coo_data(
         queue, mkl_handle, static_cast<intType>(num_rows), static_cast<intType>(num_cols),
-        static_cast<intType>(nnz), index, row_ind, col_ind, val);
+        static_cast<intType>(nnz), detail::get_onemkl_index_base(index), row_ind, col_ind, val);
     event.wait_and_throw();
     *p_smhandle = reinterpret_cast<oneapi::math::sparse::matrix_handle_t>(internal_smhandle);
 }
@@ -225,7 +225,7 @@ void set_coo_matrix_data(sycl::queue &queue, oneapi::math::sparse::matrix_handle
     oneapi::mkl::sparse::set_coo_data(queue, internal_smhandle->backend_handle,
                                       static_cast<intType>(num_rows),
                                       static_cast<intType>(num_cols), static_cast<intType>(nnz),
-                                      index, internal_smhandle->row_container.get_buffer<intType>(),
+                                      detail::get_onemkl_index_base(index), internal_smhandle->row_container.get_buffer<intType>(),
                                       internal_smhandle->col_container.get_buffer<intType>(),
                                       internal_smhandle->value_container.get_buffer<fpType>());
 }
@@ -242,7 +242,7 @@ void set_coo_matrix_data(sycl::queue &queue, oneapi::math::sparse::matrix_handle
     internal_smhandle->value_container.set_usm_ptr(val);
     auto event = oneapi::mkl::sparse::set_coo_data(
         queue, internal_smhandle->backend_handle, static_cast<intType>(num_rows),
-        static_cast<intType>(num_cols), static_cast<intType>(nnz), index, row_ind, col_ind, val);
+        static_cast<intType>(num_cols), static_cast<intType>(nnz), detail::get_onemkl_index_base(index), row_ind, col_ind, val);
     event.wait_and_throw();
 }
 
@@ -280,7 +280,7 @@ void init_csr_matrix(sycl::queue &queue, oneapi::math::sparse::matrix_handle_t *
     // The backend deduces nnz from row_ptr.
     // The backend handle must use the buffers from the internal handle as they will be kept alive until the handle is released.
     oneapi::mkl::sparse::set_csr_data(queue, mkl_handle, static_cast<intType>(num_rows),
-                                      static_cast<intType>(num_cols), index,
+                                      static_cast<intType>(num_cols), detail::get_onemkl_index_base(index),
                                       internal_smhandle->row_container.get_buffer<intType>(),
                                       internal_smhandle->col_container.get_buffer<intType>(),
                                       internal_smhandle->value_container.get_buffer<fpType>());
@@ -297,7 +297,7 @@ void init_csr_matrix(sycl::queue &queue, oneapi::math::sparse::matrix_handle_t *
     auto internal_smhandle = new detail::sparse_matrix_handle(mkl_handle, row_ptr, col_ind, val);
     // The backend deduces nnz from row_ptr.
     auto event = oneapi::mkl::sparse::set_csr_data(
-        queue, mkl_handle, static_cast<intType>(num_rows), static_cast<intType>(num_cols), index,
+        queue, mkl_handle, static_cast<intType>(num_rows), static_cast<intType>(num_cols), detail::get_onemkl_index_base(index),
         row_ptr, col_ind, val);
     event.wait_and_throw();
     *p_smhandle = reinterpret_cast<oneapi::math::sparse::matrix_handle_t>(internal_smhandle);
@@ -317,7 +317,7 @@ void set_csr_matrix_data(sycl::queue &queue, oneapi::math::sparse::matrix_handle
     // The backend handle must use the buffers from the internal handle as they will be kept alive until the handle is released.
     oneapi::mkl::sparse::set_csr_data(queue, internal_smhandle->backend_handle,
                                       static_cast<intType>(num_rows),
-                                      static_cast<intType>(num_cols), index,
+                                      static_cast<intType>(num_cols), detail::get_onemkl_index_base(index),
                                       internal_smhandle->row_container.get_buffer<intType>(),
                                       internal_smhandle->col_container.get_buffer<intType>(),
                                       internal_smhandle->value_container.get_buffer<fpType>());
@@ -336,7 +336,7 @@ void set_csr_matrix_data(sycl::queue &queue, oneapi::math::sparse::matrix_handle
     // The backend deduces nnz from row_ptr.
     auto event = oneapi::mkl::sparse::set_csr_data(
         queue, internal_smhandle->backend_handle, static_cast<intType>(num_rows),
-        static_cast<intType>(num_cols), index, row_ptr, col_ind, val);
+        static_cast<intType>(num_cols), detail::get_onemkl_index_base(index), row_ptr, col_ind, val);
     event.wait_and_throw();
 }
 

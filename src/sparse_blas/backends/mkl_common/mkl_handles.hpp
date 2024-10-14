@@ -66,10 +66,10 @@ namespace oneapi::math::sparse::detail {
  * oneapi::math::sparse::detail::sparse_matrix_handle which holds another
  * matrix_handle_t for the backend handle.
  */
-using sparse_matrix_handle = detail::generic_sparse_handle<matrix_handle_t>;
+using sparse_matrix_handle = detail::generic_sparse_handle<oneapi::mkl::sparse::matrix_handle_t>;
 
 /// Cast to oneMath's internal handle type
-inline auto get_internal_handle(matrix_handle_t handle) {
+inline auto get_internal_handle(oneapi::math::sparse::matrix_handle_t handle) {
     return reinterpret_cast<sparse_matrix_handle*>(handle);
 }
 

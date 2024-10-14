@@ -24,7 +24,7 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "mkl_version.h"
+#include <mkl_version.h>
 
 #include "oneapi/math/rng/detail/engine_impl.hpp"
 #include "oneapi/math/rng/engines.hpp"

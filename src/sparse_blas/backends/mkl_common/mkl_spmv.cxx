@@ -143,8 +143,11 @@ void spmv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *
         return;
     }
     internal_A_handle->can_be_reset = false;
+    auto onemkl_uplo = detail::get_onemkl_uplo(A_view.uplo_view);
+    auto onemkl_opa = detail::get_onemkl_transpose(opA);
+    auto onemkl_diag = detail::get_onemkl_diag(A_view.diag_view);
     if (A_view.type_view == matrix_descr::triangular) {
-        oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
+        oneapi::mkl::sparse::optimize_trmv(queue, onemkl_uplo, onemkl_opa, onemkl_diag,
                                            internal_A_handle->backend_handle);
     }
     else if (A_view.type_view == matrix_descr::symmetric ||
@@ -153,7 +156,7 @@ void spmv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *
         return;
     }
     else {
-        oneapi::mkl::sparse::optimize_gemv(queue, opA, internal_A_handle->backend_handle);
+        oneapi::mkl::sparse::optimize_gemv(queue, onemkl_opa, internal_A_handle->backend_handle);
     }
 }
 
@@ -175,8 +178,11 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const
         return detail::collapse_dependencies(queue, dependencies);
     }
     internal_A_handle->can_be_reset = false;
+    auto onemkl_uplo = detail::get_onemkl_uplo(A_view.uplo_view);
+    auto onemkl_opa = detail::get_onemkl_transpose(opA);
+    auto onemkl_diag = detail::get_onemkl_diag(A_view.diag_view);
     if (A_view.type_view == matrix_descr::triangular) {
-        return oneapi::mkl::sparse::optimize_trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
+        return oneapi::mkl::sparse::optimize_trmv(queue, onemkl_uplo, onemkl_opa, onemkl_diag,
                                                   internal_A_handle->backend_handle, dependencies);
     }
     else if (A_view.type_view == matrix_descr::symmetric ||
@@ -184,7 +190,7 @@ sycl::event spmv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const
         return detail::collapse_dependencies(queue, dependencies);
     }
     else {
-        return oneapi::mkl::sparse::optimize_gemv(queue, opA, internal_A_handle->backend_handle,
+        return oneapi::mkl::sparse::optimize_gemv(queue, onemkl_opa, internal_A_handle->backend_handle,
                                                   dependencies);
     }
 }
@@ -206,20 +212,23 @@ sycl::event internal_spmv(sycl::queue &queue, oneapi::math::transpose opA, const
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
     auto backend_handle = internal_A_handle->backend_handle;
+    auto onemkl_uplo = detail::get_onemkl_uplo(A_view.uplo_view);
+    auto onemkl_opa = detail::get_onemkl_transpose(opA);
+    auto onemkl_diag = detail::get_onemkl_diag(A_view.diag_view);
     if (internal_A_handle->all_use_buffer()) {
         auto x_buffer = x_handle->get_buffer<T>();
         auto y_buffer = y_handle->get_buffer<T>();
         if (A_view.type_view == matrix_descr::triangular) {
-            oneapi::mkl::sparse::trmv(queue, A_view.uplo_view, opA, A_view.diag_view, host_alpha,
+            oneapi::mkl::sparse::trmv(queue, onemkl_uplo, onemkl_opa, onemkl_diag, host_alpha,
                                       backend_handle, x_buffer, host_beta, y_buffer);
         }
         else if (A_view.type_view == matrix_descr::symmetric ||
                  A_view.type_view == matrix_descr::hermitian) {
-            oneapi::mkl::sparse::symv(queue, A_view.uplo_view, host_alpha, backend_handle, x_buffer,
+            oneapi::mkl::sparse::symv(queue, onemkl_uplo, host_alpha, backend_handle, x_buffer,
                                       host_beta, y_buffer);
         }
         else {
-            oneapi::mkl::sparse::gemv(queue, opA, host_alpha, backend_handle, x_buffer, host_beta,
+            oneapi::mkl::sparse::gemv(queue, onemkl_opa, host_alpha, backend_handle, x_buffer, host_beta,
                                       y_buffer);
         }
         // Dependencies are not used for buffers
@@ -229,17 +238,17 @@ sycl::event internal_spmv(sycl::queue &queue, oneapi::math::transpose opA, const
         auto x_usm = x_handle->get_usm_ptr<T>();
         auto y_usm = y_handle->get_usm_ptr<T>();
         if (A_view.type_view == matrix_descr::triangular) {
-            return oneapi::mkl::sparse::trmv(queue, A_view.uplo_view, opA, A_view.diag_view,
+            return oneapi::mkl::sparse::trmv(queue, onemkl_uplo, onemkl_opa, onemkl_diag,
                                              host_alpha, backend_handle, x_usm, host_beta, y_usm,
                                              dependencies);
         }
         else if (A_view.type_view == matrix_descr::symmetric ||
                  A_view.type_view == matrix_descr::hermitian) {
-            return oneapi::mkl::sparse::symv(queue, A_view.uplo_view, host_alpha, backend_handle,
+            return oneapi::mkl::sparse::symv(queue, onemkl_uplo, host_alpha, backend_handle,
                                              x_usm, host_beta, y_usm, dependencies);
         }
         else {
-            return oneapi::mkl::sparse::gemv(queue, opA, host_alpha, backend_handle, x_usm,
+            return oneapi::mkl::sparse::gemv(queue, onemkl_opa, host_alpha, backend_handle, x_usm,
                                              host_beta, y_usm, dependencies);
         }
     }

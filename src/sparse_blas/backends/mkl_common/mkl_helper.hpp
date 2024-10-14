@@ -29,10 +29,13 @@
 #include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/sparse_blas/detail/helper_types.hpp"
 
+#include "common_mkl_types_conversion.hpp"
 #include "sparse_blas/enum_data_types.hpp"
 #include "sparse_blas/macros.hpp"
 
 namespace oneapi::math::sparse::detail {
+
+using namespace oneapi::math::detail;
 
 /// Return whether a pointer is accessible on the host
 template <typename T>

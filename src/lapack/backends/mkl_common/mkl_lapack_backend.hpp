@@ -21,6 +21,7 @@
 
 #include <complex>
 
+#include "common_mkl_types_conversion.hpp"
 #include "oneapi/math/types.hpp"
 #include "oneapi/math/lapack/types.hpp"
 

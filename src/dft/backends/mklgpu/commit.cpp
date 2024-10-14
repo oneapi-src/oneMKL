@@ -44,7 +44,7 @@
 #endif
 
 // Intel oneMKL 2024.1 deprecates input/output strides.
-#include "mkl_version.h"
+#include <mkl_version.h>
 #if INTEL_MKL_VERSION < 20240001
 #error MKLGPU requires oneMath 2024.1 or later
 #endif
@@ -63,13 +63,13 @@ template <dft::detail::precision prec, dft::detail::domain dom>
 class mklgpu_commit final : public dft::detail::commit_impl<prec, dom> {
 private:
     // Equivalent MKLGPU precision and domain from oneMath's precision / domain.
-    static constexpr dft::precision mklgpu_prec = to_mklgpu(prec);
-    static constexpr dft::domain mklgpu_dom = to_mklgpu(dom);
+    static constexpr oneapi::mkl::dft::precision mklgpu_prec = to_mklgpu(prec);
+    static constexpr oneapi::mkl::dft::domain mklgpu_dom = to_mklgpu(dom);
 
     // A pair of descriptors are needed because of the [[deprecated]]IN/OUTPUT_STRIDES vs F/BWD_STRIDES API.
     // Of the pair [0] is fwd DFT, [1] is backward DFT. If possible, the pointers refer to the same descriptor.
     // Both pointers must be valid.
-    using mklgpu_descriptor_t = dft::descriptor<mklgpu_prec, mklgpu_dom>;
+    using mklgpu_descriptor_t = oneapi::mkl::dft::descriptor<mklgpu_prec, mklgpu_dom>;
     using descriptor_shptr_t = std::shared_ptr<mklgpu_descriptor_t>;
     using handle_t = std::pair<descriptor_shptr_t, descriptor_shptr_t>;
 
@@ -172,7 +172,7 @@ private:
     void set_value(mklgpu_descriptor_t& desc, const dft::detail::dft_values<prec, dom>& config,
                    bool assume_fwd_dft, dft::detail::stride_api stride_choice) {
         using onemath_param = dft::detail::config_param;
-        using backend_param = dft::config_param;
+        using backend_param = oneapi::mkl::dft::config_param;
 
         // The following are read-only:
         // Dimension, forward domain, precision, commit status.
@@ -236,8 +236,9 @@ private:
     // This is called by the workspace_helper, and is not part of the user API.
     virtual std::int64_t get_workspace_external_bytes_impl() override {
         std::size_t workspaceSizeFwd = 0, workspaceSizeBwd = 0;
-        handle.first->get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSizeFwd);
-        handle.second->get_value(dft::config_param::WORKSPACE_BYTES, &workspaceSizeBwd);
+        using backend_param = oneapi::mkl::dft::config_param;
+        handle.first->get_value(backend_param::WORKSPACE_BYTES, &workspaceSizeFwd);
+        handle.second->get_value(backend_param::WORKSPACE_BYTES, &workspaceSizeBwd);
         return static_cast<std::int64_t>(std::max(workspaceSizeFwd, workspaceSizeFwd));
     }
 };

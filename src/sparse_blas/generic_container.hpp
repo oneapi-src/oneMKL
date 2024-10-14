@@ -29,6 +29,7 @@
 #include <CL/sycl.hpp>
 #endif
 
+#include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/sparse_blas/types.hpp"
 #include "enum_data_types.hpp"
 

@@ -193,19 +193,21 @@ sycl::event internal_spmm(
         detail::get_scalar_on_host(queue, static_cast<const T *>(beta), is_beta_host_accessible);
     auto internal_A_handle = detail::get_internal_handle(A_handle);
     internal_A_handle->can_be_reset = false;
-    auto layout = B_handle->dense_layout;
+    auto onemkl_layout = detail::get_onemkl_layout(B_handle->dense_layout);
+    auto onemkl_opa = detail::get_onemkl_transpose(opA);
+    auto onemkl_opb = detail::get_onemkl_transpose(opB);
     auto columns = C_handle->num_cols;
     auto ldb = B_handle->ld;
     auto ldc = C_handle->ld;
     if (internal_A_handle->all_use_buffer()) {
-        oneapi::mkl::sparse::gemm(queue, layout, opA, opB, host_alpha,
+        oneapi::mkl::sparse::gemm(queue, onemkl_layout, onemkl_opa, onemkl_opb, host_alpha,
                                   internal_A_handle->backend_handle, B_handle->get_buffer<T>(),
                                   columns, ldb, host_beta, C_handle->get_buffer<T>(), ldc);
         // Dependencies are not used for buffers
         return {};
     }
     else {
-        return oneapi::mkl::sparse::gemm(queue, layout, opA, opB, host_alpha,
+        return oneapi::mkl::sparse::gemm(queue, onemkl_layout, onemkl_opa, onemkl_opb, host_alpha,
                                          internal_A_handle->backend_handle,
                                          B_handle->get_usm_ptr<T>(), columns, ldb, host_beta,
                                          C_handle->get_usm_ptr<T>(), ldc, dependencies);

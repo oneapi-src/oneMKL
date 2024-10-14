@@ -51,7 +51,7 @@ namespace detail {
 /// Assumes backend descriptor values match those of the frontend.
 template <dft::detail::precision prec, dft::detail::domain dom, typename... ArgTs>
 inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&... args) {
-    using mklgpu_desc_t = dft::descriptor<to_mklgpu(prec), to_mklgpu(dom)>;
+    using mklgpu_desc_t = oneapi::mkl::dft::descriptor<to_mklgpu(prec), to_mklgpu(dom)>;
     using desc_shptr_t = std::shared_ptr<mklgpu_desc_t>;
     using handle_t = std::pair<desc_shptr_t, desc_shptr_t>;
     auto commit_handle = dft::detail::get_commit(desc);
@@ -62,7 +62,7 @@ inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&..
     auto handle = reinterpret_cast<handle_t *>(commit_handle->get_handle());
     auto mklgpu_desc = handle->first; // First because forward DFT.
     int commit_status{ DFTI_UNCOMMITTED };
-    mklgpu_desc->get_value(dft::config_param::COMMIT_STATUS, &commit_status);
+    mklgpu_desc->get_value(oneapi::mkl::dft::config_param::COMMIT_STATUS, &commit_status);
     if (commit_status != DFTI_COMMITTED) {
         throw math::invalid_argument("DFT", "compute_forward",
                                     "MKLGPU DFT descriptor was not successfully committed.");
@@ -70,7 +70,7 @@ inline auto compute_forward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&..
     // The MKLGPU backend's interface contains fewer function signatures than in this
     // open-source library. Consequently, it is not required to forward template arguments
     // to resolve to the correct function.
-    return dft::compute_forward(*mklgpu_desc, std::forward<ArgTs>(args)...);
+    return oneapi::mkl::dft::compute_forward(*mklgpu_desc, std::forward<ArgTs>(args)...);
 }
 
 /// Throw an math::invalid_argument if the runtime param in the descriptor does not match
