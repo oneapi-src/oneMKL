@@ -167,9 +167,8 @@ public:
     HIP_ERROR_FUNC(hipStreamSynchronize, hip_err, currentStreamId);
 
 template <class Func, class... Types>
-inline void rocsolver_native_named_func(const char *func_name, Func func,
-                                 rocsolver_status err,
-                                 rocsolver_handle handle, Types... args){
+inline void rocsolver_native_named_func(const char *func_name, Func func, rocsolver_status err,
+                                        rocsolver_handle handle, Types... args) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
     ROCSOLVER_ERROR_FUNC_T(func_name, func, err, handle, args...)
 #else

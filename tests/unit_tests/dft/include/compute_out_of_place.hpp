@@ -77,9 +77,11 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             auto acc_bwd = bwd_buf.get_host_access();
             auto bwd_ptr = acc_bwd.get_pointer();
             for (std::int64_t i = 0; i < batches; i++) {
-                EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(
-                    bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
-                    strides_bwd_cpy, abs_error_margin, rel_error_margin, std::cout));
+                EXPECT_TRUE(check_equal_strided < domain ==
+                            oneapi::mkl::dft::domain::REAL >
+                                (bwd_ptr + backward_distance * i,
+                                 out_host_ref.data() + ref_distance * i, sizes, strides_bwd_cpy,
+                                 abs_error_margin, rel_error_margin, std::cout));
             }
         }
 
@@ -164,9 +166,10 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
 
     auto bwd_ptr = &bwd[0];
     for (std::int64_t i = 0; i < batches; i++) {
-        EXPECT_TRUE(check_equal_strided<domain == oneapi::mkl::dft::domain::REAL>(
-            bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
-            strides_bwd_cpy, abs_error_margin, rel_error_margin, std::cout));
+        EXPECT_TRUE(check_equal_strided < domain ==
+                    oneapi::mkl::dft::domain::REAL >
+                        (bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i,
+                         sizes, strides_bwd_cpy, abs_error_margin, rel_error_margin, std::cout));
     }
 
     oneapi::mkl::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>, FwdOutputType,

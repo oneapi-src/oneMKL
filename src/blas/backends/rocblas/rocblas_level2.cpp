@@ -100,8 +100,8 @@ inline void gemv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_operation(trans), m, n,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -139,8 +139,8 @@ inline void gbmv(Func func, sycl::queue &queue, transpose trans, int64_t m, int6
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_operation(trans), m, n, kl, ku,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -177,8 +177,8 @@ inline void ger(Func func, sycl::queue &queue, int64_t m, int64_t n, T alpha, sy
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
-            rocblas_native_func(func, err, handle, m, n, (rocDataType *)&alpha, x_, incx, y_,
-                                    incy, a_, lda);
+            rocblas_native_func(func, err, handle, m, n, (rocDataType *)&alpha, x_, incx, y_, incy,
+                                a_, lda);
         });
     });
 }
@@ -218,8 +218,8 @@ inline void hbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, int
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n, k,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -255,8 +255,8 @@ inline void hemv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -291,7 +291,7 @@ inline void her(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, Scal
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocScalarType *)&alpha, x_, incx, a_, lda);
+                                (rocScalarType *)&alpha, x_, incx, a_, lda);
         });
     });
 }
@@ -327,7 +327,7 @@ inline void her2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
         });
     });
 }
@@ -363,8 +363,8 @@ inline void hpmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
-                                    incy);
+                                (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -398,7 +398,7 @@ inline void hpr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, Scal
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocScalarType *)&alpha, x_, incx, a_);
+                                (rocScalarType *)&alpha, x_, incx, a_);
         });
     });
 }
@@ -433,7 +433,7 @@ inline void hpr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_);
         });
     });
 }
@@ -469,8 +469,8 @@ inline void sbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, int
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n, k,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -506,8 +506,8 @@ inline void symv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -540,7 +540,7 @@ inline void syr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T al
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, a_, lda);
+                                (rocDataType *)&alpha, x_, incx, a_, lda);
         });
     });
 }
@@ -578,7 +578,7 @@ inline void syr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
         });
     });
 }
@@ -617,8 +617,8 @@ inline void spmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
-                                    incy);
+                                (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 }
@@ -651,7 +651,7 @@ inline void spr(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T al
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, a_);
+                                (rocDataType *)&alpha, x_, incx, a_);
         });
     });
 }
@@ -686,7 +686,7 @@ inline void spr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t n, T a
             auto y_ = sc.get_mem<rocDataType *>(y_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_);
         });
     });
 }
@@ -720,8 +720,8 @@ inline void tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, k, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                k, a_, lda, x_, incx);
         });
     });
 }
@@ -757,8 +757,8 @@ inline void tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, k, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                k, a_, lda, x_, incx);
         });
     });
 }
@@ -793,8 +793,8 @@ inline void tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, x_, incx);
         });
     });
 }
@@ -828,8 +828,8 @@ inline void tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, x_, incx);
         });
     });
 }
@@ -864,8 +864,8 @@ inline void trmv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, lda, x_, incx);
         });
     });
 }
@@ -900,8 +900,8 @@ inline void trsv(Func func, sycl::queue &queue, uplo upper_lower, transpose tran
             auto x_ = sc.get_mem<rocDataType *>(x_acc);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, lda, x_, incx);
         });
     });
 }
@@ -938,8 +938,8 @@ inline sycl::event gemv(Func func, sycl::queue &queue, transpose trans, int64_t 
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_operation(trans), m, n,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -979,8 +979,8 @@ inline sycl::event gbmv(Func func, sycl::queue &queue, transpose trans, int64_t 
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_operation(trans), m, n, kl, ku,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -1019,8 +1019,8 @@ inline sycl::event ger(Func func, sycl::queue &queue, int64_t m, int64_t n, T al
             auto x_ = reinterpret_cast<const rocDataType *>(x);
             auto y_ = reinterpret_cast<const rocDataType *>(y);
             rocblas_status err;
-            rocblas_native_func(func, err, handle, m, n, (rocDataType *)&alpha, x_, incx, y_,
-                                    incy, a_, lda);
+            rocblas_native_func(func, err, handle, m, n, (rocDataType *)&alpha, x_, incx, y_, incy,
+                                a_, lda);
         });
     });
 
@@ -1060,8 +1060,8 @@ inline sycl::event hbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n, k,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -1098,8 +1098,8 @@ inline sycl::event hemv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -1136,7 +1136,7 @@ inline sycl::event her(Func func, sycl::queue &queue, uplo upper_lower, int64_t 
             auto x_ = reinterpret_cast<const rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocScalarType *)&alpha, x_, incx, a_, lda);
+                                (rocScalarType *)&alpha, x_, incx, a_, lda);
         });
     });
 
@@ -1172,7 +1172,7 @@ inline sycl::event her2(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<const rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
         });
     });
 
@@ -1209,8 +1209,8 @@ inline sycl::event hpmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
-                                    incy);
+                                (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -1247,7 +1247,7 @@ inline sycl::event hpr(Func func, sycl::queue &queue, uplo upper_lower, int64_t 
             auto x_ = reinterpret_cast<const rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocScalarType *)&alpha, x_, incx, a_);
+                                (rocScalarType *)&alpha, x_, incx, a_);
         });
     });
 
@@ -1283,7 +1283,7 @@ inline sycl::event hpr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<const rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_);
         });
     });
 
@@ -1320,8 +1320,8 @@ inline sycl::event sbmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n, k,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -1358,8 +1358,8 @@ inline sycl::event symv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta,
-                                    y_, incy);
+                                (rocDataType *)&alpha, a_, lda, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -1395,7 +1395,7 @@ inline sycl::event syr(Func func, sycl::queue &queue, uplo upper_lower, int64_t 
             auto x_ = reinterpret_cast<const rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, a_, lda);
+                                (rocDataType *)&alpha, x_, incx, a_, lda);
         });
     });
 
@@ -1434,7 +1434,7 @@ inline sycl::event syr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<const rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_, lda);
         });
     });
 
@@ -1474,8 +1474,8 @@ inline sycl::event spmv(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
-                                    incy);
+                                (rocDataType *)&alpha, a_, x_, incx, (rocDataType *)&beta, y_,
+                                incy);
         });
     });
 
@@ -1510,7 +1510,7 @@ inline sycl::event spr(Func func, sycl::queue &queue, uplo upper_lower, int64_t 
             auto x_ = reinterpret_cast<const rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, a_);
+                                (rocDataType *)&alpha, x_, incx, a_);
         });
     });
 
@@ -1545,7 +1545,7 @@ inline sycl::event spr2(Func func, sycl::queue &queue, uplo upper_lower, int64_t
             auto y_ = reinterpret_cast<const rocDataType *>(y);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower), n,
-                                    (rocDataType *)&alpha, x_, incx, y_, incy, a_);
+                                (rocDataType *)&alpha, x_, incx, y_, incy, a_);
         });
     });
 
@@ -1581,8 +1581,8 @@ inline sycl::event tbmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             auto x_ = reinterpret_cast<rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, k, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                k, a_, lda, x_, incx);
         });
     });
 
@@ -1620,8 +1620,8 @@ inline sycl::event tbsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             auto x_ = reinterpret_cast<rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, k, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                k, a_, lda, x_, incx);
         });
     });
 
@@ -1659,8 +1659,8 @@ inline sycl::event tpmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             auto x_ = reinterpret_cast<rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, x_, incx);
         });
     });
 
@@ -1698,8 +1698,8 @@ inline sycl::event tpsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             auto x_ = reinterpret_cast<rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, x_, incx);
         });
     });
 
@@ -1737,8 +1737,8 @@ inline sycl::event trmv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             auto x_ = reinterpret_cast<rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, lda, x_, incx);
         });
     });
 
@@ -1776,8 +1776,8 @@ inline sycl::event trsv(Func func, sycl::queue &queue, uplo upper_lower, transpo
             auto x_ = reinterpret_cast<rocDataType *>(x);
             rocblas_status err;
             rocblas_native_func(func, err, handle, get_rocblas_fill_mode(upper_lower),
-                                    get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag),
-                                    n, a_, lda, x_, incx);
+                                get_rocblas_operation(trans), get_rocblas_diag_type(unit_diag), n,
+                                a_, lda, x_, incx);
         });
     });
 

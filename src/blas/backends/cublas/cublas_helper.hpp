@@ -206,23 +206,22 @@ public:
     cuStreamSynchronize(currentStreamId);
 
 template <class Func, class... Types>
-inline void cublas_native_func(Func func, cublasStatus_t err,
-                               cublasHandle_t handle, Types... args) {
+inline void cublas_native_func(Func func, cublasStatus_t err, cublasHandle_t handle,
+                               Types... args) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-  CUBLAS_ERROR_FUNC(func, err, handle, args...)
+    CUBLAS_ERROR_FUNC(func, err, handle, args...)
 #else
-  CUBLAS_ERROR_FUNC_SYNC(func, err, handle, args...)
+    CUBLAS_ERROR_FUNC_SYNC(func, err, handle, args...)
 #endif
 };
 
 template <class Func, class... Types>
-inline void cublas_native_named_func(const char *func_name, Func func,
-                                     cublasStatus_t err, cublasHandle_t handle,
-                                     Types... args) {
+inline void cublas_native_named_func(const char *func_name, Func func, cublasStatus_t err,
+                                     cublasHandle_t handle, Types... args) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-  CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, args...)
+    CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, args...)
 #else
-  CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, args...)
+    CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, args...)
 #endif
 };
 

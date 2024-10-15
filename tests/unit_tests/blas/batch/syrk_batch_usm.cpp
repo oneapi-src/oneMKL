@@ -106,10 +106,9 @@ int test(device *dev, oneapi::mkl::layout layout, int64_t group_count) {
         beta[i] = rand_scalar<fp>();
         upper_lower[i] = (oneapi::mkl::uplo)(std::rand() % 2);
         if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-            trans[i] = (std::rand() % 2) == 0
-                           ? oneapi::mkl::transpose::nontrans
-                           : (std::rand() % 2) == 0 ? oneapi::mkl::transpose::trans
-                                                    : oneapi::mkl::transpose::conjtrans;
+            trans[i] = (std::rand() % 2) == 0   ? oneapi::mkl::transpose::nontrans
+                       : (std::rand() % 2) == 0 ? oneapi::mkl::transpose::trans
+                                                : oneapi::mkl::transpose::conjtrans;
         }
         else {
             trans[i] = (std::rand() % 2) == 0 ? oneapi::mkl::transpose::nontrans
