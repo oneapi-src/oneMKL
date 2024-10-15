@@ -64,6 +64,7 @@ Code snippet of the generated header file ``include/oneapi/mkl/blas/detail/newli
 **Compile-time Dispatching Interface Example**: commands to generate the compile-time dispatching interface template instantiations for ``newlib`` and supported device ``newdevice``
 
 .. code-block:: bash
+
     python scripts/generate_ct_templates.py include/oneapi/mkl/blas.hxx \                                  # Base header file
                                             include/oneapi/mkl/blas/detail/blas_ct_templates.hpp           # Output header file
 
