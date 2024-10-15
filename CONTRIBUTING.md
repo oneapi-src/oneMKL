@@ -81,7 +81,16 @@ The general principle is to follow the style of existing/surrounding code. If yo
 ```sh
 clang-format -style=file -i foo.cpp
 ```
-This formats code using the `_clang_format` file found in the oneMKL top-level directory.
+This formats code using the `_clang_format` file found in the oneMKL top-level directory. The version of `clang-format` is specified in [`.pre-commit-config.yaml`](https://github.com/oneapi-src/oneMKL/blob/develop/.pre-commit-config.yaml). Alternatively, you can install and run `pre-commit`, which will install the specified `clang-format` version automatically:
+```sh
+python3 -m venv <venv-name>
+source <venv-name>/bin/activate
+pip install pre-commit
+cd <path-to-onemkl>
+pre-commit run --all-files
+deactivate
+```
+By default, `pre-commit` caches data in `~/.cache/pre-commit`. You can set `PRE_COMMIT_HOME` to use another location.
 
 
 ### GN: General Naming
