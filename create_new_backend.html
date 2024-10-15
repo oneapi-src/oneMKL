@@ -654,13 +654,13 @@ document.write(`
 <span class="w"> </span>      { domain::blas,
 <span class="w"> </span>        { { device::x86cpu,
 <span class="w"> </span>            {
-<span class="w"> </span>  #ifdef ENABLE_MKLCPU_BACKEND
+<span class="w"> </span>  #ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
 <span class="w"> </span>                LIB_NAME(&quot;blas_mklcpu&quot;)
 <span class="w"> </span>  #endif
 <span class="w"> </span>             } },
 <span class="gi">+          { device::newdevice,</span>
 <span class="gi">+            {</span>
-<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span>
+<span class="gi">+  #ifdef ONEMKL_ENABLE_NEWLIB_BACKEND</span>
 <span class="gi">+                 LIB_NAME(&quot;blas_newlib&quot;)</span>
 <span class="gi">+  #endif</span>
 <span class="gi">+             } },</span>
@@ -885,8 +885,8 @@ cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">src/config.hpp.in</span></code>: add a cmake option for the new third-party library so this macro can be propagated to unit tests</p>
 <p><strong>Example</strong>: add <code class="docutils literal notranslate"><span class="pre">ENABLE_NEWLIB_BACKEND</span></code></p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #cmakedefine ENABLE_MKLCPU_BACKEND
-<span class="gi">+  #cmakedefine ENABLE_NEWLIB_BACKEND</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #cmakedefine ONEMKL_ENABLE_MKLCPU_BACKEND
+<span class="gi">+  #cmakedefine ONEMKL_ENABLE_NEWLIB_BACKEND</span>
 </pre></div>
 </div>
 </li>
@@ -918,14 +918,14 @@ cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tests/unit_tests/include/test_helper.hpp</span></code>: add the helper function for the compile-time dispatching interface with the new backend, and specify the device for which it should be called</p>
 <p><strong>Example</strong>: add the helper function for the <code class="docutils literal notranslate"><span class="pre">newlib</span></code> compile-time dispatching interface with <code class="docutils literal notranslate"><span class="pre">newdevice</span></code> if it is the Host</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #ifdef ENABLE_MKLGPU_BACKEND
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>  #ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
 <span class="w"> </span>      #define TEST_RUN_INTELGPU(q, func, args) \
 <span class="w"> </span>          func&lt;oneapi::mkl::backend::mklgpu&gt; args
 <span class="w"> </span>  #else
 <span class="w"> </span>      #define TEST_RUN_INTELGPU(q, func, args)
 <span class="w"> </span>  #endif
 <span class="gi">+</span>
-<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span>
+<span class="gi">+  #ifdef ONEMKL_ENABLE_NEWLIB_BACKEND</span>
 <span class="gi">+     #define TEST_RUN_NEWDEVICE(q, func, args) \</span>
 <span class="gi">+         func&lt;oneapi::mkl::backend::newbackend&gt; args</span>
 <span class="gi">+  #else</span>
@@ -945,7 +945,7 @@ cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>          }
 <span class="w"> </span>      }
 <span class="gi">+</span>
-<span class="gi">+  #ifdef ENABLE_NEWLIB_BACKEND</span>
+<span class="gi">+  #ifdef ONEMKL_ENABLE_NEWLIB_BACKEND</span>
 <span class="gi">+      devices.push_back(sycl::device(sycl::host_selector()));</span>
 <span class="gi">+  #endif</span>
 </pre></div>
