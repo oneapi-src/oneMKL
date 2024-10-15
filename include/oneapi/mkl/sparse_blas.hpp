@@ -28,10 +28,10 @@
 
 #include "oneapi/mkl/detail/config.hpp"
 
-#ifdef ENABLE_MKLCPU_BACKEND
+#ifdef ONEMKL_ENABLE_MKLCPU_BACKEND
 #include "sparse_blas/detail/mklcpu/sparse_blas_ct.hpp"
 #endif
-#ifdef ENABLE_MKLGPU_BACKEND
+#ifdef ONEMKL_ENABLE_MKLGPU_BACKEND
 #include "sparse_blas/detail/mklgpu/sparse_blas_ct.hpp"
 #endif
 
