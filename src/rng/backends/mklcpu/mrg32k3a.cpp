@@ -24,7 +24,8 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "mkl_vsl.h"
+// Intel(R) oneMKL header
+#include <mkl_vsl.h>
 
 #include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/rng/detail/engine_impl.hpp"

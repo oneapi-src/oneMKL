@@ -23,7 +23,6 @@ set(LIB_OBJ ${LIB_NAME}_obj)
 add_library(${LIB_NAME})
 add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT
-  mkl_internal_rng_gpu.hpp
   philox4x32x10.cpp
   mrg32k3a.cpp
   $<$<BOOL:${BUILD_SHARED_LIBS}>: mkl_rng_gpu_wrappers.cpp>
@@ -31,10 +30,17 @@ add_library(${LIB_OBJ} OBJECT
 add_dependencies(onemath_backend_libs_rng ${LIB_NAME})
 
 target_include_directories(${LIB_OBJ}
-  PRIVATE ${PROJECT_SOURCE_DIR}/include
-          ${PROJECT_SOURCE_DIR}/src
+  PRIVATE ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
           ${ONEMATH_GENERATED_INCLUDE_PATH}
+)
+
+# Due to using the same file name for different headers in this library and in
+# the Intel(R) oneAPI Math Kernel Library, we force the compiler to follow C++
+# Core Guideline SF.12 using the flag "-iquote" to avoid conflicts and find the
+# correct header.
+target_compile_options(${LIB_OBJ}
+  BEFORE PRIVATE -iquote $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
 target_compile_options(${LIB_OBJ} PRIVATE ${ONEMATH_BUILD_COPT})
