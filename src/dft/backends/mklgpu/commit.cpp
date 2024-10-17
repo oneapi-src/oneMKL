@@ -32,6 +32,7 @@
 #include "oneapi/math/dft/detail/descriptor_impl.hpp"
 #include "oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp"
 
+#include "common_onemkl_conversion.hpp"
 #include "dft/backends/mklgpu/mklgpu_helpers.hpp"
 #include "../stride_helper.hpp"
 
@@ -101,41 +102,19 @@ public:
         // A separate descriptor for each direction may not be required.
         bool one_descriptor = (stride_choice == dft::detail::stride_api::FB_STRIDES) ||
                               (config_values.input_strides == config_values.output_strides);
-        bool forward_good = true;
         // Make sure that second is always pointing to something new if this is a recommit.
         handle.second = handle.first;
 
         // Generate forward DFT descriptor. If using FWD/BWD_STRIDES API, only
         // one descriptor is needed.
         set_value(*handle.first, config_values, true, stride_choice);
-        try {
-            handle.first->commit(this->get_queue());
-        }
-        catch (const std::exception& mkl_exception) {
-            // Catching the real Intel oneMKL exception causes headaches with naming
-            forward_good = false;
-            if (one_descriptor) {
-                throw math::exception("dft/backends/mklgpu"
-                                     "commit",
-                                     mkl_exception.what());
-            }
-        }
+        RETHROW_ONEMKL_EXCEPTIONS(handle.first->commit(this->get_queue()));
 
         // Generate backward DFT descriptor only if required.
         if (!one_descriptor) {
             handle.second = std::make_shared<mklgpu_descriptor_t>(config_values.dimensions);
             set_value(*handle.second, config_values, false, stride_choice);
-            try {
-                handle.second->commit(this->get_queue());
-            }
-            catch (const std::exception& mkl_exception) {
-                // Catching the real Intel oneMKL exception causes headaches with naming.
-                if (!forward_good) {
-                    throw math::exception("dft/backends/mklgpu"
-                                         "commit",
-                                         mkl_exception.what());
-                }
-            }
+            RETHROW_ONEMKL_EXCEPTIONS(handle.second->commit(this->get_queue()));
         }
     }
 
@@ -147,17 +126,17 @@ public:
 
     virtual void set_workspace(scalar_type* usm_workspace) override {
         this->external_workspace_helper_.set_workspace_throw(*this, usm_workspace);
-        handle.first->set_workspace(usm_workspace);
+        RETHROW_ONEMKL_EXCEPTIONS(handle.first->set_workspace(usm_workspace));
         if (handle.first != handle.second) {
-            handle.second->set_workspace(usm_workspace);
+            RETHROW_ONEMKL_EXCEPTIONS(handle.second->set_workspace(usm_workspace));
         }
     }
 
     virtual void set_workspace(sycl::buffer<scalar_type>& buffer_workspace) override {
         this->external_workspace_helper_.set_workspace_throw(*this, buffer_workspace);
-        handle.first->set_workspace(buffer_workspace);
+        RETHROW_ONEMKL_EXCEPTIONS(handle.first->set_workspace(buffer_workspace));
         if (handle.first != handle.second) {
-            handle.second->set_workspace(buffer_workspace);
+            RETHROW_ONEMKL_EXCEPTIONS(handle.second->set_workspace(buffer_workspace));
         }
     }
 

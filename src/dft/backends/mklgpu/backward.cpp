@@ -28,6 +28,7 @@
 #include "oneapi/math/dft/detail/mklgpu/onemath_dft_mklgpu.hpp"
 #include "oneapi/math/dft/detail/descriptor_impl.hpp"
 
+#include "common_onemkl_conversion.hpp"
 #include "mklgpu_helpers.hpp"
 
 #include "mkl_version.h"
@@ -64,7 +65,7 @@ inline auto compute_backward(dft::detail::descriptor<prec, dom> &desc, ArgTs &&.
     // The MKLGPU backend's interface contains fewer function signatures than in this
     // open-source library. Consequently, it is not required to forward template arguments
     // to resolve to the correct function.
-    return oneapi::mkl::dft::compute_backward(*mklgpu_desc, std::forward<ArgTs>(args)...);
+    RETHROW_ONEMKL_EXCEPTIONS_RET(oneapi::mkl::dft::compute_backward(*mklgpu_desc, std::forward<ArgTs>(args)...));
 }
 
 /// Throw an math::invalid_argument if the runtime param in the descriptor does not match

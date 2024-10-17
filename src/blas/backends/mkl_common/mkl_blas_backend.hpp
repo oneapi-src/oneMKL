@@ -25,7 +25,7 @@
 #include <mkl_version.h>
 #include <oneapi/mkl/blas.hpp>
 
-#include "common_mkl_types_conversion.hpp"
+#include "common_onemkl_conversion.hpp"
 #include "oneapi/math/types.hpp"
 
 namespace oneapi {

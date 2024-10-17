@@ -17,15 +17,17 @@
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 
-#ifndef _ONEMATH_SRC_INCLUDE_COMMON_MKL_TYPES_CONVERSION_HPP_
-#define _ONEMATH_SRC_INCLUDE_COMMON_MKL_TYPES_CONVERSION_HPP_
+#ifndef _ONEMATH_SRC_INCLUDE_COMMON_ONEMKL_TYPES_CONVERSION_HPP_
+#define _ONEMATH_SRC_INCLUDE_COMMON_ONEMKL_TYPES_CONVERSION_HPP_
 
 // The file is used to convert oneMath types to Intel(R) oneMKL types for all the common types shared across domains.
 // The file assumes that the common types are identical between the 2 libraries, except for their namespace.
 
+#include <oneapi/mkl/exceptions.hpp>
 #include <oneapi/mkl/types.hpp>
 
 #include "oneapi/math/types.hpp"
+#include "oneapi/math/exceptions.hpp"
 
 namespace oneapi {
 namespace math {
@@ -65,8 +67,39 @@ inline auto get_onemkl_rangev(oneapi::math::rangev param) { return *reinterpret_
 
 inline auto get_onemkl_order(oneapi::math::order param) { return *reinterpret_cast<oneapi::mkl::order*>(&param); }
 
+// Rethrow Intel(R) oneMKL exceptions as oneMath exceptions
+#define RETHROW_ONEMKL_EXCEPTIONS(EXPRESSION) \
+do { \
+    try { \
+    EXPRESSION; \
+    } catch(const oneapi::mkl::unsupported_device& e) { \
+        throw unsupported_device(e.what()); \
+    } catch(const oneapi::mkl::host_bad_alloc& e) { \
+        throw host_bad_alloc(e.what()); \
+    } catch(const oneapi::mkl::device_bad_alloc& e) { \
+        throw device_bad_alloc(e.what()); \
+    } catch(const oneapi::mkl::unimplemented& e) { \
+        throw unimplemented(e.what()); \
+    } catch(const oneapi::mkl::invalid_argument& e) { \
+        throw invalid_argument(e.what()); \
+    } catch(const oneapi::mkl::uninitialized& e) { \
+        throw uninitialized(e.what()); \
+    } catch(const oneapi::mkl::computation_error& e) { \
+        throw computation_error(e.what()); \
+    } catch(const oneapi::mkl::batch_error& e) { \
+        throw batch_error(e.what()); \
+    } catch(const oneapi::mkl::exception& e) { \
+        throw exception(e.what()); \
+    } \
+} while (0)
+
+#define RETHROW_ONEMKL_EXCEPTIONS_RET(EXPRESSION) \
+do { \
+RETHROW_ONEMKL_EXCEPTIONS(return EXPRESSION); \
+} while(0)
+
 }   // namespace detail
 }   // namespace math
 }   // namespace oneapi
 
-#endif // _ONEMATH_SRC_INCLUDE_COMMON_MKL_TYPES_CONVERSION_HPP_
+#endif // _ONEMATH_SRC_INCLUDE_COMMON_ONEMKL_TYPES_CONVERSION_HPP_

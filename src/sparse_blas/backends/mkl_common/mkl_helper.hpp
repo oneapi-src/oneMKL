@@ -29,7 +29,7 @@
 #include "oneapi/math/exceptions.hpp"
 #include "oneapi/math/sparse_blas/detail/helper_types.hpp"
 
-#include "common_mkl_types_conversion.hpp"
+#include "common_onemkl_conversion.hpp"
 #include "sparse_blas/enum_data_types.hpp"
 #include "sparse_blas/macros.hpp"
 

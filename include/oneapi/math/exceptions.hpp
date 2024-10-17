@@ -38,6 +38,7 @@ class exception : public std::exception {
     std::string msg_;
 
 public:
+    exception(const std::string& message) : std::exception(), msg_(message) {}
     exception(const std::string &domain, const std::string &function, const std::string &info = "")
             : std::exception() {
         msg_ = std::string("oneMath: ") + domain +
@@ -54,6 +55,7 @@ public:
 
 class unsupported_device : public oneapi::math::exception {
 public:
+    unsupported_device(const std::string& message) : exception(message) {}
     unsupported_device(const std::string &domain, const std::string &function,
                        const sycl::device &device)
             : oneapi::math::exception(
@@ -63,12 +65,14 @@ public:
 
 class host_bad_alloc : public oneapi::math::exception {
 public:
+    host_bad_alloc(const std::string& message) : exception(message) {}
     host_bad_alloc(const std::string &domain, const std::string &function)
             : oneapi::math::exception(domain, function, "cannot allocate memory on host") {}
 };
 
 class device_bad_alloc : public oneapi::math::exception {
 public:
+    device_bad_alloc(const std::string& message) : exception(message) {}
     device_bad_alloc(const std::string &domain, const std::string &function,
                      const sycl::device &device)
             : oneapi::math::exception(
@@ -78,6 +82,7 @@ public:
 
 class unimplemented : public oneapi::math::exception {
 public:
+    unimplemented(const std::string& message) : exception(message) {}
     unimplemented(const std::string &domain, const std::string &function,
                   const std::string &info = "")
             : oneapi::math::exception(domain, function, "function is not implemented " + info) {}
@@ -85,6 +90,7 @@ public:
 
 class invalid_argument : public oneapi::math::exception {
 public:
+    invalid_argument(const std::string& message) : exception(message) {}
     invalid_argument(const std::string &domain, const std::string &function,
                      const std::string &info = "")
             : oneapi::math::exception(domain, function, "invalid argument " + info) {}
@@ -92,6 +98,7 @@ public:
 
 class uninitialized : public oneapi::math::exception {
 public:
+    uninitialized(const std::string& message) : exception(message) {}
     uninitialized(const std::string &domain, const std::string &function,
                   const std::string &info = "")
             : oneapi::math::exception(domain, function,
@@ -100,6 +107,7 @@ public:
 
 class computation_error : public oneapi::math::exception {
 public:
+    computation_error(const std::string& message) : exception(message) {}
     computation_error(const std::string &domain, const std::string &function,
                       const std::string &info = "")
             : oneapi::math::exception(
@@ -109,19 +117,11 @@ public:
 
 class batch_error : public oneapi::math::exception {
 public:
+    batch_error(const std::string& message) : exception(message) {}
     batch_error(const std::string &domain, const std::string &function,
                 const std::string &info = "")
             : oneapi::math::exception(domain, function,
                                      "batch error" + ((info.length() != 0) ? (": " + info) : "")) {}
-};
-
-class library_not_found : public oneapi::math::exception {
-public:
-    library_not_found(const std::string &domain, const std::string &function,
-                      const std::string &info = "")
-            : oneapi::math::exception(
-                  domain, function,
-                  "library not found" + ((info.length() != 0) ? (": " + info) : "")) {}
 };
 
 } // namespace math

@@ -141,8 +141,8 @@ void spsv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *
     auto onemkl_uplo = detail::get_onemkl_uplo(A_view.uplo_view);
     auto onemkl_opa = detail::get_onemkl_transpose(opA);
     auto onemkl_diag = detail::get_onemkl_diag(A_view.diag_view);
-    oneapi::mkl::sparse::optimize_trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag,
-                                       internal_A_handle->backend_handle);
+    RETHROW_ONEMKL_EXCEPTIONS(oneapi::mkl::sparse::optimize_trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag,
+                                       internal_A_handle->backend_handle));
 }
 
 sycl::event spsv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const void *alpha,
@@ -165,8 +165,8 @@ sycl::event spsv_optimize(sycl::queue &queue, oneapi::math::transpose opA, const
     auto onemkl_uplo = detail::get_onemkl_uplo(A_view.uplo_view);
     auto onemkl_opa = detail::get_onemkl_transpose(opA);
     auto onemkl_diag = detail::get_onemkl_diag(A_view.diag_view);
-    return oneapi::mkl::sparse::optimize_trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag,
-                                              internal_A_handle->backend_handle, dependencies);
+    RETHROW_ONEMKL_EXCEPTIONS_RET(oneapi::mkl::sparse::optimize_trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag,
+                                              internal_A_handle->backend_handle, dependencies));
 }
 
 template <typename T>
@@ -187,17 +187,17 @@ sycl::event internal_spsv(sycl::queue &queue, oneapi::math::transpose opA, const
     auto onemkl_opa = detail::get_onemkl_transpose(opA);
     auto onemkl_diag = detail::get_onemkl_diag(A_view.diag_view);
     if (internal_A_handle->all_use_buffer()) {
-        oneapi::mkl::sparse::trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag, host_alpha,
+        RETHROW_ONEMKL_EXCEPTIONS(oneapi::mkl::sparse::trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag, host_alpha,
                                   internal_A_handle->backend_handle, x_handle->get_buffer<T>(),
-                                  y_handle->get_buffer<T>());
+                                  y_handle->get_buffer<T>()));
         // Dependencies are not used for buffers
         return {};
     }
     else {
-        return oneapi::mkl::sparse::trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag, host_alpha,
+        RETHROW_ONEMKL_EXCEPTIONS_RET(oneapi::mkl::sparse::trsv(queue, onemkl_uplo, onemkl_opa, onemkl_diag, host_alpha,
                                          internal_A_handle->backend_handle,
                                          x_handle->get_usm_ptr<T>(), y_handle->get_usm_ptr<T>(),
-                                         dependencies);
+                                         dependencies));
     }
 }
 

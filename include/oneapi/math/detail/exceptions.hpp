@@ -45,6 +45,16 @@ public:
     }
 };
 
+class library_not_found : public oneapi::math::exception {
+public:
+    library_not_found(const std::string& message) : exception(message) {}
+    library_not_found(const std::string &domain, const std::string &function,
+                      const std::string &info = "")
+            : oneapi::math::exception(
+                  domain, function,
+                  "library not found" + ((info.length() != 0) ? (": " + info) : "")) {}
+};
+
 class specification_mismatch : public oneapi::math::exception {
 public:
     specification_mismatch(const std::string &info = "")

@@ -200,17 +200,17 @@ sycl::event internal_spmm(
     auto ldb = B_handle->ld;
     auto ldc = C_handle->ld;
     if (internal_A_handle->all_use_buffer()) {
-        oneapi::mkl::sparse::gemm(queue, onemkl_layout, onemkl_opa, onemkl_opb, host_alpha,
+        RETHROW_ONEMKL_EXCEPTIONS(oneapi::mkl::sparse::gemm(queue, onemkl_layout, onemkl_opa, onemkl_opb, host_alpha,
                                   internal_A_handle->backend_handle, B_handle->get_buffer<T>(),
-                                  columns, ldb, host_beta, C_handle->get_buffer<T>(), ldc);
+                                  columns, ldb, host_beta, C_handle->get_buffer<T>(), ldc));
         // Dependencies are not used for buffers
         return {};
     }
     else {
-        return oneapi::mkl::sparse::gemm(queue, onemkl_layout, onemkl_opa, onemkl_opb, host_alpha,
+        RETHROW_ONEMKL_EXCEPTIONS_RET(oneapi::mkl::sparse::gemm(queue, onemkl_layout, onemkl_opa, onemkl_opb, host_alpha,
                                          internal_A_handle->backend_handle,
                                          B_handle->get_usm_ptr<T>(), columns, ldb, host_beta,
-                                         C_handle->get_usm_ptr<T>(), ldc, dependencies);
+                                         C_handle->get_usm_ptr<T>(), ldc, dependencies));
     }
 }
 

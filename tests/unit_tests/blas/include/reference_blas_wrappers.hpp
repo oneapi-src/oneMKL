@@ -20,7 +20,7 @@
 #ifndef _REFERENCE_BLAS_WRAPPERS_HPP__
 #define _REFERENCE_BLAS_WRAPPERS_HPP__
 
-#include "oneapi/math/exceptions.hpp"
+#include "oneapi/math/detail/exceptions.hpp"
 #include "oneapi/math/detail/config.hpp"
 #include <string>
 #include "cblas.h"
