@@ -31,13 +31,7 @@ if (USE_ADD_SYCL_TO_TARGET_INTEGRATION)
   add_sycl_to_target(TARGET ${LIB_OBJ} SOURCES ${SOURCES})
 endif()
 
-# Due to using the same file name for different headers in this library and in
-# the Intel(R) oneAPI Math Kernel Library, we force the compiler to follow C++
-# Core Guideline SF.12 using the flag "-iquote" to avoid conflicts and find the
-# correct header.
-target_compile_options(${LIB_OBJ}
-  BEFORE PRIVATE -iquote $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-)
+target_add_onemath_include(${LIB_OBJ})
 
 target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/src

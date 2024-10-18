@@ -47,6 +47,17 @@ function(add_deprecated_library target_name)
   set_target_properties(deprecated_name PROPERTIES DEPRECATION "${deprecated_name} target is deprecated, please use ${target_name} instead")
 endfunction()
 
+
+# Due to using the same file name for different headers in this library and in
+# the Intel(R) oneAPI Math Kernel Library, the compiler may not include the
+# expected header. Using `-iquote` lets us include this project's headers when
+# double quotes are used and external headers when angle brackets are used.
+function(target_add_onemath_include target_name)
+  target_compile_options(${target_name}
+    BEFORE PRIVATE -iquote $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  )
+endfunction()
+
 # Build loader and backends for each domain
 add_custom_target(onemath_backend_libs)
 foreach(domain ${TARGET_DOMAINS})
