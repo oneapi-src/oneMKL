@@ -66,9 +66,12 @@ add_deprecated_library(${LIB_NAME})
 add_library(${LIB_OBJ} OBJECT ${SOURCES})
 add_dependencies(onemath_backend_libs_rng ${LIB_NAME})
 
-target_include_directories(
-  ${LIB_OBJ} PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src
-                     ${CMAKE_BINARY_DIR}/bin ${MKL_INCLUDE} ${ONEMATH_GENERATED_INCLUDE_PATH})
+target_include_directories(${LIB_OBJ}
+  PRIVATE ${PROJECT_SOURCE_DIR}/include
+          ${PROJECT_SOURCE_DIR}/src
+          ${CMAKE_BINARY_DIR}/bin
+          ${ONEMATH_GENERATED_INCLUDE_PATH}
+)
 
 target_link_libraries(${LIB_OBJ} PRIVATE roc::rocrand hip::host Threads::Threads)
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMATH::SYCL::SYCL)

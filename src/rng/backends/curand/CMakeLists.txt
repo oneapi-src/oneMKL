@@ -73,7 +73,6 @@ target_include_directories(${LIB_OBJ}
   PRIVATE ${PROJECT_SOURCE_DIR}/include
           ${PROJECT_SOURCE_DIR}/src
           ${CMAKE_BINARY_DIR}/bin
-          ${MKL_INCLUDE}
           ${ONEMATH_GENERATED_INCLUDE_PATH}
 )
 
