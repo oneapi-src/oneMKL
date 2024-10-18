@@ -92,13 +92,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::syrk(main_queue, upper_lower, trans, n, k,
-                                                             alpha, A.data(), lda, beta, C.data(),
-                                                             ldc, dependencies);
+                                                              alpha, A.data(), lda, beta, C.data(),
+                                                              ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::syrk(main_queue, upper_lower, trans, n, k,
-                                                          alpha, A.data(), lda, beta, C.data(), ldc,
-                                                          dependencies);
+                                                           alpha, A.data(), lda, beta, C.data(),
+                                                           ldc, dependencies);
                 break;
             default: break;
         }
@@ -111,9 +111,9 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         C.data(), ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::syrk, upper_lower,
-                                        trans, n, k, alpha, A.data(), lda, beta, C.data(), ldc,
-                                        dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::syrk,
+                                        upper_lower, trans, n, k, alpha, A.data(), lda, beta,
+                                        C.data(), ldc, dependencies);
                 break;
             default: break;
         }
@@ -171,11 +171,11 @@ TEST_P(SyrkUsmTests, RealDoublePrecision) {
                                    oneapi::math::uplo::upper, oneapi::math::transpose::nontrans, 73,
                                    27, 101, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::uplo::lower, oneapi::math::transpose::trans, 73, 27,
-                                   101, 103, alpha, beta));
+                                   oneapi::math::uplo::lower, oneapi::math::transpose::trans, 73,
+                                   27, 101, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::uplo::upper, oneapi::math::transpose::trans, 73, 27,
-                                   101, 103, alpha, beta));
+                                   oneapi::math::uplo::upper, oneapi::math::transpose::trans, 73,
+                                   27, 101, 103, alpha, beta));
 }
 TEST_P(SyrkUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(3.0, -0.5);

@@ -126,7 +126,7 @@ public:
                     size_t id = item.get_id(0);
                     Engine engine(SEED);
                     oneapi::math::rng::device::skip_ahead(engine,
-                                                         { id * Engine::vec_size, skip_num });
+                                                          { id * Engine::vec_size, skip_num });
                     oneapi::math::rng::device::bits<> distr;
                     auto res = oneapi::math::rng::device::generate(distr, engine);
                     if constexpr (Engine::vec_size == 1) {

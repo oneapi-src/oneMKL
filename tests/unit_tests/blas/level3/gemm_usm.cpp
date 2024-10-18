@@ -99,13 +99,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::transpose trans
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::gemm(main_queue, transa, transb, m, n, k,
-                                                             alpha, A.data(), lda, B.data(), ldb,
-                                                             beta, C.data(), ldc, dependencies);
+                                                              alpha, A.data(), lda, B.data(), ldb,
+                                                              beta, C.data(), ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::gemm(main_queue, transa, transb, m, n, k,
-                                                          alpha, A.data(), lda, B.data(), ldb, beta,
-                                                          C.data(), ldc, dependencies);
+                                                           alpha, A.data(), lda, B.data(), ldb,
+                                                           beta, C.data(), ldc, dependencies);
                 break;
             default: break;
         }

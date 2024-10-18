@@ -48,7 +48,8 @@ namespace {
 
 template <typename fp>
 int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
-         oneapi::math::transpose trans, int n, int k, int lda, int ldb, int ldc, fp alpha, fp beta) {
+         oneapi::math::transpose trans, int n, int k, int lda, int ldb, int ldc, fp alpha,
+         fp beta) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
@@ -94,13 +95,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::syr2k(main_queue, upper_lower, trans, n, k,
-                                                              alpha, A.data(), lda, B.data(), ldb,
-                                                              beta, C.data(), ldc, dependencies);
+                                                               alpha, A.data(), lda, B.data(), ldb,
+                                                               beta, C.data(), ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::syr2k(main_queue, upper_lower, trans, n, k,
-                                                           alpha, A.data(), lda, B.data(), ldb,
-                                                           beta, C.data(), ldc, dependencies);
+                                                            alpha, A.data(), lda, B.data(), ldb,
+                                                            beta, C.data(), ldc, dependencies);
                 break;
             default: break;
         }
@@ -173,11 +174,11 @@ TEST_P(Syr2kUsmTests, RealDoublePrecision) {
                                    oneapi::math::uplo::upper, oneapi::math::transpose::nontrans, 73,
                                    27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::uplo::lower, oneapi::math::transpose::trans, 73, 27,
-                                   101, 102, 103, alpha, beta));
+                                   oneapi::math::uplo::lower, oneapi::math::transpose::trans, 73,
+                                   27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::uplo::upper, oneapi::math::transpose::trans, 73, 27,
-                                   101, 102, 103, alpha, beta));
+                                   oneapi::math::uplo::upper, oneapi::math::transpose::trans, 73,
+                                   27, 101, 102, 103, alpha, beta));
 }
 TEST_P(Syr2kUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(3.0, -0.5);

@@ -99,7 +99,7 @@ public:
     mrg32k3a_impl(sycl::queue queue, std::initializer_list<std::uint32_t> seed)
             : oneapi::math::rng::detail::engine_impl(queue) {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine",
-                                         "multi-seed unsupported by rocRAND backend");
+                                          "multi-seed unsupported by rocRAND backend");
     }
 
     mrg32k3a_impl(const mrg32k3a_impl* other)
@@ -134,9 +134,9 @@ public:
         range_transform_fp<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
-    virtual void generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::standard>& distr,
-        std::int64_t n, sycl::buffer<double, 1>& r) override {
+    virtual void generate(const oneapi::math::rng::uniform<
+                              double, oneapi::math::rng::uniform_method::standard>& distr,
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
@@ -189,9 +189,9 @@ public:
         range_transform_fp_accurate<float>(queue_, distr.a(), distr.b(), n, r);
     }
 
-    virtual void generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::accurate>& distr,
-        std::int64_t n, sycl::buffer<double, 1>& r) override {
+    virtual void generate(const oneapi::math::rng::uniform<
+                              double, oneapi::math::rng::uniform_method::accurate>& distr,
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
@@ -326,9 +326,9 @@ public:
         increment_internal_offset(n);
     }
 
-    virtual void generate(
-        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, sycl::buffer<double, 1>& r) override {
+    virtual void generate(const oneapi::math::rng::lognormal<
+                              double, oneapi::math::rng::lognormal_method::icdf>& distr,
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         queue_
             .submit([&](sycl::handler& cgh) {
                 auto acc = r.get_access<sycl::access::mode::read_write>(cgh);
@@ -425,7 +425,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::standard>& distr,
+        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::standard>&
+            distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         queue_
@@ -481,7 +482,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::accurate>& distr,
+        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::accurate>&
+            distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         queue_
@@ -587,8 +589,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::box_muller2>&
-            distr,
+        const oneapi::math::rng::lognormal<double,
+                                           oneapi::math::rng::lognormal_method::box_muller2>& distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
@@ -622,7 +624,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::icdf>& distr,
+        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::icdf>&
+            distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         sycl::event::wait_and_throw(dependencies);
         auto event = queue_.submit([&](sycl::handler& cgh) {
@@ -716,7 +719,7 @@ public:
 
     virtual void skip_ahead(std::initializer_list<std::uint64_t> num_to_skip) override {
         throw oneapi::math::unimplemented("rng", "skip_ahead",
-                                         "initializer list unsupported by rocRAND backend");
+                                          "initializer list unsupported by rocRAND backend");
     }
 
     virtual void leapfrog(std::uint64_t idx, std::uint64_t stride) override {
@@ -761,9 +764,9 @@ public:
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
     }
 
-    virtual void generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::standard>& distr,
-        std::int64_t n, sycl::buffer<double, 1>& r) override {
+    virtual void generate(const oneapi::math::rng::uniform<
+                              double, oneapi::math::rng::uniform_method::standard>& distr,
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
     }
 
@@ -779,9 +782,9 @@ public:
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
     }
 
-    virtual void generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::accurate>& distr,
-        std::int64_t n, sycl::buffer<double, 1>& r) override {
+    virtual void generate(const oneapi::math::rng::uniform<
+                              double, oneapi::math::rng::uniform_method::accurate>& distr,
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
     }
 
@@ -827,9 +830,9 @@ public:
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
     }
 
-    virtual void generate(
-        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::icdf>& distr,
-        std::int64_t n, sycl::buffer<double, 1>& r) override {
+    virtual void generate(const oneapi::math::rng::lognormal<
+                              double, oneapi::math::rng::lognormal_method::icdf>& distr,
+                          std::int64_t n, sycl::buffer<double, 1>& r) override {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
     }
 
@@ -868,7 +871,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::standard>& distr,
+        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::standard>&
+            distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
         return sycl::event{};
@@ -890,7 +894,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::accurate>& distr,
+        const oneapi::math::rng::uniform<double, oneapi::math::rng::uniform_method::accurate>&
+            distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
         return sycl::event{};
@@ -935,8 +940,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::box_muller2>&
-            distr,
+        const oneapi::math::rng::lognormal<double,
+                                           oneapi::math::rng::lognormal_method::box_muller2>& distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
         return sycl::event{};
@@ -950,7 +955,8 @@ public:
     }
 
     virtual sycl::event generate(
-        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::icdf>& distr,
+        const oneapi::math::rng::lognormal<double, oneapi::math::rng::lognormal_method::icdf>&
+            distr,
         std::int64_t n, double* r, const std::vector<sycl::event>& dependencies) override {
         throw oneapi::math::unimplemented("rng", "mrg32ka engine");
         return sycl::event{};
@@ -1016,7 +1022,7 @@ oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue, std::
 }
 
 oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
-                                                       std::initializer_list<std::uint32_t> seed) {
+                                                        std::initializer_list<std::uint32_t> seed) {
     return new mrg32k3a_impl(queue, seed);
 }
 

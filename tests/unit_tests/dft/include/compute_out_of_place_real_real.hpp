@@ -74,7 +74,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_USM() {
                                        abs_error_margin, rel_error_margin, std::cout));
 
         oneapi::math::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           PrecisionType, PrecisionType>(
+                                            PrecisionType, PrecisionType>(
             descriptor, out_re.data(), out_im.data(), out_back_re.data(), out_back_im.data(),
             no_dependencies)
             .wait_and_throw();
@@ -139,7 +139,7 @@ int DFT_Test<precision, domain>::test_out_of_place_real_real_buffer() {
         }
 
         oneapi::math::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           PrecisionType, PrecisionType>(
+                                            PrecisionType, PrecisionType>(
             descriptor, out_dev_re, out_dev_im, out_back_dev_re, out_back_dev_im);
 
         {

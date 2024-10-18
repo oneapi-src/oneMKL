@@ -42,12 +42,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n,
          fp_scalar alpha, int incx, int lda) {
     // Prepare data.
     vector<fp> x, A_ref, A;
@@ -61,17 +61,17 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     using fp_scalar_ref = typename ref_type_info<fp_scalar>::type;
 
     ::her(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref,
-          (fp_scalar_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)A_ref.data(), &lda_ref);
+          (fp_scalar_ref*)&alpha, (fp_ref*)x.data(), &incx_ref, (fp_ref*)A_ref.data(), &lda_ref);
 
     // Call DPC++ HER.
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during HER:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -89,11 +89,11 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::her(main_queue, upper_lower, n, alpha, x_buffer,
-                                                     incx, A_buffer, lda);
+                                                      incx, A_buffer, lda);
                 break;
             case oneapi::math::layout::row_major:
-                oneapi::math::blas::row_major::her(main_queue, upper_lower, n, alpha, x_buffer, incx,
-                                                  A_buffer, lda);
+                oneapi::math::blas::row_major::her(main_queue, upper_lower, n, alpha, x_buffer,
+                                                   incx, A_buffer, lda);
                 break;
             default: break;
         }
@@ -111,16 +111,16 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during HER:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of HER:\n" << error.what() << std::endl;
     }
 
@@ -131,7 +131,7 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     return (int)good;
 }
 
-class HerTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {
+class HerTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(HerTests, ComplexSinglePrecision) {

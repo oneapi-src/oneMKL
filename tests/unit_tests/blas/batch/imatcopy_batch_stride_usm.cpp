@@ -43,19 +43,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
+int test(device* dev, oneapi::math::layout layout, int64_t batch_size) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during OMATCOPY_BATCH_STRIDE:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -103,8 +103,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 
     AB.resize(stride * batch_size);
     AB_ref.resize(stride * batch_size);
-    fp **ab_array = (fp **)oneapi::math::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
-    fp **ab_ref_array = (fp **)oneapi::math::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
+    fp** ab_array = (fp**)oneapi::math::malloc_shared(64, sizeof(fp*) * batch_size, *dev, cxt);
+    fp** ab_ref_array = (fp**)oneapi::math::malloc_shared(64, sizeof(fp*) * batch_size, *dev, cxt);
     if ((ab_array == NULL) || (ab_ref_array == NULL)) {
         std::cout << "Error cannot allocate arrays of pointers\n";
         oneapi::math::free_shared(ab_array, cxt);
@@ -143,8 +143,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::imatcopy_batch(main_queue, trans, m, n, alpha,
-                                                                    &AB[0], lda, ldb, stride,
-                                                                    batch_size, dependencies);
+                                                                     &AB[0], lda, ldb, stride,
+                                                                     batch_size, dependencies);
                 break;
             default: break;
         }
@@ -152,9 +152,9 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::imatcopy_batch,
-                                        trans, m, n, alpha, &AB[0], lda, ldb, stride, batch_size,
-                                        dependencies);
+                TEST_RUN_BLAS_CT_SELECT(
+                    main_queue, oneapi::math::blas::column_major::imatcopy_batch, trans, m, n,
+                    alpha, &AB[0], lda, ldb, stride, batch_size, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::imatcopy_batch,
@@ -166,19 +166,19 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during IMATCOPY_BATCH_STRIDE:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         oneapi::math::free_shared(ab_array, cxt);
         oneapi::math::free_shared(ab_ref_array, cxt);
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of IMATCOPY_BATCH_STRIDE:\n"
                   << error.what() << std::endl;
     }
@@ -194,7 +194,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 }
 
 class ImatcopyBatchStrideUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(ImatcopyBatchStrideUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

@@ -96,13 +96,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::gemmt(main_queue, upper_lower, transa, transb, n,
-                                                       k, alpha, A_buffer, lda, B_buffer, ldb, beta,
-                                                       C_buffer, ldc);
+                                                        k, alpha, A_buffer, lda, B_buffer, ldb,
+                                                        beta, C_buffer, ldc);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::gemmt(main_queue, upper_lower, transa, transb, n, k,
-                                                    alpha, A_buffer, lda, B_buffer, ldb, beta,
-                                                    C_buffer, ldc);
+                                                     alpha, A_buffer, lda, B_buffer, ldb, beta,
+                                                     C_buffer, ldc);
                 break;
             default: break;
         }
@@ -143,8 +143,8 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     return (int)good;
 }
 
-class GemmtTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
-};
+class GemmtTests
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(GemmtTests, RealSinglePrecision) {
     float alpha(2.0);
@@ -239,28 +239,28 @@ TEST_P(GemmtTests, ComplexSinglePrecision) {
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103, alpha,
-        beta));
+        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
+        alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
         oneapi::math::transpose::trans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
         oneapi::math::transpose::conjtrans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
         oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102, 103,
@@ -275,28 +275,28 @@ TEST_P(GemmtTests, ComplexSinglePrecision) {
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103, alpha,
-        beta));
+        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
+        alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
         oneapi::math::transpose::trans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
         oneapi::math::transpose::conjtrans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
 }
 
 TEST_P(GemmtTests, ComplexDoublePrecision) {
@@ -318,28 +318,28 @@ TEST_P(GemmtTests, ComplexDoublePrecision) {
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103, alpha,
-        beta));
+        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
+        alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
         oneapi::math::transpose::trans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
         oneapi::math::transpose::conjtrans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
         oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102, 103,
@@ -354,28 +354,28 @@ TEST_P(GemmtTests, ComplexDoublePrecision) {
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103, alpha,
-        beta));
+        oneapi::math::transpose::trans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
+        alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
         oneapi::math::transpose::trans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, 27, 98, 101, 102,
+        103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
         oneapi::math::transpose::conjtrans, oneapi::math::transpose::trans, 27, 98, 101, 102, 103,
         alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(
         std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper,
-        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102, 103,
-        alpha, beta));
+        oneapi::math::transpose::conjtrans, oneapi::math::transpose::conjtrans, 27, 98, 101, 102,
+        103, alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(GemmtTestSuite, GemmtTests,

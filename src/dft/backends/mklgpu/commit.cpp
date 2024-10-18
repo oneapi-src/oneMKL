@@ -79,14 +79,14 @@ private:
 public:
     mklgpu_commit(sycl::queue queue, const dft::detail::dft_values<prec, dom>& config_values)
             : oneapi::math::dft::detail::commit_impl<prec, dom>(queue, backend::mklgpu,
-                                                               config_values),
+                                                                config_values),
               handle(std::make_shared<mklgpu_descriptor_t>(config_values.dimensions), nullptr) {
         handle.second = handle.first; // Make sure the bwd pointer is valid.
         // MKLGPU does not throw an informative exception for the following:
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
                 throw math::exception("dft/backends/mklgpu", "commit",
-                                     "Device does not support double precision.");
+                                      "Device does not support double precision.");
             }
         }
     }
@@ -163,7 +163,7 @@ private:
                        to_mklgpu<onemath_param::COMPLEX_STORAGE>(config.complex_storage));
         if (config.real_storage != dft::detail::config_value::REAL_REAL) {
             throw math::invalid_argument("dft/backends/mklgpu", "commit",
-                                        "MKLGPU only supports real-real real storage.");
+                                         "MKLGPU only supports real-real real storage.");
         }
         desc.set_value(backend_param::CONJUGATE_EVEN_STORAGE,
                        to_mklgpu<onemath_param::CONJUGATE_EVEN_STORAGE>(config.conj_even_storage));
@@ -173,7 +173,7 @@ private:
         if (stride_choice == dft::detail::stride_api::FB_STRIDES) {
             if (config.fwd_strides[0] != 0 || config.fwd_strides[0] != 0) {
                 throw math::unimplemented("dft/backends/mklgpu", "commit",
-                                         "MKLGPU does not support nonzero offsets.");
+                                          "MKLGPU does not support nonzero offsets.");
             }
             desc.set_value(backend_param::FWD_STRIDES, config.fwd_strides.data());
             desc.set_value(backend_param::BWD_STRIDES, config.bwd_strides.data());
@@ -181,7 +181,7 @@ private:
         else {
             if (config.input_strides[0] != 0 || config.output_strides[0] != 0) {
                 throw math::unimplemented("dft/backends/mklgpu", "commit",
-                                         "MKLGPU does not support nonzero offsets.");
+                                          "MKLGPU does not support nonzero offsets.");
             }
             if (assume_fwd_dft) {
                 desc.set_value(backend_param::FWD_STRIDES, config.input_strides.data());
@@ -203,12 +203,12 @@ private:
         // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.ordering != dft::detail::config_value::ORDERED) {
             throw math::invalid_argument("dft/backends/mklgpu", "commit",
-                                        "MKLGPU only supports ordered ordering.");
+                                         "MKLGPU only supports ordered ordering.");
         }
         // Setting the transpose causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.transpose != false) {
             throw math::invalid_argument("dft/backends/mklgpu", "commit",
-                                        "MKLGPU only supports non-transposed.");
+                                         "MKLGPU only supports non-transposed.");
         }
     }
 

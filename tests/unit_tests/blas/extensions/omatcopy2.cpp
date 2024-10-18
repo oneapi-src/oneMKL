@@ -43,12 +43,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout) {
+int test(device* dev, oneapi::math::layout layout) {
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb;
@@ -83,8 +83,8 @@ int test(device *dev, oneapi::math::layout layout) {
 
     rand_matrix(A.data(), layout, oneapi::math::transpose::nontrans, m, n, lda);
     rand_matrix(B.data(), layout, trans, m, n, ldb);
-    copy_matrix(B.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, size_b,
-                1, size_b, B_ref.data());
+    copy_matrix(B.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans,
+                size_b, 1, size_b, B_ref.data());
 
     // Call reference OMATCOPY2.
     int64_t m_ref = m;
@@ -100,11 +100,11 @@ int test(device *dev, oneapi::math::layout layout) {
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during OMATCOPY2:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -121,12 +121,13 @@ int test(device *dev, oneapi::math::layout layout) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                oneapi::math::blas::column_major::omatcopy2(main_queue, trans, m, n, alpha, A_buffer,
-                                                           lda, stride_a, B_buffer, ldb, stride_b);
+                oneapi::math::blas::column_major::omatcopy2(main_queue, trans, m, n, alpha,
+                                                            A_buffer, lda, stride_a, B_buffer, ldb,
+                                                            stride_b);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::omatcopy2(main_queue, trans, m, n, alpha, A_buffer,
-                                                        lda, stride_a, B_buffer, ldb, stride_b);
+                                                         lda, stride_a, B_buffer, ldb, stride_b);
                 break;
             default: break;
         }
@@ -146,17 +147,17 @@ int test(device *dev, oneapi::math::layout layout) {
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during OMATCOPY2:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of OMATCOPY2:\n" << error.what() << std::endl;
     }
 
@@ -170,7 +171,7 @@ int test(device *dev, oneapi::math::layout layout) {
 }
 
 class Omatcopy2Tests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(Omatcopy2Tests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));

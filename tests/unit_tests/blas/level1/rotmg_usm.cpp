@@ -41,19 +41,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp, usm::alloc alloc_type = usm::alloc::shared>
-int test(device *dev, oneapi::math::layout layout) {
+int test(device* dev, oneapi::math::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during ROTMG:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -82,14 +82,14 @@ int test(device *dev, oneapi::math::layout layout) {
 
     fp *d1_p, *d2_p, *x1_p;
     if constexpr (alloc_type == usm::alloc::device) {
-        d1_p = (fp *)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
-        d2_p = (fp *)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
-        x1_p = (fp *)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
+        d1_p = (fp*)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
+        d2_p = (fp*)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
+        x1_p = (fp*)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
     }
     else if constexpr (alloc_type == usm::alloc::shared) {
-        d1_p = (fp *)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
-        d2_p = (fp *)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
-        x1_p = (fp *)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
+        d1_p = (fp*)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
+        d2_p = (fp*)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
+        x1_p = (fp*)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
     }
     else {
         throw std::runtime_error("Bad alloc_type");
@@ -101,7 +101,7 @@ int test(device *dev, oneapi::math::layout layout) {
 
     // Call Reference ROTMG.
 
-    ::rotmg(&d1_ref, &d2_ref, &x1_ref, &y1, (fp *)param_ref.data());
+    ::rotmg(&d1_ref, &d2_ref, &x1_ref, &y1, (fp*)param_ref.data());
 
     // Call DPC++ ROTMG.
 
@@ -110,11 +110,11 @@ int test(device *dev, oneapi::math::layout layout) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::rotmg(main_queue, d1_p, d2_p, x1_p, y1,
-                                                              param.data(), dependencies);
+                                                               param.data(), dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::rotmg(main_queue, d1_p, d2_p, x1_p, y1,
-                                                           param.data(), dependencies);
+                                                            param.data(), dependencies);
                 break;
             default: break;
         }
@@ -126,24 +126,24 @@ int test(device *dev, oneapi::math::layout layout) {
                                         d2_p, x1_p, y1, param.data(), dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::rotmg, d1_p, d2_p,
-                                        x1_p, y1, param.data(), dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::rotmg, d1_p,
+                                        d2_p, x1_p, y1, param.data(), dependencies);
                 break;
             default: break;
         }
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during ROTMG:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of ROTMG:\n" << error.what() << std::endl;
     }
 
@@ -213,7 +213,7 @@ int test(device *dev, oneapi::math::layout layout) {
 }
 
 class RotmgUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(RotmgUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));

@@ -43,19 +43,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout) {
+int test(device* dev, oneapi::math::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during OMATADD:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -133,13 +133,13 @@ int test(device *dev, oneapi::math::layout layout) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::omatadd(main_queue, transa, transb, m, n,
-                                                                alpha, &A[0], lda, beta, &B[0], ldb,
-                                                                &C[0], ldc, dependencies);
+                                                                 alpha, &A[0], lda, beta, &B[0],
+                                                                 ldb, &C[0], ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::omatadd(main_queue, transa, transb, m, n,
-                                                             alpha, &A[0], lda, beta, &B[0], ldb,
-                                                             &C[0], ldc, dependencies);
+                                                              alpha, &A[0], lda, beta, &B[0], ldb,
+                                                              &C[0], ldc, dependencies);
                 break;
             default: break;
         }
@@ -161,16 +161,16 @@ int test(device *dev, oneapi::math::layout layout) {
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during OMATADD:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of OMATADD:\n" << error.what() << std::endl;
     }
 
@@ -182,7 +182,7 @@ int test(device *dev, oneapi::math::layout layout) {
 }
 
 class OmataddUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(OmataddUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));

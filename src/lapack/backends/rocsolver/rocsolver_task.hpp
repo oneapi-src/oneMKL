@@ -51,9 +51,9 @@ namespace lapack {
 namespace rocsolver {
 
 template <typename H, typename F>
-static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
+static inline void host_task_internal(H& cgh, sycl::queue queue, F f) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-    cgh.ext_codeplay_enqueue_native_command([f, queue](sycl::interop_handle ih){
+    cgh.ext_codeplay_enqueue_native_command([f, queue](sycl::interop_handle ih) {
 #else
     cgh.host_task([f, queue](cl::sycl::interop_handle ih) {
 #endif
@@ -63,7 +63,7 @@ static inline void host_task_internal(H &cgh, sycl::queue queue, F f) {
 }
 
 template <typename H, typename F>
-static inline void onemath_rocsolver_host_task(H &cgh, sycl::queue queue, F f) {
+static inline void onemath_rocsolver_host_task(H& cgh, sycl::queue queue, F f) {
     (void)host_task_internal(cgh, queue, f);
 }
 

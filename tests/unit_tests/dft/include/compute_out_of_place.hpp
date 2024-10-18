@@ -77,20 +77,22 @@ int DFT_Test<precision, domain>::test_out_of_place_buffer() {
             auto acc_bwd = bwd_buf.get_host_access();
             auto bwd_ptr = acc_bwd.get_pointer();
             for (std::int64_t i = 0; i < batches; i++) {
-                EXPECT_TRUE(check_equal_strided<domain == oneapi::math::dft::domain::REAL>(
-                    bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
-                    strides_bwd_cpy, abs_error_margin, rel_error_margin, std::cout));
+                EXPECT_TRUE(check_equal_strided < domain ==
+                            oneapi::math::dft::domain::REAL >
+                                (bwd_ptr + backward_distance * i,
+                                 out_host_ref.data() + ref_distance * i, sizes, strides_bwd_cpy,
+                                 abs_error_margin, rel_error_margin, std::cout));
             }
         }
 
         oneapi::math::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           FwdOutputType, FwdInputType>(descriptor, bwd_buf,
-                                                                        fwd_buf);
+                                            FwdOutputType, FwdInputType>(descriptor, bwd_buf,
+                                                                         fwd_buf);
     }
 
     // account for scaling that occurs during DFT
     std::for_each(input.begin(), input.end(),
-                  [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
+                  [this](auto& x) { x *= static_cast<PrecisionType>(forward_elements); });
 
     for (std::int64_t i = 0; i < batches; i++) {
         EXPECT_TRUE(check_equal_strided<false>(
@@ -164,19 +166,20 @@ int DFT_Test<precision, domain>::test_out_of_place_USM() {
 
     auto bwd_ptr = &bwd[0];
     for (std::int64_t i = 0; i < batches; i++) {
-        EXPECT_TRUE(check_equal_strided<domain == oneapi::math::dft::domain::REAL>(
-            bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i, sizes,
-            strides_bwd_cpy, abs_error_margin, rel_error_margin, std::cout));
+        EXPECT_TRUE(check_equal_strided < domain ==
+                    oneapi::math::dft::domain::REAL >
+                        (bwd_ptr + backward_distance * i, out_host_ref.data() + ref_distance * i,
+                         sizes, strides_bwd_cpy, abs_error_margin, rel_error_margin, std::cout));
     }
 
-    oneapi::math::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>, FwdOutputType,
-                                       FwdInputType>(descriptor, bwd.data(), fwd.data(),
-                                                     no_dependencies)
+    oneapi::math::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
+                                        FwdOutputType, FwdInputType>(descriptor, bwd.data(),
+                                                                     fwd.data(), no_dependencies)
         .wait_and_throw();
 
     // account for scaling that occurs during DFT
     std::for_each(input.begin(), input.end(),
-                  [this](auto &x) { x *= static_cast<PrecisionType>(forward_elements); });
+                  [this](auto& x) { x *= static_cast<PrecisionType>(forward_elements); });
 
     for (std::int64_t i = 0; i < batches; i++) {
         EXPECT_TRUE(check_equal_strided<false>(

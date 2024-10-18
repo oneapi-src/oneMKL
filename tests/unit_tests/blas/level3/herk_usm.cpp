@@ -94,13 +94,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::herk(main_queue, upper_lower, trans, n, k,
-                                                             alpha, A.data(), lda, beta, C.data(),
-                                                             ldc, dependencies);
+                                                              alpha, A.data(), lda, beta, C.data(),
+                                                              ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::herk(main_queue, upper_lower, trans, n, k,
-                                                          alpha, A.data(), lda, beta, C.data(), ldc,
-                                                          dependencies);
+                                                           alpha, A.data(), lda, beta, C.data(),
+                                                           ldc, dependencies);
                 break;
             default: break;
         }
@@ -113,9 +113,9 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         C.data(), ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::herk, upper_lower,
-                                        trans, n, k, alpha, A.data(), lda, beta, C.data(), ldc,
-                                        dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::herk,
+                                        upper_lower, trans, n, k, alpha, A.data(), lda, beta,
+                                        C.data(), ldc, dependencies);
                 break;
             default: break;
         }

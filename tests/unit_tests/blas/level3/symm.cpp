@@ -98,13 +98,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::side left_right
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::symm(main_queue, left_right, upper_lower, m, n,
-                                                      alpha, A_buffer, lda, B_buffer, ldb, beta,
-                                                      C_buffer, ldc);
+                                                       alpha, A_buffer, lda, B_buffer, ldb, beta,
+                                                       C_buffer, ldc);
                 break;
             case oneapi::math::layout::row_major:
-                oneapi::math::blas::row_major::symm(main_queue, left_right, upper_lower, m, n, alpha,
-                                                   A_buffer, lda, B_buffer, ldb, beta, C_buffer,
-                                                   ldc);
+                oneapi::math::blas::row_major::symm(main_queue, left_right, upper_lower, m, n,
+                                                    alpha, A_buffer, lda, B_buffer, ldb, beta,
+                                                    C_buffer, ldc);
                 break;
             default: break;
         }
@@ -173,14 +173,14 @@ TEST_P(SymmTests, RealDoublePrecision) {
                                    oneapi::math::side::left, oneapi::math::uplo::lower, 72, 27, 101,
                                    102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::side::right, oneapi::math::uplo::lower, 72, 27, 101,
-                                   102, 103, alpha, beta));
+                                   oneapi::math::side::right, oneapi::math::uplo::lower, 72, 27,
+                                   101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::math::side::left, oneapi::math::uplo::upper, 72, 27, 101,
                                    102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::side::right, oneapi::math::uplo::upper, 72, 27, 101,
-                                   102, 103, alpha, beta));
+                                   oneapi::math::side::right, oneapi::math::uplo::upper, 72, 27,
+                                   101, 102, 103, alpha, beta));
 }
 TEST_P(SymmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
@@ -188,33 +188,33 @@ TEST_P(SymmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                 oneapi::math::side::left, oneapi::math::uplo::lower,
                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::side::right, oneapi::math::uplo::lower,
-                                                72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                 oneapi::math::side::left, oneapi::math::uplo::upper,
                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::side::right, oneapi::math::uplo::upper,
-                                                72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
 }
 TEST_P(SymmTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::left, oneapi::math::uplo::lower,
-                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::right, oneapi::math::uplo::lower,
-                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::left, oneapi::math::uplo::upper,
-                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::right, oneapi::math::uplo::upper,
-                                                 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::left,
+        oneapi::math::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::left,
+        oneapi::math::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(SymmTestSuite, SymmTests,

@@ -48,7 +48,8 @@ namespace {
 
 template <typename fp>
 int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
-         oneapi::math::transpose transa, oneapi::math::diag unit_nonunit, int n, int incx, int lda) {
+         oneapi::math::transpose transa, oneapi::math::diag unit_nonunit, int n, int incx,
+         int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
         for (std::exception_ptr const& e : exceptions) {
@@ -91,13 +92,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::trsv(main_queue, upper_lower, transa,
-                                                             unit_nonunit, n, A.data(), lda,
-                                                             x.data(), incx, dependencies);
+                                                              unit_nonunit, n, A.data(), lda,
+                                                              x.data(), incx, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::trsv(main_queue, upper_lower, transa,
-                                                          unit_nonunit, n, A.data(), lda, x.data(),
-                                                          incx, dependencies);
+                                                           unit_nonunit, n, A.data(), lda, x.data(),
+                                                           incx, dependencies);
                 break;
             default: break;
         }
@@ -110,9 +111,9 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         x.data(), incx, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::trsv, upper_lower,
-                                        transa, unit_nonunit, n, A.data(), lda, x.data(), incx,
-                                        dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::trsv,
+                                        upper_lower, transa, unit_nonunit, n, A.data(), lda,
+                                        x.data(), incx, dependencies);
                 break;
             default: break;
         }

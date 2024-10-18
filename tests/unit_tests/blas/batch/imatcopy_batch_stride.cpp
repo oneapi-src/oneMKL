@@ -43,12 +43,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
+int test(device* dev, oneapi::math::layout layout, int64_t batch_size) {
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb;
@@ -101,11 +101,11 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during IMATCOPY_BATCH_STRIDE:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -133,9 +133,9 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::imatcopy_batch,
-                                        trans, m, n, alpha, AB_buffer, lda, ldb, stride,
-                                        batch_size);
+                TEST_RUN_BLAS_CT_SELECT(main_queue,
+                                        oneapi::math::blas::column_major::imatcopy_batch, trans, m,
+                                        n, alpha, AB_buffer, lda, ldb, stride, batch_size);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::imatcopy_batch,
@@ -146,17 +146,17 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during IMATCOPY_BATCH_STRIDE:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of IMATCOPY_BATCH_STRIDE:\n"
                   << error.what() << std::endl;
     }
@@ -171,7 +171,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 }
 
 class ImatcopyBatchStrideTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(ImatcopyBatchStrideTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

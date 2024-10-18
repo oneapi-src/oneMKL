@@ -206,8 +206,9 @@ bool check_gerqf_accuracy(const std::vector<fp>& A, const std::vector<fp>& A_ini
         std::vector<fp> tau2(n);
         for (int64_t i = 0; i < std::min(m, n); i++)
             tau2[n - m + i] = tau[i];
-        auto info = reference::or_un_mrq(oneapi::math::side::right, oneapi::math::transpose::nontrans,
-                                         m, n, n, Q.data(), ldq, tau2.data(), R.data(), ldr);
+        auto info =
+            reference::or_un_mrq(oneapi::math::side::right, oneapi::math::transpose::nontrans, m, n,
+                                 n, Q.data(), ldq, tau2.data(), R.data(), ldr);
         if (0 != info) {
             test_log::lout << "reference ormqr/unmqr failed with info = " << info << std::endl;
             return false;
@@ -395,8 +396,9 @@ bool check_or_un_gbr_accuracy(oneapi::math::generate vect, int64_t m, int64_t n,
         /* | I - Q'Q | < m O(eps) */
         std::vector<fp> QQ(cols_Q * cols_Q);
         int64_t ldqq = cols_Q;
-        reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, cols_Q,
-                        cols_Q, rows_Q, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(), ldqq);
+        reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans,
+                        cols_Q, cols_Q, rows_Q, 1.0, Q.data(), ldq, Q.data(), ldq, 0.0, QQ.data(),
+                        ldqq);
         if (!rel_id_err_check(cols_Q, QQ, ldqq)) {
             test_log::lout << "Q Orthogonality check failed" << std::endl;
             result = false;
@@ -411,8 +413,9 @@ bool check_or_un_gbr_accuracy(oneapi::math::generate vect, int64_t m, int64_t n,
         /* | I - (P')(P')' | < m O(eps) */
         std::vector<fp> PP(rows_P * rows_P);
         int64_t ldpp = rows_P;
-        reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, rows_P,
-                        rows_P, cols_P, 1.0, P.data(), ldp, P.data(), ldp, 0.0, PP.data(), ldpp);
+        reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans,
+                        rows_P, rows_P, cols_P, 1.0, P.data(), ldp, P.data(), ldp, 0.0, PP.data(),
+                        ldpp);
         if (!rel_id_err_check(rows_P, PP, ldpp)) {
             test_log::lout << "P^t Orthogonality check failed" << std::endl;
             result = false;
@@ -490,15 +493,15 @@ bool check_potrf_accuracy(const std::vector<fp>& init, const std::vector<fp>& so
 }
 
 template <typename fp>
-bool check_potrs_accuracy(oneapi::math::uplo uplo, int64_t n, int64_t nrhs, const std::vector<fp>& B,
-                          int64_t ldb, std::vector<fp> A_initial, int64_t lda,
-                          std::vector<fp> B_initial) {
+bool check_potrs_accuracy(oneapi::math::uplo uplo, int64_t n, int64_t nrhs,
+                          const std::vector<fp>& B, int64_t ldb, std::vector<fp> A_initial,
+                          int64_t lda, std::vector<fp> B_initial) {
     using fp_real = typename complex_info<fp>::real_type;
 
     hermitian_to_full(uplo, n, A_initial, lda);
     // Compute A*X - B. Store result in B_initial
-    reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans, n, nrhs, n,
-                    -1.0, A_initial.data(), lda, B.data(), ldb, 1.0, B_initial.data(), ldb);
+    reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans, n, nrhs,
+                    n, -1.0, A_initial.data(), lda, B.data(), ldb, 1.0, B_initial.data(), ldb);
 
     // Compute norm residual |A*X - B|
     fp_real norm_residual = reference::lange('1', n, nrhs, B_initial.data(), ldb);

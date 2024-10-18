@@ -79,7 +79,7 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::hetrd(queue, uplo, n, A_dev, lda, d_dev, e_dev, tau_dev,
-                                   scratchpad_dev, scratchpad_size);
+                                    scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::hetrd, uplo, n, A_dev, lda, d_dev,
                                   e_dev, tau_dev, scratchpad_dev, scratchpad_size);

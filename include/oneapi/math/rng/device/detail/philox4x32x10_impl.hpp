@@ -119,8 +119,9 @@ static inline void round_10(std::uint32_t* cnt, std::uint32_t* k) {
 }
 
 template <std::int32_t VecSize>
-static inline void skip_ahead(engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state,
-                              std::uint64_t num_to_skip) {
+static inline void skip_ahead(
+    engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state,
+    std::uint64_t num_to_skip) {
     std::uint64_t num_to_skip_tmp = num_to_skip;
     std::uint64_t c_inc;
     std::uint32_t counter[4];
@@ -157,8 +158,9 @@ static inline void skip_ahead(engine_state<oneapi::math::rng::device::philox4x32
 }
 
 template <std::int32_t VecSize>
-static inline void skip_ahead(engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state,
-                              std::uint64_t n, const std::uint64_t* num_to_skip_ptr) {
+static inline void skip_ahead(
+    engine_state<oneapi::math::rng::device::philox4x32x10<VecSize>>& state, std::uint64_t n,
+    const std::uint64_t* num_to_skip_ptr) {
     constexpr std::uint64_t uint_max = 0xFFFFFFFFFFFFFFFF;
     std::uint64_t post_buffer, pre_buffer;
     std::int32_t num_elements = 0;

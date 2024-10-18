@@ -83,7 +83,8 @@ int test(device* dev, oneapi::math::layout layout, int64_t N, int64_t incx) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                oneapi::math::blas::column_major::asum(main_queue, N, x_buffer, incx, result_buffer);
+                oneapi::math::blas::column_major::asum(main_queue, N, x_buffer, incx,
+                                                       result_buffer);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::asum(main_queue, N, x_buffer, incx, result_buffer);
@@ -97,8 +98,8 @@ int test(device* dev, oneapi::math::layout layout, int64_t N, int64_t incx) {
                                         x_buffer, incx, result_buffer);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::asum, N, x_buffer,
-                                        incx, result_buffer);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::asum, N,
+                                        x_buffer, incx, result_buffer);
                 break;
             default: break;
         }

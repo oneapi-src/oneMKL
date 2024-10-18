@@ -63,11 +63,14 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::transpose trans
     rand_matrix(B, layout, transb, k, n, ldb);
     rand_matrix(C, layout, oneapi::math::transpose::nontrans, m, n, ldc);
     if (offsetc == oneapi::math::offset::fix)
-        rand_matrix(co, oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, 1, 1, 1);
+        rand_matrix(co, oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, 1, 1,
+                    1);
     if (offsetc == oneapi::math::offset::column)
-        rand_matrix(co, oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, m, 1, m);
+        rand_matrix(co, oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, m, 1,
+                    m);
     if (offsetc == oneapi::math::offset::row)
-        rand_matrix(co, oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, n, 1, n);
+        rand_matrix(co, oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, n, 1,
+                    n);
 
     C_ref = C;
 
@@ -113,14 +116,14 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::transpose trans
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                oneapi::math::blas::column_major::gemm_bias(main_queue, transa, transb, offsetc, m,
-                                                           n, k, alpha, A_buffer, lda, ao, B_buffer,
-                                                           ldb, bo, beta, C_buffer, ldc, CO_buffer);
+                oneapi::math::blas::column_major::gemm_bias(
+                    main_queue, transa, transb, offsetc, m, n, k, alpha, A_buffer, lda, ao,
+                    B_buffer, ldb, bo, beta, C_buffer, ldc, CO_buffer);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::gemm_bias(main_queue, transa, transb, offsetc, m, n,
-                                                        k, alpha, A_buffer, lda, ao, B_buffer, ldb,
-                                                        bo, beta, C_buffer, ldc, CO_buffer);
+                                                         k, alpha, A_buffer, lda, ao, B_buffer, ldb,
+                                                         bo, beta, C_buffer, ldc, CO_buffer);
                 break;
             default: break;
         }
@@ -132,8 +135,8 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::transpose trans
                                         B_buffer, ldb, bo, beta, C_buffer, ldc, CO_buffer);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::gemm_bias, transa,
-                                        transb, offsetc, m, n, k, alpha, A_buffer, lda, ao,
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::gemm_bias,
+                                        transa, transb, offsetc, m, n, k, alpha, A_buffer, lda, ao,
                                         B_buffer, ldb, bo, beta, C_buffer, ldc, CO_buffer);
                 break;
             default: break;

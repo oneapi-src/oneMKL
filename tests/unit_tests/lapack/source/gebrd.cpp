@@ -83,10 +83,10 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t lda, uint64
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::gebrd(queue, m, n, A_dev, lda, d_dev, e_dev, tauq_dev, taup_dev,
-                                   scratchpad_dev, scratchpad_size);
+                                    scratchpad_dev, scratchpad_size);
 #else
-        TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::gebrd, m, n, A_dev, lda, d_dev, e_dev,
-                                  tauq_dev, taup_dev, scratchpad_dev, scratchpad_size);
+        TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::gebrd, m, n, A_dev, lda, d_dev,
+                                  e_dev, tauq_dev, taup_dev, scratchpad_dev, scratchpad_size);
 #endif
         queue.wait_and_throw();
 

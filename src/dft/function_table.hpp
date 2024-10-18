@@ -36,26 +36,28 @@
 typedef struct {
     int version;
     oneapi::math::dft::detail::commit_impl<oneapi::math::dft::precision::SINGLE,
-                                          oneapi::math::dft::domain::COMPLEX>* (
+                                           oneapi::math::dft::domain::COMPLEX>* (
         *create_commit_sycl_fz)(
         const oneapi::math::dft::descriptor<oneapi::math::dft::precision::SINGLE,
-                                           oneapi::math::dft::domain::COMPLEX>& desc,
+                                            oneapi::math::dft::domain::COMPLEX>& desc,
         sycl::queue& sycl_queue);
     oneapi::math::dft::detail::commit_impl<oneapi::math::dft::precision::DOUBLE,
-                                          oneapi::math::dft::domain::COMPLEX>* (
+                                           oneapi::math::dft::domain::COMPLEX>* (
         *create_commit_sycl_dz)(
         const oneapi::math::dft::descriptor<oneapi::math::dft::precision::DOUBLE,
-                                           oneapi::math::dft::domain::COMPLEX>& desc,
+                                            oneapi::math::dft::domain::COMPLEX>& desc,
         sycl::queue& sycl_queue);
     oneapi::math::dft::detail::commit_impl<oneapi::math::dft::precision::SINGLE,
-                                          oneapi::math::dft::domain::REAL>* (*create_commit_sycl_fr)(
+                                           oneapi::math::dft::domain::REAL>* (
+        *create_commit_sycl_fr)(
         const oneapi::math::dft::descriptor<oneapi::math::dft::precision::SINGLE,
-                                           oneapi::math::dft::domain::REAL>& desc,
+                                            oneapi::math::dft::domain::REAL>& desc,
         sycl::queue& sycl_queue);
     oneapi::math::dft::detail::commit_impl<oneapi::math::dft::precision::DOUBLE,
-                                          oneapi::math::dft::domain::REAL>* (*create_commit_sycl_dr)(
+                                           oneapi::math::dft::domain::REAL>* (
+        *create_commit_sycl_dr)(
         const oneapi::math::dft::descriptor<oneapi::math::dft::precision::DOUBLE,
-                                           oneapi::math::dft::domain::REAL>& desc,
+                                            oneapi::math::dft::domain::REAL>& desc,
         sycl::queue& sycl_queue);
 } dft_function_table_t;
 

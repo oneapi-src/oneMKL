@@ -30,13 +30,13 @@ class PoissonIcdfUsmTests : public ::testing::TestWithParam<sycl::device*> {};
 TEST_P(PoissonIcdfUsmTests, IntegerPrecision) {
     rng_test<statistics_usm_test<
         oneapi::math::rng::poisson<std::int32_t,
-                                  oneapi::math::rng::poisson_method::gaussian_icdf_based>,
+                                   oneapi::math::rng::poisson_method::gaussian_icdf_based>,
         oneapi::math::rng::philox4x32x10>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam(), N_GEN, POISSON_ARGS)));
     rng_test<statistics_usm_test<
         oneapi::math::rng::poisson<std::int32_t,
-                                  oneapi::math::rng::poisson_method::gaussian_icdf_based>,
+                                   oneapi::math::rng::poisson_method::gaussian_icdf_based>,
         oneapi::math::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, POISSON_ARGS)));
@@ -45,13 +45,13 @@ TEST_P(PoissonIcdfUsmTests, IntegerPrecision) {
 TEST_P(PoissonIcdfUsmTests, UnsignedIntegerPrecision) {
     rng_test<statistics_usm_test<
         oneapi::math::rng::poisson<std::uint32_t,
-                                  oneapi::math::rng::poisson_method::gaussian_icdf_based>,
+                                   oneapi::math::rng::poisson_method::gaussian_icdf_based>,
         oneapi::math::rng::philox4x32x10>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam(), N_GEN, POISSON_ARGS)));
     rng_test<statistics_usm_test<
         oneapi::math::rng::poisson<std::int32_t,
-                                  oneapi::math::rng::poisson_method::gaussian_icdf_based>,
+                                   oneapi::math::rng::poisson_method::gaussian_icdf_based>,
         oneapi::math::rng::mrg32k3a>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam(), N_GEN, POISSON_ARGS)));

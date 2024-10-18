@@ -40,7 +40,7 @@
 namespace oneapi {
 namespace math {
 
-inline oneapi::math::device get_device_id(sycl::queue &queue) {
+inline oneapi::math::device get_device_id(sycl::queue& queue) {
     oneapi::math::device device_id;
     if (queue.get_device().is_cpu())
         device_id = device::x86cpu;

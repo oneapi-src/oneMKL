@@ -84,7 +84,7 @@ bool accuracy(const sycl::device& dev, int64_t n, int64_t lda, int64_t stride_a,
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::getri_batch(queue, n, A_dev, lda, stride_a, ipiv_dev, stride_ipiv,
-                                         batch_size, scratchpad_dev, scratchpad_size);
+                                          batch_size, scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::getri_batch, n, A_dev, lda, stride_a,
                                   ipiv_dev, stride_ipiv, batch_size, scratchpad_dev,

@@ -83,7 +83,7 @@ void run_example(const sycl::device& cpu_device, const sycl::device& gpu_device)
     // enabling
     // 1. create descriptors
     oneapi::math::dft::descriptor<oneapi::math::dft::precision::SINGLE,
-                                 oneapi::math::dft::domain::COMPLEX>
+                                  oneapi::math::dft::domain::COMPLEX>
         desc(static_cast<std::int64_t>(N));
 
     // 2. variadic set_value

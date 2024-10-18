@@ -41,19 +41,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar, usm::alloc alloc_type = usm::alloc::shared>
-int test(device *dev, oneapi::math::layout layout) {
+int test(device* dev, oneapi::math::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during ROTG:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -83,22 +83,22 @@ int test(device *dev, oneapi::math::layout layout) {
     // Call Reference ROTG.
     using fp_ref = typename ref_type_info<fp>::type;
 
-    ::rotg((fp_ref *)&a_ref, (fp_ref *)&b_ref, (fp_scalar *)&c_ref, (fp_ref *)&s_ref);
+    ::rotg((fp_ref*)&a_ref, (fp_ref*)&b_ref, (fp_scalar*)&c_ref, (fp_ref*)&s_ref);
 
     // Call DPC++ ROTG.
     fp *a_p, *b_p, *s_p;
-    fp_scalar *c_p;
+    fp_scalar* c_p;
     if constexpr (alloc_type == usm::alloc::shared) {
-        a_p = (fp *)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
-        b_p = (fp *)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
-        s_p = (fp *)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
-        c_p = (fp_scalar *)oneapi::math::malloc_shared(64, sizeof(fp_scalar), *dev, cxt);
+        a_p = (fp*)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
+        b_p = (fp*)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
+        s_p = (fp*)oneapi::math::malloc_shared(64, sizeof(fp), *dev, cxt);
+        c_p = (fp_scalar*)oneapi::math::malloc_shared(64, sizeof(fp_scalar), *dev, cxt);
     }
     else if constexpr (alloc_type == usm::alloc::device) {
-        a_p = (fp *)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
-        b_p = (fp *)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
-        s_p = (fp *)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
-        c_p = (fp_scalar *)oneapi::math::malloc_device(64, sizeof(fp_scalar), *dev, cxt);
+        a_p = (fp*)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
+        b_p = (fp*)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
+        s_p = (fp*)oneapi::math::malloc_device(64, sizeof(fp), *dev, cxt);
+        c_p = (fp_scalar*)oneapi::math::malloc_device(64, sizeof(fp_scalar), *dev, cxt);
     }
     else {
         throw std::runtime_error("Bad alloc_type");
@@ -115,11 +115,11 @@ int test(device *dev, oneapi::math::layout layout) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::rotg(main_queue, a_p, b_p, c_p, s_p,
-                                                             dependencies);
+                                                              dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::rotg(main_queue, a_p, b_p, c_p, s_p,
-                                                          dependencies);
+                                                           dependencies);
                 break;
             default: break;
         }
@@ -127,8 +127,8 @@ int test(device *dev, oneapi::math::layout layout) {
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::rotg, a_p, b_p,
-                                        c_p, s_p, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::rotg, a_p,
+                                        b_p, c_p, s_p, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::rotg, a_p, b_p,
@@ -139,16 +139,16 @@ int test(device *dev, oneapi::math::layout layout) {
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during ROTG:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of ROTG:\n" << error.what() << std::endl;
     }
 
@@ -170,7 +170,7 @@ int test(device *dev, oneapi::math::layout layout) {
 }
 
 class RotgUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(RotgUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP((test<float, float>(std::get<0>(GetParam()), std::get<1>(GetParam()))));

@@ -43,12 +43,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
+int test(device* dev, oneapi::math::layout layout, int64_t batch_size) {
     // Prepare data.
     int64_t n, k;
     int64_t lda, ldc;
@@ -67,9 +67,9 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 
     upper_lower = (oneapi::math::uplo)(std::rand() % 2);
     if ((std::is_same<fp, float>::value) || (std::is_same<fp, double>::value)) {
-        trans = (std::rand() % 2) == 0 ? oneapi::math::transpose::nontrans
-                                       : (std::rand() % 2) == 0 ? oneapi::math::transpose::trans
-                                                                : oneapi::math::transpose::conjtrans;
+        trans = (std::rand() % 2) == 0   ? oneapi::math::transpose::nontrans
+                : (std::rand() % 2) == 0 ? oneapi::math::transpose::trans
+                                         : oneapi::math::transpose::conjtrans;
     }
     else {
         trans = (std::rand() % 2) == 0 ? oneapi::math::transpose::nontrans
@@ -110,21 +110,21 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 
     for (i = 0; i < batch_size_ref; i++) {
         ::syrk(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower),
-               convert_to_cblas_trans(trans), (const int *)&n_ref, (const int *)&k_ref,
-               (const fp_ref *)&alpha, (const fp_ref *)(A.data() + stride_a * i),
-               (const int *)&lda_ref, (const fp_ref *)&beta,
-               (fp_ref *)(C_ref.data() + stride_c * i), (const int *)&ldc_ref);
+               convert_to_cblas_trans(trans), (const int*)&n_ref, (const int*)&k_ref,
+               (const fp_ref*)&alpha, (const fp_ref*)(A.data() + stride_a * i),
+               (const int*)&lda_ref, (const fp_ref*)&beta, (fp_ref*)(C_ref.data() + stride_c * i),
+               (const int*)&ldc_ref);
     }
 
     // Call DPC++ SYRK_BATCH_STRIDE.
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during SYRK_BATCH_STRIDE:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -142,13 +142,13 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::syrk_batch(main_queue, upper_lower, trans, n, k,
-                                                            alpha, A_buffer, lda, stride_a, beta,
-                                                            C_buffer, ldc, stride_c, batch_size);
+                                                             alpha, A_buffer, lda, stride_a, beta,
+                                                             C_buffer, ldc, stride_c, batch_size);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::syrk_batch(main_queue, upper_lower, trans, n, k,
-                                                         alpha, A_buffer, lda, stride_a, beta,
-                                                         C_buffer, ldc, stride_c, batch_size);
+                                                          alpha, A_buffer, lda, stride_a, beta,
+                                                          C_buffer, ldc, stride_c, batch_size);
                 break;
             default: break;
         }
@@ -168,17 +168,17 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during SYRK_BATCH_STRIDE:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of SYRK_BATCH_STRIDE:\n"
                   << error.what() << std::endl;
     }
@@ -187,14 +187,14 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 
     auto C_accessor = C_buffer.get_host_access(read_only);
     bool good =
-        check_equal_matrix(C_accessor, C_ref, oneapi::math::layout::col_major, stride_c * batch_size,
-                           1, stride_c * batch_size, 10 * k, std::cout);
+        check_equal_matrix(C_accessor, C_ref, oneapi::math::layout::col_major,
+                           stride_c * batch_size, 1, stride_c * batch_size, 10 * k, std::cout);
 
     return (int)good;
 }
 
 class SyrkBatchStrideTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(SyrkBatchStrideTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

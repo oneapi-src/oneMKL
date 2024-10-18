@@ -576,7 +576,7 @@ oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue, std::
 }
 
 oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
-                                                       std::initializer_list<std::uint32_t> seed) {
+                                                        std::initializer_list<std::uint32_t> seed) {
     return new mrg32k3a_impl(queue, seed);
 }
 

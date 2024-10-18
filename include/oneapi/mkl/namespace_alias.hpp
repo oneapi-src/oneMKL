@@ -18,8 +18,9 @@
 **************************************************************************/
 
 namespace oneapi {
-    // Deprecated namespace is planned to be removed late 2025.
-    namespace [[deprecated("Namespace `oneapi::mkl` is deprecated, please use `oneapi::math` instead")]] mkl {
-        using namespace math;
-    }
+// Deprecated namespace is planned to be removed late 2025.
+namespace
+    [[deprecated("Namespace `oneapi::mkl` is deprecated, please use `oneapi::math` instead")]] mkl {
+using namespace math;
 }
+} // namespace oneapi

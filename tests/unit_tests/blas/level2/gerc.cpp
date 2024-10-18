@@ -42,12 +42,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int m, int n, fp alpha, int incx, int incy,
+int test(device* dev, oneapi::math::layout layout, int m, int n, fp alpha, int incx, int incy,
          int lda) {
     // Prepare data.
 
@@ -62,18 +62,18 @@ int test(device *dev, oneapi::math::layout layout, int m, int n, fp alpha, int i
     const int m_ref = m, n_ref = n, incx_ref = incx, incy_ref = incy, lda_ref = lda;
     using fp_ref = typename ref_type_info<fp>::type;
 
-    ::gerc(convert_to_cblas_layout(layout), &m_ref, &n_ref, (fp_ref *)&alpha, (fp_ref *)x.data(),
-           &incx_ref, (fp_ref *)y.data(), &incy_ref, (fp_ref *)A_ref.data(), &lda_ref);
+    ::gerc(convert_to_cblas_layout(layout), &m_ref, &n_ref, (fp_ref*)&alpha, (fp_ref*)x.data(),
+           &incx_ref, (fp_ref*)y.data(), &incy_ref, (fp_ref*)A_ref.data(), &lda_ref);
 
     // Call DPC++ GERC.
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during GERC:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -92,11 +92,11 @@ int test(device *dev, oneapi::math::layout layout, int m, int n, fp alpha, int i
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::gerc(main_queue, m, n, alpha, x_buffer, incx,
-                                                      y_buffer, incy, A_buffer, lda);
+                                                       y_buffer, incy, A_buffer, lda);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::gerc(main_queue, m, n, alpha, x_buffer, incx,
-                                                   y_buffer, incy, A_buffer, lda);
+                                                    y_buffer, incy, A_buffer, lda);
                 break;
             default: break;
         }
@@ -107,23 +107,23 @@ int test(device *dev, oneapi::math::layout layout, int m, int n, fp alpha, int i
                                         alpha, x_buffer, incx, y_buffer, incy, A_buffer, lda);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::gerc, m, n, alpha,
-                                        x_buffer, incx, y_buffer, incy, A_buffer, lda);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::gerc, m, n,
+                                        alpha, x_buffer, incx, y_buffer, incy, A_buffer, lda);
                 break;
             default: break;
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during GERC:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of GERC:\n" << error.what() << std::endl;
     }
 
@@ -135,7 +135,7 @@ int test(device *dev, oneapi::math::layout layout, int m, int n, fp alpha, int i
     return (int)good;
 }
 
-class GercTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {
+class GercTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(GercTests, ComplexSinglePrecision) {

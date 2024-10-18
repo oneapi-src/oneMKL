@@ -96,12 +96,12 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy) {
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                done = oneapi::math::blas::column_major::dot(main_queue, N, x.data(), incx, y.data(),
-                                                            incy, result_p, dependencies);
+                done = oneapi::math::blas::column_major::dot(
+                    main_queue, N, x.data(), incx, y.data(), incy, result_p, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::dot(main_queue, N, x.data(), incx, y.data(),
-                                                         incy, result_p, dependencies);
+                                                          incy, result_p, dependencies);
                 break;
             default: break;
         }

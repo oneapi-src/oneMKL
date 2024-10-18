@@ -91,11 +91,11 @@ int test(device* dev, oneapi::math::layout layout) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer,
-                                                       y1, param_buffer);
+                                                        y1, param_buffer);
                 break;
             case oneapi::math::layout::row_major:
-                oneapi::math::blas::row_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer, y1,
-                                                    param_buffer);
+                oneapi::math::blas::row_major::rotmg(main_queue, d1_buffer, d2_buffer, x1_buffer,
+                                                     y1, param_buffer);
                 break;
             default: break;
         }
@@ -187,8 +187,8 @@ int test(device* dev, oneapi::math::layout layout) {
     return (int)good;
 }
 
-class RotmgTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
-};
+class RotmgTests
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(RotmgTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));

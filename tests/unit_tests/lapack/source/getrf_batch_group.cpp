@@ -125,8 +125,8 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::getrf_batch(queue, m_vec.data(), n_vec.data(), A_dev_ptrs,
-                                         lda_vec.data(), ipiv_dev_ptrs, group_count,
-                                         group_sizes_vec.data(), scratchpad_dev, scratchpad_size);
+                                          lda_vec.data(), ipiv_dev_ptrs, group_count,
+                                          group_sizes_vec.data(), scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::getrf_batch, m_vec.data(),
                                   n_vec.data(), A_dev_ptrs, lda_vec.data(), ipiv_dev_ptrs,

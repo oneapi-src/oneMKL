@@ -141,11 +141,14 @@ static void set_and_get_io_strides() {
     descriptor.get_value(oneapi::math::dft::config_param::INPUT_STRIDES,
                          input_strides_before_set.data());
     EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), input_strides_before_set);
-    descriptor.set_value(oneapi::math::dft::config_param::INPUT_STRIDES, input_strides_value.data());
+    descriptor.set_value(oneapi::math::dft::config_param::INPUT_STRIDES,
+                         input_strides_value.data());
     descriptor.get_value(oneapi::math::dft::config_param::INPUT_STRIDES,
                          input_strides_after_set.data());
-    descriptor.get_value(oneapi::math::dft::config_param::FWD_STRIDES, fwd_strides_after_set.data());
-    descriptor.get_value(oneapi::math::dft::config_param::BWD_STRIDES, bwd_strides_after_set.data());
+    descriptor.get_value(oneapi::math::dft::config_param::FWD_STRIDES,
+                         fwd_strides_after_set.data());
+    descriptor.get_value(oneapi::math::dft::config_param::BWD_STRIDES,
+                         bwd_strides_after_set.data());
     EXPECT_EQ(input_strides_value, input_strides_after_set);
     EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), fwd_strides_after_set);
     EXPECT_EQ(std::vector<std::int64_t>(strides_size, 0), bwd_strides_after_set);
@@ -206,8 +209,10 @@ static void set_and_get_fwd_bwd_strides() {
     descriptor.get_value(oneapi::math::dft::config_param::FWD_STRIDES,
                          fwd_strides_before_set.data());
     EXPECT_EQ(fwd_strides_default_value, fwd_strides_before_set);
-    descriptor.set_value(oneapi::math::dft::config_param::FWD_STRIDES, fwd_strides_new_value.data());
-    descriptor.get_value(oneapi::math::dft::config_param::FWD_STRIDES, fwd_strides_after_set.data());
+    descriptor.set_value(oneapi::math::dft::config_param::FWD_STRIDES,
+                         fwd_strides_new_value.data());
+    descriptor.get_value(oneapi::math::dft::config_param::FWD_STRIDES,
+                         fwd_strides_after_set.data());
     descriptor.get_value(oneapi::math::dft::config_param::INPUT_STRIDES,
                          input_strides_after_set.data());
     descriptor.get_value(oneapi::math::dft::config_param::OUTPUT_STRIDES,
@@ -221,8 +226,10 @@ static void set_and_get_fwd_bwd_strides() {
     descriptor.get_value(oneapi::math::dft::config_param::BWD_STRIDES,
                          bwd_strides_before_set.data());
     EXPECT_EQ(bwd_strides_default_value, bwd_strides_before_set);
-    descriptor.set_value(oneapi::math::dft::config_param::BWD_STRIDES, bwd_strides_new_value.data());
-    descriptor.get_value(oneapi::math::dft::config_param::BWD_STRIDES, bwd_strides_after_set.data());
+    descriptor.set_value(oneapi::math::dft::config_param::BWD_STRIDES,
+                         bwd_strides_new_value.data());
+    descriptor.get_value(oneapi::math::dft::config_param::BWD_STRIDES,
+                         bwd_strides_after_set.data());
     EXPECT_EQ(bwd_strides_new_value, bwd_strides_after_set);
 }
 #pragma clang diagnostic pop
@@ -289,7 +296,8 @@ static void set_and_get_values() {
                              &fwd_distance_before_set);
         EXPECT_EQ(1, fwd_distance_before_set);
         descriptor.set_value(oneapi::math::dft::config_param::FWD_DISTANCE, fwd_distance_set_value);
-        descriptor.get_value(oneapi::math::dft::config_param::FWD_DISTANCE, &fwd_distance_after_set);
+        descriptor.get_value(oneapi::math::dft::config_param::FWD_DISTANCE,
+                             &fwd_distance_after_set);
         EXPECT_EQ(fwd_distance_set_value, fwd_distance_after_set);
 
         std::int64_t bwd_distance_set_value{ domain == oneapi::math::dft::domain::REAL
@@ -302,7 +310,8 @@ static void set_and_get_values() {
                              &bwd_distance_before_set);
         EXPECT_EQ(1, bwd_distance_before_set);
         descriptor.set_value(oneapi::math::dft::config_param::BWD_DISTANCE, bwd_distance_set_value);
-        descriptor.get_value(oneapi::math::dft::config_param::BWD_DISTANCE, &bwd_distance_after_set);
+        descriptor.get_value(oneapi::math::dft::config_param::BWD_DISTANCE,
+                             &bwd_distance_after_set);
         EXPECT_EQ(bwd_distance_set_value, bwd_distance_after_set);
     }
 
@@ -717,11 +726,13 @@ int test_commit(sycl::device* dev) {
 }
 
 TEST(DescriptorTests, DescriptorMoveRealSingle) {
-    EXPECT_TRUE((test_move<oneapi::math::dft::precision::SINGLE, oneapi::math::dft::domain::REAL>()));
+    EXPECT_TRUE(
+        (test_move<oneapi::math::dft::precision::SINGLE, oneapi::math::dft::domain::REAL>()));
 }
 
 TEST(DescriptorTests, DescriptorMoveRealDouble) {
-    EXPECT_TRUE((test_move<oneapi::math::dft::precision::DOUBLE, oneapi::math::dft::domain::REAL>()));
+    EXPECT_TRUE(
+        (test_move<oneapi::math::dft::precision::DOUBLE, oneapi::math::dft::domain::REAL>()));
 }
 
 TEST(DescriptorTests, DescriptorMoveComplexSingle) {
@@ -735,13 +746,13 @@ TEST(DescriptorTests, DescriptorMoveComplexDouble) {
 }
 
 TEST(DescriptorTests, DescriptorTestsRealSingle) {
-    EXPECT_TRUE((
-        test_getter_setter<oneapi::math::dft::precision::SINGLE, oneapi::math::dft::domain::REAL>()));
+    EXPECT_TRUE((test_getter_setter<oneapi::math::dft::precision::SINGLE,
+                                    oneapi::math::dft::domain::REAL>()));
 }
 
 TEST(DescriptorTests, DescriptorTestsRealDouble) {
-    EXPECT_TRUE((
-        test_getter_setter<oneapi::math::dft::precision::DOUBLE, oneapi::math::dft::domain::REAL>()));
+    EXPECT_TRUE((test_getter_setter<oneapi::math::dft::precision::DOUBLE,
+                                    oneapi::math::dft::domain::REAL>()));
 }
 
 TEST(DescriptorTests, DescriptorTestsComplexSingle) {

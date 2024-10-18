@@ -43,20 +43,20 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int64_t incx, int64_t incy, fp alpha,
+int test(device* dev, oneapi::math::layout layout, int64_t incx, int64_t incy, fp alpha,
          int64_t batch_size) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during AXPY_BATCH_STRIDE:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -101,8 +101,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t incx, int64_t incy, f
     int batch_size_ref = (int)batch_size;
 
     for (i = 0; i < batch_size_ref; i++) {
-        ::axpy(&n_ref, (fp_ref *)&alpha, (fp_ref *)x.data() + i * stride_x, &incx_ref,
-               (fp_ref *)y_ref.data() + i * stride_y, &incy_ref);
+        ::axpy(&n_ref, (fp_ref*)&alpha, (fp_ref*)x.data() + i * stride_x, &incx_ref,
+               (fp_ref*)y_ref.data() + i * stride_y, &incy_ref);
     }
 
     // Call DPC++ AXPY_BATCH_STRIDE.
@@ -117,8 +117,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t incx, int64_t incy, f
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::axpy_batch(main_queue, n, alpha, &x[0], incx,
-                                                                stride_x, &y[0], incy, stride_y,
-                                                                batch_size, dependencies);
+                                                                 stride_x, &y[0], incy, stride_y,
+                                                                 batch_size, dependencies);
                 break;
             default: break;
         }
@@ -140,17 +140,17 @@ int test(device *dev, oneapi::math::layout layout, int64_t incx, int64_t incy, f
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during AXPY_BATCH_STRIDE:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of AXPY_BATCH_STRIDE:\n"
                   << error.what() << std::endl;
     }
@@ -166,7 +166,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t incx, int64_t incy, f
 }
 
 class AxpyBatchStrideUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(AxpyBatchStrideUsmTests, RealSinglePrecision) {
     float alpha = 2.0;

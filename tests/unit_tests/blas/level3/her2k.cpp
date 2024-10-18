@@ -99,13 +99,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::her2k(main_queue, upper_lower, trans, n, k, alpha,
-                                                       A_buffer, lda, B_buffer, ldb, beta, C_buffer,
-                                                       ldc);
+                                                        A_buffer, lda, B_buffer, ldb, beta,
+                                                        C_buffer, ldc);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::her2k(main_queue, upper_lower, trans, n, k, alpha,
-                                                    A_buffer, lda, B_buffer, ldb, beta, C_buffer,
-                                                    ldc);
+                                                     A_buffer, lda, B_buffer, ldb, beta, C_buffer,
+                                                     ldc);
                 break;
             default: break;
         }
@@ -146,8 +146,8 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     return (int)good;
 }
 
-class Her2kTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
-};
+class Her2kTests
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(Her2kTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);

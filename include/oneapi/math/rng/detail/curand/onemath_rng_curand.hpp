@@ -75,13 +75,13 @@ namespace rng {
 namespace curand {
 
 ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
-                                                                          std::uint64_t seed);
+                                                                            std::uint64_t seed);
 
 ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_philox4x32x10(
     sycl::queue queue, std::initializer_list<std::uint64_t> seed);
 
 ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_mrg32k3a(sycl::queue queue,
-                                                                     std::uint32_t seed);
+                                                                       std::uint32_t seed);
 
 ONEMATH_EXPORT oneapi::math::rng::detail::engine_impl* create_mrg32k3a(
     sycl::queue queue, std::initializer_list<std::uint32_t> seed);

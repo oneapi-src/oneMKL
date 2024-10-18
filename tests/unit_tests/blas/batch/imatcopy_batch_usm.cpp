@@ -44,19 +44,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
+int test(device* dev, oneapi::math::layout layout, int64_t group_count) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during IMATCOPY_BATCH:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -103,8 +103,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         total_batch_count += group_size[i];
     }
 
-    auto uafpp = usm_allocator<fp *, usm::alloc::shared, 64>(cxt, *dev);
-    vector<fp *, decltype(uafpp)> ab_array(uafpp), ab_ref_array(uafpp);
+    auto uafpp = usm_allocator<fp*, usm::alloc::shared, 64>(cxt, *dev);
+    vector<fp*, decltype(uafpp)> ab_array(uafpp), ab_ref_array(uafpp);
 
     ab_array.resize(total_batch_count);
     ab_ref_array.resize(total_batch_count);
@@ -126,8 +126,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         }
         size = std::max(size_a, size_b);
         for (j = 0; j < group_size[i]; j++) {
-            ab_array[idx] = (fp *)oneapi::math::malloc_shared(64, sizeof(fp) * size, *dev, cxt);
-            ab_ref_array[idx] = (fp *)oneapi::math::malloc_shared(64, sizeof(fp) * size, *dev, cxt);
+            ab_array[idx] = (fp*)oneapi::math::malloc_shared(64, sizeof(fp) * size, *dev, cxt);
+            ab_ref_array[idx] = (fp*)oneapi::math::malloc_shared(64, sizeof(fp) * size, *dev, cxt);
             rand_matrix(ab_array[idx], oneapi::math::layout::col_major,
                         oneapi::math::transpose::nontrans, size, 1, size);
             copy_matrix(ab_array[idx], oneapi::math::layout::col_major,
@@ -171,10 +171,10 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::imatcopy_batch,
-                                        trans.data(), m.data(), n.data(), alpha.data(),
-                                        ab_array.data(), lda.data(), ldb.data(), group_count,
-                                        group_size.data(), dependencies);
+                TEST_RUN_BLAS_CT_SELECT(
+                    main_queue, oneapi::math::blas::column_major::imatcopy_batch, trans.data(),
+                    m.data(), n.data(), alpha.data(), ab_array.data(), lda.data(), ldb.data(),
+                    group_count, group_size.data(), dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::imatcopy_batch,
@@ -187,13 +187,13 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during IMATCOPY_BATCH:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         idx = 0;
         for (i = 0; i < group_count; i++) {
             for (j = 0; j < group_size[i]; j++) {
@@ -205,7 +205,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of IMATCOPY_BATCH:\n"
                   << error.what() << std::endl;
     }
@@ -229,9 +229,9 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         }
         size = std::max(size_a, size_b);
         for (j = 0; j < group_size[i]; j++) {
-            good = good &&
-                   check_equal_matrix(ab_array[idx], ab_ref_array[idx],
-                                      oneapi::math::layout::col_major, size, 1, size, 10, std::cout);
+            good = good && check_equal_matrix(ab_array[idx], ab_ref_array[idx],
+                                              oneapi::math::layout::col_major, size, 1, size, 10,
+                                              std::cout);
             idx++;
         }
     }
@@ -249,7 +249,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
 }
 
 class ImatcopyBatchUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(ImatcopyBatchUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

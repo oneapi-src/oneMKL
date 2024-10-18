@@ -21,7 +21,8 @@
 #define ONEMATH_MKL_DFT_HPP
 
 // Deprecated header is planned to be removed late 2025.
-#pragma message("Header `oneapi/mkl/dft.hpp` is deprecated, please use `oneapi/math/dft.hpp` instead")
+#pragma message( \
+    "Header `oneapi/mkl/dft.hpp` is deprecated, please use `oneapi/math/dft.hpp` instead")
 
 #include "oneapi/math/dft.hpp"
 

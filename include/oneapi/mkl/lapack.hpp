@@ -21,7 +21,8 @@
 #define ONEMATH_MKL_LAPACK_HPP
 
 // Deprecated header is planned to be removed late 2025.
-#pragma message("Header `oneapi/mkl/lapack.hpp` is deprecated, please use `oneapi/math/lapack.hpp` instead")
+#pragma message( \
+    "Header `oneapi/mkl/lapack.hpp` is deprecated, please use `oneapi/math/lapack.hpp` instead")
 
 #include "oneapi/math/lapack.hpp"
 

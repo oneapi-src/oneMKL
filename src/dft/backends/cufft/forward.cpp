@@ -40,11 +40,11 @@ namespace oneapi::math::dft::cufft {
 namespace detail {
 //forward declaration
 template <dft::precision prec, dft::domain dom>
-std::array<std::int64_t, 2> get_offsets_fwd(dft::detail::commit_impl<prec, dom> *commit);
+std::array<std::int64_t, 2> get_offsets_fwd(dft::detail::commit_impl<prec, dom>* commit);
 
 template <dft::precision prec, dft::domain dom>
-cufftHandle get_fwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
-    return static_cast<std::optional<cufftHandle> *>(commit->get_handle())[0].value();
+cufftHandle get_fwd_plan(dft::detail::commit_impl<prec, dom>* commit) {
+    return static_cast<std::optional<cufftHandle>*>(commit->get_handle())[0].value();
 }
 } // namespace detail
 
@@ -52,8 +52,8 @@ cufftHandle get_fwd_plan(dft::detail::commit_impl<prec, dom> *commit) {
 
 //In-place transform
 template <typename descriptor_type>
-ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
-                                   sycl::buffer<fwd<descriptor_type>, 1> &inout) {
+ONEMATH_EXPORT void compute_forward(descriptor_type& desc,
+                                    sycl::buffer<fwd<descriptor_type>, 1>& inout) {
     const std::string func_name = "compute_forward(desc, inout)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
@@ -71,34 +71,35 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc,
         offsets[1] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
 
-    queue.submit([&](sycl::handler &cgh) {
+    queue.submit([&](sycl::handler& cgh) {
         auto inout_acc = inout.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_forward", cgh);
 
         dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
-            auto inout_native = reinterpret_cast<fwd<descriptor_type> *>(
+            auto inout_native = reinterpret_cast<fwd<descriptor_type>*>(
                 ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(inout_acc));
             detail::cufft_execute<detail::Direction::Forward, fwd<descriptor_type>>(
-                func_name, stream, plan, reinterpret_cast<void *>(inout_native + offsets[0]),
-                reinterpret_cast<void *>(inout_native + offsets[1]));
+                func_name, stream, plan, reinterpret_cast<void*>(inout_native + offsets[0]),
+                reinterpret_cast<void*>(inout_native + offsets[1]));
         });
     });
 }
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMATH_EXPORT void compute_forward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
-                                   sycl::buffer<scalar<descriptor_type>, 1> &) {
+ONEMATH_EXPORT void compute_forward(descriptor_type&, sycl::buffer<scalar<descriptor_type>, 1>&,
+                                    sycl::buffer<scalar<descriptor_type>, 1>&) {
     throw oneapi::math::unimplemented("DFT", "compute_forward(desc, inout_re, inout_im)",
-                                     "cuFFT does not support real-real complex storage.");
+                                      "cuFFT does not support real-real complex storage.");
 }
 
 //Out-of-place transform
 template <typename descriptor_type>
-ONEMATH_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<descriptor_type>, 1> &in,
-                                   sycl::buffer<bwd<descriptor_type>, 1> &out) {
+ONEMATH_EXPORT void compute_forward(descriptor_type& desc,
+                                    sycl::buffer<fwd<descriptor_type>, 1>& in,
+                                    sycl::buffer<bwd<descriptor_type>, 1>& out) {
     const std::string func_name = "compute_forward(desc, in, out)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
@@ -115,7 +116,7 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<desc
         }
     }
 
-    queue.submit([&](sycl::handler &cgh) {
+    queue.submit([&](sycl::handler& cgh) {
         auto in_acc = in.template get_access<sycl::access::mode::read_write>(cgh);
         auto out_acc = out.template get_access<sycl::access::mode::read_write>(cgh);
         commit->add_buffer_workspace_dependency_if_rqd("compute_forward", cgh);
@@ -123,12 +124,12 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<desc
         dft::detail::fft_enqueue_task(cgh, [=](sycl::interop_handle ih) {
             auto stream = detail::setup_stream(func_name, ih, plan);
 
-            auto in_native = reinterpret_cast<void *>(
-                reinterpret_cast<fwd<descriptor_type> *>(
+            auto in_native = reinterpret_cast<void*>(
+                reinterpret_cast<fwd<descriptor_type>*>(
                     ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(in_acc)) +
                 offsets[0]);
-            auto out_native = reinterpret_cast<void *>(
-                reinterpret_cast<bwd<descriptor_type> *>(
+            auto out_native = reinterpret_cast<void*>(
+                reinterpret_cast<bwd<descriptor_type>*>(
                     ih.get_native_mem<sycl::backend::ext_oneapi_cuda>(out_acc)) +
                 offsets[1]);
             detail::cufft_execute<detail::Direction::Forward, fwd<descriptor_type>>(
@@ -139,20 +140,20 @@ ONEMATH_EXPORT void compute_forward(descriptor_type &desc, sycl::buffer<fwd<desc
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMATH_EXPORT void compute_forward(descriptor_type &, sycl::buffer<scalar<descriptor_type>, 1> &,
-                                   sycl::buffer<scalar<descriptor_type>, 1> &,
-                                   sycl::buffer<scalar<descriptor_type>, 1> &,
-                                   sycl::buffer<scalar<descriptor_type>, 1> &) {
+ONEMATH_EXPORT void compute_forward(descriptor_type&, sycl::buffer<scalar<descriptor_type>, 1>&,
+                                    sycl::buffer<scalar<descriptor_type>, 1>&,
+                                    sycl::buffer<scalar<descriptor_type>, 1>&,
+                                    sycl::buffer<scalar<descriptor_type>, 1>&) {
     throw oneapi::math::unimplemented("DFT", "compute_forward(desc, in_re, in_im, out_re, out_im)",
-                                     "cuFFT does not support real-real complex storage.");
+                                      "cuFFT does not support real-real complex storage.");
 }
 
 //USM version
 
 //In-place transform
 template <typename descriptor_type>
-ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_type> *inout,
-                                          const std::vector<sycl::event> &dependencies) {
+ONEMATH_EXPORT sycl::event compute_forward(descriptor_type& desc, fwd<descriptor_type>* inout,
+                                           const std::vector<sycl::event>& dependencies) {
     const std::string func_name = "compute_forward(desc, inout, dependencies)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::INPLACE>(
         desc, "Unexpected value for placement");
@@ -170,7 +171,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
         offsets[1] *= 2; // offset is supplied in complex but we offset scalar pointer
     }
 
-    sycl::event sycl_event = queue.submit([&](sycl::handler &cgh) {
+    sycl::event sycl_event = queue.submit([&](sycl::handler& cgh) {
         cgh.depends_on(dependencies);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
@@ -187,19 +188,19 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
 
 //In-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &, scalar<descriptor_type> *,
-                                          scalar<descriptor_type> *,
-                                          const std::vector<sycl::event> &) {
+ONEMATH_EXPORT sycl::event compute_forward(descriptor_type&, scalar<descriptor_type>*,
+                                           scalar<descriptor_type>*,
+                                           const std::vector<sycl::event>&) {
     throw oneapi::math::unimplemented("DFT",
-                                     "compute_forward(desc, inout_re, inout_im, dependencies)",
-                                     "cuFFT does not support real-real complex storage.");
+                                      "compute_forward(desc, inout_re, inout_im, dependencies)",
+                                      "cuFFT does not support real-real complex storage.");
 }
 
 //Out-of-place transform
 template <typename descriptor_type>
-ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor_type> *in,
-                                          bwd<descriptor_type> *out,
-                                          const std::vector<sycl::event> &dependencies) {
+ONEMATH_EXPORT sycl::event compute_forward(descriptor_type& desc, fwd<descriptor_type>* in,
+                                           bwd<descriptor_type>* out,
+                                           const std::vector<sycl::event>& dependencies) {
     const std::string func_name = "compute_forward(desc, in, out, dependencies)";
     detail::expect_config<dft::config_param::PLACEMENT, dft::config_value::NOT_INPLACE>(
         desc, "Unexpected value for placement");
@@ -216,7 +217,7 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
         }
     }
 
-    sycl::event sycl_event = queue.submit([&](sycl::handler &cgh) {
+    sycl::event sycl_event = queue.submit([&](sycl::handler& cgh) {
         cgh.depends_on(dependencies);
         commit->depend_on_last_usm_workspace_event_if_rqd(cgh);
 
@@ -233,10 +234,10 @@ ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &desc, fwd<descriptor
 
 //Out-of-place transform, using config_param::COMPLEX_STORAGE=config_value::REAL_REAL data format
 template <typename descriptor_type>
-ONEMATH_EXPORT sycl::event compute_forward(descriptor_type &, scalar<descriptor_type> *,
-                                          scalar<descriptor_type> *, scalar<descriptor_type> *,
-                                          scalar<descriptor_type> *,
-                                          const std::vector<sycl::event> &) {
+ONEMATH_EXPORT sycl::event compute_forward(descriptor_type&, scalar<descriptor_type>*,
+                                           scalar<descriptor_type>*, scalar<descriptor_type>*,
+                                           scalar<descriptor_type>*,
+                                           const std::vector<sycl::event>&) {
     throw oneapi::math::unimplemented(
         "DFT", "compute_forward(desc, in_re, in_im, out_re, out_im, dependencies)",
         "cuFFT does not support real-real complex storage.");

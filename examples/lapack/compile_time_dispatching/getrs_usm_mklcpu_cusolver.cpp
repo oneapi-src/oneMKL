@@ -178,8 +178,8 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
     std::int64_t gpu_getrf_scratchpad_size = oneapi::math::lapack::getrf_scratchpad_size<float>(
         oneapi::math::backend_selector<oneapi::math::backend::cusolver>{ gpu_queue }, m, n, lda);
     std::int64_t gpu_getrs_scratchpad_size = oneapi::math::lapack::getrs_scratchpad_size<float>(
-        oneapi::math::backend_selector<oneapi::math::backend::cusolver>{ gpu_queue }, trans, n, nrhs,
-        lda, ldb);
+        oneapi::math::backend_selector<oneapi::math::backend::cusolver>{ gpu_queue }, trans, n,
+        nrhs, lda, ldb);
     float* gpu_getrf_scratchpad = sycl::malloc_device<float>(
         gpu_getrf_scratchpad_size * sizeof(float), gpu_device, gpu_context);
     float* gpu_getrs_scratchpad = sycl::malloc_device<float>(
@@ -197,8 +197,8 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
     //
 
     cpu_getrf_done = oneapi::math::lapack::getrf(
-        oneapi::math::backend_selector<oneapi::math::backend::mklcpu>{ cpu_queue }, m, n, cpu_A, lda,
-        cpu_ipiv, cpu_getrf_scratchpad, cpu_getrf_scratchpad_size);
+        oneapi::math::backend_selector<oneapi::math::backend::mklcpu>{ cpu_queue }, m, n, cpu_A,
+        lda, cpu_ipiv, cpu_getrf_scratchpad, cpu_getrf_scratchpad_size);
     cpu_getrs_done = oneapi::math::lapack::getrs(
         oneapi::math::backend_selector<oneapi::math::backend::mklcpu>{ cpu_queue }, trans, n, nrhs,
         cpu_A, lda, cpu_ipiv, cpu_B, ldb, cpu_getrs_scratchpad, cpu_getrs_scratchpad_size,
@@ -207,8 +207,8 @@ void run_getrs_example(const sycl::device& cpu_device, const sycl::device& gpu_d
         oneapi::math::backend_selector<oneapi::math::backend::cusolver>{ gpu_queue }, m, n, gpu_A,
         lda, gpu_ipiv, gpu_getrf_scratchpad, gpu_getrf_scratchpad_size);
     gpu_getrs_done = oneapi::math::lapack::getrs(
-        oneapi::math::backend_selector<oneapi::math::backend::cusolver>{ gpu_queue }, trans, n, nrhs,
-        gpu_A, lda, gpu_ipiv, gpu_B, ldb, gpu_getrs_scratchpad, gpu_getrs_scratchpad_size,
+        oneapi::math::backend_selector<oneapi::math::backend::cusolver>{ gpu_queue }, trans, n,
+        nrhs, gpu_A, lda, gpu_ipiv, gpu_B, ldb, gpu_getrs_scratchpad, gpu_getrs_scratchpad_size,
         { gpu_getrf_done });
 
     // Wait until calculations are done

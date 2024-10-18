@@ -86,7 +86,7 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, oneapi::math::tr
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::trtrs(queue, uplo, trans, diag, n, nrhs, A_dev, lda, B_dev, ldb,
-                                   scratchpad_dev, scratchpad_size);
+                                    scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::trtrs, uplo, trans, diag, n, nrhs,
                                   A_dev, lda, B_dev, ldb, scratchpad_dev, scratchpad_size);
@@ -155,9 +155,9 @@ bool usm_dependency(const sycl::device& dev, oneapi::math::uplo uplo, oneapi::ma
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::trtrs, uplo, trans, diag,
-                                  n, nrhs, A_dev, lda, B_dev, ldb, scratchpad_dev, scratchpad_size,
-                                  std::vector<sycl::event>{ in_event });
+        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::trtrs, uplo, trans,
+                                  diag, n, nrhs, A_dev, lda, B_dev, ldb, scratchpad_dev,
+                                  scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

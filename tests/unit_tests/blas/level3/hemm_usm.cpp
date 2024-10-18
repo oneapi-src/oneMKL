@@ -96,14 +96,14 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::side left_right
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                done = oneapi::math::blas::column_major::hemm(main_queue, left_right, upper_lower, m,
-                                                             n, alpha, A.data(), lda, B.data(), ldb,
-                                                             beta, C.data(), ldc, dependencies);
+                done = oneapi::math::blas::column_major::hemm(
+                    main_queue, left_right, upper_lower, m, n, alpha, A.data(), lda, B.data(), ldb,
+                    beta, C.data(), ldc, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                done = oneapi::math::blas::row_major::hemm(main_queue, left_right, upper_lower, m, n,
-                                                          alpha, A.data(), lda, B.data(), ldb, beta,
-                                                          C.data(), ldc, dependencies);
+                done = oneapi::math::blas::row_major::hemm(main_queue, left_right, upper_lower, m,
+                                                           n, alpha, A.data(), lda, B.data(), ldb,
+                                                           beta, C.data(), ldc, dependencies);
                 break;
             default: break;
         }
@@ -157,30 +157,30 @@ TEST_P(HemmUsmTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                 oneapi::math::side::left, oneapi::math::uplo::upper,
                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::side::right, oneapi::math::uplo::lower,
-                                                72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::side::right, oneapi::math::uplo::upper,
-                                                72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
 }
 TEST_P(HemmUsmTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::left, oneapi::math::uplo::lower,
-                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::left, oneapi::math::uplo::upper,
-                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::right, oneapi::math::uplo::lower,
-                                                 72, 27, 101, 102, 103, alpha, beta));
-    EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::side::right, oneapi::math::uplo::upper,
-                                                 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::left,
+        oneapi::math::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::left,
+        oneapi::math::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::lower, 72, 27, 101, 102, 103, alpha, beta));
+    EXPECT_TRUEORSKIP(test<std::complex<double>>(
+        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::side::right,
+        oneapi::math::uplo::upper, 72, 27, 101, 102, 103, alpha, beta));
 }
 
 INSTANTIATE_TEST_SUITE_P(HemmUsmTestSuite, HemmUsmTests,

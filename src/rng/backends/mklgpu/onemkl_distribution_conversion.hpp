@@ -80,42 +80,44 @@ struct convert_distrib_t;
 
 template <class T, class Method>
 struct convert_distrib_t<uniform<T, Method>> {
-auto operator()(uniform<T, Method> distribution) {
-    using onemkl_method_t = typename convert_method_t<Method>::type;
-    return oneapi::mkl::rng::uniform<T, onemkl_method_t>(distribution.a(), distribution.b());
-}
+    auto operator()(uniform<T, Method> distribution) {
+        using onemkl_method_t = typename convert_method_t<Method>::type;
+        return oneapi::mkl::rng::uniform<T, onemkl_method_t>(distribution.a(), distribution.b());
+    }
 };
 
 template <class T, class Method>
 struct convert_distrib_t<gaussian<T, Method>> {
-auto operator()(gaussian<T, Method> distribution) {
-    using onemkl_method_t = typename convert_method_t<Method>::type;
-    return oneapi::mkl::rng::gaussian<T, onemkl_method_t>(distribution.mean(), distribution.stddev());
-}
+    auto operator()(gaussian<T, Method> distribution) {
+        using onemkl_method_t = typename convert_method_t<Method>::type;
+        return oneapi::mkl::rng::gaussian<T, onemkl_method_t>(distribution.mean(),
+                                                              distribution.stddev());
+    }
 };
 
 template <class T, class Method>
 struct convert_distrib_t<lognormal<T, Method>> {
-auto operator()(lognormal<T, Method> distribution) {
-    using onemkl_method_t = typename convert_method_t<Method>::type;
-    return oneapi::mkl::rng::lognormal<T, onemkl_method_t>(distribution.m(), distribution.s(), distribution.displ(), distribution.scale());
-}
+    auto operator()(lognormal<T, Method> distribution) {
+        using onemkl_method_t = typename convert_method_t<Method>::type;
+        return oneapi::mkl::rng::lognormal<T, onemkl_method_t>(
+            distribution.m(), distribution.s(), distribution.displ(), distribution.scale());
+    }
 };
 
 template <class T, class Method>
 struct convert_distrib_t<bernoulli<T, Method>> {
-auto operator()(bernoulli<T, Method> distribution) {
-    using onemkl_method_t = typename convert_method_t<Method>::type;
-    return oneapi::mkl::rng::bernoulli<T, onemkl_method_t>(distribution.p());
-}
+    auto operator()(bernoulli<T, Method> distribution) {
+        using onemkl_method_t = typename convert_method_t<Method>::type;
+        return oneapi::mkl::rng::bernoulli<T, onemkl_method_t>(distribution.p());
+    }
 };
 
 template <class T, class Method>
 struct convert_distrib_t<poisson<T, Method>> {
-auto operator()(poisson<T, Method> distribution) {
-    using onemkl_method_t = typename convert_method_t<Method>::type;
-    return oneapi::mkl::rng::poisson<T, onemkl_method_t>(distribution.lambda());
-}
+    auto operator()(poisson<T, Method> distribution) {
+        using onemkl_method_t = typename convert_method_t<Method>::type;
+        return oneapi::mkl::rng::poisson<T, onemkl_method_t>(distribution.lambda());
+    }
 };
 
 template <class DistributionT>
@@ -123,9 +125,9 @@ inline auto get_onemkl_distribution(DistributionT distribution) {
     return convert_distrib_t<DistributionT>()(distribution);
 }
 
-}   // namespace detail
-}   // namespace rng
-}   // namespace math
-}   // namespace oneapi
+} // namespace detail
+} // namespace rng
+} // namespace math
+} // namespace oneapi
 
 #endif // _ONEMATH_SRC_RNG_ONEMKL_DISTRIBUTION_CONVERSION_HPP_

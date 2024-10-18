@@ -62,7 +62,7 @@ private:
 public:
     portfft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
             : oneapi::math::dft::detail::commit_impl<prec, dom>(queue, backend::portfft,
-                                                               config_values) {
+                                                                config_values) {
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
                 throw math::exception("DFT", "commit", "Device does not support double precision.");
@@ -78,15 +78,15 @@ public:
                 oneapi::math::dft::detail::config_value::WORKSPACE_EXTERNAL);
         if (config_values.workspace != config_value::ALLOW) {
             throw math::unimplemented("dft/backends/portfft", __FUNCTION__,
-                                     "portFFT only supports ALLOW for the WORKSPACE parameter");
+                                      "portFFT only supports ALLOW for the WORKSPACE parameter");
         }
         if (config_values.ordering != config_value::ORDERED) {
             throw math::unimplemented("dft/backends/portfft", __FUNCTION__,
-                                     "portFFT only supports ORDERED for the ORDERING parameter");
+                                      "portFFT only supports ORDERED for the ORDERING parameter");
         }
         if (config_values.transpose) {
             throw math::unimplemented("dft/backends/portfft", __FUNCTION__,
-                                     "portFFT does not supported transposed output");
+                                      "portFFT does not supported transposed output");
         }
 
         auto stride_api_choice = dft::detail::get_stride_api(config_values);
@@ -182,14 +182,14 @@ public:
         dft::detail::get_commit(desc)->template compute_call_throw<sycl::buffer<scalar_type, 1>>(
             "compute_forward");
         throw oneapi::math::unimplemented("DFT", "compute_forward(desc, inout_re, inout_im)",
-                                         "portFFT does not support real-real complex storage.");
+                                          "portFFT does not support real-real complex storage.");
     }
     sycl::event forward_ip_rr(descriptor_type& desc, scalar_type*, scalar_type*,
                               const std::vector<sycl::event>&) override {
         dft::detail::get_commit(desc)->template compute_call_throw<scalar_type*>("compute_forward");
         throw oneapi::math::unimplemented("DFT",
-                                         "compute_forward(desc, inout_re, inout_im, dependencies)",
-                                         "portFFT does not support real-real complex storage.");
+                                          "compute_forward(desc, inout_re, inout_im, dependencies)",
+                                          "portFFT does not support real-real complex storage.");
     }
 
     // forward out-of-place COMPLEX_COMPLEX
@@ -223,8 +223,8 @@ public:
         dft::detail::get_commit(desc)->template compute_call_throw<sycl::buffer<scalar_type, 1>>(
             "compute_forward");
         throw oneapi::math::unimplemented("DFT",
-                                         "compute_forward(desc, in_re, in_im, out_re, out_im)",
-                                         "portFFT does not support real-real complex storage.");
+                                          "compute_forward(desc, in_re, in_im, out_re, out_im)",
+                                          "portFFT does not support real-real complex storage.");
     }
     sycl::event forward_op_rr(descriptor_type& desc, scalar_type*, scalar_type*, scalar_type*,
                               scalar_type*, const std::vector<sycl::event>&) override {
@@ -263,15 +263,15 @@ public:
         dft::detail::get_commit(desc)->template compute_call_throw<sycl::buffer<scalar_type, 1>>(
             "compute_backward");
         throw oneapi::math::unimplemented("DFT", "compute_backward(desc, inout_re, inout_im)",
-                                         "portFFT does not support real-real complex storage.");
+                                          "portFFT does not support real-real complex storage.");
     }
     sycl::event backward_ip_rr(descriptor_type& desc, scalar_type*, scalar_type*,
                                const std::vector<sycl::event>&) override {
         dft::detail::get_commit(desc)->template compute_call_throw<scalar_type*>(
             "compute_backward");
-        throw oneapi::math::unimplemented("DFT",
-                                         "compute_backward(desc, inout_re, inout_im, dependencies)",
-                                         "portFFT does not support real-real complex storage.");
+        throw oneapi::math::unimplemented(
+            "DFT", "compute_backward(desc, inout_re, inout_im, dependencies)",
+            "portFFT does not support real-real complex storage.");
     }
 
     // backward out-of-place COMPLEX_COMPLEX
@@ -305,8 +305,8 @@ public:
         dft::detail::get_commit(desc)->template compute_call_throw<sycl::buffer<scalar_type, 1>>(
             "compute_backward");
         throw oneapi::math::unimplemented("DFT",
-                                         "compute_backward(desc, in_re, in_im, out_re, out_im)",
-                                         "portFFT does not support real-real complex storage.");
+                                          "compute_backward(desc, in_re, in_im, out_re, out_im)",
+                                          "portFFT does not support real-real complex storage.");
     }
     sycl::event backward_op_rr(descriptor_type& desc, scalar_type*, scalar_type*, scalar_type*,
                                scalar_type*, const std::vector<sycl::event>&) override {

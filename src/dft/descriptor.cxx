@@ -157,7 +157,7 @@ descriptor<prec, dom>::descriptor(std::vector<std::int64_t> dimensions) {
     for (const auto& dim : dimensions) {
         if (dim <= 0) {
             throw math::invalid_argument("DFT", "descriptor",
-                                        "Invalid dimension value (negative or 0).");
+                                         "Invalid dimension value (negative or 0).");
         }
     }
     compute_default_strides<dom>(dimensions, values_.fwd_strides, values_.bwd_strides);
@@ -283,7 +283,7 @@ void descriptor<prec, dom>::set_workspace(scalar_type* usm_workspace) {
     }
     else {
         throw math::uninitialized("DFT", "set_workspace",
-                                 "Can only set workspace on committed descriptor.");
+                                  "Can only set workspace on committed descriptor.");
     }
 }
 
@@ -294,7 +294,7 @@ void descriptor<prec, dom>::set_workspace(sycl::buffer<scalar_type>& buffer_work
     }
     else {
         throw math::uninitialized("DFT", "set_workspace",
-                                 "Can only set workspace on committed descriptor.");
+                                  "Can only set workspace on committed descriptor.");
     }
 }
 

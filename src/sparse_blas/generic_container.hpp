@@ -314,10 +314,10 @@ void check_all_containers_compatible(const std::string& function_name,
         }
         const data_type other_int_type = internal_container->get_int_type();
         if (other_int_type != data_type::none && other_int_type != first_int_type) {
-            throw oneapi::math::invalid_argument("sparse_blas", function_name,
-                                                "Incompatible integer types expected " +
-                                                    data_type_to_str(first_int_type) + " but got " +
-                                                    data_type_to_str(other_int_type));
+            throw oneapi::math::invalid_argument(
+                "sparse_blas", function_name,
+                "Incompatible integer types expected " + data_type_to_str(first_int_type) +
+                    " but got " + data_type_to_str(other_int_type));
         }
     }
 }

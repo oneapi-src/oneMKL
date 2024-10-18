@@ -136,7 +136,7 @@ void run_gemm_example(const sycl::device& dev) {
     //
     // add oneapi::math::blas::gemm to execution queue
     gemm_done = oneapi::math::blas::column_major::gemm(main_queue, transA, transB, m, n, k, alpha,
-                                                      dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
+                                                       dev_A, ldA, dev_B, ldB, beta, dev_C, ldC);
 
     // Wait until calculations are done
     main_queue.wait_and_throw();

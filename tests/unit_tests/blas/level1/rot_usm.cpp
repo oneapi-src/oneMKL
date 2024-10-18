@@ -41,20 +41,20 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp_scalar c,
+int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy, fp_scalar c,
          fp_scalar s) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during ROT:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -80,8 +80,8 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
     using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
-    ::rot(&N_ref, (fp_ref *)x_ref.data(), &incx_ref, (fp_ref *)y_ref.data(), &incy_ref,
-          (fp_scalar *)&c, (fp_scalar *)&s);
+    ::rot(&N_ref, (fp_ref*)x_ref.data(), &incx_ref, (fp_ref*)y_ref.data(), &incy_ref,
+          (fp_scalar*)&c, (fp_scalar*)&s);
 
     // Call DPC++ ROT.
 
@@ -89,12 +89,12 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                done = oneapi::math::blas::column_major::rot(main_queue, N, x.data(), incx, y.data(),
-                                                            incy, c, s, dependencies);
+                done = oneapi::math::blas::column_major::rot(main_queue, N, x.data(), incx,
+                                                             y.data(), incy, c, s, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::rot(main_queue, N, x.data(), incx, y.data(),
-                                                         incy, c, s, dependencies);
+                                                          incy, c, s, dependencies);
                 break;
             default: break;
         }
@@ -114,16 +114,16 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during ROT:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of ROT:\n" << error.what() << std::endl;
     }
 
@@ -137,7 +137,7 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
 }
 
 class RotUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(RotUsmTests, RealSinglePrecision) {
     float c(2.0);

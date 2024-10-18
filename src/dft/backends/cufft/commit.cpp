@@ -57,7 +57,7 @@ private:
 public:
     cufft_commit(sycl::queue& queue, const dft::detail::dft_values<prec, dom>& config_values)
             : oneapi::math::dft::detail::commit_impl<prec, dom>(queue, backend::cufft,
-                                                               config_values) {
+                                                                config_values) {
         if constexpr (prec == dft::detail::precision::DOUBLE) {
             if (!queue.get_device().has(sycl::aspect::fp64)) {
                 throw math::exception("DFT", "commit", "Device does not support double precision.");
@@ -70,14 +70,14 @@ public:
         if (plans[0]) {
             if (cufftDestroy(plans[0].value()) != CUFFT_SUCCESS) {
                 throw math::exception("dft/backends/cufft", __FUNCTION__,
-                                     "Failed to destroy forward cuFFT plan.");
+                                      "Failed to destroy forward cuFFT plan.");
             }
             plans[0] = std::nullopt;
         }
         if (plans[1]) {
             if (cufftDestroy(plans[1].value()) != CUFFT_SUCCESS) {
                 throw math::exception("dft/backends/cufft", __FUNCTION__,
-                                     "Failed to destroy backward cuFFT plan.");
+                                      "Failed to destroy backward cuFFT plan.");
             }
             plans[1] = std::nullopt;
         }
@@ -88,7 +88,7 @@ public:
             CUcontext interopContext;
             if (cuDevicePrimaryCtxRetain(&interopContext, interopDevice) != CUDA_SUCCESS) {
                 throw math::exception("dft/backends/cufft", __FUNCTION__,
-                                     "Failed to change cuda context.");
+                                      "Failed to change cuda context.");
             }
         }
     }
@@ -277,7 +277,7 @@ public:
 
             if (res != CUFFT_SUCCESS) {
                 throw math::exception("dft/backends/cufft", __FUNCTION__,
-                                     "Failed to create forward cuFFT plan.");
+                                      "Failed to create forward cuFFT plan.");
             }
 
             plans[0] = fwd_plan;
@@ -305,7 +305,7 @@ public:
             );
             if (res != CUFFT_SUCCESS) {
                 throw math::exception("dft/backends/cufft", __FUNCTION__,
-                                     "Failed to create backward cuFFT plan.");
+                                      "Failed to create backward cuFFT plan.");
             }
             plans[1] = bwd_plan;
         }
@@ -321,7 +321,7 @@ public:
             auto res = cufftSetAutoAllocation(handle, 0);
             if (res != CUFFT_SUCCESS) {
                 throw math::exception("dft/backends/cufft", "commit",
-                                     "cufftSetAutoAllocation(plan, 0) failed.");
+                                      "cufftSetAutoAllocation(plan, 0) failed.");
             }
         }
     }

@@ -42,20 +42,20 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, fp alpha,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, fp alpha,
          int incx) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during SPR:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -81,7 +81,7 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     using fp_ref = typename ref_type_info<fp>::type;
 
     ::spr(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref,
-          (fp_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)A_ref.data());
+          (fp_ref*)&alpha, (fp_ref*)x.data(), &incx_ref, (fp_ref*)A_ref.data());
 
     // Call DPC++ SPR.
 
@@ -89,12 +89,12 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                done = oneapi::math::blas::column_major::spr(main_queue, upper_lower, n, alpha,
-                                                            x.data(), incx, A.data(), dependencies);
+                done = oneapi::math::blas::column_major::spr(
+                    main_queue, upper_lower, n, alpha, x.data(), incx, A.data(), dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::spr(main_queue, upper_lower, n, alpha,
-                                                         x.data(), incx, A.data(), dependencies);
+                                                          x.data(), incx, A.data(), dependencies);
                 break;
             default: break;
         }
@@ -115,16 +115,16 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during SPR:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of SPR:\n" << error.what() << std::endl;
     }
 
@@ -136,7 +136,7 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
 }
 
 class SprUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(SprUsmTests, RealSinglePrecision) {
     float alpha(2.0);

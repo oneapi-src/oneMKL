@@ -86,7 +86,7 @@ bool accuracy(const sycl::device& dev, oneapi::math::jobsvd jobu, oneapi::math::
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::gesvd(queue, jobu, jobvt, m, n, A_dev, lda, s_dev, U_dev, ldu, Vt_dev,
-                                   ldvt, scratchpad_dev, scratchpad_size);
+                                    ldvt, scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::gesvd, jobu, jobvt, m, n, A_dev, lda,
                                   s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev, scratchpad_size);
@@ -116,8 +116,8 @@ bool accuracy(const sycl::device& dev, oneapi::math::jobsvd jobu, oneapi::math::
                 US[row + col * ldus] = U[row + col * ldu] * s[col];
         std::vector<fp> USV(m * n);
         int64_t ldusv = m;
-        reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans, m, n, n,
-                        1.0, US.data(), ldus, Vt.data(), ldvt, 0.0, USV.data(), ldusv);
+        reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans, m, n,
+                        n, 1.0, US.data(), ldus, Vt.data(), ldvt, 0.0, USV.data(), ldusv);
         if (!rel_mat_err_check(m, n, A_initial, lda, USV, ldusv)) {
             test_log::lout << "Factorization check failed" << std::endl;
             result = false;
@@ -134,8 +134,8 @@ bool accuracy(const sycl::device& dev, oneapi::math::jobsvd jobu, oneapi::math::
         /* |I - U' U| < n O(eps) */
         std::vector<fp> UU(ucols * ucols);
         int64_t lduu = ucols;
-        reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, ucols,
-                        ucols, m, 1.0, U.data(), ldu, U.data(), ldu, 0.0, UU.data(), lduu);
+        reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans,
+                        ucols, ucols, m, 1.0, U.data(), ldu, U.data(), ldu, 0.0, UU.data(), lduu);
         if (!rel_id_err_check(ucols, UU, lduu)) {
             test_log::lout << "U Orthogonality check failed" << std::endl;
             result = false;
@@ -147,8 +147,9 @@ bool accuracy(const sycl::device& dev, oneapi::math::jobsvd jobu, oneapi::math::
         /* |I - V' V| < n O(eps) */
         std::vector<fp> VV(vtrows * vtrows);
         int64_t ldvv = vtrows;
-        reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans, vtrows,
-                        vtrows, n, 1.0, Vt.data(), ldvt, Vt.data(), ldvt, 0.0, VV.data(), ldvv);
+        reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::conjtrans,
+                        vtrows, vtrows, n, 1.0, Vt.data(), ldvt, Vt.data(), ldvt, 0.0, VV.data(),
+                        ldvv);
         if (!rel_id_err_check(vtrows, VV, ldvv)) {
             test_log::lout << "V Orthogonality check failed" << std::endl;
             result = false;
@@ -214,8 +215,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::math::jobsvd jobu, oneapi::
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::gesvd, jobu, jobvt, m, n,
-                                  A_dev, lda, s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev,
+        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::gesvd, jobu, jobvt, m,
+                                  n, A_dev, lda, s_dev, U_dev, ldu, Vt_dev, ldvt, scratchpad_dev,
                                   scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);

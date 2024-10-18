@@ -53,15 +53,15 @@ public:
                  Distribution,
                  oneapi::math::rng::device::uniform<
                      std::int32_t, oneapi::math::rng::device::uniform_method::accurate>> ||
-             std::is_same_v<Distribution, oneapi::math::rng::device::poisson<
-                                              std::uint32_t,
-                                              oneapi::math::rng::device::poisson_method::devroye>> ||
              std::is_same_v<
                  Distribution,
                  oneapi::math::rng::device::poisson<
-                     std::int32_t, oneapi::math::rng::device::poisson_method::devroye>>)&&!queue
-                .get_device()
-                .has(sycl::aspect::fp64)) {
+                     std::uint32_t, oneapi::math::rng::device::poisson_method::devroye>> ||
+             std::is_same_v<
+                 Distribution,
+                 oneapi::math::rng::device::poisson<
+                     std::int32_t, oneapi::math::rng::device::poisson_method::devroye>>) &&
+            !queue.get_device().has(sycl::aspect::fp64)) {
             status = test_skipped;
             return;
         }

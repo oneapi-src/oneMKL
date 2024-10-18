@@ -42,7 +42,7 @@ class descriptor;
 
 template <precision prec, domain dom>
 ONEMATH_EXPORT commit_impl<prec, dom>* create_commit(const descriptor<prec, dom>& desc,
-                                                    sycl::queue& queue);
+                                                     sycl::queue& queue);
 
 } // namespace detail
 } // namespace dft

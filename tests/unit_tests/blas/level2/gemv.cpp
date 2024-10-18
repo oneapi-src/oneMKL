@@ -42,12 +42,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, oneapi::math::transpose transa, int m, int n,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::transpose transa, int m, int n,
          fp alpha, fp beta, int incx, int incy, int lda) {
     // Prepare data.
     int x_len = outer_dimension(transa, m, n);
@@ -65,18 +65,18 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::transpose trans
     using fp_ref = typename ref_type_info<fp>::type;
 
     ::gemv(convert_to_cblas_layout(layout), convert_to_cblas_trans(transa), &m_ref, &n_ref,
-           (fp_ref *)&alpha, (fp_ref *)A.data(), &lda_ref, (fp_ref *)x.data(), &incx_ref,
-           (fp_ref *)&beta, (fp_ref *)y_ref.data(), &incy_ref);
+           (fp_ref*)&alpha, (fp_ref*)A.data(), &lda_ref, (fp_ref*)x.data(), &incx_ref,
+           (fp_ref*)&beta, (fp_ref*)y_ref.data(), &incy_ref);
 
     // Call DPC++ GEMV.
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during GEMV:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -95,11 +95,11 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::transpose trans
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::gemv(main_queue, transa, m, n, alpha, A_buffer,
-                                                      lda, x_buffer, incx, beta, y_buffer, incy);
+                                                       lda, x_buffer, incx, beta, y_buffer, incy);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::gemv(main_queue, transa, m, n, alpha, A_buffer, lda,
-                                                   x_buffer, incx, beta, y_buffer, incy);
+                                                    x_buffer, incx, beta, y_buffer, incy);
                 break;
             default: break;
         }
@@ -119,16 +119,16 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::transpose trans
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during GEMV:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of GEMV:\n" << error.what() << std::endl;
     }
 
@@ -139,19 +139,21 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::transpose trans
     return (int)good;
 }
 
-class GemvTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {
+class GemvTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(GemvTests, RealSinglePrecision) {
     float alpha(2.0);
     float beta(3.0);
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::math::transpose::nontrans, 25, 30, alpha, beta, 2, 3, 42));
+                                  oneapi::math::transpose::nontrans, 25, 30, alpha, beta, 2, 3,
+                                  42));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                   oneapi::math::transpose::nontrans, 25, 30, alpha, beta, -2, -3,
                                   42));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                  oneapi::math::transpose::nontrans, 25, 30, alpha, beta, 1, 1, 42));
+                                  oneapi::math::transpose::nontrans, 25, 30, alpha, beta, 1, 1,
+                                  42));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                   oneapi::math::transpose::trans, 25, 30, alpha, beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
@@ -176,7 +178,8 @@ TEST_P(GemvTests, RealDoublePrecision) {
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::math::transpose::trans, 25, 30, alpha, beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::transpose::trans, 25, 30, alpha, beta, -2, -3, 42));
+                                   oneapi::math::transpose::trans, 25, 30, alpha, beta, -2, -3,
+                                   42));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                    oneapi::math::transpose::trans, 25, 30, alpha, beta, 1, 1, 42));
 }
@@ -185,23 +188,23 @@ TEST_P(GemvTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
     std::complex<float> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::transpose::nontrans, 2, 3, alpha, beta,
+                                                oneapi::math::transpose::nontrans, 2, 3, alpha,
+                                                beta, 2, 3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::math::transpose::nontrans, 2, 3, alpha,
+                                                beta, -2, -3, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::math::transpose::nontrans, 2, 3, alpha,
+                                                beta, 1, 1, 42));
+    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                                oneapi::math::transpose::trans, 2, 3, alpha, beta,
                                                 2, 3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::transpose::nontrans, 2, 3, alpha, beta,
-                                                -2, -3, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::transpose::nontrans, 2, 3, alpha, beta,
-                                                1, 1, 42));
-    EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::transpose::trans, 2, 3, alpha, beta, 2,
-                                                3, 42));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                 oneapi::math::transpose::trans, 2, 3, alpha, beta,
                                                 -2, -3, 42));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::transpose::trans, 2, 3, alpha, beta, 1,
-                                                1, 42));
+                                                oneapi::math::transpose::trans, 2, 3, alpha, beta,
+                                                1, 1, 42));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                 oneapi::math::transpose::conjtrans, 2, 3, alpha,
                                                 beta, 2, 3, 42));
@@ -228,14 +231,14 @@ TEST_P(GemvTests, ComplexDoublePrecision) {
                                                  oneapi::math::transpose::nontrans, 25, 30, alpha,
                                                  beta, 1, 1, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::transpose::trans, 25, 30, alpha, beta,
-                                                 2, 3, 42));
+                                                 oneapi::math::transpose::trans, 25, 30, alpha,
+                                                 beta, 2, 3, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::transpose::trans, 25, 30, alpha, beta,
-                                                 -2, -3, 42));
+                                                 oneapi::math::transpose::trans, 25, 30, alpha,
+                                                 beta, -2, -3, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::transpose::trans, 25, 30, alpha, beta,
-                                                 1, 1, 42));
+                                                 oneapi::math::transpose::trans, 25, 30, alpha,
+                                                 beta, 1, 1, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  oneapi::math::transpose::conjtrans, 25, 30, alpha,
                                                  beta, 2, 3, 42));

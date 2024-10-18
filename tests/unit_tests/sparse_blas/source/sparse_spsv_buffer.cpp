@@ -23,15 +23,15 @@
 
 #include "test_spsv.hpp"
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fpType, typename intType>
-int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, double density_A_matrix,
+int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, double density_A_matrix,
               oneapi::math::index_base index, oneapi::math::transpose transpose_val, fpType alpha,
               oneapi::math::sparse::spsv_alg alg, oneapi::math::sparse::matrix_view A_view,
-              const std::set<oneapi::math::sparse::matrix_property> &matrix_properties,
+              const std::set<oneapi::math::sparse::matrix_property>& matrix_properties,
               bool reset_data, bool test_scalar_on_device) {
     if (test_scalar_on_device) {
         // Scalars on the device is not planned to be supported with the buffer API
@@ -87,7 +87,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
     try {
         init_sparse_matrix(main_queue, format, &A_handle, m, m, nnz, index, ia_buf, ja_buf, a_buf);
         for (auto property : matrix_properties) {
-            CALL_RT_OR_CT(oneapi::math::sparse::set_matrix_property, main_queue, A_handle, property);
+            CALL_RT_OR_CT(oneapi::math::sparse::set_matrix_property, main_queue, A_handle,
+                          property);
         }
         CALL_RT_OR_CT(oneapi::math::sparse::init_dense_vector, main_queue, &x_handle, m, x_buf);
         CALL_RT_OR_CT(oneapi::math::sparse::init_dense_vector, main_queue, &y_handle, m, y_buf);
@@ -99,8 +100,8 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
                       A_view, A_handle, x_handle, y_handle, alg, descr, workspace_size);
         sycl::buffer<std::uint8_t, 1> workspace_buf((sycl::range<1>(workspace_size)));
 
-        CALL_RT_OR_CT(oneapi::math::sparse::spsv_optimize, main_queue, transpose_val, &alpha, A_view,
-                      A_handle, x_handle, y_handle, alg, descr, workspace_buf);
+        CALL_RT_OR_CT(oneapi::math::sparse::spsv_optimize, main_queue, transpose_val, &alpha,
+                      A_view, A_handle, x_handle, y_handle, alg, descr, workspace_buf);
 
         CALL_RT_OR_CT(oneapi::math::sparse::spsv, main_queue, transpose_val, &alpha, A_view,
                       A_handle, x_handle, y_handle, alg, descr);
@@ -141,13 +142,13 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
                           A_handle, x_handle, y_handle, alg, descr);
         }
     }
-    catch (const sycl::exception &e) {
+    catch (const sycl::exception& e) {
         std::cout << "Caught synchronous SYCL exception during sparse SPSV:\n"
                   << e.what() << std::endl;
         print_error_code(e);
         return 0;
     }
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         wait_and_free_handles(main_queue, A_handle, x_handle, y_handle);
         if (descr) {
             sycl::event ev_release_descr;
@@ -157,7 +158,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
         }
         return test_skipped;
     }
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of sparse SPSV:\n" << error.what() << std::endl;
         return 0;
     }
@@ -176,7 +177,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
     return static_cast<int>(valid);
 }
 
-class SparseSpsvBufferTests : public ::testing::TestWithParam<sycl::device *> {};
+class SparseSpsvBufferTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(SparseSpsvBufferTests, RealSinglePrecision) {
     using fpType = float;

@@ -44,19 +44,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout) {
+int test(device* dev, oneapi::math::layout layout) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during OMATCOPY:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -126,8 +126,8 @@ int test(device *dev, oneapi::math::layout layout) {
                     main_queue, trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                done = oneapi::math::blas::row_major::omatcopy(main_queue, trans, m, n, alpha, &A[0],
-                                                              lda, &B[0], ldb, dependencies);
+                done = oneapi::math::blas::row_major::omatcopy(
+                    main_queue, trans, m, n, alpha, &A[0], lda, &B[0], ldb, dependencies);
                 break;
             default: break;
         }
@@ -147,17 +147,17 @@ int test(device *dev, oneapi::math::layout layout) {
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during OMATCOPY:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of OMATCOPY:\n" << error.what() << std::endl;
     }
 
@@ -169,7 +169,7 @@ int test(device *dev, oneapi::math::layout layout) {
 }
 
 class OmatcopyUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(OmatcopyUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));

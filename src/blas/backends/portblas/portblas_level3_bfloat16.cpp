@@ -33,20 +33,20 @@ namespace portblas {
 namespace column_major {
 
 // BUFFER
-void gemm(sycl::queue &queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
+void gemm(sycl::queue& queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-          sycl::buffer<oneapi::math::bfloat16, 1> &a, std::int64_t lda,
-          sycl::buffer<oneapi::math::bfloat16, 1> &b, std::int64_t ldb, float beta,
-          sycl::buffer<float, 1> &c, std::int64_t ldc) {
+          sycl::buffer<oneapi::math::bfloat16, 1>& a, std::int64_t lda,
+          sycl::buffer<oneapi::math::bfloat16, 1>& b, std::int64_t ldb, float beta,
+          sycl::buffer<float, 1>& c, std::int64_t ldc) {
     throw unimplemented("blas", "gemm", " for bfloat16");
 }
 
 // USM
-sycl::event gemm(sycl::queue &queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
+sycl::event gemm(sycl::queue& queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
                  std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                 const oneapi::math::bfloat16 *a, std::int64_t lda, const oneapi::math::bfloat16 *b,
-                 std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                 const std::vector<sycl::event> &dependencies) {
+                 const oneapi::math::bfloat16* a, std::int64_t lda, const oneapi::math::bfloat16* b,
+                 std::int64_t ldb, float beta, float* c, std::int64_t ldc,
+                 const std::vector<sycl::event>& dependencies) {
     throw unimplemented("blas", "gemm", " for USM");
 }
 
@@ -54,20 +54,20 @@ sycl::event gemm(sycl::queue &queue, oneapi::math::transpose transa, oneapi::mat
 namespace row_major {
 
 // BUFFER
-void gemm(sycl::queue &queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
+void gemm(sycl::queue& queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
           std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-          sycl::buffer<oneapi::math::bfloat16, 1> &a, std::int64_t lda,
-          sycl::buffer<oneapi::math::bfloat16, 1> &b, std::int64_t ldb, float beta,
-          sycl::buffer<float, 1> &c, std::int64_t ldc) {
+          sycl::buffer<oneapi::math::bfloat16, 1>& a, std::int64_t lda,
+          sycl::buffer<oneapi::math::bfloat16, 1>& b, std::int64_t ldb, float beta,
+          sycl::buffer<float, 1>& c, std::int64_t ldc) {
     throw unimplemented("blas", "gemm", " for bfloat16");
 }
 
 // USM
-sycl::event gemm(sycl::queue &queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
+sycl::event gemm(sycl::queue& queue, oneapi::math::transpose transa, oneapi::math::transpose transb,
                  std::int64_t m, std::int64_t n, std::int64_t k, float alpha,
-                 const oneapi::math::bfloat16 *a, std::int64_t lda, const oneapi::math::bfloat16 *b,
-                 std::int64_t ldb, float beta, float *c, std::int64_t ldc,
-                 const std::vector<sycl::event> &dependencies) {
+                 const oneapi::math::bfloat16* a, std::int64_t lda, const oneapi::math::bfloat16* b,
+                 std::int64_t ldb, float beta, float* c, std::int64_t ldc,
+                 const std::vector<sycl::event>& dependencies) {
     throw unimplemented("blas", "gemm", " for USM");
 }
 

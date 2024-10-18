@@ -42,20 +42,20 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, fp alpha,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, fp alpha,
          fp beta, int incx, int incy) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during SPMV:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -82,8 +82,8 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     using fp_ref = typename ref_type_info<fp>::type;
 
     ::spmv(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref,
-           (fp_ref *)&alpha, (fp_ref *)A.data(), (fp_ref *)x.data(), &incx_ref, (fp_ref *)&beta,
-           (fp_ref *)y_ref.data(), &incy_ref);
+           (fp_ref*)&alpha, (fp_ref*)A.data(), (fp_ref*)x.data(), &incx_ref, (fp_ref*)&beta,
+           (fp_ref*)y_ref.data(), &incy_ref);
 
     // Call DPC++ SPMV.
 
@@ -92,13 +92,13 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::spmv(main_queue, upper_lower, n, alpha,
-                                                             A.data(), x.data(), incx, beta,
-                                                             y.data(), incy, dependencies);
+                                                              A.data(), x.data(), incx, beta,
+                                                              y.data(), incy, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::spmv(main_queue, upper_lower, n, alpha,
-                                                          A.data(), x.data(), incx, beta, y.data(),
-                                                          incy, dependencies);
+                                                           A.data(), x.data(), incx, beta, y.data(),
+                                                           incy, dependencies);
                 break;
             default: break;
         }
@@ -111,25 +111,25 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         y.data(), incy, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::spmv, upper_lower,
-                                        n, alpha, A.data(), x.data(), incx, beta, y.data(), incy,
-                                        dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::spmv,
+                                        upper_lower, n, alpha, A.data(), x.data(), incx, beta,
+                                        y.data(), incy, dependencies);
                 break;
             default: break;
         }
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during SPMV:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of SPMV:\n" << error.what() << std::endl;
     }
 
@@ -141,7 +141,7 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
 }
 
 class SpmvUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(SpmvUsmTests, RealSinglePrecision) {
     float alpha(2.0);

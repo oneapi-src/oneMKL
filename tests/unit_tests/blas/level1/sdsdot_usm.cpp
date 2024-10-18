@@ -41,18 +41,18 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
-int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, float alpha) {
+int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy, float alpha) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during SDSDOT:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -76,12 +76,12 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fl
     // Call Reference SDSDOT.
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
-    result_ref = ::sdsdot(&N_ref, (float *)&alpha, (float *)x.data(), &incx_ref, (float *)y.data(),
-                          &incy_ref);
+    result_ref =
+        ::sdsdot(&N_ref, (float*)&alpha, (float*)x.data(), &incx_ref, (float*)y.data(), &incy_ref);
 
     // Call DPC++ SDSDOT.
 
-    auto result_p = (float *)oneapi::math::malloc_shared(64, sizeof(float), *dev, cxt);
+    auto result_p = (float*)oneapi::math::malloc_shared(64, sizeof(float), *dev, cxt);
 
     try {
 #ifdef CALL_RT_API
@@ -91,8 +91,8 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fl
                     main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                done = oneapi::math::blas::row_major::sdsdot(main_queue, N, alpha, x.data(), incx,
-                                                            y.data(), incy, result_p, dependencies);
+                done = oneapi::math::blas::row_major::sdsdot(
+                    main_queue, N, alpha, x.data(), incx, y.data(), incy, result_p, dependencies);
                 break;
             default: break;
         }
@@ -113,16 +113,16 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fl
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during SDSDOT:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of SDSDOT:\n" << error.what() << std::endl;
     }
 
@@ -135,7 +135,7 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fl
 }
 
 class SdsdotUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(SdsdotUsmTests, RealSinglePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));

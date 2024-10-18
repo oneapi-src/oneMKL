@@ -146,10 +146,10 @@ void run_getrs_example(const sycl::device& device) {
 
     // Execute on device
     getrf_done = oneapi::math::lapack::getrf(queue, m, n, dev_A, lda, dev_ipiv, getrf_scratchpad,
-                                            getrf_scratchpad_size);
+                                             getrf_scratchpad_size);
     getrs_done =
         oneapi::math::lapack::getrs(queue, trans, n, nrhs, dev_A, lda, dev_ipiv, dev_B, ldb,
-                                   getrs_scratchpad, getrs_scratchpad_size, { getrf_done });
+                                    getrs_scratchpad, getrs_scratchpad_size, { getrf_done });
 
     // Wait until calculations are done
     queue.wait_and_throw();

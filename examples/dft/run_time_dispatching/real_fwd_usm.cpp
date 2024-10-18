@@ -54,7 +54,7 @@ void run_example(const sycl::device& dev) {
 
     // 1. create descriptors
     oneapi::math::dft::descriptor<oneapi::math::dft::precision::SINGLE,
-                                 oneapi::math::dft::domain::REAL>
+                                  oneapi::math::dft::domain::REAL>
         desc(static_cast<std::int64_t>(N));
 
     // 2. variadic set_value

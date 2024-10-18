@@ -21,7 +21,8 @@
 #define ONEMATH_MKL_RNG_DEVICE_HPP
 
 // Deprecated header is planned to be removed late 2025.
-#pragma message("Header `oneapi/mkl/rng/device.hpp` is deprecated, please use `oneapi/math/rng/math.hpp` instead")
+#pragma message( \
+    "Header `oneapi/mkl/rng/device.hpp` is deprecated, please use `oneapi/math/rng/math.hpp` instead")
 
 #include "oneapi/math/rng/device.hpp"
 

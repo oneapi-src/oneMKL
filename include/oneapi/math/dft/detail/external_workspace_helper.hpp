@@ -91,7 +91,7 @@ public:
     void set_workspace_throw(commit_impl_t& committed_desc, scalar_t* usm_workspace) {
         if (get_rqd_workspace_bytes(committed_desc) > 0 && usm_workspace == nullptr) {
             throw math::invalid_argument("DFT", "set_workspace",
-                                        "Backend expected a non-null workspace pointer.");
+                                         "Backend expected a non-null workspace pointer.");
         }
         m_ext_workspace_rqd = true;
         m_workspace_type = ext_workspace_type::usm;
@@ -110,7 +110,7 @@ public:
         }
         if (buffer_workspace.is_sub_buffer()) {
             throw math::invalid_argument("DFT", "set_workspace",
-                                        "Cannot use sub-buffers for workspace");
+                                         "Cannot use sub-buffers for workspace");
             return;
         }
         m_ext_workspace_rqd = true;

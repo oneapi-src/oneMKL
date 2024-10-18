@@ -23,16 +23,16 @@
 
 #include "test_spmv.hpp"
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fpType, typename intType>
-int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A, intType ncols_A,
+int test_spmv(sycl::device* dev, sparse_matrix_format_t format, intType nrows_A, intType ncols_A,
               double density_A_matrix, oneapi::math::index_base index,
               oneapi::math::transpose transpose_val, fpType alpha, fpType beta,
               oneapi::math::sparse::spmv_alg alg, oneapi::math::sparse::matrix_view A_view,
-              const std::set<oneapi::math::sparse::matrix_property> &matrix_properties,
+              const std::set<oneapi::math::sparse::matrix_property>& matrix_properties,
               bool reset_data, bool test_scalar_on_device) {
     if (test_scalar_on_device) {
         // Scalars on the device is not planned to be supported with the buffer API
@@ -85,7 +85,8 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
         init_sparse_matrix(main_queue, format, &A_handle, nrows_A, ncols_A, nnz, index, ia_buf,
                            ja_buf, a_buf);
         for (auto property : matrix_properties) {
-            CALL_RT_OR_CT(oneapi::math::sparse::set_matrix_property, main_queue, A_handle, property);
+            CALL_RT_OR_CT(oneapi::math::sparse::set_matrix_property, main_queue, A_handle,
+                          property);
         }
         CALL_RT_OR_CT(oneapi::math::sparse::init_dense_vector, main_queue, &x_handle,
                       static_cast<std::int64_t>(x_host.size()), x_buf);
@@ -99,8 +100,8 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                       A_view, A_handle, x_handle, &beta, y_handle, alg, descr, workspace_size);
         sycl::buffer<std::uint8_t, 1> workspace_buf((sycl::range<1>(workspace_size)));
 
-        CALL_RT_OR_CT(oneapi::math::sparse::spmv_optimize, main_queue, transpose_val, &alpha, A_view,
-                      A_handle, x_handle, &beta, y_handle, alg, descr, workspace_buf);
+        CALL_RT_OR_CT(oneapi::math::sparse::spmv_optimize, main_queue, transpose_val, &alpha,
+                      A_view, A_handle, x_handle, &beta, y_handle, alg, descr, workspace_buf);
 
         CALL_RT_OR_CT(oneapi::math::sparse::spmv, main_queue, transpose_val, &alpha, A_view,
                       A_handle, x_handle, &beta, y_handle, alg, descr);
@@ -143,13 +144,13 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                           A_handle, x_handle, &beta, y_handle, alg, descr);
         }
     }
-    catch (const sycl::exception &e) {
+    catch (const sycl::exception& e) {
         std::cout << "Caught synchronous SYCL exception during sparse SPMV:\n"
                   << e.what() << std::endl;
         print_error_code(e);
         return 0;
     }
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         wait_and_free_handles(main_queue, A_handle, x_handle, y_handle);
         if (descr) {
             sycl::event ev_release_descr;
@@ -159,7 +160,7 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
         }
         return test_skipped;
     }
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of sparse SPMV:\n" << error.what() << std::endl;
         return 0;
     }
@@ -178,7 +179,7 @@ int test_spmv(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     return static_cast<int>(valid);
 }
 
-class SparseSpmvBufferTests : public ::testing::TestWithParam<sycl::device *> {};
+class SparseSpmvBufferTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(SparseSpmvBufferTests, RealSinglePrecision) {
     using fpType = float;

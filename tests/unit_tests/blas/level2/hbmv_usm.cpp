@@ -42,20 +42,20 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, int k,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, int k,
          fp alpha, fp beta, int incx, int incy, int lda) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during HBMV:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -84,8 +84,8 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     using fp_ref = typename ref_type_info<fp>::type;
 
     ::hbmv(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref, &k_ref,
-           (fp_ref *)&alpha, (fp_ref *)A.data(), &lda_ref, (fp_ref *)x.data(), &incx_ref,
-           (fp_ref *)&beta, (fp_ref *)y_ref.data(), &incy_ref);
+           (fp_ref*)&alpha, (fp_ref*)A.data(), &lda_ref, (fp_ref*)x.data(), &incx_ref,
+           (fp_ref*)&beta, (fp_ref*)y_ref.data(), &incy_ref);
 
     // Call DPC++ HBMV.
 
@@ -94,13 +94,13 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::hbmv(main_queue, upper_lower, n, k, alpha,
-                                                             A.data(), lda, x.data(), incx, beta,
-                                                             y.data(), incy, dependencies);
+                                                              A.data(), lda, x.data(), incx, beta,
+                                                              y.data(), incy, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::hbmv(main_queue, upper_lower, n, k, alpha,
-                                                          A.data(), lda, x.data(), incx, beta,
-                                                          y.data(), incy, dependencies);
+                                                           A.data(), lda, x.data(), incx, beta,
+                                                           y.data(), incy, dependencies);
                 break;
             default: break;
         }
@@ -113,25 +113,25 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         beta, y.data(), incy, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::hbmv, upper_lower,
-                                        n, k, alpha, A.data(), lda, x.data(), incx, beta, y.data(),
-                                        incy, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::hbmv,
+                                        upper_lower, n, k, alpha, A.data(), lda, x.data(), incx,
+                                        beta, y.data(), incy, dependencies);
                 break;
             default: break;
         }
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during HBMV:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of HBMV:\n" << error.what() << std::endl;
     }
 
@@ -143,7 +143,7 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
 }
 
 class HbmvUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(HbmvUsmTests, ComplexSinglePrecision) {
     std::complex<float> alpha(2.0, -0.5);
@@ -173,11 +173,11 @@ TEST_P(HbmvUsmTests, ComplexDoublePrecision) {
     std::complex<double> alpha(2.0, -0.5);
     std::complex<double> beta(3.0, -1.5);
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::uplo::lower, 30, 5, alpha, beta, 2, 3,
-                                                 42));
+                                                 oneapi::math::uplo::lower, 30, 5, alpha, beta, 2,
+                                                 3, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::uplo::upper, 30, 5, alpha, beta, 2, 3,
-                                                 42));
+                                                 oneapi::math::uplo::upper, 30, 5, alpha, beta, 2,
+                                                 3, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                  oneapi::math::uplo::lower, 30, 5, alpha, beta, -2,
                                                  -3, 42));
@@ -185,11 +185,11 @@ TEST_P(HbmvUsmTests, ComplexDoublePrecision) {
                                                  oneapi::math::uplo::upper, 30, 5, alpha, beta, -2,
                                                  -3, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::uplo::lower, 30, 5, alpha, beta, 1, 1,
-                                                 42));
+                                                 oneapi::math::uplo::lower, 30, 5, alpha, beta, 1,
+                                                 1, 42));
     EXPECT_TRUEORSKIP(test<std::complex<double>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                 oneapi::math::uplo::upper, 30, 5, alpha, beta, 1, 1,
-                                                 42));
+                                                 oneapi::math::uplo::upper, 30, 5, alpha, beta, 1,
+                                                 1, 42));
 }
 
 INSTANTIATE_TEST_SUITE_P(HbmvUsmTestSuite, HbmvUsmTests,

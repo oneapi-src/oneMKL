@@ -76,7 +76,7 @@ public:
     explicit uniform(Type a, Type b) : a_(a), b_(b) {
         if (a >= b) {
             throw oneapi::math::invalid_argument("rng", "uniform",
-                                                "parameters are incorrect, a >= b");
+                                                 "parameters are incorrect, a >= b");
         }
     }
 
@@ -104,7 +104,7 @@ public:
     explicit uniform(std::int32_t a, std::int32_t b) : a_(a), b_(b) {
         if (a >= b) {
             throw oneapi::math::invalid_argument("rng", "uniform",
-                                                "parameters are incorrect, a >= b");
+                                                 "parameters are incorrect, a >= b");
         }
     }
 
@@ -161,7 +161,7 @@ public:
     explicit gaussian(RealType mean, RealType stddev) : mean_(mean), stddev_(stddev) {
         if (stddev <= static_cast<RealType>(0.0)) {
             throw oneapi::math::invalid_argument("rng", "gaussian",
-                                                "stddev parameter is incorrect, stddev <= 0.0");
+                                                 "stddev parameter is incorrect, stddev <= 0.0");
         }
     }
 

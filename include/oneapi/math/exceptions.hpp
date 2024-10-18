@@ -39,7 +39,7 @@ class exception : public std::exception {
 
 public:
     exception(const std::string& message) : std::exception(), msg_(message) {}
-    exception(const std::string &domain, const std::string &function, const std::string &info = "")
+    exception(const std::string& domain, const std::string& function, const std::string& info = "")
             : std::exception() {
         msg_ = std::string("oneMath: ") + domain +
                ((domain.length() != 0 && function.length() != 0) ? "/" : "") + function +
@@ -48,7 +48,7 @@ public:
                     : "");
     }
 
-    const char *what() const noexcept override {
+    const char* what() const noexcept override {
         return msg_.c_str();
     }
 };
@@ -56,8 +56,8 @@ public:
 class unsupported_device : public oneapi::math::exception {
 public:
     unsupported_device(const std::string& message) : exception(message) {}
-    unsupported_device(const std::string &domain, const std::string &function,
-                       const sycl::device &device)
+    unsupported_device(const std::string& domain, const std::string& function,
+                       const sycl::device& device)
             : oneapi::math::exception(
                   domain, function,
                   device.get_info<sycl::info::device::name>() + " is not supported") {}
@@ -66,15 +66,15 @@ public:
 class host_bad_alloc : public oneapi::math::exception {
 public:
     host_bad_alloc(const std::string& message) : exception(message) {}
-    host_bad_alloc(const std::string &domain, const std::string &function)
+    host_bad_alloc(const std::string& domain, const std::string& function)
             : oneapi::math::exception(domain, function, "cannot allocate memory on host") {}
 };
 
 class device_bad_alloc : public oneapi::math::exception {
 public:
     device_bad_alloc(const std::string& message) : exception(message) {}
-    device_bad_alloc(const std::string &domain, const std::string &function,
-                     const sycl::device &device)
+    device_bad_alloc(const std::string& domain, const std::string& function,
+                     const sycl::device& device)
             : oneapi::math::exception(
                   domain, function,
                   "cannot allocate memory on " + device.get_info<sycl::info::device::name>()) {}
@@ -83,33 +83,33 @@ public:
 class unimplemented : public oneapi::math::exception {
 public:
     unimplemented(const std::string& message) : exception(message) {}
-    unimplemented(const std::string &domain, const std::string &function,
-                  const std::string &info = "")
+    unimplemented(const std::string& domain, const std::string& function,
+                  const std::string& info = "")
             : oneapi::math::exception(domain, function, "function is not implemented " + info) {}
 };
 
 class invalid_argument : public oneapi::math::exception {
 public:
     invalid_argument(const std::string& message) : exception(message) {}
-    invalid_argument(const std::string &domain, const std::string &function,
-                     const std::string &info = "")
+    invalid_argument(const std::string& domain, const std::string& function,
+                     const std::string& info = "")
             : oneapi::math::exception(domain, function, "invalid argument " + info) {}
 };
 
 class uninitialized : public oneapi::math::exception {
 public:
     uninitialized(const std::string& message) : exception(message) {}
-    uninitialized(const std::string &domain, const std::string &function,
-                  const std::string &info = "")
+    uninitialized(const std::string& domain, const std::string& function,
+                  const std::string& info = "")
             : oneapi::math::exception(domain, function,
-                                     "handle/descriptor is not initialized " + info) {}
+                                      "handle/descriptor is not initialized " + info) {}
 };
 
 class computation_error : public oneapi::math::exception {
 public:
     computation_error(const std::string& message) : exception(message) {}
-    computation_error(const std::string &domain, const std::string &function,
-                      const std::string &info = "")
+    computation_error(const std::string& domain, const std::string& function,
+                      const std::string& info = "")
             : oneapi::math::exception(
                   domain, function,
                   "computation error" + ((info.length() != 0) ? (": " + info) : "")) {}
@@ -118,10 +118,10 @@ public:
 class batch_error : public oneapi::math::exception {
 public:
     batch_error(const std::string& message) : exception(message) {}
-    batch_error(const std::string &domain, const std::string &function,
-                const std::string &info = "")
-            : oneapi::math::exception(domain, function,
-                                     "batch error" + ((info.length() != 0) ? (": " + info) : "")) {}
+    batch_error(const std::string& domain, const std::string& function,
+                const std::string& info = "")
+            : oneapi::math::exception(
+                  domain, function, "batch error" + ((info.length() != 0) ? (": " + info) : "")) {}
 };
 
 } // namespace math

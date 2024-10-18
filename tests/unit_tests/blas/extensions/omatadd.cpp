@@ -43,12 +43,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout) {
+int test(device* dev, oneapi::math::layout layout) {
     // Prepare data.
     int64_t m, n;
     int64_t lda, ldb, ldc;
@@ -84,14 +84,14 @@ int test(device *dev, oneapi::math::layout layout) {
 
     vector<fp, allocator_helper<fp, 64>> A(size_a), B(size_b), C(size_c), C_ref(size_c);
 
-    rand_matrix(A.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, size_a,
-                1, size_a);
-    rand_matrix(B.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, size_b,
-                1, size_b);
-    rand_matrix(C.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, size_c,
-                1, size_c);
-    copy_matrix(C.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans, size_c,
-                1, size_c, C_ref.data());
+    rand_matrix(A.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans,
+                size_a, 1, size_a);
+    rand_matrix(B.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans,
+                size_b, 1, size_b);
+    rand_matrix(C.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans,
+                size_c, 1, size_c);
+    copy_matrix(C.data(), oneapi::math::layout::col_major, oneapi::math::transpose::nontrans,
+                size_c, 1, size_c, C_ref.data());
 
     // Call reference OMATADD.
     int m_ref = (int)m;
@@ -106,11 +106,11 @@ int test(device *dev, oneapi::math::layout layout) {
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during OMATADD:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -129,13 +129,13 @@ int test(device *dev, oneapi::math::layout layout) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::omatadd(main_queue, transa, transb, m, n, alpha,
-                                                         A_buffer, lda, beta, B_buffer, ldb,
-                                                         C_buffer, ldc);
+                                                          A_buffer, lda, beta, B_buffer, ldb,
+                                                          C_buffer, ldc);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::omatadd(main_queue, transa, transb, m, n, alpha,
-                                                      A_buffer, lda, beta, B_buffer, ldb, C_buffer,
-                                                      ldc);
+                                                       A_buffer, lda, beta, B_buffer, ldb, C_buffer,
+                                                       ldc);
                 break;
             default: break;
         }
@@ -155,16 +155,16 @@ int test(device *dev, oneapi::math::layout layout) {
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during OMATADD:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of OMATADD:\n" << error.what() << std::endl;
     }
 
@@ -178,7 +178,7 @@ int test(device *dev, oneapi::math::layout layout) {
 }
 
 class OmataddTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(OmataddTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam())));

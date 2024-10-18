@@ -93,13 +93,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::tbsv(main_queue, upper_lower, transa,
-                                                             unit_nonunit, n, k, A.data(), lda,
-                                                             x.data(), incx, dependencies);
+                                                              unit_nonunit, n, k, A.data(), lda,
+                                                              x.data(), incx, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::tbsv(main_queue, upper_lower, transa,
-                                                          unit_nonunit, n, k, A.data(), lda,
-                                                          x.data(), incx, dependencies);
+                                                           unit_nonunit, n, k, A.data(), lda,
+                                                           x.data(), incx, dependencies);
                 break;
             default: break;
         }
@@ -112,9 +112,9 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         x.data(), incx, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::tbsv, upper_lower,
-                                        transa, unit_nonunit, n, k, A.data(), lda, x.data(), incx,
-                                        dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::tbsv,
+                                        upper_lower, transa, unit_nonunit, n, k, A.data(), lda,
+                                        x.data(), incx, dependencies);
                 break;
             default: break;
         }

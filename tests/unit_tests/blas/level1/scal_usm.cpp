@@ -89,11 +89,11 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, fp_scalar al
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::scal(main_queue, N, alpha, x.data(), incx,
-                                                             dependencies);
+                                                              dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::scal(main_queue, N, alpha, x.data(), incx,
-                                                          dependencies);
+                                                           dependencies);
                 break;
             default: break;
         }
@@ -101,8 +101,8 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, fp_scalar al
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::scal, N, alpha,
-                                        x.data(), incx, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::scal, N,
+                                        alpha, x.data(), incx, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::scal, N, alpha,

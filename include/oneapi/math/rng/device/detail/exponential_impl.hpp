@@ -126,7 +126,8 @@ protected:
         oneapi::math::rng::device::poisson<std::int32_t, poisson_method::devroye>>;
     friend class distribution_base<
         oneapi::math::rng::device::poisson<std::uint32_t, poisson_method::devroye>>;
-    friend class distribution_base<oneapi::math::rng::device::gamma<float, gamma_method::marsaglia>>;
+    friend class distribution_base<
+        oneapi::math::rng::device::gamma<float, gamma_method::marsaglia>>;
     friend class distribution_base<
         oneapi::math::rng::device::gamma<double, gamma_method::marsaglia>>;
     friend class distribution_base<

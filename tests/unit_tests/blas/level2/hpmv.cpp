@@ -42,12 +42,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, fp alpha,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n, fp alpha,
          fp beta, int incx, int incy) {
     // Prepare data.
     vector<fp> x, y, y_ref, A;
@@ -61,18 +61,18 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     using fp_ref = typename ref_type_info<fp>::type;
 
     ::hpmv(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref,
-           (fp_ref *)&alpha, (fp_ref *)A.data(), (fp_ref *)x.data(), &incx_ref, (fp_ref *)&beta,
-           (fp_ref *)y_ref.data(), &incy_ref);
+           (fp_ref*)&alpha, (fp_ref*)A.data(), (fp_ref*)x.data(), &incx_ref, (fp_ref*)&beta,
+           (fp_ref*)y_ref.data(), &incy_ref);
 
     // Call DPC++ HPMV.
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during HPMV:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -91,11 +91,11 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::hpmv(main_queue, upper_lower, n, alpha, A_buffer,
-                                                      x_buffer, incx, beta, y_buffer, incy);
+                                                       x_buffer, incx, beta, y_buffer, incy);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::hpmv(main_queue, upper_lower, n, alpha, A_buffer,
-                                                   x_buffer, incx, beta, y_buffer, incy);
+                                                    x_buffer, incx, beta, y_buffer, incy);
                 break;
             default: break;
         }
@@ -107,23 +107,24 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         y_buffer, incy);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::hpmv, upper_lower,
-                                        n, alpha, A_buffer, x_buffer, incx, beta, y_buffer, incy);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::hpmv,
+                                        upper_lower, n, alpha, A_buffer, x_buffer, incx, beta,
+                                        y_buffer, incy);
                 break;
             default: break;
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during HPMV:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of HPMV:\n" << error.what() << std::endl;
     }
 
@@ -134,7 +135,7 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     return (int)good;
 }
 
-class HpmvTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {
+class HpmvTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(HpmvTests, ComplexSinglePrecision) {
@@ -145,9 +146,11 @@ TEST_P(HpmvTests, ComplexSinglePrecision) {
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                 oneapi::math::uplo::upper, 30, alpha, beta, 2, 3));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::uplo::lower, 30, alpha, beta, -2, -3));
+                                                oneapi::math::uplo::lower, 30, alpha, beta, -2,
+                                                -3));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                                oneapi::math::uplo::upper, 30, alpha, beta, -2, -3));
+                                                oneapi::math::uplo::upper, 30, alpha, beta, -2,
+                                                -3));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                                 oneapi::math::uplo::lower, 30, alpha, beta, 1, 1));
     EXPECT_TRUEORSKIP(test<std::complex<float>>(std::get<0>(GetParam()), std::get<1>(GetParam()),

@@ -21,7 +21,8 @@
 #define ONEMATH_MKL_SPARSE_BLAS_HPP
 
 // Deprecated header is planned to be removed late 2025.
-#pragma message("Header `oneapi/mkl/sparse_blas.hpp` is deprecated, please use `oneapi/math/sparse_blas.hpp` instead")
+#pragma message( \
+    "Header `oneapi/mkl/sparse_blas.hpp` is deprecated, please use `oneapi/math/sparse_blas.hpp` instead")
 
 #include "oneapi/math/sparse_blas.hpp"
 

@@ -79,14 +79,15 @@ constexpr T matrix_size(oneapi::math::transpose trans, T m, T n, T ldm) {
     return outer_dimension(trans, m, n) * ldm;
 }
 template <typename T>
-constexpr T matrix_size(oneapi::math::layout layout, oneapi::math::transpose trans, T m, T n, T ldm) {
+constexpr T matrix_size(oneapi::math::layout layout, oneapi::math::transpose trans, T m, T n,
+                        T ldm) {
     return (layout == oneapi::math::layout::col_major) ? outer_dimension(trans, m, n) * ldm
-                                                      : inner_dimension(trans, m, n) * ldm;
+                                                       : inner_dimension(trans, m, n) * ldm;
 }
 
 // SYCL buffer creation helper.
 template <typename vec>
-sycl::buffer<typename vec::value_type, 1> make_buffer(const vec &v) {
+sycl::buffer<typename vec::value_type, 1> make_buffer(const vec& v) {
     sycl::buffer<typename vec::value_type, 1> buf(v.data(), sycl::range<1>(v.size()));
     return buf;
 }
@@ -174,14 +175,14 @@ std::complex<double> rand_scalar(int mag) {
 }
 
 template <typename fp>
-void rand_vector(fp *v, int n, int inc) {
+void rand_vector(fp* v, int n, int inc) {
     int abs_inc = std::abs(inc);
     for (int i = 0; i < n; i++)
         v[i * abs_inc] = rand_scalar<fp>();
 }
 
 template <typename vec>
-void rand_vector(vec &v, int n, int inc) {
+void rand_vector(vec& v, int n, int inc) {
     using fp = typename vec::value_type;
     int abs_inc = std::abs(inc);
 
@@ -209,7 +210,7 @@ oneapi::math::transpose rand_trans() {
 }
 
 template <typename vec>
-void print_matrix(vec &M, oneapi::math::transpose trans, int m, int n, int ld, char *name) {
+void print_matrix(vec& M, oneapi::math::transpose trans, int m, int n, int ld, char* name) {
     std::cout << "Matrix " << name << ":\n";
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
@@ -223,15 +224,15 @@ void print_matrix(vec &M, oneapi::math::transpose trans, int m, int n, int ld, c
 }
 
 template <typename fp>
-void copy_vector(fp *src, int n, int inc, fp *dest) {
+void copy_vector(fp* src, int n, int inc, fp* dest) {
     int abs_inc = std::abs(inc);
     for (int i = 0; i < n; i++)
         dest[i * abs_inc] = src[i * abs_inc];
 }
 
 template <typename vec_src, typename vec_dest>
-void copy_matrix(vec_src &src, oneapi::math::layout layout, oneapi::math::transpose trans, int m,
-                 int n, int ld, vec_dest &dest) {
+void copy_matrix(vec_src& src, oneapi::math::layout layout, oneapi::math::transpose trans, int m,
+                 int n, int ld, vec_dest& dest) {
     using T_data = typename vec_dest::value_type;
     dest.resize(matrix_size(layout, trans, m, n, ld));
     if (((trans == oneapi::math::transpose::nontrans) &&
@@ -250,8 +251,8 @@ void copy_matrix(vec_src &src, oneapi::math::layout layout, oneapi::math::transp
 }
 
 template <typename fp_src, typename fp_dst>
-void copy_matrix(fp_src *src, oneapi::math::layout layout, oneapi::math::transpose trans, int m,
-                 int n, int ld, fp_dst *dest) {
+void copy_matrix(fp_src* src, oneapi::math::layout layout, oneapi::math::transpose trans, int m,
+                 int n, int ld, fp_dst* dest) {
     if (((trans == oneapi::math::transpose::nontrans) &&
          (layout == oneapi::math::layout::col_major)) ||
         ((trans != oneapi::math::transpose::nontrans) &&
@@ -268,7 +269,7 @@ void copy_matrix(fp_src *src, oneapi::math::layout layout, oneapi::math::transpo
 }
 
 template <typename vec>
-void rand_matrix(vec &M, oneapi::math::transpose trans, int m, int n, int ld) {
+void rand_matrix(vec& M, oneapi::math::transpose trans, int m, int n, int ld) {
     using fp = typename vec::value_type;
 
     M.resize(matrix_size(trans, m, n, ld));
@@ -286,7 +287,7 @@ void rand_matrix(vec &M, oneapi::math::transpose trans, int m, int n, int ld) {
 }
 
 template <typename vec>
-void rand_matrix(vec &M, oneapi::math::layout layout, oneapi::math::transpose trans, int m, int n,
+void rand_matrix(vec& M, oneapi::math::layout layout, oneapi::math::transpose trans, int m, int n,
                  int ld) {
     using fp = typename vec::value_type;
 
@@ -308,7 +309,7 @@ void rand_matrix(vec &M, oneapi::math::layout layout, oneapi::math::transpose tr
 }
 
 template <typename fp>
-void rand_matrix(fp *M, oneapi::math::layout layout, oneapi::math::transpose trans, int m, int n,
+void rand_matrix(fp* M, oneapi::math::layout layout, oneapi::math::transpose trans, int m, int n,
                  int ld) {
     if (((trans == oneapi::math::transpose::nontrans) &&
          (layout == oneapi::math::layout::col_major)) ||
@@ -326,7 +327,7 @@ void rand_matrix(fp *M, oneapi::math::layout layout, oneapi::math::transpose tra
 }
 
 template <typename vec>
-void rand_trsm_matrix(vec &M, oneapi::math::layout layout, oneapi::math::transpose trans, int m,
+void rand_trsm_matrix(vec& M, oneapi::math::layout layout, oneapi::math::transpose trans, int m,
                       int n, int ld) {
     using fp = typename vec::value_type;
 
@@ -356,8 +357,8 @@ void rand_trsm_matrix(vec &M, oneapi::math::layout layout, oneapi::math::transpo
 }
 
 template <typename fp>
-void rand_trsm_matrix(fp *M, oneapi::math::layout layout, oneapi::math::transpose trans, int m, int n,
-                      int ld) {
+void rand_trsm_matrix(fp* M, oneapi::math::layout layout, oneapi::math::transpose trans, int m,
+                      int n, int ld) {
     if (((trans == oneapi::math::transpose::nontrans) &&
          (layout == oneapi::math::layout::col_major)) ||
         ((trans != oneapi::math::transpose::nontrans) &&
@@ -382,7 +383,7 @@ void rand_trsm_matrix(fp *M, oneapi::math::layout layout, oneapi::math::transpos
 }
 
 template <typename vec>
-void rand_tpsv_matrix(vec &M, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
+void rand_tpsv_matrix(vec& M, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
                       oneapi::math::transpose trans, int m) {
     using fp = typename vec::value_type;
     std::vector<fp> tmp;
@@ -408,7 +409,7 @@ void rand_tpsv_matrix(vec &M, oneapi::math::layout layout, oneapi::math::uplo up
 }
 
 template <typename vec>
-void rand_tbsv_matrix(vec &M, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
+void rand_tbsv_matrix(vec& M, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
                       oneapi::math::transpose trans, int m, int k, int ld) {
     using fp = typename vec::value_type;
     std::vector<fp> tmp;
@@ -461,7 +462,7 @@ typename std::enable_if<std::is_integral<fp>::value, bool>::type check_equal(fp 
 }
 
 template <typename fp>
-bool check_equal_ptr(sycl::queue queue, fp *x, fp x_ref, int error_mag) {
+bool check_equal_ptr(sycl::queue queue, fp* x, fp x_ref, int error_mag) {
     fp x_host;
     queue.memcpy(&x_host, x, sizeof(fp)).wait();
     return check_equal(x_host, x_ref, error_mag);
@@ -485,7 +486,7 @@ bool check_equal_trsm(fp x, fp x_ref, int error_mag) {
 }
 
 template <typename fp>
-bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
+bool check_equal(fp x, fp x_ref, int error_mag, std::ostream& out) {
     bool good = check_equal(x, x_ref, error_mag);
 
     if (!good) {
@@ -495,15 +496,15 @@ bool check_equal(fp x, fp x_ref, int error_mag, std::ostream &out) {
 }
 
 template <typename fp>
-bool check_equal_ptr(sycl::queue queue, fp *x, fp x_ref, int error_mag, std::ostream &out) {
+bool check_equal_ptr(sycl::queue queue, fp* x, fp x_ref, int error_mag, std::ostream& out) {
     fp x_host;
     queue.memcpy(&x_host, x, sizeof(fp)).wait();
     return check_equal(x_host, x_ref, error_mag, out);
 }
 
 template <typename fp>
-bool check_equal_vector(const fp *v, const fp *v_ref, int n, int inc, int error_mag,
-                        std::ostream &out) {
+bool check_equal_vector(const fp* v, const fp* v_ref, int n, int inc, int error_mag,
+                        std::ostream& out) {
     int abs_inc = std::abs(inc), count = 0;
     bool good = true;
 
@@ -523,7 +524,7 @@ bool check_equal_vector(const fp *v, const fp *v_ref, int n, int inc, int error_
 }
 
 template <typename vec1, typename vec2>
-bool check_equal_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag, std::ostream &out) {
+bool check_equal_vector(vec1& v, vec2& v_ref, int n, int inc, int error_mag, std::ostream& out) {
     int abs_inc = std::abs(inc), count = 0;
     bool good = true;
 
@@ -543,8 +544,8 @@ bool check_equal_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag, std
 }
 
 template <typename vec1, typename vec2>
-bool check_equal_trsv_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag,
-                             std::ostream &out) {
+bool check_equal_trsv_vector(vec1& v, vec2& v_ref, int n, int inc, int error_mag,
+                             std::ostream& out) {
     int abs_inc = std::abs(inc), count = 0;
     bool good = true;
 
@@ -564,8 +565,8 @@ bool check_equal_trsv_vector(vec1 &v, vec2 &v_ref, int n, int inc, int error_mag
 }
 
 template <typename acc1, typename acc2>
-bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::math::layout layout, int m, int n, int ld,
-                        int error_mag, std::ostream &out) {
+bool check_equal_matrix(acc1& M, acc2& M_ref, oneapi::math::layout layout, int m, int n, int ld,
+                        int error_mag, std::ostream& out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -586,8 +587,8 @@ bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::math::layout layout, int m
 }
 
 template <typename fp>
-bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::math::layout layout, int m, int n,
-                        int ld, int error_mag, std::ostream &out) {
+bool check_equal_matrix(const fp* M, const fp* M_ref, oneapi::math::layout layout, int m, int n,
+                        int ld, int error_mag, std::ostream& out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -608,9 +609,9 @@ bool check_equal_matrix(const fp *M, const fp *M_ref, oneapi::math::layout layou
 }
 
 template <typename acc1, typename acc2>
-bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::math::layout layout,
+bool check_equal_matrix(acc1& M, acc2& M_ref, oneapi::math::layout layout,
                         oneapi::math::uplo upper_lower, int m, int n, int ld, int error_mag,
-                        std::ostream &out) {
+                        std::ostream& out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -634,8 +635,8 @@ bool check_equal_matrix(acc1 &M, acc2 &M_ref, oneapi::math::layout layout,
 }
 
 template <typename acc1, typename acc2>
-bool check_equal_trsm_matrix(acc1 &M, acc2 &M_ref, oneapi::math::layout layout, int m, int n, int ld,
-                             int error_mag, std::ostream &out) {
+bool check_equal_trsm_matrix(acc1& M, acc2& M_ref, oneapi::math::layout layout, int m, int n,
+                             int ld, int error_mag, std::ostream& out) {
     bool good = true;
     int idx, count = 0;
     for (int j = 0; j < n; j++) {
@@ -677,8 +678,8 @@ typename std::enable_if<std::is_integral<fp>::value, bool>::type check_almost_eq
 }
 
 template <typename Ta, typename Tb>
-bool check_almost_equal_matrix_int(Ta &M, Tb &M_ref, oneapi::math::layout layout, int m, int n,
-                                   int ld, int error_mag, std::ostream &out) {
+bool check_almost_equal_matrix_int(Ta& M, Tb& M_ref, oneapi::math::layout layout, int m, int n,
+                                   int ld, int error_mag, std::ostream& out) {
     static_assert(is_matrix_type_integral<Ta>() && is_matrix_type_integral<Tb>());
     bool good = true;
     int idx, count = 0;
@@ -700,8 +701,8 @@ bool check_almost_equal_matrix_int(Ta &M, Tb &M_ref, oneapi::math::layout layout
 }
 
 template <typename Ta, typename Tb>
-bool check_almost_equal_matrix(Ta &M, Tb &M_ref, oneapi::math::layout layout, int m, int n, int ld,
-                               int error_mag, std::ostream &out) {
+bool check_almost_equal_matrix(Ta& M, Tb& M_ref, oneapi::math::layout layout, int m, int n, int ld,
+                               int error_mag, std::ostream& out) {
     // Only call if returned dtype is integral
     if constexpr (is_matrix_type_integral<Ta>() && is_matrix_type_integral<Tb>())
         return check_almost_equal_matrix_int(M, M_ref, layout, m, n, ld, error_mag, out);

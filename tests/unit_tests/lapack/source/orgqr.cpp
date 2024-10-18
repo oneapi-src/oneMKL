@@ -82,7 +82,7 @@ bool accuracy(const sycl::device& dev, int64_t m, int64_t n, int64_t k, int64_t 
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::orgqr(queue, m, n, k, A_dev, lda, tau_dev, scratchpad_dev,
-                                   scratchpad_size);
+                                    scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::orgqr, m, n, k, A_dev, lda, tau_dev,
                                   scratchpad_dev, scratchpad_size);
@@ -146,7 +146,7 @@ bool usm_dependency(const sycl::device& dev, int64_t m, int64_t n, int64_t k, in
 #ifdef CALL_RT_API
         sycl::event func_event =
             oneapi::math::lapack::orgqr(queue, m, n, k, A_dev, lda, tau_dev, scratchpad_dev,
-                                       scratchpad_size, std::vector<sycl::event>{ in_event });
+                                        scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
         TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::orgqr, m, n, k, A_dev,

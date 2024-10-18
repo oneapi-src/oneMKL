@@ -84,7 +84,7 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::iamax(main_queue, N, x_buffer, incx,
-                                                       result_buffer);
+                                                        result_buffer);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::iamax(main_queue, N, x_buffer, incx, result_buffer);
@@ -126,8 +126,8 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx) {
     return (int)good;
 }
 
-class IamaxTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
-};
+class IamaxTests
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(IamaxTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 1357, 2));

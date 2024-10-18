@@ -47,7 +47,7 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
 
     /* Test Parameters */
     std::vector<oneapi::math::uplo> uplo_vec = { oneapi::math::uplo::upper,
-                                                oneapi::math::uplo::lower };
+                                                 oneapi::math::uplo::lower };
     std::vector<int64_t> n_vec = { 4, 5 };
     std::vector<int64_t> nrhs_vec = { 9, 6 };
     std::vector<int64_t> lda_vec = { 6, 6 };
@@ -144,9 +144,9 @@ bool accuracy(const sycl::device& dev, uint64_t seed) {
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::potrs_batch(queue, uplo_vec.data(), n_vec.data(), nrhs_vec.data(),
-                                         A_dev_ptrs, lda_vec.data(), B_dev_ptrs, ldb_vec.data(),
-                                         group_count, group_sizes_vec.data(), scratchpad_dev,
-                                         scratchpad_size);
+                                          A_dev_ptrs, lda_vec.data(), B_dev_ptrs, ldb_vec.data(),
+                                          group_count, group_sizes_vec.data(), scratchpad_dev,
+                                          scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::potrs_batch, uplo_vec.data(),
                                   n_vec.data(), nrhs_vec.data(), A_dev_ptrs, lda_vec.data(),

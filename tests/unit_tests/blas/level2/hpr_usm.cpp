@@ -42,20 +42,20 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp, typename fp_scalar>
-int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n,
+int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower, int n,
          fp_scalar alpha, int incx) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during HPR:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -82,7 +82,7 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     using fp_scalar_ref = typename ref_type_info<fp_scalar>::type;
 
     ::hpr(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref,
-          (fp_scalar_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)A_ref.data());
+          (fp_scalar_ref*)&alpha, (fp_ref*)x.data(), &incx_ref, (fp_ref*)A_ref.data());
 
     // Call DPC++ HPR.
 
@@ -90,12 +90,12 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                done = oneapi::math::blas::column_major::hpr(main_queue, upper_lower, n, alpha,
-                                                            x.data(), incx, A.data(), dependencies);
+                done = oneapi::math::blas::column_major::hpr(
+                    main_queue, upper_lower, n, alpha, x.data(), incx, A.data(), dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::hpr(main_queue, upper_lower, n, alpha,
-                                                         x.data(), incx, A.data(), dependencies);
+                                                          x.data(), incx, A.data(), dependencies);
                 break;
             default: break;
         }
@@ -116,16 +116,16 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during HPR:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of HPR:\n" << error.what() << std::endl;
     }
 
@@ -137,44 +137,52 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
 }
 
 class HprUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(HprUsmTests, ComplexSinglePrecision) {
     float alpha(2.0);
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower, 30, alpha, 2)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper, 30, alpha, 2)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                          oneapi::math::uplo::lower, 30, alpha, 2)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                          oneapi::math::uplo::upper, 30, alpha, 2)));
     EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                           oneapi::math::uplo::lower, 30, alpha, -2)));
     EXPECT_TRUEORSKIP(
         (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                           oneapi::math::uplo::upper, 30, alpha, -2)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower, 30, alpha, 1)));
-    EXPECT_TRUEORSKIP((test<std::complex<float>, float>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper, 30, alpha, 1)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                          oneapi::math::uplo::lower, 30, alpha, 1)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<float>, float>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                          oneapi::math::uplo::upper, 30, alpha, 1)));
 }
 
 TEST_P(HprUsmTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(std::get<0>(GetParam()));
 
     double alpha(2.0);
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower, 30, alpha, 2)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper, 30, alpha, 2)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                            oneapi::math::uplo::lower, 30, alpha, 2)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                            oneapi::math::uplo::upper, 30, alpha, 2)));
     EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                             oneapi::math::uplo::lower, 30, alpha, -2)));
     EXPECT_TRUEORSKIP(
         (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
                                             oneapi::math::uplo::upper, 30, alpha, -2)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::lower, 30, alpha, 1)));
-    EXPECT_TRUEORSKIP((test<std::complex<double>, double>(
-        std::get<0>(GetParam()), std::get<1>(GetParam()), oneapi::math::uplo::upper, 30, alpha, 1)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                            oneapi::math::uplo::lower, 30, alpha, 1)));
+    EXPECT_TRUEORSKIP(
+        (test<std::complex<double>, double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
+                                            oneapi::math::uplo::upper, 30, alpha, 1)));
 }
 
 INSTANTIATE_TEST_SUITE_P(HprUsmTestSuite, HprUsmTests,

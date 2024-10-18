@@ -130,7 +130,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n,
 #ifdef CALL_RT_API
         sycl::event func_event =
             oneapi::math::lapack::potrf(queue, uplo, n, A_dev, lda, scratchpad_dev, scratchpad_size,
-                                       std::vector<sycl::event>{ in_event });
+                                        std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
         TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::potrf, uplo, n, A_dev,

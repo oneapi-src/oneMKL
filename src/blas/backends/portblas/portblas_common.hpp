@@ -54,9 +54,9 @@ template <typename InputT>
 struct portblas_type;
 
 #define DEF_PORTBLAS_TYPE(onemath_t, portblas_t) \
-    template <>                                 \
+    template <>                                  \
     struct portblas_type<onemath_t> {            \
-        using type = portblas_t;                \
+        using type = portblas_t;                 \
     };
 
 DEF_PORTBLAS_TYPE(sycl::queue, handle_t)
@@ -181,7 +181,7 @@ struct throw_if_unsupported_by_device {
         if (checkTypeInPack) {
             if (!q.get_info<sycl::info::queue::device>().has(AspectVal)) {
                 throw math::unsupported_device("blas", message,
-                                              q.get_info<sycl::info::queue::device>());
+                                               q.get_info<sycl::info::queue::device>());
             }
         }
     }

@@ -41,12 +41,12 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp alpha) {
+int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy, fp alpha) {
     // Prepare data.
     vector<fp> x, y, y_ref;
 
@@ -58,18 +58,17 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
     using fp_ref = typename ref_type_info<fp>::type;
     const int N_ref = N, incx_ref = incx, incy_ref = incy;
 
-    ::axpy(&N_ref, (fp_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)y_ref.data(),
-           &incy_ref);
+    ::axpy(&N_ref, (fp_ref*)&alpha, (fp_ref*)x.data(), &incx_ref, (fp_ref*)y_ref.data(), &incy_ref);
 
     // Call DPC++ AXPY.
 
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during AXPY:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -87,19 +86,19 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::axpy(main_queue, N, alpha, x_buffer, incx,
-                                                      y_buffer, incy);
+                                                       y_buffer, incy);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::axpy(main_queue, N, alpha, x_buffer, incx, y_buffer,
-                                                   incy);
+                                                    incy);
                 break;
             default: break;
         }
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::axpy, N, alpha,
-                                        x_buffer, incx, y_buffer, incy);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::axpy, N,
+                                        alpha, x_buffer, incx, y_buffer, incy);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::axpy, N, alpha,
@@ -109,16 +108,16 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
         }
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during AXPY:\n" << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of AXPY:\n" << error.what() << std::endl;
     }
 
@@ -130,7 +129,7 @@ int test(device *dev, oneapi::math::layout layout, int N, int incx, int incy, fp
     return (int)good;
 }
 
-class AxpyTests : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {
+class AxpyTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
 };
 
 TEST_P(AxpyTests, RealSinglePrecision) {

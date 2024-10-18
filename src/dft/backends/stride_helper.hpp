@@ -76,7 +76,7 @@ struct stride_vectors {
               bwd_out(stride_choice == stride_api::FB_STRIDES ? vec_a : vec_b) {
         if (stride_choice == stride_api::INVALID) {
             throw math::exception("DFT", "detail::stride_vector constructor",
-                                 "Internal error: invalid stride API");
+                                  "Internal error: invalid stride API");
         }
         auto& v1 = stride_choice == stride_api::FB_STRIDES ? config_values.fwd_strides
                                                            : config_values.input_strides;
@@ -89,7 +89,7 @@ struct stride_vectors {
             if constexpr (std::is_unsigned_v<StrideElemT>) {
                 if (v1[i] < 0 || v2[i] < 0) {
                     throw math::unimplemented("DFT", "commit",
-                                             "Backend does not support negative strides.");
+                                              "Backend does not support negative strides.");
                 }
             }
             vec_a[i] = static_cast<StrideElemT>(v1[i]);

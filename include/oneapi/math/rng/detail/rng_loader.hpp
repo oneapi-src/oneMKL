@@ -38,16 +38,16 @@ namespace rng {
 namespace detail {
 
 ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::math::device libkey, sycl::queue queue,
-                                                std::uint64_t seed);
+                                                 std::uint64_t seed);
 
 ONEMATH_EXPORT engine_impl* create_philox4x32x10(oneapi::math::device libkey, sycl::queue queue,
-                                                std::initializer_list<std::uint64_t> seed);
+                                                 std::initializer_list<std::uint64_t> seed);
 
 ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::math::device libkey, sycl::queue queue,
-                                           std::uint32_t seed);
+                                            std::uint32_t seed);
 
 ONEMATH_EXPORT engine_impl* create_mrg32k3a(oneapi::math::device libkey, sycl::queue queue,
-                                           std::initializer_list<std::uint32_t> seed);
+                                            std::initializer_list<std::uint32_t> seed);
 
 } // namespace detail
 } // namespace rng

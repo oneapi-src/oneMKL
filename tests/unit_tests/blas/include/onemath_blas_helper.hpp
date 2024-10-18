@@ -63,7 +63,7 @@ inline CBLAS_OFFSET convert_to_cblas_offset(oneapi::math::offset offsetc) {
 
 inline CBLAS_LAYOUT convert_to_cblas_layout(oneapi::math::layout is_column) {
     return is_column == oneapi::math::layout::col_major ? CBLAS_LAYOUT::CblasColMajor
-                                                       : CBLAS_LAYOUT::CblasRowMajor;
+                                                        : CBLAS_LAYOUT::CblasRowMajor;
 }
 
 static const CBLAS_TRANSPOSE fcblastrans[] = { CblasNoTrans, CblasTrans, CblasConjTrans };

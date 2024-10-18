@@ -1096,19 +1096,19 @@ TEST_P(Philox4x32x10BetaCjaDeviceMomentsTests, RealDoublePrecision) {
 }
 
 TEST_P(Philox4x32x10BetaCjaAccDeviceMomentsTests, RealSinglePrecision) {
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<1>,
-        oneapi::math::rng::device::beta<float, oneapi::math::rng::device::beta_method::cja_accurate>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<1>,
+                                 oneapi::math::rng::device::beta<
+                                     float, oneapi::math::rng::device::beta_method::cja_accurate>>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam())));
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<4>,
-        oneapi::math::rng::device::beta<float, oneapi::math::rng::device::beta_method::cja_accurate>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<4>,
+                                 oneapi::math::rng::device::beta<
+                                     float, oneapi::math::rng::device::beta_method::cja_accurate>>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam())));
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<16>,
-        oneapi::math::rng::device::beta<float, oneapi::math::rng::device::beta_method::cja_accurate>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<16>,
+                                 oneapi::math::rng::device::beta<
+                                     float, oneapi::math::rng::device::beta_method::cja_accurate>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
 }
@@ -1148,19 +1148,19 @@ class Philox4x32x10GammaMarsagliaAccDeviceMomentsTests
         : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(Philox4x32x10GammaMarsagliaDeviceMomentsTests, RealSinglePrecision) {
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<1>,
-        oneapi::math::rng::device::gamma<float, oneapi::math::rng::device::gamma_method::marsaglia>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<1>,
+                                 oneapi::math::rng::device::gamma<
+                                     float, oneapi::math::rng::device::gamma_method::marsaglia>>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam())));
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<4>,
-        oneapi::math::rng::device::gamma<float, oneapi::math::rng::device::gamma_method::marsaglia>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<4>,
+                                 oneapi::math::rng::device::gamma<
+                                     float, oneapi::math::rng::device::gamma_method::marsaglia>>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam())));
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<16>,
-        oneapi::math::rng::device::gamma<float, oneapi::math::rng::device::gamma_method::marsaglia>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<16>,
+                                 oneapi::math::rng::device::gamma<
+                                     float, oneapi::math::rng::device::gamma_method::marsaglia>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
 }
@@ -1168,19 +1168,19 @@ TEST_P(Philox4x32x10GammaMarsagliaDeviceMomentsTests, RealSinglePrecision) {
 TEST_P(Philox4x32x10GammaMarsagliaDeviceMomentsTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(GetParam());
 
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<1>,
-        oneapi::math::rng::device::gamma<double, oneapi::math::rng::device::gamma_method::marsaglia>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<1>,
+                                 oneapi::math::rng::device::gamma<
+                                     double, oneapi::math::rng::device::gamma_method::marsaglia>>>
         test1;
     EXPECT_TRUEORSKIP((test1(GetParam())));
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<4>,
-        oneapi::math::rng::device::gamma<double, oneapi::math::rng::device::gamma_method::marsaglia>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<4>,
+                                 oneapi::math::rng::device::gamma<
+                                     double, oneapi::math::rng::device::gamma_method::marsaglia>>>
         test2;
     EXPECT_TRUEORSKIP((test2(GetParam())));
-    rng_device_test<moments_test<
-        oneapi::math::rng::device::philox4x32x10<16>,
-        oneapi::math::rng::device::gamma<double, oneapi::math::rng::device::gamma_method::marsaglia>>>
+    rng_device_test<moments_test<oneapi::math::rng::device::philox4x32x10<16>,
+                                 oneapi::math::rng::device::gamma<
+                                     double, oneapi::math::rng::device::gamma_method::marsaglia>>>
         test3;
     EXPECT_TRUEORSKIP((test3(GetParam())));
 }

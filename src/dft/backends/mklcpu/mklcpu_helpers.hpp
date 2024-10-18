@@ -83,7 +83,7 @@ inline constexpr DFTI_CONFIG_PARAM to_mklcpu(dft::detail::config_param param) {
         case iparam::COMMIT_STATUS: return DFTI_COMMIT_STATUS;
         default:
             throw math::invalid_argument("dft", "MKLCPU descriptor set_value()",
-                                        "Invalid config param.");
+                                         "Invalid config param.");
             return static_cast<DFTI_CONFIG_PARAM>(0);
     }
 }
@@ -106,7 +106,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::COMPLEX_STORAGE>(
     }
     else {
         throw math::invalid_argument("dft", "MKLCPU descriptor set_value()",
-                                    "Invalid config value for complex storage.");
+                                     "Invalid config value for complex storage.");
         return 0;
     }
 }
@@ -119,7 +119,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::REAL_STORAGE>(
     }
     else {
         throw math::invalid_argument("dft", "MKLCPU descriptor set_value()",
-                                    "Invalid config value for real storage.");
+                                     "Invalid config value for real storage.");
         return 0;
     }
 }
@@ -131,7 +131,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::CONJUGATE_EVEN_STORAGE
     }
     else {
         throw math::invalid_argument("dft", "MKLCPU descriptor set_value()",
-                                    "Invalid config value for conjugate even storage.");
+                                     "Invalid config value for conjugate even storage.");
         return 0;
     }
 }
@@ -147,7 +147,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PLACEMENT>(
     }
     else {
         throw math::invalid_argument("dft", "MKLCPU descriptor set_value()",
-                                    "Invalid config value for inplace.");
+                                     "Invalid config value for inplace.");
         return 0;
     }
 }
@@ -160,7 +160,7 @@ inline constexpr int to_mklcpu<dft::detail::config_param::PACKED_FORMAT>(
     }
     else {
         throw math::invalid_argument("dft", "MKLCPU descriptor set_value()",
-                                    "Invalid config value for packed format.");
+                                     "Invalid config value for packed format.");
         return 0;
     }
 }

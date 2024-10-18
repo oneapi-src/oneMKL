@@ -125,7 +125,7 @@ void commit_derived_impl<prec, dom>::set_value_item(mklcpu_desc_t hand, enum DFT
     DFT_ERROR value_err = DftiSetValue(hand, name, args...);
     if (value_err != DFTI_NO_ERROR) {
         throw oneapi::math::exception("dft/backends/mklcpu", "set_value_item",
-                                     DftiErrorMessage(value_err));
+                                      DftiErrorMessage(value_err));
     }
 }
 
@@ -169,17 +169,17 @@ void commit_derived_impl<prec, dom>::set_value(mklcpu_desc_t* descHandle,
         // Setting the workspace causes an FFT_INVALID_DESCRIPTOR.
         if (config.workspace != config_value::ALLOW) {
             throw math::invalid_argument("dft/backends/mklcpu", "commit",
-                                        "MKLCPU only supports workspace set to allow");
+                                         "MKLCPU only supports workspace set to allow");
         }
         // Setting the ordering causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.ordering != dft::detail::config_value::ORDERED) {
             throw math::invalid_argument("dft/backends/mklcpu", "commit",
-                                        "MKLCPU only supports ordered ordering.");
+                                         "MKLCPU only supports ordered ordering.");
         }
         // Setting the transpose causes an FFT_INVALID_DESCRIPTOR. Check that default is used:
         if (config.transpose != false) {
             throw math::invalid_argument("dft/backends/mklcpu", "commit",
-                                        "MKLCPU only supports non-transposed.");
+                                         "MKLCPU only supports non-transposed.");
         }
     }
 }

@@ -79,8 +79,8 @@ bool accuracy(const sycl::device& dev, oneapi::math::transpose trans, int64_t n,
 #else
         int64_t scratchpad_size;
         TEST_RUN_LAPACK_CT_SELECT(
-            queue, scratchpad_size = oneapi::math::lapack::getrs_batch_scratchpad_size<fp>, trans, n,
-            nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
+            queue, scratchpad_size = oneapi::math::lapack::getrs_batch_scratchpad_size<fp>, trans,
+            n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 
@@ -91,8 +91,8 @@ bool accuracy(const sycl::device& dev, oneapi::math::transpose trans, int64_t n,
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::getrs_batch(queue, trans, n, nrhs, A_dev, lda, stride_a, ipiv_dev,
-                                         stride_ipiv, B_dev, ldb, stride_b, batch_size,
-                                         scratchpad_dev, scratchpad_size);
+                                          stride_ipiv, B_dev, ldb, stride_b, batch_size,
+                                          scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::getrs_batch, trans, n, nrhs, A_dev,
                                   lda, stride_a, ipiv_dev, stride_ipiv, B_dev, ldb, stride_b,
@@ -168,8 +168,8 @@ bool usm_dependency(const sycl::device& dev, oneapi::math::transpose trans, int6
 #else
         int64_t scratchpad_size;
         TEST_RUN_LAPACK_CT_SELECT(
-            queue, scratchpad_size = oneapi::math::lapack::getrs_batch_scratchpad_size<fp>, trans, n,
-            nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
+            queue, scratchpad_size = oneapi::math::lapack::getrs_batch_scratchpad_size<fp>, trans,
+            n, nrhs, lda, stride_a, stride_ipiv, ldb, stride_b, batch_size);
 #endif
         auto scratchpad_dev = device_alloc<data_T>(queue, scratchpad_size);
 

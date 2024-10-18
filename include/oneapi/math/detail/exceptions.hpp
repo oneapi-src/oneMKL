@@ -31,14 +31,14 @@ namespace math {
 
 class backend_not_found : public oneapi::math::exception {
 public:
-    backend_not_found(const std::string &info = "")
+    backend_not_found(const std::string& info = "")
             : oneapi::math::exception(
                   "", "", ((info.length() != 0) ? info : "Couldn't load selected backend")) {}
 };
 
 class function_not_found : public oneapi::math::exception {
 public:
-    function_not_found(const std::string &info = "")
+    function_not_found(const std::string& info = "")
             : oneapi::math::exception(
                   "", "",
                   ((info.length() != 0) ? info : "Couldn't load functions from selected backend")) {
@@ -48,8 +48,8 @@ public:
 class library_not_found : public oneapi::math::exception {
 public:
     library_not_found(const std::string& message) : exception(message) {}
-    library_not_found(const std::string &domain, const std::string &function,
-                      const std::string &info = "")
+    library_not_found(const std::string& domain, const std::string& function,
+                      const std::string& info = "")
             : oneapi::math::exception(
                   domain, function,
                   "library not found" + ((info.length() != 0) ? (": " + info) : "")) {}
@@ -57,10 +57,11 @@ public:
 
 class specification_mismatch : public oneapi::math::exception {
 public:
-    specification_mismatch(const std::string &info = "")
+    specification_mismatch(const std::string& info = "")
             : oneapi::math::exception(
                   "", "",
-                  ((info.length() != 0) ? info : "Loaded oneMath specification version mismatch")) {}
+                  ((info.length() != 0) ? info : "Loaded oneMath specification version mismatch")) {
+    }
 };
 
 } // namespace math

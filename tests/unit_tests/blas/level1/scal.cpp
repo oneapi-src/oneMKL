@@ -95,8 +95,8 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, fp_scalar al
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::scal, N, alpha,
-                                        x_buffer, incx);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::scal, N,
+                                        alpha, x_buffer, incx);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::scal, N, alpha,

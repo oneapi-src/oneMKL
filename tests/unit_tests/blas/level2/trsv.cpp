@@ -48,7 +48,8 @@ namespace {
 
 template <typename fp>
 int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
-         oneapi::math::transpose transa, oneapi::math::diag unit_nonunit, int n, int incx, int lda) {
+         oneapi::math::transpose transa, oneapi::math::diag unit_nonunit, int n, int incx,
+         int lda) {
     // Prepare data.
     vector<fp> x, x_ref, A;
     rand_vector(x, n, incx);
@@ -88,12 +89,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
 #ifdef CALL_RT_API
         switch (layout) {
             case oneapi::math::layout::col_major:
-                oneapi::math::blas::column_major::trsv(main_queue, upper_lower, transa, unit_nonunit,
-                                                      n, A_buffer, lda, x_buffer, incx);
+                oneapi::math::blas::column_major::trsv(main_queue, upper_lower, transa,
+                                                       unit_nonunit, n, A_buffer, lda, x_buffer,
+                                                       incx);
                 break;
             case oneapi::math::layout::row_major:
-                oneapi::math::blas::row_major::trsv(main_queue, upper_lower, transa, unit_nonunit, n,
-                                                   A_buffer, lda, x_buffer, incx);
+                oneapi::math::blas::row_major::trsv(main_queue, upper_lower, transa, unit_nonunit,
+                                                    n, A_buffer, lda, x_buffer, incx);
                 break;
             default: break;
         }
@@ -105,8 +107,9 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         x_buffer, incx);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::trsv, upper_lower,
-                                        transa, unit_nonunit, n, A_buffer, lda, x_buffer, incx);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::trsv,
+                                        upper_lower, transa, unit_nonunit, n, A_buffer, lda,
+                                        x_buffer, incx);
                 break;
             default: break;
         }

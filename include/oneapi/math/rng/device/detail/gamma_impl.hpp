@@ -250,7 +250,8 @@ protected:
         typename std::conditional<EngineType::vec_size == 1, RealType,
                                   sycl::vec<RealType, EngineType::vec_size>>::type {
         if (algorithm_ == gamma_algorithm::Exponential) {
-            distribution_base<oneapi::math::rng::device::exponential<RealType>> distr_exp(a_, beta_);
+            distribution_base<oneapi::math::rng::device::exponential<RealType>> distr_exp(a_,
+                                                                                          beta_);
             return distr_exp.generate(engine);
         }
         sycl::vec<RealType, EngineType::vec_size> res{};
@@ -262,7 +263,8 @@ protected:
     template <typename EngineType>
     RealType generate_single(EngineType& engine) {
         if (algorithm_ == gamma_algorithm::Exponential) {
-            distribution_base<oneapi::math::rng::device::exponential<RealType>> distr_exp(a_, beta_);
+            distribution_base<oneapi::math::rng::device::exponential<RealType>> distr_exp(a_,
+                                                                                          beta_);
             RealType z = distr_exp.generate_single(engine);
             return z;
         }

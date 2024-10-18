@@ -86,11 +86,11 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::dot(main_queue, N, x_buffer, incx, y_buffer, incy,
-                                                     result_buffer);
+                                                      result_buffer);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::dot(main_queue, N, x_buffer, incx, y_buffer, incy,
-                                                  result_buffer);
+                                                   result_buffer);
                 break;
             default: break;
         }
@@ -129,7 +129,8 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy) {
     return (int)good;
 }
 
-class DotTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
+class DotTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
+};
 
 TEST_P(DotTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(

@@ -44,19 +44,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
+int test(device* dev, oneapi::math::layout layout, int64_t batch_size) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during OMATCOPY_BATCH_STRIDE:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -105,9 +105,9 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
     B.resize(stride_b * batch_size);
     B_ref.resize(stride_b * batch_size);
 
-    fp **a_array = (fp **)oneapi::math::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
-    fp **b_array = (fp **)oneapi::math::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
-    fp **b_ref_array = (fp **)oneapi::math::malloc_shared(64, sizeof(fp *) * batch_size, *dev, cxt);
+    fp** a_array = (fp**)oneapi::math::malloc_shared(64, sizeof(fp*) * batch_size, *dev, cxt);
+    fp** b_array = (fp**)oneapi::math::malloc_shared(64, sizeof(fp*) * batch_size, *dev, cxt);
+    fp** b_ref_array = (fp**)oneapi::math::malloc_shared(64, sizeof(fp*) * batch_size, *dev, cxt);
 
     if ((a_array == NULL) || (b_array == NULL) || (b_ref_array == NULL)) {
         std::cout << "Error cannot allocate arrays of pointers\n";
@@ -161,9 +161,9 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::omatcopy_batch,
-                                        trans, m, n, alpha, &A[0], lda, stride_a, &B[0], ldb,
-                                        stride_b, batch_size, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(
+                    main_queue, oneapi::math::blas::column_major::omatcopy_batch, trans, m, n,
+                    alpha, &A[0], lda, stride_a, &B[0], ldb, stride_b, batch_size, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::omatcopy_batch,
@@ -175,20 +175,20 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during OMATCOPY_BATCH_STRIDE:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         oneapi::math::free_shared(a_array, cxt);
         oneapi::math::free_shared(b_array, cxt);
         oneapi::math::free_shared(b_ref_array, cxt);
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of OMATCOPY_BATCH_STRIDE:\n"
                   << error.what() << std::endl;
     }
@@ -205,7 +205,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t batch_size) {
 }
 
 class OmatcopyBatchStrideUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(OmatcopyBatchStrideUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

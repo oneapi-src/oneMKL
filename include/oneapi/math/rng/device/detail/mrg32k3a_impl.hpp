@@ -182,7 +182,7 @@ static inline void skip_ahead(engine_state<oneapi::math::rng::device::mrg32k3a<V
         n = 3;
 #ifndef __SYCL_DEVICE_ONLY__
         throw oneapi::math::invalid_argument("rng", "mrg32k3a",
-                                            "period is 2 ^ 191, skip on more than 2^192");
+                                             "period is 2 ^ 191, skip on more than 2^192");
 #endif
     }
     vec3_pow_mod<mrg32k3a_params::m1>(state.s, n, num_to_skip_ptr, skip_ahead_matrix[0]);
@@ -190,7 +190,8 @@ static inline void skip_ahead(engine_state<oneapi::math::rng::device::mrg32k3a<V
 }
 
 template <std::int32_t VecSize>
-static inline void validate_seed(engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>>& state) {
+static inline void validate_seed(
+    engine_state<oneapi::math::rng::device::mrg32k3a<VecSize>>& state) {
     int i;
     for (i = 0; i < 3; i++) {
         if (state.s[i] >= mrg32k3a_params::m1) {

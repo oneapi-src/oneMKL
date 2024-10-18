@@ -97,11 +97,11 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::nrm2(main_queue, N, x.data(), incx,
-                                                             result_p, dependencies);
+                                                              result_p, dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::nrm2(main_queue, N, x.data(), incx, result_p,
-                                                          dependencies);
+                                                           dependencies);
                 break;
             default: break;
         }
@@ -113,8 +113,8 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx) {
                                         x.data(), incx, result_p, dependencies);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::nrm2, N, x.data(),
-                                        incx, result_p, dependencies);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::nrm2, N,
+                                        x.data(), incx, result_p, dependencies);
                 break;
             default: break;
         }

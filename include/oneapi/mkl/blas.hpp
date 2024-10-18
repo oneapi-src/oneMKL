@@ -21,7 +21,8 @@
 #define ONEMATH_MKL_BLAS_HPP
 
 // Deprecated header is planned to be removed late 2025.
-#pragma message("Header `oneapi/mkl/blas.hpp` is deprecated, please use `oneapi/math/blas.hpp` instead")
+#pragma message( \
+    "Header `oneapi/mkl/blas.hpp` is deprecated, please use `oneapi/math/blas.hpp` instead")
 
 #include "oneapi/math/blas.hpp"
 

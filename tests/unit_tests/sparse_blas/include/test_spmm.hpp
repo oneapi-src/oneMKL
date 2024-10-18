@@ -53,11 +53,11 @@
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper_with_format_with_transpose(
-    testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64, sycl::device *dev,
+    testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64, sycl::device* dev,
     sparse_matrix_format_t format,
-    const std::vector<oneapi::math::sparse::spmm_alg> &non_default_algorithms,
-    oneapi::math::transpose transpose_A, oneapi::math::transpose transpose_B, int &num_passed,
-    int &num_skipped) {
+    const std::vector<oneapi::math::sparse::spmm_alg>& non_default_algorithms,
+    oneapi::math::transpose transpose_A, oneapi::math::transpose transpose_B, int& num_passed,
+    int& num_skipped) {
     double density_A_matrix = 0.8;
     fpType fp_zero = set_fp_value<fpType>()(0.f, 0.f);
     fpType fp_one = set_fp_value<fpType>()(1.f, 0.f);
@@ -217,13 +217,13 @@ void test_helper_with_format_with_transpose(
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper_with_format(
-    testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64, sycl::device *dev,
+    testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64, sycl::device* dev,
     sparse_matrix_format_t format,
-    const std::vector<oneapi::math::sparse::spmm_alg> &non_default_algorithms, int &num_passed,
-    int &num_skipped) {
+    const std::vector<oneapi::math::sparse::spmm_alg>& non_default_algorithms, int& num_passed,
+    int& num_skipped) {
     std::vector<oneapi::math::transpose> transpose_vals{ oneapi::math::transpose::nontrans,
-                                                        oneapi::math::transpose::trans,
-                                                        oneapi::math::transpose::conjtrans };
+                                                         oneapi::math::transpose::trans,
+                                                         oneapi::math::transpose::conjtrans };
     for (auto transpose_A : transpose_vals) {
         for (auto transpose_B : transpose_vals) {
             test_helper_with_format_with_transpose<fpType>(
@@ -245,7 +245,7 @@ void test_helper_with_format(
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64,
-                 sycl::device *dev, int &num_passed, int &num_skipped) {
+                 sycl::device* dev, int& num_passed, int& num_skipped) {
     test_helper_with_format<fpType>(
         test_functor_i32, test_functor_i64, dev, sparse_matrix_format_t::CSR,
         { oneapi::math::sparse::spmm_alg::no_optimize_alg, oneapi::math::sparse::spmm_alg::csr_alg1,
@@ -261,14 +261,14 @@ void test_helper(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i6
 
 /// Compute spmm reference as a dense operation
 template <typename fpType, typename intType>
-void prepare_reference_spmm_data(sparse_matrix_format_t format, const intType *ia,
-                                 const intType *ja, const fpType *a, intType a_nrows,
+void prepare_reference_spmm_data(sparse_matrix_format_t format, const intType* ia,
+                                 const intType* ja, const fpType* a, intType a_nrows,
                                  intType a_ncols, intType c_ncols, intType a_nnz, intType indexing,
                                  oneapi::math::layout dense_matrix_layout,
                                  oneapi::math::transpose opA, oneapi::math::transpose opB,
                                  fpType alpha, fpType beta, intType ldb, intType ldc,
-                                 const fpType *b, oneapi::math::sparse::matrix_view A_view,
-                                 fpType *c_ref) {
+                                 const fpType* b, oneapi::math::sparse::matrix_view A_view,
+                                 fpType* c_ref) {
     std::size_t a_nrows_u = static_cast<std::size_t>(a_nrows);
     std::size_t a_ncols_u = static_cast<std::size_t>(a_ncols);
     std::size_t c_ncols_u = static_cast<std::size_t>(c_ncols);
@@ -286,7 +286,7 @@ void prepare_reference_spmm_data(sparse_matrix_format_t format, const intType *i
     // Return the linear index to access a dense matrix from
     auto dense_linear_idx = [=](std::size_t row, std::size_t col, std::size_t ld) {
         return (dense_matrix_layout == oneapi::math::layout::row_major) ? row * ld + col
-                                                                       : col * ld + row;
+                                                                        : col * ld + row;
     };
 
     //
@@ -300,7 +300,7 @@ void prepare_reference_spmm_data(sparse_matrix_format_t format, const intType *i
             for (std::size_t i = 0; i < opa_ncols; i++) {
                 acc += dense_opa[row * opa_ncols + i] * dense_opb[i * c_ncols_u + col];
             }
-            fpType &c = c_ref[dense_linear_idx(row, col, ldc_u)];
+            fpType& c = c_ref[dense_linear_idx(row, col, ldc_u)];
             c = alpha * acc + beta * c;
         }
     }

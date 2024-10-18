@@ -42,8 +42,8 @@ const char* accuracy_input = R"(
 )";
 
 template <typename data_T>
-bool accuracy(const sycl::device& dev, int64_t itype, oneapi::math::job jobz, oneapi::math::uplo uplo,
-              int64_t n, int64_t lda, int64_t ldb, uint64_t seed) {
+bool accuracy(const sycl::device& dev, int64_t itype, oneapi::math::job jobz,
+              oneapi::math::uplo uplo, int64_t n, int64_t lda, int64_t ldb, uint64_t seed) {
     using fp = typename data_T_info<data_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
@@ -80,7 +80,7 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::math::job jobz, on
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::sygvd(queue, itype, jobz, uplo, n, A_dev, lda, B_dev, ldb, w_dev,
-                                   scratchpad_dev, scratchpad_size);
+                                    scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::sygvd, itype, jobz, uplo, n, A_dev,
                                   lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size);
@@ -107,9 +107,9 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::math::job jobz, on
 
     /* |D_ref - D| < |D_ref| O(eps) */
     std::vector<fp_real> D_ref(n);
-    auto info =
-        reference::sygvd(itype, oneapi::math::job::novec, uplo, n, std::vector<fp>(A_initial).data(),
-                         lda, std::vector<fp>(B_initial).data(), ldb, D_ref.data());
+    auto info = reference::sygvd(itype, oneapi::math::job::novec, uplo, n,
+                                 std::vector<fp>(A_initial).data(), lda,
+                                 std::vector<fp>(B_initial).data(), ldb, D_ref.data());
     if (0 != info) {
         test_log::lout << "reference sygvd failed with info = " << info << std::endl;
         return false;
@@ -146,8 +146,8 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::math::job jobz, on
             /* |I - Z' B Z| < n O(eps) */
             std::vector<fp> ZBZ(n * n);
             int64_t ldzbz = n;
-            reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, n,
-                            n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
+            reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans,
+                            n, n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ, ldzbz)) {
                 test_log::lout << "Orthogonality check failed" << std::endl;
                 result = false;
@@ -180,8 +180,8 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::math::job jobz, on
             /* |I - Z' B Z| < n O(eps) */
             std::vector<fp> ZBZ(n * n);
             int64_t ldzbz = n;
-            reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, n,
-                            n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
+            reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans,
+                            n, n, n, 1.0, Z.data(), ldz, BZ.data(), ldbz, 0.0, ZBZ.data(), ldzbz);
             if (!rel_id_err_check(n, ZBZ, ldzbz)) {
                 test_log::lout << "Orthogonality check failed" << std::endl;
                 result = false;
@@ -218,8 +218,8 @@ bool accuracy(const sycl::device& dev, int64_t itype, oneapi::math::job jobz, on
             /* |I - Z' B^-1 Z| = |I - Z' C| < n O(eps) */
             std::vector<fp> ZhC(n * n);
             int64_t ldzhc = n;
-            reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans, n,
-                            n, n, 1.0, Z.data(), ldz, C.data(), ldc, 0.0, ZhC.data(), ldzhc);
+            reference::gemm(oneapi::math::transpose::conjtrans, oneapi::math::transpose::nontrans,
+                            n, n, n, 1.0, Z.data(), ldz, C.data(), ldc, 0.0, ZhC.data(), ldzhc);
             if (!rel_id_err_check(n, ZhC, ldzhc)) {
                 test_log::lout << "Orthogonality check failed" << std::endl;
                 result = false;
@@ -279,9 +279,9 @@ bool usm_dependency(const sycl::device& dev, int64_t itype, oneapi::math::job jo
             scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
-        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::sygvd, itype, jobz, uplo,
-                                  n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev, scratchpad_size,
-                                  std::vector<sycl::event>{ in_event });
+        TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::sygvd, itype, jobz,
+                                  uplo, n, A_dev, lda, B_dev, ldb, w_dev, scratchpad_dev,
+                                  scratchpad_size, std::vector<sycl::event>{ in_event });
 #endif
         result = check_dependency(queue, in_event, func_event);
 

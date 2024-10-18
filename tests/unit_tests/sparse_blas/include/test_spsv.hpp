@@ -48,16 +48,18 @@
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper_with_format(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64,
-                             sycl::device *dev, sparse_matrix_format_t format,
-                             oneapi::math::transpose transpose_val, int &num_passed,
-                             int &num_skipped) {
+                             sycl::device* dev, sparse_matrix_format_t format,
+                             oneapi::math::transpose transpose_val, int& num_passed,
+                             int& num_skipped) {
     double density_A_matrix = 0.144;
     fpType alpha = set_fp_value<fpType>()(1.f, 0.f);
     int m = 277;
     oneapi::math::index_base index_zero = oneapi::math::index_base::zero;
     oneapi::math::sparse::spsv_alg default_alg = oneapi::math::sparse::spsv_alg::default_alg;
-    oneapi::math::sparse::spsv_alg no_optimize_alg = oneapi::math::sparse::spsv_alg::no_optimize_alg;
-    oneapi::math::sparse::matrix_view default_A_view(oneapi::math::sparse::matrix_descr::triangular);
+    oneapi::math::sparse::spsv_alg no_optimize_alg =
+        oneapi::math::sparse::spsv_alg::no_optimize_alg;
+    oneapi::math::sparse::matrix_view default_A_view(
+        oneapi::math::sparse::matrix_descr::triangular);
     oneapi::math::sparse::matrix_view upper_A_view(oneapi::math::sparse::matrix_descr::triangular);
     upper_A_view.uplo_view = oneapi::math::uplo::upper;
     std::set<oneapi::math::sparse::matrix_property> no_properties;
@@ -158,8 +160,8 @@ void test_helper_with_format(testFunctorI32 test_functor_i32, testFunctorI64 tes
  */
 template <typename fpType, typename testFunctorI32, typename testFunctorI64>
 void test_helper(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i64,
-                 sycl::device *dev, oneapi::math::transpose transpose_val, int &num_passed,
-                 int &num_skipped) {
+                 sycl::device* dev, oneapi::math::transpose transpose_val, int& num_passed,
+                 int& num_skipped) {
     test_helper_with_format<fpType>(test_functor_i32, test_functor_i64, dev,
                                     sparse_matrix_format_t::CSR, transpose_val, num_passed,
                                     num_skipped);
@@ -170,11 +172,11 @@ void test_helper(testFunctorI32 test_functor_i32, testFunctorI64 test_functor_i6
 
 /// Compute spsv reference as a dense operation
 template <typename fpType, typename intType>
-void prepare_reference_spsv_data(sparse_matrix_format_t format, const intType *ia,
-                                 const intType *ja, const fpType *a, intType m, intType nnz,
-                                 intType indexing, oneapi::math::transpose opA, const fpType *x,
+void prepare_reference_spsv_data(sparse_matrix_format_t format, const intType* ia,
+                                 const intType* ja, const fpType* a, intType m, intType nnz,
+                                 intType indexing, oneapi::math::transpose opA, const fpType* x,
                                  fpType alpha, oneapi::math::sparse::matrix_view A_view,
-                                 fpType *y_ref) {
+                                 fpType* y_ref) {
     std::size_t mu = static_cast<std::size_t>(m);
     auto dense_opa = sparse_to_dense(format, ia, ja, a, mu, mu, static_cast<std::size_t>(nnz),
                                      indexing, opA, A_view);
@@ -186,8 +188,8 @@ void prepare_reference_spsv_data(sparse_matrix_format_t format, const intType *i
     //
     // Compute each element of the reference one after the other starting from 0 (resp. the end) for a lower (resp. upper) triangular matrix.
     // A matrix is considered lowered if it is lower and not transposed or upper and transposed.
-    const bool is_lower =
-        (A_view.uplo_view == oneapi::math::uplo::lower) == (opA == oneapi::math::transpose::nontrans);
+    const bool is_lower = (A_view.uplo_view == oneapi::math::uplo::lower) ==
+                          (opA == oneapi::math::transpose::nontrans);
     for (std::size_t row = 0; row < mu; row++) {
         std::size_t uplo_row = is_lower ? row : (mu - 1 - row);
         fpType rhs = alpha * x[uplo_row];

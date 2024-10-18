@@ -63,7 +63,8 @@ void forward_op_cc(descriptor_type& desc, sycl::buffer<fwd_type, 1>& in,
 sycl::event forward_op_cc(descriptor_type& desc, fwd_type* in, bwd_type* out,
                           const std::vector<sycl::event>& dependencies) override {
     dft::detail::get_commit(desc)->template compute_call_throw<fwd_type*>("compute_forward");
-    return oneapi::math::dft::BACKEND::compute_forward<descriptor_type>(desc, in, out, dependencies);
+    return oneapi::math::dft::BACKEND::compute_forward<descriptor_type>(desc, in, out,
+                                                                        dependencies);
 }
 
 // forward out-of-place REAL_REAL
@@ -79,7 +80,7 @@ sycl::event forward_op_rr(descriptor_type& desc, scalar_type* in_re, scalar_type
                           const std::vector<sycl::event>& dependencies) override {
     dft::detail::get_commit(desc)->template compute_call_throw<scalar_type*>("compute_forward");
     return oneapi::math::dft::BACKEND::compute_forward(desc, in_re, in_im, out_re, out_im,
-                                                      dependencies);
+                                                       dependencies);
 }
 
 // backward inplace COMPLEX_COMPLEX
@@ -133,5 +134,5 @@ sycl::event backward_op_rr(descriptor_type& desc, scalar_type* in_re, scalar_typ
                            const std::vector<sycl::event>& dependencies) override {
     dft::detail::get_commit(desc)->template compute_call_throw<scalar_type*>("compute_backward");
     return oneapi::math::dft::BACKEND::compute_backward(desc, in_re, in_im, out_re, out_im,
-                                                       dependencies);
+                                                        dependencies);
 }

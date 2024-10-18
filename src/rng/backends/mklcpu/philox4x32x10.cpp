@@ -573,7 +573,8 @@ private:
     std::int32_t state_size_;
 };
 
-oneapi::math::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue, std::uint64_t seed) {
+oneapi::math::rng::detail::engine_impl* create_philox4x32x10(sycl::queue queue,
+                                                             std::uint64_t seed) {
     return new philox4x32x10_impl(queue, seed);
 }
 

@@ -25,29 +25,29 @@ using desc_rd_t =
     dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::REAL>;
 using desc_cd_t =
     dft::detail::descriptor<dft::detail::precision::DOUBLE, dft::detail::domain::COMPLEX>;
-using depends_vec_t = const std::vector<sycl::event> &;
+using depends_vec_t = const std::vector<sycl::event>&;
 
-#define ONEMATH_DFT_BACKWARD_INSTANTIATIONS(DESCRIPTOR_T, SCALAR_T, FORWARD_T, BACKWARD_T)          \
+#define ONEMATH_DFT_BACKWARD_INSTANTIATIONS(DESCRIPTOR_T, SCALAR_T, FORWARD_T, BACKWARD_T)         \
     /* Buffer API */                                                                               \
-    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(DESCRIPTOR_T &,                     \
-                                                               sycl::buffer<FORWARD_T> &);         \
-    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(                                    \
-        DESCRIPTOR_T &, sycl::buffer<SCALAR_T> &, sycl::buffer<SCALAR_T> &);                       \
-    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(                                    \
-        DESCRIPTOR_T &, sycl::buffer<BACKWARD_T> &, sycl::buffer<FORWARD_T> &);                    \
-    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(                                    \
-        DESCRIPTOR_T &, sycl::buffer<SCALAR_T> &, sycl::buffer<SCALAR_T> &,                        \
-        sycl::buffer<SCALAR_T> &, sycl::buffer<SCALAR_T> &);                                       \
+    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(DESCRIPTOR_T&,                     \
+                                                                sycl::buffer<FORWARD_T>&);         \
+    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(                                   \
+        DESCRIPTOR_T&, sycl::buffer<SCALAR_T>&, sycl::buffer<SCALAR_T>&);                          \
+    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(                                   \
+        DESCRIPTOR_T&, sycl::buffer<BACKWARD_T>&, sycl::buffer<FORWARD_T>&);                       \
+    template ONEMATH_EXPORT void compute_backward<DESCRIPTOR_T>(                                   \
+        DESCRIPTOR_T&, sycl::buffer<SCALAR_T>&, sycl::buffer<SCALAR_T>&, sycl::buffer<SCALAR_T>&,  \
+        sycl::buffer<SCALAR_T>&);                                                                  \
                                                                                                    \
     /* USM API */                                                                                  \
-    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(DESCRIPTOR_T &, FORWARD_T *, \
-                                                                      depends_vec_t);              \
-    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(DESCRIPTOR_T &, SCALAR_T *,  \
-                                                                      SCALAR_T *, depends_vec_t);  \
-    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(                             \
-        DESCRIPTOR_T &, BACKWARD_T *, FORWARD_T *, depends_vec_t);                                 \
-    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(                             \
-        DESCRIPTOR_T &, SCALAR_T *, SCALAR_T *, SCALAR_T *, SCALAR_T *, depends_vec_t);
+    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(DESCRIPTOR_T&, FORWARD_T*,  \
+                                                                       depends_vec_t);             \
+    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(DESCRIPTOR_T&, SCALAR_T*,   \
+                                                                       SCALAR_T*, depends_vec_t);  \
+    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(DESCRIPTOR_T&, BACKWARD_T*, \
+                                                                       FORWARD_T*, depends_vec_t); \
+    template ONEMATH_EXPORT sycl::event compute_backward<DESCRIPTOR_T>(                            \
+        DESCRIPTOR_T&, SCALAR_T*, SCALAR_T*, SCALAR_T*, SCALAR_T*, depends_vec_t);
 
 ONEMATH_DFT_BACKWARD_INSTANTIATIONS(desc_rf_t, float, float, std::complex<float>)
 ONEMATH_DFT_BACKWARD_INSTANTIATIONS(desc_cf_t, float, std::complex<float>, std::complex<float>)

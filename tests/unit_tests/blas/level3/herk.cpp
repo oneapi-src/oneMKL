@@ -93,11 +93,11 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::herk(main_queue, upper_lower, trans, n, k, alpha,
-                                                      A_buffer, lda, beta, C_buffer, ldc);
+                                                       A_buffer, lda, beta, C_buffer, ldc);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::herk(main_queue, upper_lower, trans, n, k, alpha,
-                                                   A_buffer, lda, beta, C_buffer, ldc);
+                                                    A_buffer, lda, beta, C_buffer, ldc);
                 break;
             default: break;
         }
@@ -109,8 +109,9 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
                                         C_buffer, ldc);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::herk, upper_lower,
-                                        trans, n, k, alpha, A_buffer, lda, beta, C_buffer, ldc);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::herk,
+                                        upper_lower, trans, n, k, alpha, A_buffer, lda, beta,
+                                        C_buffer, ldc);
                 break;
             default: break;
         }

@@ -66,8 +66,8 @@ int DFT_Test<precision, domain>::test_in_place_real_real_USM() {
                                        abs_error_margin, rel_error_margin, std::cout));
 
         oneapi::math::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           PrecisionType>(descriptor, inout_re.data(),
-                                                          inout_im.data(), no_dependencies)
+                                            PrecisionType>(descriptor, inout_re.data(),
+                                                           inout_im.data(), no_dependencies)
             .wait_and_throw();
 
         for (std::size_t i = 0; i < output_data.size(); ++i) {
@@ -118,7 +118,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
                                                      sycl::range<1>(size_total) };
 
         oneapi::math::dft::compute_forward<descriptor_t, PrecisionType>(descriptor, inout_re_buf,
-                                                                       inout_im_buf);
+                                                                        inout_im_buf);
 
         {
             auto acc_inout_re = inout_re_buf.get_host_access();
@@ -133,7 +133,7 @@ int DFT_Test<precision, domain>::test_in_place_real_real_buffer() {
         }
 
         oneapi::math::dft::compute_backward<std::remove_reference_t<decltype(descriptor)>,
-                                           PrecisionType>(descriptor, inout_re_buf, inout_im_buf);
+                                            PrecisionType>(descriptor, inout_re_buf, inout_im_buf);
 
         {
             auto acc_inout_re = inout_re_buf.get_host_access();

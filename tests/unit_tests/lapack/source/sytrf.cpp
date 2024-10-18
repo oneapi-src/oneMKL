@@ -74,7 +74,7 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::sytrf(queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev,
-                                   scratchpad_size);
+                                    scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::sytrf, uplo, n, A_dev, lda, ipiv_dev,
                                   scratchpad_dev, scratchpad_size);
@@ -114,9 +114,9 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64
                     reference::swap(n, Uk.data() + (k + 0 * ldu), ldu, Uk.data() + (piv + 0 * ldu),
                                     ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans,
-                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
-                                ldu);
+                reference::gemm(oneapi::math::transpose::nontrans,
+                                oneapi::math::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu,
+                                Uk.data(), ldu, 0.0, U.data(), ldu);
 
                 D[k + k * ldd] = A[k + k * lda];
                 k -= 1;
@@ -132,9 +132,9 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64
                     reference::swap(n, Uk.data() + (k - 1 + 0 * ldu), ldu,
                                     Uk.data() + (piv + 0 * ldu), ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans,
-                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
-                                ldu);
+                reference::gemm(oneapi::math::transpose::nontrans,
+                                oneapi::math::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu,
+                                Uk.data(), ldu, 0.0, U.data(), ldu);
 
                 D[k + k * ldd] = A[k + k * lda];
                 D[k - 1 + (k - 1) * ldd] = A[k - 1 + (k - 1) * lda];
@@ -157,9 +157,9 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64
                     reference::swap(n, Uk.data() + (k + 0 * lda), ldu, Uk.data() + (piv + 0 * ldu),
                                     ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans,
-                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
-                                ldu);
+                reference::gemm(oneapi::math::transpose::nontrans,
+                                oneapi::math::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu,
+                                Uk.data(), ldu, 0.0, U.data(), ldu);
 
                 D[k + (k)*ldd] = A[k + (k)*lda];
                 k += 1;
@@ -175,9 +175,9 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64
                     reference::swap(n, Uk.data() + (k + 1 + 0 * ldu), ldu,
                                     Uk.data() + (piv + 0 * ldu), ldu);
                 auto U_temp = U;
-                reference::gemm(oneapi::math::transpose::nontrans, oneapi::math::transpose::nontrans,
-                                n, n, n, 1.0, U_temp.data(), ldu, Uk.data(), ldu, 0.0, U.data(),
-                                ldu);
+                reference::gemm(oneapi::math::transpose::nontrans,
+                                oneapi::math::transpose::nontrans, n, n, n, 1.0, U_temp.data(), ldu,
+                                Uk.data(), ldu, 0.0, U.data(), ldu);
 
                 D[k + k * ldd] = A[k + k * lda];
                 D[k + 1 + (k + 1) * ldd] = A[k + 1 + (k + 1) * lda];
@@ -250,7 +250,7 @@ bool usm_dependency(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n,
 #ifdef CALL_RT_API
         sycl::event func_event =
             oneapi::math::lapack::sytrf(queue, uplo, n, A_dev, lda, ipiv_dev, scratchpad_dev,
-                                       scratchpad_size, std::vector<sycl::event>{ in_event });
+                                        scratchpad_size, std::vector<sycl::event>{ in_event });
 #else
         sycl::event func_event;
         TEST_RUN_LAPACK_CT_SELECT(queue, func_event = oneapi::math::lapack::sytrf, uplo, n, A_dev,

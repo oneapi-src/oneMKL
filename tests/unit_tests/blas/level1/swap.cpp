@@ -86,7 +86,7 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy) {
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::swap(main_queue, N, x_buffer, incx, y_buffer,
-                                                      incy);
+                                                       incy);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::swap(main_queue, N, x_buffer, incx, y_buffer, incy);
@@ -100,8 +100,8 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, int incy) {
                                         x_buffer, incx, y_buffer, incy);
                 break;
             case oneapi::math::layout::row_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::swap, N, x_buffer,
-                                        incx, y_buffer, incy);
+                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::swap, N,
+                                        x_buffer, incx, y_buffer, incy);
                 break;
             default: break;
         }

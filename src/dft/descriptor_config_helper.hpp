@@ -118,7 +118,7 @@ void set_value(dft_values<prec, dom>& vals,
         for (std::size_t i{ 0 }; i < vals.dimensions.size(); ++i) {
             if (set_val[i] <= 0) {
                 throw math::invalid_argument("DFT", "set_value",
-                                            "Invalid length value (negative or 0).");
+                                             "Invalid length value (negative or 0).");
             }
         }
         std::copy(set_val, set_val + vals.dimensions.size(), vals.dimensions.begin());
@@ -135,7 +135,7 @@ void set_value(dft_values<prec, dom>& vals,
     else if constexpr (Param == config_param::NUMBER_OF_TRANSFORMS) {
         if (set_val <= 0) {
             throw math::invalid_argument("DFT", "set_value",
-                                        "Number of transforms must be positive.");
+                                         "Number of transforms must be positive.");
         }
         vals.number_of_transforms = set_val;
     }
@@ -145,7 +145,7 @@ void set_value(dft_values<prec, dom>& vals,
         }
         else {
             throw math::invalid_argument("DFT", "set_value",
-                                        "Complex storage must be complex_complex or real_real.");
+                                         "Complex storage must be complex_complex or real_real.");
         }
     }
     else if constexpr (Param == config_param::REAL_STORAGE) {
@@ -162,7 +162,7 @@ void set_value(dft_values<prec, dom>& vals,
         }
         else {
             throw math::invalid_argument("DFT", "set_value",
-                                        "Conjugate even storage must be complex_complex.");
+                                         "Conjugate even storage must be complex_complex.");
         }
     }
     else if constexpr (Param == config_param::PLACEMENT) {
@@ -171,7 +171,7 @@ void set_value(dft_values<prec, dom>& vals,
         }
         else {
             throw math::invalid_argument("DFT", "set_value",
-                                        "Placement must be inplace or not inplace.");
+                                         "Placement must be inplace or not inplace.");
         }
     }
 #pragma clang diagnostic push
@@ -224,7 +224,7 @@ void set_value(dft_values<prec, dom>& vals,
         }
         else {
             throw math::invalid_argument("DFT", "set_value",
-                                        "Ordering must be ordered or backwards scrambled.");
+                                         "Ordering must be ordered or backwards scrambled.");
         }
     }
     else if constexpr (Param == config_param::TRANSPOSE) {

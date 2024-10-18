@@ -49,7 +49,8 @@ namespace {
 
 template <typename fp>
 int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lower,
-         oneapi::math::transpose trans, int n, int k, int lda, int ldb, int ldc, fp alpha, fp beta) {
+         oneapi::math::transpose trans, int n, int k, int lda, int ldb, int ldc, fp alpha,
+         fp beta) {
     // Prepare data.
     vector<fp, allocator_helper<fp, 64>> A, B, C, C_ref;
     rand_matrix(A, layout, trans, n, k, lda);
@@ -94,13 +95,13 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
         switch (layout) {
             case oneapi::math::layout::col_major:
                 oneapi::math::blas::column_major::syr2k(main_queue, upper_lower, trans, n, k, alpha,
-                                                       A_buffer, lda, B_buffer, ldb, beta, C_buffer,
-                                                       ldc);
+                                                        A_buffer, lda, B_buffer, ldb, beta,
+                                                        C_buffer, ldc);
                 break;
             case oneapi::math::layout::row_major:
                 oneapi::math::blas::row_major::syr2k(main_queue, upper_lower, trans, n, k, alpha,
-                                                    A_buffer, lda, B_buffer, ldb, beta, C_buffer,
-                                                    ldc);
+                                                     A_buffer, lda, B_buffer, ldb, beta, C_buffer,
+                                                     ldc);
                 break;
             default: break;
         }
@@ -141,8 +142,8 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     return (int)good;
 }
 
-class Syr2kTests : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {
-};
+class Syr2kTests
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(Syr2kTests, RealSinglePrecision) {
     float alpha(3.0);
@@ -172,11 +173,11 @@ TEST_P(Syr2kTests, RealDoublePrecision) {
                                    oneapi::math::uplo::upper, oneapi::math::transpose::nontrans, 73,
                                    27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::uplo::lower, oneapi::math::transpose::trans, 73, 27,
-                                   101, 102, 103, alpha, beta));
+                                   oneapi::math::uplo::lower, oneapi::math::transpose::trans, 73,
+                                   27, 101, 102, 103, alpha, beta));
     EXPECT_TRUEORSKIP(test<double>(std::get<0>(GetParam()), std::get<1>(GetParam()),
-                                   oneapi::math::uplo::upper, oneapi::math::transpose::trans, 73, 27,
-                                   101, 102, 103, alpha, beta));
+                                   oneapi::math::uplo::upper, oneapi::math::transpose::trans, 73,
+                                   27, 101, 102, 103, alpha, beta));
 }
 TEST_P(Syr2kTests, ComplexSinglePrecision) {
     std::complex<float> alpha(3.0, -0.5);

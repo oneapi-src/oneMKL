@@ -44,19 +44,19 @@
 using namespace sycl;
 using std::vector;
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fp>
-int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
+int test(device* dev, oneapi::math::layout layout, int64_t group_count) {
     // Catch asynchronous exceptions.
     auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (exception const &e) {
+            catch (exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception during OMATCOPY_BATCH:\n"
                           << e.what() << std::endl;
                 print_error_code(e);
@@ -103,8 +103,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         total_batch_count += group_size[i];
     }
 
-    auto uafpp = usm_allocator<fp *, usm::alloc::shared, 64>(cxt, *dev);
-    vector<fp *, decltype(uafpp)> a_array(uafpp), b_array(uafpp), b_ref_array(uafpp);
+    auto uafpp = usm_allocator<fp*, usm::alloc::shared, 64>(cxt, *dev);
+    vector<fp*, decltype(uafpp)> a_array(uafpp), b_array(uafpp), b_ref_array(uafpp);
 
     a_array.resize(total_batch_count);
     b_array.resize(total_batch_count);
@@ -126,9 +126,9 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
             default: break;
         }
         for (j = 0; j < group_size[i]; j++) {
-            a_array[idx] = (fp *)oneapi::math::malloc_shared(64, sizeof(fp) * size_a, *dev, cxt);
-            b_array[idx] = (fp *)oneapi::math::malloc_shared(64, sizeof(fp) * size_b, *dev, cxt);
-            b_ref_array[idx] = (fp *)oneapi::math::malloc_shared(64, sizeof(fp) * size_b, *dev, cxt);
+            a_array[idx] = (fp*)oneapi::math::malloc_shared(64, sizeof(fp) * size_a, *dev, cxt);
+            b_array[idx] = (fp*)oneapi::math::malloc_shared(64, sizeof(fp) * size_b, *dev, cxt);
+            b_ref_array[idx] = (fp*)oneapi::math::malloc_shared(64, sizeof(fp) * size_b, *dev, cxt);
             rand_matrix(a_array[idx], oneapi::math::layout::col_major,
                         oneapi::math::transpose::nontrans, size_a, 1, size_a);
             rand_matrix(b_array[idx], oneapi::math::layout::col_major,
@@ -161,14 +161,14 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
             case oneapi::math::layout::col_major:
                 done = oneapi::math::blas::column_major::omatcopy_batch(
                     main_queue, trans.data(), m.data(), n.data(), alpha.data(),
-                    (const fp **)a_array.data(), lda.data(), b_array.data(), ldb.data(),
-                    group_count, group_size.data(), dependencies);
+                    (const fp**)a_array.data(), lda.data(), b_array.data(), ldb.data(), group_count,
+                    group_size.data(), dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 done = oneapi::math::blas::row_major::omatcopy_batch(
                     main_queue, trans.data(), m.data(), n.data(), alpha.data(),
-                    (const fp **)a_array.data(), lda.data(), b_array.data(), ldb.data(),
-                    group_count, group_size.data(), dependencies);
+                    (const fp**)a_array.data(), lda.data(), b_array.data(), ldb.data(), group_count,
+                    group_size.data(), dependencies);
                 break;
             default: break;
         }
@@ -176,15 +176,15 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
 #else
         switch (layout) {
             case oneapi::math::layout::col_major:
-                TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::column_major::omatcopy_batch,
-                                        trans.data(), m.data(), n.data(), alpha.data(),
-                                        (const fp **)a_array.data(), lda.data(), b_array.data(),
-                                        ldb.data(), group_count, group_size.data(), dependencies);
+                TEST_RUN_BLAS_CT_SELECT(
+                    main_queue, oneapi::math::blas::column_major::omatcopy_batch, trans.data(),
+                    m.data(), n.data(), alpha.data(), (const fp**)a_array.data(), lda.data(),
+                    b_array.data(), ldb.data(), group_count, group_size.data(), dependencies);
                 break;
             case oneapi::math::layout::row_major:
                 TEST_RUN_BLAS_CT_SELECT(main_queue, oneapi::math::blas::row_major::omatcopy_batch,
                                         trans.data(), m.data(), n.data(), alpha.data(),
-                                        (const fp **)a_array.data(), lda.data(), b_array.data(),
+                                        (const fp**)a_array.data(), lda.data(), b_array.data(),
                                         ldb.data(), group_count, group_size.data(), dependencies);
                 break;
             default: break;
@@ -192,13 +192,13 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         main_queue.wait();
 #endif
     }
-    catch (exception const &e) {
+    catch (exception const& e) {
         std::cout << "Caught synchronous SYCL exception during OMATCOPY_BATCH:\n"
                   << e.what() << std::endl;
         print_error_code(e);
     }
 
-    catch (const oneapi::math::unimplemented &e) {
+    catch (const oneapi::math::unimplemented& e) {
         idx = 0;
         for (i = 0; i < group_count; i++) {
             for (j = 0; j < group_size[i]; j++) {
@@ -211,7 +211,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         return test_skipped;
     }
 
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of OMATCOPY_BATCH:\n"
                   << error.what() << std::endl;
     }
@@ -235,8 +235,8 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
         }
         for (j = 0; j < group_size[i]; j++) {
             good = good && check_equal_matrix(b_array[idx], b_ref_array[idx],
-                                              oneapi::math::layout::col_major, size_b, 1, size_b, 10,
-                                              std::cout);
+                                              oneapi::math::layout::col_major, size_b, 1, size_b,
+                                              10, std::cout);
             idx++;
         }
     }
@@ -255,7 +255,7 @@ int test(device *dev, oneapi::math::layout layout, int64_t group_count) {
 }
 
 class OmatcopyBatchUsmTests
-        : public ::testing::TestWithParam<std::tuple<sycl::device *, oneapi::math::layout>> {};
+        : public ::testing::TestWithParam<std::tuple<sycl::device*, oneapi::math::layout>> {};
 
 TEST_P(OmatcopyBatchUsmTests, RealSinglePrecision) {
     EXPECT_TRUEORSKIP(test<float>(std::get<0>(GetParam()), std::get<1>(GetParam()), 5));

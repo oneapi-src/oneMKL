@@ -114,8 +114,7 @@ int main(int argc, char** argv) {
                         unique_devices.insert(dev.get_info<sycl::info::device::name>());
 #if !defined(ONEMATH_ENABLE_MKLCPU_BACKEND) &&             \
     !defined(ONEMATH_ENABLE_PORTBLAS_BACKEND_INTEL_CPU) && \
-    !defined(ONEMATH_ENABLE_PORTFFT_BACKEND) && \
-    !defined(ONEMATH_ENABLE_NETLIB_BACKEND)
+    !defined(ONEMATH_ENABLE_PORTFFT_BACKEND) && !defined(ONEMATH_ENABLE_NETLIB_BACKEND)
                         if (dev.is_cpu())
                             continue;
 #endif
@@ -125,24 +124,21 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == INTEL_ID)
                             continue;
 #endif
-#if !defined(ONEMATH_ENABLE_CUBLAS_BACKEND) &&              \
-    !defined(ONEMATH_ENABLE_CURAND_BACKEND) &&              \
-    !defined(ONEMATH_ENABLE_CUSOLVER_BACKEND) &&            \
-    !defined(ONEMATH_ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU) && \
+#if !defined(ONEMATH_ENABLE_CUBLAS_BACKEND) && !defined(ONEMATH_ENABLE_CURAND_BACKEND) && \
+    !defined(ONEMATH_ENABLE_CUSOLVER_BACKEND) &&                                          \
+    !defined(ONEMATH_ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU) &&                               \
     !defined(ONEMATH_ENABLE_CUFFT_BACKEND) && !defined(ONEMATH_ENABLE_PORTFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
-#if !defined(ONEMATH_ENABLE_ROCBLAS_BACKEND) &&          \
-    !defined(ONEMATH_ENABLE_ROCRAND_BACKEND) &&          \
-    !defined(ONEMATH_ENABLE_ROCSOLVER_BACKEND) &&        \
-    !defined(ONEMATH_ENABLE_PORTBLAS_BACKEND_AMD_GPU) && \
-    !defined(ONEMATH_ENABLE_ROCFFT_BACKEND) &&           \
-    !defined(ONEMATH_ENABLE_PORTFFT_BACKEND)
+#if !defined(ONEMATH_ENABLE_ROCBLAS_BACKEND) && !defined(ONEMATH_ENABLE_ROCRAND_BACKEND) && \
+    !defined(ONEMATH_ENABLE_ROCSOLVER_BACKEND) &&                                           \
+    !defined(ONEMATH_ENABLE_PORTBLAS_BACKEND_AMD_GPU) &&                                    \
+    !defined(ONEMATH_ENABLE_ROCFFT_BACKEND) && !defined(ONEMATH_ENABLE_PORTFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif
-// clang-format off
+                        // clang-format off
 #ifdef __HIPSYCL__
                         if (dev.is_accelerator())
 #else

@@ -40,8 +40,9 @@ const char* accuracy_input = R"(
 )";
 
 template <typename data_T>
-bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64_t nrhs, int64_t lda,
-              int64_t stride_a, int64_t ldb, int64_t stride_b, int64_t batch_size, uint64_t seed) {
+bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64_t nrhs,
+              int64_t lda, int64_t stride_a, int64_t ldb, int64_t stride_b, int64_t batch_size,
+              uint64_t seed) {
     using fp = typename data_T_info<data_T>::value_type;
     using fp_real = typename complex_info<fp>::real_type;
 
@@ -88,7 +89,7 @@ bool accuracy(const sycl::device& dev, oneapi::math::uplo uplo, int64_t n, int64
 
 #ifdef CALL_RT_API
         oneapi::math::lapack::potrs_batch(queue, uplo, n, nrhs, A_dev, lda, stride_a, B_dev, ldb,
-                                         stride_b, batch_size, scratchpad_dev, scratchpad_size);
+                                          stride_b, batch_size, scratchpad_dev, scratchpad_size);
 #else
         TEST_RUN_LAPACK_CT_SELECT(queue, oneapi::math::lapack::potrs_batch, uplo, n, nrhs, A_dev,
                                   lda, stride_a, B_dev, ldb, stride_b, batch_size, scratchpad_dev,

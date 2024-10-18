@@ -21,7 +21,8 @@
 #define ONEMATH_MKL_RNG_HPP
 
 // Deprecated header is planned to be removed late 2025.
-#pragma message("Header `oneapi/mkl/rng.hpp` is deprecated, please use `oneapi/math/rng.hpp` instead")
+#pragma message( \
+    "Header `oneapi/mkl/rng.hpp` is deprecated, please use `oneapi/math/rng.hpp` instead")
 
 #include "oneapi/math/rng.hpp"
 
