@@ -1,5 +1,5 @@
 # Contributing Guidelines
-If you have improvements, new libraries integrated under oneMath, or new interfaces to contribute to the oneMath Specification, please send us your pull requests! For getting started, see GitHub [howto](https://help.github.com/en/articles/about-pull-requests).
+If you have improvements, new libraries integrated under oneAPI Math Library (oneMath), or new interfaces to contribute to the oneMath Specification, please send us your pull requests! For getting started, see GitHub [howto](https://help.github.com/en/articles/about-pull-requests).
 
 For how to enable a new third-party library, see the [guidelines](docs/create_new_backend.rst).
 

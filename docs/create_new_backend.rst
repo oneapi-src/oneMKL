@@ -3,8 +3,8 @@
 
 .. _create_backend_wrappers:
 
-Integrating a Third-Party Library to oneMath
-============================================
+Integrating a Third-Party Library to oneAPI Math Library (oneMath)
+==================================================================
 
 This step-by-step tutorial provides examples for enabling new third-party libraries in oneMath.
 

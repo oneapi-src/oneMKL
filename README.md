@@ -1,6 +1,6 @@
 <img src="https://github.com/uxlfoundation/artwork/blob/main/foundation/uxl-foundation-logo-horizontal-color.png" alt="UXL Foundation Logo" width="250"/>
 
-# oneMath
+# oneAPI Math Library (oneMath)
 
 oneMath is an open-source implementation of the [oneMath specification](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemath/source/). It can work with multiple devices using multiple libraries (backends) underneath. The oneMath project was previously referred to as oneMKL Interface.
 
@@ -573,13 +573,13 @@ Distributed under the Apache license 2.0. See [LICENSE](LICENSE) for more inform
 
 **Q: What is the difference between the following items?**
    - The [oneAPI Specification for oneMath](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemath/source/)
-   - The [oneMath](https://github.com/uxlfoundation/oneMath) Project
+   - The [oneAPI Math Library (oneMath)](https://github.com/uxlfoundation/oneMath) project
    - The [Intel(R) oneAPI Math Kernel Library (oneMKL)](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html) Product
 
 **A:**
 - The [oneAPI Specification for oneMath](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemath/source/) defines the SYCL interfaces for performance math library functions. The oneMath specification can evolve faster and more frequently than implementations of the specification.
 
-- The [oneMath](https://github.com/uxlfoundation/oneMath) project is an open source implementation of the specification. The project goal is to demonstrate how the SYCL interfaces documented in the oneMath specification can be implemented for any math library and work for any target hardware. While the implementation provided here may not yet be the full implementation of the specification, the goal is to build it out over time. We encourage the community to contribute to this project and help to extend support to multiple hardware targets and other math libraries.
+- The [oneAPI Math Library (oneMath)](https://github.com/uxlfoundation/oneMath) project is an open source implementation of the specification. The project goal is to demonstrate how the SYCL interfaces documented in the oneMath specification can be implemented for any math library and work for any target hardware. While the implementation provided here may not yet be the full implementation of the specification, the goal is to build it out over time. We encourage the community to contribute to this project and help to extend support to multiple hardware targets and other math libraries.
 
 - The [Intel(R) oneAPI Math Kernel Library (oneMKL)](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html) project is an Intel product provided as part of the Intel(R) oneAPI Base Toolkit. It is used for the Intel backends of oneMath. Its C++ API is very similar to the oneMath specification. It is highly optimized for Intel CPU and Intel GPU hardware.
 
