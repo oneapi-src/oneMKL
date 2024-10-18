@@ -202,12 +202,12 @@ static std::map<domain, std::map<device, std::vector<const char*>>> libraries = 
           } } } },
 };
 
-static std::map<domain, const char*> table_names = { { domain::blas, "mkl_blas_table" },
-                                                     { domain::lapack, "mkl_lapack_table" },
-                                                     { domain::dft, "mkl_dft_table" },
-                                                     { domain::rng, "mkl_rng_table" },
+static std::map<domain, const char*> table_names = { { domain::blas, "onemath_blas_table" },
+                                                     { domain::lapack, "onemath_lapack_table" },
+                                                     { domain::dft, "onemath_dft_table" },
+                                                     { domain::rng, "onemath_rng_table" },
                                                      { domain::sparse_blas,
-                                                       "mkl_sparse_blas_table" } };
+                                                       "onemath_sparse_blas_table" } };
 
 } //namespace math
 } //namespace oneapi

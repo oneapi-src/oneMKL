@@ -23,7 +23,7 @@
 
 #define WRAPPER_VERSION 1
 
-extern "C" ONEMATH_EXPORT lapack_function_table_t mkl_lapack_table = {
+extern "C" ONEMATH_EXPORT lapack_function_table_t onemath_lapack_table = {
     WRAPPER_VERSION,
 #define LAPACK_BACKEND rocsolver
     oneapi::math::lapack::rocsolver::gebrd,

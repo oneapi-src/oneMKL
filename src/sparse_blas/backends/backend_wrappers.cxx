@@ -26,7 +26,7 @@ To use this:
 #define WRAPPER_VERSION <Wrapper version number>
 #define BACKEND         <Backend name eg. mklgpu>
 
-extern "C" sparse_blas_function_table_t mkl_sparse_blas_table = {
+extern "C" sparse_blas_function_table_t onemath_sparse_blas_table = {
     WRAPPER_VERSION,
 #include "sparse_blas/backends/backend_wrappers.cxx"
 };

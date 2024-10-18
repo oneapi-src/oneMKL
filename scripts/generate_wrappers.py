@@ -144,7 +144,7 @@ out_file.write("""//
 
 #define WRAPPER_VERSION 1
 
-extern "C" function_table_t mkl_blas_table = {{
+extern "C" function_table_t onemath_blas_table = {{
     WRAPPER_VERSION,
 """.format(table=in_table.strip('src/'), header=in_filename.strip('include/')))
 

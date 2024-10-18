@@ -26,7 +26,7 @@ To use this:
 #define WRAPPER_VERSION <Wrapper version number>
 #define BACKEND         <Backend name eg. mklgpu>
 
-extern "C" dft_function_table_t mkl_dft_table = {
+extern "C" dft_function_table_t onemath_dft_table = {
     WRAPPER_VERSION,
 #include "dft/backends/backend_wrappers.cxx"
 };

@@ -23,7 +23,7 @@
 #define WRAPPER_VERSION 1
 #define BACKEND         mklgpu
 
-extern "C" dft_function_table_t mkl_dft_table = {
+extern "C" dft_function_table_t onemath_dft_table = {
     WRAPPER_VERSION,
 #include "dft/backends/backend_wrappers.cxx"
 };
