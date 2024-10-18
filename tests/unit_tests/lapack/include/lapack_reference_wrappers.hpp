@@ -28,8 +28,8 @@
 #define WeirdNEC
 extern "C" {
 #ifdef USE_MKLREF
-#include "mkl_cblas.h"
-#include "mkl_lapacke.h"
+#include <mkl_cblas.h>
+#include <mkl_lapacke.h>
 #else
 #include "cblas.h"
 #include "lapacke.h"

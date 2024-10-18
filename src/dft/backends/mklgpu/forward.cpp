@@ -32,8 +32,8 @@
 #include "common_onemkl_conversion.hpp"
 #include "mklgpu_helpers.hpp"
 
-#include "mkl_version.h"
-// MKLGPU header
+// Intel(R) oneMKL headers
+#include <mkl_version.h>
 #if INTEL_MKL_VERSION < 20250000
 #include <oneapi/mkl/dfti.hpp>
 #else

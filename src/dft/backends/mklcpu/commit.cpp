@@ -34,8 +34,10 @@
 
 #include "dft/backends/mklcpu/commit_derived_impl.hpp"
 #include "../stride_helper.hpp"
-#include "mkl_service.h"
-#include "mkl_dfti.h"
+
+// Intel(R) oneMKL header
+#include <mkl_dfti.h>
+#include <mkl_service.h>
 
 namespace oneapi {
 namespace math {

@@ -36,8 +36,8 @@
 #include "dft/backends/mklgpu/mklgpu_helpers.hpp"
 #include "../stride_helper.hpp"
 
-#include "mkl_version.h"
-// MKLGPU header
+// Intel(R) oneMKL headers
+#include <mkl_version.h>
 #if INTEL_MKL_VERSION < 20250000
 #include <oneapi/mkl/dfti.hpp>
 #else

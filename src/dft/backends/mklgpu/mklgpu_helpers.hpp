@@ -23,8 +23,8 @@
 #include "oneapi/math/detail/exceptions.hpp"
 #include "oneapi/math/dft/detail/types_impl.hpp"
 
-#include "mkl_version.h"
-// MKLGPU header
+// Intel(R) oneMKL headers
+#include <mkl_version.h>
 #if INTEL_MKL_VERSION < 20250000
 #include <oneapi/mkl/dfti.hpp>
 #else

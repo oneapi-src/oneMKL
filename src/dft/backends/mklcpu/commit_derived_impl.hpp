@@ -24,8 +24,8 @@
 #include "oneapi/math/dft/detail/types_impl.hpp"
 #include "dft/backends/mklcpu/mklcpu_helpers.hpp"
 
-// MKLCPU header
-#include "mkl_dfti.h"
+// Intel(R) oneMKL header
+#include <mkl_dfti.h>
 
 namespace oneapi {
 namespace math {

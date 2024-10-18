@@ -31,8 +31,8 @@
 
 #include "dft/backends/mklcpu/commit_derived_impl.hpp"
 
-// MKLCPU header
-#include "mkl_dfti.h"
+// Intel(R) oneMKL header
+#include <mkl_dfti.h>
 
 namespace oneapi::math::dft::mklcpu {
 namespace detail {
