@@ -55,11 +55,11 @@ int test(device* dev, oneapi::math::layout layout, int N, int incx, fp_scalar al
 
     // Call Reference SCAL.
     using fp_ref = typename ref_type_info<fp>::type;
-    using fp_scalar_mkl = typename ref_type_info<fp_scalar>::type;
+    using fp_scalar_ref = typename ref_type_info<fp_scalar>::type;
 
     const int N_ref = N, incx_ref = std::abs(incx);
 
-    ::scal(&N_ref, (fp_scalar_mkl*)&alpha, (fp_ref*)x_ref.data(), &incx_ref);
+    ::scal(&N_ref, (fp_scalar_ref*)&alpha, (fp_ref*)x_ref.data(), &incx_ref);
 
     // Call DPC++ SCAL.
 

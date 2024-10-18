@@ -85,11 +85,11 @@ int test(device* dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     const int lda_ref = lda, ldb_ref = ldb, ldc_ref = ldc;
 
     using fp_ref = typename ref_type_info<fp>::type;
-    using fp_scalar_mkl = typename ref_type_info<fp_scalar>::type;
+    using fp_scalar_ref = typename ref_type_info<fp_scalar>::type;
 
     ::her2k(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower),
             convert_to_cblas_trans(trans), &n_ref, &k_ref, (fp_ref*)&alpha, (fp_ref*)A.data(),
-            &lda_ref, (fp_ref*)B.data(), &ldb_ref, (fp_scalar_mkl*)&beta, (fp_ref*)C_ref.data(),
+            &lda_ref, (fp_ref*)B.data(), &ldb_ref, (fp_scalar_ref*)&beta, (fp_ref*)C_ref.data(),
             &ldc_ref);
 
     // Call DPC++ HER2K.

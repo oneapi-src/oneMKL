@@ -58,10 +58,10 @@ int test(device *dev, oneapi::math::layout layout, oneapi::math::uplo upper_lowe
     // Call Reference HER.
     const int n_ref = n, incx_ref = incx, lda_ref = lda;
     using fp_ref = typename ref_type_info<fp>::type;
-    using fp_scalar_mkl = typename ref_type_info<fp_scalar>::type;
+    using fp_scalar_ref = typename ref_type_info<fp_scalar>::type;
 
     ::her(convert_to_cblas_layout(layout), convert_to_cblas_uplo(upper_lower), &n_ref,
-          (fp_scalar_mkl *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)A_ref.data(), &lda_ref);
+          (fp_scalar_ref *)&alpha, (fp_ref *)x.data(), &incx_ref, (fp_ref *)A_ref.data(), &lda_ref);
 
     // Call DPC++ HER.
 
