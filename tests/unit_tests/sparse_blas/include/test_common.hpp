@@ -66,16 +66,16 @@ static std::vector<std::set<oneapi::mkl::sparse::matrix_property>> test_matrix_p
       oneapi::mkl::sparse::matrix_property::symmetric }
 };
 
-void print_error_code(sycl::exception const &e);
+void print_error_code(sycl::exception const& e);
 
 // Catch asynchronous exceptions.
 struct exception_handler_t {
     void operator()(sycl::exception_list exceptions) {
-        for (std::exception_ptr const &e : exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
             try {
                 std::rethrow_exception(e);
             }
-            catch (sycl::exception const &e) {
+            catch (sycl::exception const& e) {
                 std::cout << "Caught asynchronous SYCL exception:\n" << e.what() << std::endl;
                 print_error_code(e);
             }
@@ -86,7 +86,7 @@ struct exception_handler_t {
 struct UsmDeleter {
     sycl::queue q;
     UsmDeleter(sycl::queue _q) : q(_q) {}
-    void operator()(void *ptr) {
+    void operator()(void* ptr) {
         sycl::free(ptr, q);
     }
 };
@@ -99,14 +99,14 @@ auto malloc_device_uptr(sycl::queue q, std::size_t num_elts) {
 
 // SYCL buffer creation helper.
 template <typename vec>
-sycl::buffer<typename vec::value_type, 1> make_buffer(const vec &v) {
+sycl::buffer<typename vec::value_type, 1> make_buffer(const vec& v) {
     sycl::buffer<typename vec::value_type, 1> buf(v.data(), sycl::range<1>(v.size()));
     return buf;
 }
 
 template <typename T>
-void copy_host_to_buffer(sycl::queue queue, const std::vector<T> &src, sycl::buffer<T, 1> dst) {
-    queue.submit([&](sycl::handler &cgh) {
+void copy_host_to_buffer(sycl::queue queue, const std::vector<T>& src, sycl::buffer<T, 1> dst) {
+    queue.submit([&](sycl::handler& cgh) {
         auto dst_acc = dst.template get_access<sycl::access::mode::discard_write>(
             cgh, sycl::range<1>(src.size()));
         cgh.copy(src.data(), dst_acc);
@@ -168,7 +168,7 @@ struct rand_scalar<std::complex<fpType>> {
 };
 
 template <typename fpType>
-void rand_vector(std::vector<fpType> &v, std::size_t n) {
+void rand_vector(std::vector<fpType>& v, std::size_t n) {
     using fpRealType = typename complex_info<fpType>::real_type;
     v.resize(n);
     rand_scalar<fpType> rand;
@@ -178,7 +178,7 @@ void rand_vector(std::vector<fpType> &v, std::size_t n) {
 }
 
 template <typename fpType>
-void rand_matrix(std::vector<fpType> &m, oneapi::mkl::layout layout_val, std::size_t nrows,
+void rand_matrix(std::vector<fpType>& m, oneapi::mkl::layout layout_val, std::size_t nrows,
                  std::size_t ncols, std::size_t ld,
                  oneapi::mkl::transpose transpose_val = oneapi::mkl::transpose::nontrans) {
     using fpRealType = typename complex_info<fpType>::real_type;
@@ -221,8 +221,8 @@ fpType generate_data(bool is_diag) {
 template <typename fpType, typename intType>
 intType generate_random_csr_matrix(const intType nrows, const intType ncols,
                                    const double density_val, intType indexing,
-                                   std::vector<intType> &ia, std::vector<intType> &ja,
-                                   std::vector<fpType> &a, bool is_symmetric,
+                                   std::vector<intType>& ia, std::vector<intType>& ja,
+                                   std::vector<fpType>& a, bool is_symmetric,
                                    bool require_diagonal = false) {
     intType nnz = 0;
     rand_scalar<double> rand_density;
@@ -272,8 +272,8 @@ intType generate_random_csr_matrix(const intType nrows, const intType ncols,
 template <typename fpType, typename intType>
 intType generate_random_coo_matrix(const intType nrows, const intType ncols,
                                    const double density_val, intType indexing,
-                                   std::vector<intType> &ia, std::vector<intType> &ja,
-                                   std::vector<fpType> &a, bool is_symmetric,
+                                   std::vector<intType>& ia, std::vector<intType>& ja,
+                                   std::vector<fpType>& a, bool is_symmetric,
                                    bool require_diagonal = false) {
     rand_scalar<double> rand_density;
 
@@ -315,8 +315,8 @@ intType generate_random_coo_matrix(const intType nrows, const intType ncols,
 template <typename fpType, typename intType>
 intType generate_random_matrix(sparse_matrix_format_t format, const intType nrows,
                                const intType ncols, const double density_val, intType indexing,
-                               std::vector<intType> &ia, std::vector<intType> &ja,
-                               std::vector<fpType> &a, bool is_symmetric,
+                               std::vector<intType>& ia, std::vector<intType>& ja,
+                               std::vector<fpType>& a, bool is_symmetric,
                                bool require_diagonal = false) {
     ia.clear();
     ja.clear();
@@ -337,8 +337,8 @@ intType generate_random_matrix(sparse_matrix_format_t format, const intType nrow
 /// In CSR format, the elements within a row are shuffled without changing ia.
 /// In COO format, all the elements are shuffled.
 template <typename fpType, typename intType>
-void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intType *ia,
-                           intType *ja, fpType *a, intType nnz, std::size_t nrows) {
+void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intType* ia,
+                           intType* ja, fpType* a, intType nnz, std::size_t nrows) {
     if (format == sparse_matrix_format_t::CSR) {
         for (std::size_t i = 0; i < nrows; ++i) {
             intType nnz_row = ia[i + 1] - ia[i];
@@ -367,8 +367,8 @@ void shuffle_sparse_matrix(sparse_matrix_format_t format, intType indexing, intT
 
 /// Initialize a sparse matrix specified by the given format
 template <typename ContainerValueT, typename ContainerIndexT>
-void init_sparse_matrix(sycl::queue &queue, sparse_matrix_format_t format,
-                        oneapi::mkl::sparse::matrix_handle_t *p_smhandle, std::int64_t num_rows,
+void init_sparse_matrix(sycl::queue& queue, sparse_matrix_format_t format,
+                        oneapi::mkl::sparse::matrix_handle_t* p_smhandle, std::int64_t num_rows,
                         std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
                         ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
     if (format == sparse_matrix_format_t::CSR) {
@@ -387,7 +387,7 @@ void init_sparse_matrix(sycl::queue &queue, sparse_matrix_format_t format,
 
 /// Reset the data of a sparse matrix specified by the given format
 template <typename ContainerValueT, typename ContainerIndexT>
-void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
+void set_matrix_data(sycl::queue& queue, sparse_matrix_format_t format,
                      oneapi::mkl::sparse::matrix_handle_t smhandle, std::int64_t num_rows,
                      std::int64_t num_cols, std::int64_t nnz, oneapi::mkl::index_base index,
                      ContainerIndexT rows, ContainerIndexT cols, ContainerValueT vals) {
@@ -406,8 +406,8 @@ void set_matrix_data(sycl::queue &queue, sparse_matrix_format_t format,
 }
 
 template <typename... HandlesT>
-inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> dependencies,
-                         HandlesT &&... handles) {
+inline void free_handles(sycl::queue& queue, const std::vector<sycl::event> dependencies,
+                         HandlesT&&... handles) {
     // Fold expression so that handles expands to each value one after the other.
     (
         [&] {
@@ -436,19 +436,19 @@ inline void free_handles(sycl::queue &queue, const std::vector<sycl::event> depe
 }
 
 template <typename... HandlesT>
-inline void free_handles(sycl::queue &queue, HandlesT &&... handles) {
+inline void free_handles(sycl::queue& queue, HandlesT&&... handles) {
     free_handles(queue, {}, handles...);
 }
 
 template <typename... HandlesT>
-inline void wait_and_free_handles(sycl::queue &queue, HandlesT &&... handles) {
+inline void wait_and_free_handles(sycl::queue& queue, HandlesT&&... handles) {
     queue.wait();
     free_handles(queue, handles...);
 }
 
 inline bool require_square_matrix(
     oneapi::mkl::sparse::matrix_view A_view,
-    const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties) {
+    const std::set<oneapi::mkl::sparse::matrix_property>& matrix_properties) {
     const bool is_symmetric =
         matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
@@ -457,7 +457,7 @@ inline bool require_square_matrix(
 
 template <typename fpType>
 bool check_equal(fpType x, fpType x_ref, double abs_error_margin, double rel_error_margin,
-                 std::ostream &out) {
+                 std::ostream& out) {
     using fpRealType = typename complex_info<fpType>::real_type;
     static_assert(std::is_floating_point_v<fpRealType>,
                   "Expected floating-point real or complex type.");
@@ -478,8 +478,8 @@ bool check_equal(fpType x, fpType x_ref, double abs_error_margin, double rel_err
 }
 
 template <typename vecType1, typename vecType2>
-bool check_equal_vector(const vecType1 &v, const vecType2 &v_ref, double abs_error_factor = 10.0,
-                        double rel_error_factor = 200.0, std::ostream &out = std::cout) {
+bool check_equal_vector(const vecType1& v, const vecType2& v_ref, double abs_error_factor = 10.0,
+                        double rel_error_factor = 200.0, std::ostream& out = std::cout) {
     using T = typename vecType2::value_type;
     std::size_t n = v.size();
     if (n != v_ref.size()) {
@@ -492,7 +492,7 @@ bool check_equal_vector(const vecType1 &v, const vecType2 &v_ref, double abs_err
 
     auto max_norm_ref =
         *std::max_element(std::begin(v_ref), std::end(v_ref),
-                          [](const T &a, const T &b) { return std::abs(a) < std::abs(b); });
+                          [](const T& a, const T& b) { return std::abs(a) < std::abs(b); });
     // Heuristic for the average-case error margins
     double abs_error_margin =
         abs_error_factor * std::abs(max_norm_ref) * std::log2(static_cast<double>(n));

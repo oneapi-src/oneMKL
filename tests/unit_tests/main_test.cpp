@@ -114,42 +114,37 @@ int main(int argc, char** argv) {
                         unique_devices.insert(dev.get_info<sycl::info::device::name>());
 #if !defined(ONEMKL_ENABLE_MKLCPU_BACKEND) &&             \
     !defined(ONEMKL_ENABLE_PORTBLAS_BACKEND_INTEL_CPU) && \
-    !defined(ONEMKL_ENABLE_PORTFFT_BACKEND) && \
-    !defined(ONEMKL_ENABLE_NETLIB_BACKEND)
+    !defined(ONEMKL_ENABLE_PORTFFT_BACKEND) && !defined(ONEMKL_ENABLE_NETLIB_BACKEND)
                         if (dev.is_cpu())
                             continue;
 #endif
-#if !defined(ONEMKL_ENABLE_MKLGPU_BACKEND) &&             \
-    !defined(ONEMKL_ENABLE_PORTBLAS_BACKEND_INTEL_GPU) && \
-    !defined(ONEMKL_ENABLE_PORTFFT_BACKEND)
+#if !defined(ONEMKL_ENABLE_MKLGPU_BACKEND) && \
+    !defined(ONEMKL_ENABLE_PORTBLAS_BACKEND_INTEL_GPU) && !defined(ONEMKL_ENABLE_PORTFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == INTEL_ID)
                             continue;
 #endif
-#if !defined(ONEMKL_ENABLE_CUBLAS_BACKEND) &&              \
-    !defined(ONEMKL_ENABLE_CURAND_BACKEND) &&              \
-    !defined(ONEMKL_ENABLE_CUSOLVER_BACKEND) &&            \
-    !defined(ONEMKL_ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU) && \
+#if !defined(ONEMKL_ENABLE_CUBLAS_BACKEND) && !defined(ONEMKL_ENABLE_CURAND_BACKEND) && \
+    !defined(ONEMKL_ENABLE_CUSOLVER_BACKEND) &&                                         \
+    !defined(ONEMKL_ENABLE_PORTBLAS_BACKEND_NVIDIA_GPU) &&                              \
     !defined(ONEMKL_ENABLE_CUFFT_BACKEND) && !defined(ONEMKL_ENABLE_PORTFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
-#if !defined(ONEMKL_ENABLE_ROCBLAS_BACKEND) &&          \
-    !defined(ONEMKL_ENABLE_ROCRAND_BACKEND) &&          \
-    !defined(ONEMKL_ENABLE_ROCSOLVER_BACKEND) &&        \
-    !defined(ONEMKL_ENABLE_PORTBLAS_BACKEND_AMD_GPU) && \
-    !defined(ONEMKL_ENABLE_ROCFFT_BACKEND) &&           \
+#if !defined(ONEMKL_ENABLE_ROCBLAS_BACKEND) && !defined(ONEMKL_ENABLE_ROCRAND_BACKEND) &&         \
+    !defined(ONEMKL_ENABLE_ROCSOLVER_BACKEND) &&                                                  \
+    !defined(ONEMKL_ENABLE_PORTBLAS_BACKEND_AMD_GPU) && !defined(ONEMKL_ENABLE_ROCFFT_BACKEND) && \
     !defined(ONEMKL_ENABLE_PORTFFT_BACKEND)
                         if (dev.is_gpu() && vendor_id == AMD_ID)
                             continue;
 #endif
-// clang-format off
+                        // clang-format off
 #ifdef __HIPSYCL__
                         if (dev.is_accelerator())
 #else
                         if (!dev.is_accelerator())
-// clang-format on
 #endif
                             local_devices.push_back(dev);
+                        // clang-format on
                     }
                 }
                 catch (std::exception const& e) {

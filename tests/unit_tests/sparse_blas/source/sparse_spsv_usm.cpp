@@ -23,15 +23,15 @@
 
 #include "test_spsv.hpp"
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fpType, typename intType>
-int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, double density_A_matrix,
+int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, double density_A_matrix,
               oneapi::mkl::index_base index, oneapi::mkl::transpose transpose_val, fpType alpha,
               oneapi::mkl::sparse::spsv_alg alg, oneapi::mkl::sparse::matrix_view A_view,
-              const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties,
+              const std::set<oneapi::mkl::sparse::matrix_property>& matrix_properties,
               bool reset_data, bool test_scalar_on_device) {
     sycl::queue main_queue(*dev, exception_handler_t());
 
@@ -77,11 +77,11 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
     auto y_usm_uptr = malloc_device_uptr<fpType>(main_queue, y_host.size());
     auto alpha_usm_uptr = malloc_device_uptr<fpType>(main_queue, 1);
 
-    intType *ia_usm = ia_usm_uptr.get();
-    intType *ja_usm = ja_usm_uptr.get();
-    fpType *a_usm = a_usm_uptr.get();
-    fpType *x_usm = x_usm_uptr.get();
-    fpType *y_usm = y_usm_uptr.get();
+    intType* ia_usm = ia_usm_uptr.get();
+    intType* ja_usm = ja_usm_uptr.get();
+    fpType* a_usm = a_usm_uptr.get();
+    fpType* x_usm = x_usm_uptr.get();
+    fpType* y_usm = y_usm_uptr.get();
 
     std::vector<sycl::event> mat_dependencies;
     std::vector<sycl::event> spsv_dependencies;
@@ -97,7 +97,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
     spsv_dependencies.push_back(
         main_queue.memcpy(y_usm, y_host.data(), y_host.size() * sizeof(fpType)));
 
-    fpType *alpha_host_or_usm_ptr = &alpha;
+    fpType* alpha_host_or_usm_ptr = &alpha;
     if (test_scalar_on_device) {
         spsv_dependencies.push_back(
             main_queue.memcpy(alpha_usm_uptr.get(), &alpha, sizeof(fpType)));
@@ -186,13 +186,13 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
 
         ev_copy = main_queue.memcpy(y_host.data(), y_usm, y_host.size() * sizeof(fpType), ev_spsv);
     }
-    catch (const sycl::exception &e) {
+    catch (const sycl::exception& e) {
         std::cout << "Caught synchronous SYCL exception during sparse SPSV:\n"
                   << e.what() << std::endl;
         print_error_code(e);
         return 0;
     }
-    catch (const oneapi::mkl::unimplemented &e) {
+    catch (const oneapi::mkl::unimplemented& e) {
         wait_and_free_handles(main_queue, A_handle, x_handle, y_handle);
         if (descr) {
             sycl::event ev_release_descr;
@@ -202,7 +202,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
         }
         return test_skipped;
     }
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of sparse SPSV:\n" << error.what() << std::endl;
         return 0;
     }
@@ -224,7 +224,7 @@ int test_spsv(sycl::device *dev, sparse_matrix_format_t format, intType m, doubl
     return static_cast<int>(valid);
 }
 
-class SparseSpsvUsmTests : public ::testing::TestWithParam<sycl::device *> {};
+class SparseSpsvUsmTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(SparseSpsvUsmTests, RealSinglePrecision) {
     using fpType = float;
