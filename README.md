@@ -32,7 +32,7 @@ contributors as reviewers to the PR.
 4. Organize offline review or/and bring the RFC to [UXL Foundation Math SIG forum](https://lists.uxlfoundation.org/g/Math-SIG), [UXL Foundation Open Source Working Group](https://lists.uxlfoundation.org/g/open-source-wg), or any other related forums in order to collect feedback.
     * It's recommended to keep all feedback as part of PR review, so it also
 will be documented in one place
-5. If changes affect API defined by [oneMKL specification](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/) the design document must be reviewed by [UXL Foundation Math SIG forum](https://lists.uxlfoundation.org/g/Math-SIG) and contributed to [oneAPI specification](https://github.com/uxlfoundation/oneAPI-spec), and only after it the proposed changes can be implemented in this project.
+5. If changes affect API defined by [oneMKL specification](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onemkl/source/) the related part of the design document must be converted to oneAPI specification RFC (as a new [issue](https://github.com/uxlfoundation/oneAPI-spec/issues) with \[RFC\] tag), reviewed by [UXL Foundation Math SIG forum](https://lists.uxlfoundation.org/g/Math-SIG), and contributed to [oneAPI specification](https://github.com/uxlfoundation/oneAPI-spec), and only after it the proposed changes can be implemented in this project.
 6. Merge PR when it has all required approvals
     * It's recommended to add PR number to the commit message, so it will be easy
 to find the design discussion
