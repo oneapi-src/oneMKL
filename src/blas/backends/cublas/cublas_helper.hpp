@@ -81,7 +81,7 @@ void overflow_check(Index index, Next... indices) {
 
 class cublas_error : virtual public std::runtime_error {
 protected:
-    inline const char *cublas_error_map(cublasStatus_t error) {
+    inline const char* cublas_error_map(cublasStatus_t error) {
         switch (error) {
             case CUBLAS_STATUS_SUCCESS: return "CUBLAS_STATUS_SUCCESS";
 
@@ -133,7 +133,7 @@ public:
 
 class cuda_error : virtual public std::runtime_error {
 protected:
-    inline const char *cuda_error_map(CUresult result) {
+    inline const char* cuda_error_map(CUresult result) {
         switch (result) {
             case CUDA_SUCCESS: return "CUDA_SUCCESS";
             case CUDA_ERROR_NOT_PERMITTED: return "CUDA_ERROR_NOT_PERMITTED";
@@ -206,23 +206,22 @@ public:
     cuStreamSynchronize(currentStreamId);
 
 template <class Func, class... Types>
-inline void cublas_native_func(Func func, cublasStatus_t err,
-                               cublasHandle_t handle, Types... args) {
+inline void cublas_native_func(Func func, cublasStatus_t err, cublasHandle_t handle,
+                               Types... args) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-  CUBLAS_ERROR_FUNC(func, err, handle, args...)
+    CUBLAS_ERROR_FUNC(func, err, handle, args...)
 #else
-  CUBLAS_ERROR_FUNC_SYNC(func, err, handle, args...)
+    CUBLAS_ERROR_FUNC_SYNC(func, err, handle, args...)
 #endif
 };
 
 template <class Func, class... Types>
-inline void cublas_native_named_func(const char *func_name, Func func,
-                                     cublasStatus_t err, cublasHandle_t handle,
-                                     Types... args) {
+inline void cublas_native_named_func(const char* func_name, Func func, cublasStatus_t err,
+                                     cublasHandle_t handle, Types... args) {
 #ifdef SYCL_EXT_ONEAPI_ENQUEUE_NATIVE_COMMAND
-  CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, args...)
+    CUBLAS_ERROR_FUNC_T(func_name, func, err, handle, args...)
 #else
-  CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, args...)
+    CUBLAS_ERROR_FUNC_T_SYNC(func_name, func, err, handle, args...)
 #endif
 };
 

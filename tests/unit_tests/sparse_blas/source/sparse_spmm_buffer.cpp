@@ -23,18 +23,18 @@
 
 #include "test_spmm.hpp"
 
-extern std::vector<sycl::device *> devices;
+extern std::vector<sycl::device*> devices;
 
 namespace {
 
 template <typename fpType, typename intType>
-int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A, intType ncols_A,
+int test_spmm(sycl::device* dev, sparse_matrix_format_t format, intType nrows_A, intType ncols_A,
               intType ncols_C, double density_A_matrix, oneapi::mkl::index_base index,
               oneapi::mkl::layout dense_matrix_layout, oneapi::mkl::transpose transpose_A,
               oneapi::mkl::transpose transpose_B, fpType alpha, fpType beta, intType ldb,
               intType ldc, oneapi::mkl::sparse::spmm_alg alg,
               oneapi::mkl::sparse::matrix_view A_view,
-              const std::set<oneapi::mkl::sparse::matrix_property> &matrix_properties,
+              const std::set<oneapi::mkl::sparse::matrix_property>& matrix_properties,
               bool reset_data, bool test_scalar_on_device) {
     if (test_scalar_on_device) {
         // Scalars on the device is not planned to be supported with the buffer API
@@ -154,13 +154,13 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
                           A_view, A_handle, B_handle, &beta, C_handle, alg, descr);
         }
     }
-    catch (const sycl::exception &e) {
+    catch (const sycl::exception& e) {
         std::cout << "Caught synchronous SYCL exception during sparse SPMM:\n"
                   << e.what() << std::endl;
         print_error_code(e);
         return 0;
     }
-    catch (const oneapi::mkl::unimplemented &e) {
+    catch (const oneapi::mkl::unimplemented& e) {
         wait_and_free_handles(main_queue, A_handle, B_handle, C_handle);
         if (descr) {
             sycl::event ev_release_descr;
@@ -170,7 +170,7 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
         }
         return test_skipped;
     }
-    catch (const std::runtime_error &error) {
+    catch (const std::runtime_error& error) {
         std::cout << "Error raised during execution of sparse SPMM:\n" << error.what() << std::endl;
         return 0;
     }
@@ -190,7 +190,7 @@ int test_spmm(sycl::device *dev, sparse_matrix_format_t format, intType nrows_A,
     return static_cast<int>(valid);
 }
 
-class SparseSpmmBufferTests : public ::testing::TestWithParam<sycl::device *> {};
+class SparseSpmmBufferTests : public ::testing::TestWithParam<sycl::device*> {};
 
 TEST_P(SparseSpmmBufferTests, RealSinglePrecision) {
     using fpType = float;
