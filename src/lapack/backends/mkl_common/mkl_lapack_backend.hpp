@@ -523,8 +523,8 @@ sycl::event getrf(sycl::queue& queue, std::int64_t m, std::int64_t n, std::compl
                   std::int64_t lda, std::int64_t* ipiv, std::complex<double>* scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event getri(sycl::queue& queue, std::int64_t n, std::complex<float>* a, std::int64_t lda,
-                  const std::int64_t* ipiv, std::complex<float>* scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event>& dependencies = {});
+                  const std::int64_t* ipiv, std::complex<float>* scratchpad,
+                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event getri(sycl::queue& queue, std::int64_t n, double* a, std::int64_t lda,
                   const std::int64_t* ipiv, double* scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event>& dependencies = {});
@@ -535,21 +535,23 @@ sycl::event getri(sycl::queue& queue, std::int64_t n, std::complex<double>* a, s
                   const std::int64_t* ipiv, std::complex<double>* scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
-                  std::int64_t nrhs, const std::complex<float>* a, std::int64_t lda, const std::int64_t* ipiv,
-                  std::complex<float>* b, std::int64_t ldb, std::complex<float>* scratchpad,
-                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
-sycl::event getrs(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
-                  std::int64_t nrhs, const double* a, std::int64_t lda, const std::int64_t* ipiv, double* b,
-                  std::int64_t ldb, double* scratchpad, std::int64_t scratchpad_size,
+                  std::int64_t nrhs, const std::complex<float>* a, std::int64_t lda,
+                  const std::int64_t* ipiv, std::complex<float>* b, std::int64_t ldb,
+                  std::complex<float>* scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
-                  std::int64_t nrhs, const float* a, std::int64_t lda, const std::int64_t* ipiv, float* b,
-                  std::int64_t ldb, float* scratchpad, std::int64_t scratchpad_size,
+                  std::int64_t nrhs, const double* a, std::int64_t lda, const std::int64_t* ipiv,
+                  double* b, std::int64_t ldb, double* scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
-                  std::int64_t nrhs, const std::complex<double>* a, std::int64_t lda, const std::int64_t* ipiv,
-                  std::complex<double>* b, std::int64_t ldb, std::complex<double>* scratchpad,
-                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
+                  std::int64_t nrhs, const float* a, std::int64_t lda, const std::int64_t* ipiv,
+                  float* b, std::int64_t ldb, float* scratchpad, std::int64_t scratchpad_size,
+                  const std::vector<sycl::event>& dependencies = {});
+sycl::event getrs(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
+                  std::int64_t nrhs, const std::complex<double>* a, std::int64_t lda,
+                  const std::int64_t* ipiv, std::complex<double>* b, std::int64_t ldb,
+                  std::complex<double>* scratchpad, std::int64_t scratchpad_size,
+                  const std::vector<sycl::event>& dependencies = {});
 sycl::event gesvd(sycl::queue& queue, oneapi::mkl::jobsvd jobu, oneapi::mkl::jobsvd jobvt,
                   std::int64_t m, std::int64_t n, double* a, std::int64_t lda, double* s, double* u,
                   std::int64_t ldu, double* vt, std::int64_t ldvt, double* scratchpad,
@@ -606,28 +608,30 @@ sycl::event orgbr(sycl::queue& queue, oneapi::mkl::generate vec, std::int64_t m,
                   std::int64_t k, float* a, std::int64_t lda, const float* tau, float* scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event orgbr(sycl::queue& queue, oneapi::mkl::generate vec, std::int64_t m, std::int64_t n,
-                  std::int64_t k, double* a, std::int64_t lda, const double* tau, double* scratchpad,
-                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
+                  std::int64_t k, double* a, std::int64_t lda, const double* tau,
+                  double* scratchpad, std::int64_t scratchpad_size,
+                  const std::vector<sycl::event>& dependencies = {});
 sycl::event orgqr(sycl::queue& queue, std::int64_t m, std::int64_t n, std::int64_t k, double* a,
-                  std::int64_t lda, const double* tau, double* scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event>& dependencies = {});
+                  std::int64_t lda, const double* tau, double* scratchpad,
+                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event orgqr(sycl::queue& queue, std::int64_t m, std::int64_t n, std::int64_t k, float* a,
-                  std::int64_t lda, const float* tau, float* scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event>& dependencies = {});
+                  std::int64_t lda, const float* tau, float* scratchpad,
+                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event orgtr(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t n, float* a,
-                  std::int64_t lda, const float* tau, float* scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event>& dependencies = {});
+                  std::int64_t lda, const float* tau, float* scratchpad,
+                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event orgtr(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t n, double* a,
-                  std::int64_t lda, const double* tau, double* scratchpad, std::int64_t scratchpad_size,
-                  const std::vector<sycl::event>& dependencies = {});
+                  std::int64_t lda, const double* tau, double* scratchpad,
+                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event ormtr(sycl::queue& queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, const float* a,
                   std::int64_t lda, const float* tau, float* c, std::int64_t ldc, float* scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event ormtr(sycl::queue& queue, oneapi::mkl::side side, oneapi::mkl::uplo uplo,
                   oneapi::mkl::transpose trans, std::int64_t m, std::int64_t n, const double* a,
-                  std::int64_t lda, const double* tau, double* c, std::int64_t ldc, double* scratchpad,
-                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
+                  std::int64_t lda, const double* tau, double* c, std::int64_t ldc,
+                  double* scratchpad, std::int64_t scratchpad_size,
+                  const std::vector<sycl::event>& dependencies = {});
 sycl::event ormrq(sycl::queue& queue, oneapi::mkl::side side, oneapi::mkl::transpose trans,
                   std::int64_t m, std::int64_t n, std::int64_t k, const float* a, std::int64_t lda,
                   const float* tau, float* c, std::int64_t ldc, float* scratchpad,
@@ -672,8 +676,9 @@ sycl::event potrs(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t n, st
                   const float* a, std::int64_t lda, float* b, std::int64_t ldb, float* scratchpad,
                   std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
 sycl::event potrs(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
-                  const double* a, std::int64_t lda, double* b, std::int64_t ldb, double* scratchpad,
-                  std::int64_t scratchpad_size, const std::vector<sycl::event>& dependencies = {});
+                  const double* a, std::int64_t lda, double* b, std::int64_t ldb,
+                  double* scratchpad, std::int64_t scratchpad_size,
+                  const std::vector<sycl::event>& dependencies = {});
 sycl::event potrs(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t n, std::int64_t nrhs,
                   const std::complex<float>* a, std::int64_t lda, std::complex<float>* b,
                   std::int64_t ldb, std::complex<float>* scratchpad, std::int64_t scratchpad_size,
@@ -717,9 +722,9 @@ sycl::event sytrf(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t n,
                   std::complex<double>* scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event>& dependencies = {});
 sycl::event trtrs(sycl::queue& queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
-                  oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, const std::complex<float>* a,
-                  std::int64_t lda, std::complex<float>* b, std::int64_t ldb,
-                  std::complex<float>* scratchpad, std::int64_t scratchpad_size,
+                  oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs,
+                  const std::complex<float>* a, std::int64_t lda, std::complex<float>* b,
+                  std::int64_t ldb, std::complex<float>* scratchpad, std::int64_t scratchpad_size,
                   const std::vector<sycl::event>& dependencies = {});
 sycl::event trtrs(sycl::queue& queue, oneapi::mkl::uplo uplo, oneapi::mkl::transpose trans,
                   oneapi::mkl::diag diag, std::int64_t n, std::int64_t nrhs, const double* a,
@@ -883,34 +888,34 @@ sycl::event getri_batch(sycl::queue& queue, std::int64_t n, std::complex<double>
                         std::complex<double>* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getri_batch(sycl::queue& queue, std::int64_t* n, float** a, std::int64_t* lda,
-                        const std::int64_t* const * ipiv, std::int64_t group_count, std::int64_t* group_sizes,
-                        float* scratchpad, std::int64_t scratchpad_size,
+                        const std::int64_t* const* ipiv, std::int64_t group_count,
+                        std::int64_t* group_sizes, float* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getri_batch(sycl::queue& queue, std::int64_t* n, double** a, std::int64_t* lda,
-                        const std::int64_t* const * ipiv, std::int64_t group_count, std::int64_t* group_sizes,
-                        double* scratchpad, std::int64_t scratchpad_size,
+                        const std::int64_t* const* ipiv, std::int64_t group_count,
+                        std::int64_t* group_sizes, double* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getri_batch(sycl::queue& queue, std::int64_t* n, std::complex<float>** a,
-                        std::int64_t* lda, const std::int64_t* const * ipiv, std::int64_t group_count,
-                        std::int64_t* group_sizes, std::complex<float>* scratchpad,
-                        std::int64_t scratchpad_size,
+                        std::int64_t* lda, const std::int64_t* const* ipiv,
+                        std::int64_t group_count, std::int64_t* group_sizes,
+                        std::complex<float>* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getri_batch(sycl::queue& queue, std::int64_t* n, std::complex<double>** a,
-                        std::int64_t* lda, const std::int64_t* const * ipiv, std::int64_t group_count,
-                        std::int64_t* group_sizes, std::complex<double>* scratchpad,
-                        std::int64_t scratchpad_size,
+                        std::int64_t* lda, const std::int64_t* const* ipiv,
+                        std::int64_t group_count, std::int64_t* group_sizes,
+                        std::complex<double>* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
                         std::int64_t nrhs, const float* a, std::int64_t lda, std::int64_t stride_a,
-                        const std::int64_t* ipiv, std::int64_t stride_ipiv, float* b, std::int64_t ldb,
-                        std::int64_t stride_b, std::int64_t batch_size, float* scratchpad,
-                        std::int64_t scratchpad_size,
+                        const std::int64_t* ipiv, std::int64_t stride_ipiv, float* b,
+                        std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+                        float* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
                         std::int64_t nrhs, const double* a, std::int64_t lda, std::int64_t stride_a,
-                        const std::int64_t* ipiv, std::int64_t stride_ipiv, double* b, std::int64_t ldb,
-                        std::int64_t stride_b, std::int64_t batch_size, double* scratchpad,
-                        std::int64_t scratchpad_size,
+                        const std::int64_t* ipiv, std::int64_t stride_ipiv, double* b,
+                        std::int64_t ldb, std::int64_t stride_b, std::int64_t batch_size,
+                        double* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose trans, std::int64_t n,
                         std::int64_t nrhs, const std::complex<float>* a, std::int64_t lda,
@@ -927,25 +932,27 @@ sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose trans, std::i
                         std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose* trans, std::int64_t* n,
-                        std::int64_t* nrhs, const float* const * a, std::int64_t* lda, const std::int64_t* const * ipiv,
-                        float** b, std::int64_t* ldb, std::int64_t group_count,
-                        std::int64_t* group_sizes, float* scratchpad, std::int64_t scratchpad_size,
+                        std::int64_t* nrhs, const float* const* a, std::int64_t* lda,
+                        const std::int64_t* const* ipiv, float** b, std::int64_t* ldb,
+                        std::int64_t group_count, std::int64_t* group_sizes, float* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose* trans, std::int64_t* n,
-                        std::int64_t* nrhs, const double* const * a, std::int64_t* lda, const std::int64_t* const * ipiv,
-                        double** b, std::int64_t* ldb, std::int64_t group_count,
-                        std::int64_t* group_sizes, double* scratchpad, std::int64_t scratchpad_size,
+                        std::int64_t* nrhs, const double* const* a, std::int64_t* lda,
+                        const std::int64_t* const* ipiv, double** b, std::int64_t* ldb,
+                        std::int64_t group_count, std::int64_t* group_sizes, double* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose* trans, std::int64_t* n,
-                        std::int64_t* nrhs, const std::complex<float>* const * a, std::int64_t* lda,
-                        const std::int64_t* const * ipiv, std::complex<float>** b, std::int64_t* ldb,
+                        std::int64_t* nrhs, const std::complex<float>* const* a, std::int64_t* lda,
+                        const std::int64_t* const* ipiv, std::complex<float>** b, std::int64_t* ldb,
                         std::int64_t group_count, std::int64_t* group_sizes,
                         std::complex<float>* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event getrs_batch(sycl::queue& queue, oneapi::mkl::transpose* trans, std::int64_t* n,
-                        std::int64_t* nrhs, const std::complex<double>* const * a, std::int64_t* lda,
-                        const std::int64_t* const * ipiv, std::complex<double>** b, std::int64_t* ldb,
-                        std::int64_t group_count, std::int64_t* group_sizes,
+                        std::int64_t* nrhs, const std::complex<double>* const* a, std::int64_t* lda,
+                        const std::int64_t* const* ipiv, std::complex<double>** b,
+                        std::int64_t* ldb, std::int64_t group_count, std::int64_t* group_sizes,
                         std::complex<double>* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event orgqr_batch(sycl::queue& queue, std::int64_t m, std::int64_t n, std::int64_t k,
@@ -959,12 +966,14 @@ sycl::event orgqr_batch(sycl::queue& queue, std::int64_t m, std::int64_t n, std:
                         std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event orgqr_batch(sycl::queue& queue, std::int64_t* m, std::int64_t* n, std::int64_t* k,
-                        float** a, std::int64_t* lda, const float* const * tau, std::int64_t group_count,
-                        std::int64_t* group_sizes, float* scratchpad, std::int64_t scratchpad_size,
+                        float** a, std::int64_t* lda, const float* const* tau,
+                        std::int64_t group_count, std::int64_t* group_sizes, float* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event orgqr_batch(sycl::queue& queue, std::int64_t* m, std::int64_t* n, std::int64_t* k,
-                        double** a, std::int64_t* lda, const double* const * tau, std::int64_t group_count,
-                        std::int64_t* group_sizes, double* scratchpad, std::int64_t scratchpad_size,
+                        double** a, std::int64_t* lda, const double* const* tau,
+                        std::int64_t group_count, std::int64_t* group_sizes, double* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event potrf_batch(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t n, float* a,
                         std::int64_t lda, std::int64_t stride_a, std::int64_t batch_size,
@@ -1025,46 +1034,50 @@ sycl::event potrs_batch(sycl::queue& queue, oneapi::mkl::uplo uplo, std::int64_t
                         std::complex<double>* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event potrs_batch(sycl::queue& queue, oneapi::mkl::uplo* uplo, std::int64_t* n,
-                        std::int64_t* nrhs, const float* const * a, std::int64_t* lda, float** b,
+                        std::int64_t* nrhs, const float* const* a, std::int64_t* lda, float** b,
                         std::int64_t* ldb, std::int64_t group_count, std::int64_t* group_sizes,
                         float* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event potrs_batch(sycl::queue& queue, oneapi::mkl::uplo* uplo, std::int64_t* n,
-                        std::int64_t* nrhs, const double* const * a, std::int64_t* lda, double** b,
+                        std::int64_t* nrhs, const double* const* a, std::int64_t* lda, double** b,
                         std::int64_t* ldb, std::int64_t group_count, std::int64_t* group_sizes,
                         double* scratchpad, std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event potrs_batch(sycl::queue& queue, oneapi::mkl::uplo* uplo, std::int64_t* n,
-                        std::int64_t* nrhs, const std::complex<float>* const * a, std::int64_t* lda,
+                        std::int64_t* nrhs, const std::complex<float>* const* a, std::int64_t* lda,
                         std::complex<float>** b, std::int64_t* ldb, std::int64_t group_count,
                         std::int64_t* group_sizes, std::complex<float>* scratchpad,
                         std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event potrs_batch(sycl::queue& queue, oneapi::mkl::uplo* uplo, std::int64_t* n,
-                        std::int64_t* nrhs, const std::complex<double>* const * a, std::int64_t* lda,
+                        std::int64_t* nrhs, const std::complex<double>* const* a, std::int64_t* lda,
                         std::complex<double>** b, std::int64_t* ldb, std::int64_t group_count,
                         std::int64_t* group_sizes, std::complex<double>* scratchpad,
                         std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event ungqr_batch(sycl::queue& queue, std::int64_t m, std::int64_t n, std::int64_t k,
                         std::complex<float>* a, std::int64_t lda, std::int64_t stride_a,
-                        const std::complex<float>* tau, std::int64_t stride_tau, std::int64_t batch_size,
-                        std::complex<float>* scratchpad, std::int64_t scratchpad_size,
+                        const std::complex<float>* tau, std::int64_t stride_tau,
+                        std::int64_t batch_size, std::complex<float>* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event ungqr_batch(sycl::queue& queue, std::int64_t m, std::int64_t n, std::int64_t k,
                         std::complex<double>* a, std::int64_t lda, std::int64_t stride_a,
-                        const std::complex<double>* tau, std::int64_t stride_tau, std::int64_t batch_size,
-                        std::complex<double>* scratchpad, std::int64_t scratchpad_size,
+                        const std::complex<double>* tau, std::int64_t stride_tau,
+                        std::int64_t batch_size, std::complex<double>* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event ungqr_batch(sycl::queue& queue, std::int64_t* m, std::int64_t* n, std::int64_t* k,
-                        std::complex<float>** a, std::int64_t* lda, const std::complex<float>* const * tau,
-                        std::int64_t group_count, std::int64_t* group_sizes,
-                        std::complex<float>* scratchpad, std::int64_t scratchpad_size,
+                        std::complex<float>** a, std::int64_t* lda,
+                        const std::complex<float>* const* tau, std::int64_t group_count,
+                        std::int64_t* group_sizes, std::complex<float>* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 sycl::event ungqr_batch(sycl::queue& queue, std::int64_t* m, std::int64_t* n, std::int64_t* k,
-                        std::complex<double>** a, std::int64_t* lda, const std::complex<double>* const * tau,
-                        std::int64_t group_count, std::int64_t* group_sizes,
-                        std::complex<double>* scratchpad, std::int64_t scratchpad_size,
+                        std::complex<double>** a, std::int64_t* lda,
+                        const std::complex<double>* const* tau, std::int64_t group_count,
+                        std::int64_t* group_sizes, std::complex<double>* scratchpad,
+                        std::int64_t scratchpad_size,
                         const std::vector<sycl::event>& dependencies = {});
 
 template <typename fp_type, internal::is_floating_point<fp_type> = nullptr>
