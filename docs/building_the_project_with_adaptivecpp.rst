@@ -16,7 +16,7 @@ Environment Setup
 
 #. 
    Clone this project. The root directory of the cloned repository will be
-   referred to as ``<path to onemkl>``.
+   referred to as ``<path to onemath>``.
 
 #. 
    Download and install the `required dependencies
@@ -33,7 +33,7 @@ On Linux (other OSes are not supported with the AdaptiveCpp compiler):
 
 .. code-block:: bash
 
-  # Inside <path to onemkl>
+  # Inside <path to onemath>
   mkdir build && cd build
   cmake .. -DONEMATH_SYCL_IMPLEMENTATION=hipsycl   \ # Indicate that AdaptiveCpp is being used.
           -DENABLE_MKLGPU_BACKEND=False            \ # MKLGPU backend is not supported by AdaptiveCpp

@@ -437,20 +437,20 @@ Note that this is not a tested configuration. This builds oneMath with the
 portBLAS backend only, for a generic SYCL device supported by the Open DPC++
 project.
 
-Build oneMKL for the DFT domain on a generic SYCL device:
+Build oneMath for the DFT domain on a generic SYCL device:
 
 .. code-block:: bash
 
-  cmake $ONEMKL_DIR \
+  cmake $ONEMATH_DIR \
       -DCMAKE_CXX_COMPILER=clang++ \
       -DCMAKE_C_COMPILER=clang \
       -DENABLE_MKLCPU_BACKEND=False \
       -DENABLE_MKLGPU_BACKEND=False \
       -DENABLE_PORTFFT_BACKEND=True
 
-Note that this is not a tested configuration. This builds oneMKL Interfaces
-with the portFFT backend only, for a generic SYCL device supported by the
-Open DPC++ project.
+Note that this is not a tested configuration. This builds oneMath with the
+portFFT backend only, for a generic SYCL device supported by the Open DPC++
+project.
 
 .. _project_cleanup:
 

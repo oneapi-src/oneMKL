@@ -477,7 +477,7 @@ Device name is: Intel(R) UHD Graphics 750
 Running with single precision real data type:
 DFT example run_time dispatch
 Unsupported Configuration:
-	oneMKL: dft/backends/portfft/commit: function is not implemented portFFT only supports complex to complex transforms
+	oneMath: dft/backends/portfft/commit: function is not implemented REAL domain is unsupported
 ```
 
 ## sparse_blas
