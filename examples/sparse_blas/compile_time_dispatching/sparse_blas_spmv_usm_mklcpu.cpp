@@ -20,7 +20,7 @@
 /*
 *
 *  Content:
-*       This example demonstrates use of DPCPP API oneapi::mkl::sparse::spmv
+*       This example demonstrates use of DPCPP API oneapi::math::sparse::spmv
 *       using unified shared memory to perform general sparse matrix-vector
 *       multiplication on a INTEL CPU SYCL device.
 *
@@ -28,7 +28,7 @@
 *
 *       where op() is defined by one of
 *
-*           oneapi::mkl::transpose::{nontrans,trans,conjtrans}
+*           oneapi::math::transpose::{nontrans,trans,conjtrans}
 *
 *
 *       This example demonstrates only single precision (float) data type for
@@ -46,7 +46,7 @@
 #else
 #include <CL/sycl.hpp>
 #endif
-#include "oneapi/mkl.hpp"
+#include "oneapi/math.hpp"
 
 #include "example_helper.hpp"
 
@@ -85,7 +85,7 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device& cpu_dev) {
 
     // create execution queue and buffers of matrix data
     sycl::queue cpu_queue(cpu_dev, exception_handler);
-    oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector{ cpu_queue };
+    oneapi::math::backend_selector<oneapi::math::backend::mklcpu> cpu_selector{ cpu_queue };
 
     intType *ia, *ja;
     fp *a, *x, *y, *z;
@@ -127,59 +127,59 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device& cpu_dev) {
     // Execute Matrix Multiply
     //
 
-    oneapi::mkl::transpose transA = oneapi::mkl::transpose::nontrans;
-    oneapi::mkl::sparse::spmv_alg alg = oneapi::mkl::sparse::spmv_alg::default_alg;
-    oneapi::mkl::sparse::matrix_view A_view;
+    oneapi::math::transpose transA = oneapi::math::transpose::nontrans;
+    oneapi::math::sparse::spmv_alg alg = oneapi::math::sparse::spmv_alg::default_alg;
+    oneapi::math::sparse::matrix_view A_view;
 
     std::cout << "\n\t\tsparse::spmv parameters:\n";
     std::cout << "\t\t\ttransA = "
-              << (transA == oneapi::mkl::transpose::nontrans
+              << (transA == oneapi::math::transpose::nontrans
                       ? "nontrans"
-                      : (transA == oneapi::mkl::transpose::trans ? "trans" : "conjtrans"))
+                      : (transA == oneapi::math::transpose::trans ? "trans" : "conjtrans"))
               << std::endl;
     std::cout << "\t\t\tnrows = " << nrows << std::endl;
     std::cout << "\t\t\talpha = " << alpha << ", beta = " << beta << std::endl;
 
     // Create and initialize handle for a Sparse Matrix in CSR format
-    oneapi::mkl::sparse::matrix_handle_t A_handle = nullptr;
-    oneapi::mkl::sparse::init_csr_matrix(cpu_selector, &A_handle, nrows, nrows, nnz,
-                                         oneapi::mkl::index_base::zero, ia, ja, a);
+    oneapi::math::sparse::matrix_handle_t A_handle = nullptr;
+    oneapi::math::sparse::init_csr_matrix(cpu_selector, &A_handle, nrows, nrows, nnz,
+                                          oneapi::math::index_base::zero, ia, ja, a);
 
     // Create and initialize dense vector handles
-    oneapi::mkl::sparse::dense_vector_handle_t x_handle = nullptr;
-    oneapi::mkl::sparse::dense_vector_handle_t y_handle = nullptr;
-    oneapi::mkl::sparse::init_dense_vector(cpu_selector, &x_handle, sizevec, x);
-    oneapi::mkl::sparse::init_dense_vector(cpu_selector, &y_handle, sizevec, y);
+    oneapi::math::sparse::dense_vector_handle_t x_handle = nullptr;
+    oneapi::math::sparse::dense_vector_handle_t y_handle = nullptr;
+    oneapi::math::sparse::init_dense_vector(cpu_selector, &x_handle, sizevec, x);
+    oneapi::math::sparse::init_dense_vector(cpu_selector, &y_handle, sizevec, y);
 
     // Create operation descriptor
-    oneapi::mkl::sparse::spmv_descr_t descr = nullptr;
-    oneapi::mkl::sparse::init_spmv_descr(cpu_selector, &descr);
+    oneapi::math::sparse::spmv_descr_t descr = nullptr;
+    oneapi::math::sparse::init_spmv_descr(cpu_selector, &descr);
 
     // Allocate external workspace
     std::size_t workspace_size = 0;
-    oneapi::mkl::sparse::spmv_buffer_size(cpu_selector, transA, &alpha, A_view, A_handle, x_handle,
-                                          &beta, y_handle, alg, descr, workspace_size);
+    oneapi::math::sparse::spmv_buffer_size(cpu_selector, transA, &alpha, A_view, A_handle, x_handle,
+                                           &beta, y_handle, alg, descr, workspace_size);
     void* workspace = sycl::malloc_device(workspace_size, cpu_queue);
 
     // Optimize spmv
     auto ev_opt =
-        oneapi::mkl::sparse::spmv_optimize(cpu_selector, transA, &alpha, A_view, A_handle, x_handle,
-                                           &beta, y_handle, alg, descr, workspace);
+        oneapi::math::sparse::spmv_optimize(cpu_selector, transA, &alpha, A_view, A_handle,
+                                            x_handle, &beta, y_handle, alg, descr, workspace);
 
     // Run spmv
-    auto ev_spmv = oneapi::mkl::sparse::spmv(cpu_selector, transA, &alpha, A_view, A_handle,
-                                             x_handle, &beta, y_handle, alg, descr, { ev_opt });
+    auto ev_spmv = oneapi::math::sparse::spmv(cpu_selector, transA, &alpha, A_view, A_handle,
+                                              x_handle, &beta, y_handle, alg, descr, { ev_opt });
 
     // Release handles and descriptor
     std::vector<sycl::event> release_events;
     release_events.push_back(
-        oneapi::mkl::sparse::release_dense_vector(cpu_selector, x_handle, { ev_spmv }));
+        oneapi::math::sparse::release_dense_vector(cpu_selector, x_handle, { ev_spmv }));
     release_events.push_back(
-        oneapi::mkl::sparse::release_dense_vector(cpu_selector, y_handle, { ev_spmv }));
+        oneapi::math::sparse::release_dense_vector(cpu_selector, y_handle, { ev_spmv }));
     release_events.push_back(
-        oneapi::mkl::sparse::release_sparse_matrix(cpu_selector, A_handle, { ev_spmv }));
+        oneapi::math::sparse::release_sparse_matrix(cpu_selector, A_handle, { ev_spmv }));
     release_events.push_back(
-        oneapi::mkl::sparse::release_spmv_descr(cpu_selector, descr, { ev_spmv }));
+        oneapi::math::sparse::release_spmv_descr(cpu_selector, descr, { ev_spmv }));
     for (auto event : release_events) {
         event.wait_and_throw();
     }
@@ -189,7 +189,7 @@ int run_sparse_matrix_vector_multiply_example(const sycl::device& cpu_dev) {
     //
 
     fp* res = y;
-    const bool isConj = (transA == oneapi::mkl::transpose::conjtrans);
+    const bool isConj = (transA == oneapi::math::transpose::conjtrans);
     for (intType row = 0; row < nrows; row++) {
         z[row] *= beta;
     }

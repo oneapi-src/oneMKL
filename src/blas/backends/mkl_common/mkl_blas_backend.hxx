@@ -1375,22 +1375,22 @@ sycl::event rotmg(sycl::queue& queue, double* d1, double* d2, double* x1,
                   value_or_pointer<double> y1, double* param,
                   const std::vector<sycl::event>& dependencies = {});
 
-#define ONEMKL_DECLARE_SCAL(T, Ts)                                                         \
+#define ONEMATH_DECLARE_SCAL(T, Ts)                                                        \
     sycl::event scal(sycl::queue& queue, std::int64_t n, value_or_pointer<Ts> alpha, T* x, \
                      std::int64_t incx, const std::vector<sycl::event>& dependencies = {});
 
-ONEMKL_DECLARE_SCAL(float, float)
-ONEMKL_DECLARE_SCAL(double, double)
-ONEMKL_DECLARE_SCAL(std::complex<float>, std::complex<float>)
-ONEMKL_DECLARE_SCAL(std::complex<double>, std::complex<double>)
-ONEMKL_DECLARE_SCAL(std::complex<float>, float)
-ONEMKL_DECLARE_SCAL(std::complex<double>, double)
+ONEMATH_DECLARE_SCAL(float, float)
+ONEMATH_DECLARE_SCAL(double, double)
+ONEMATH_DECLARE_SCAL(std::complex<float>, std::complex<float>)
+ONEMATH_DECLARE_SCAL(std::complex<double>, std::complex<double>)
+ONEMATH_DECLARE_SCAL(std::complex<float>, float)
+ONEMATH_DECLARE_SCAL(std::complex<double>, double)
 sycl::event scal(sycl::queue& queue, std::int64_t n, float alpha, std::complex<float>* x,
                  std::int64_t incx, const std::vector<sycl::event>& dependencies = {});
 sycl::event scal(sycl::queue& queue, std::int64_t n, double alpha, std::complex<double>* x,
                  std::int64_t incx, const std::vector<sycl::event>& dependencies = {});
 
-#undef ONEMKL_DECLARE_SCAL
+#undef ONEMATH_DECLARE_SCAL
 
 sycl::event swap(sycl::queue& queue, std::int64_t n, float* x, std::int64_t incx, float* y,
                  std::int64_t incy, const std::vector<sycl::event>& dependencies = {});

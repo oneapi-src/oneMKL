@@ -29,18 +29,18 @@ namespace {
 
 template <typename fpType, typename intType>
 int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, double density_A_matrix,
-              oneapi::mkl::index_base index, oneapi::mkl::transpose transpose_val, fpType alpha,
-              oneapi::mkl::sparse::spsv_alg alg, oneapi::mkl::sparse::matrix_view A_view,
-              const std::set<oneapi::mkl::sparse::matrix_property>& matrix_properties,
+              oneapi::math::index_base index, oneapi::math::transpose transpose_val, fpType alpha,
+              oneapi::math::sparse::spsv_alg alg, oneapi::math::sparse::matrix_view A_view,
+              const std::set<oneapi::math::sparse::matrix_property>& matrix_properties,
               bool reset_data, bool test_scalar_on_device) {
     sycl::queue main_queue(*dev, exception_handler_t());
 
-    intType indexing = (index == oneapi::mkl::index_base::zero) ? 0 : 1;
+    intType indexing = (index == oneapi::math::index_base::zero) ? 0 : 1;
     const std::size_t mu = static_cast<std::size_t>(m);
-    const bool is_sorted = matrix_properties.find(oneapi::mkl::sparse::matrix_property::sorted) !=
+    const bool is_sorted = matrix_properties.find(oneapi::math::sparse::matrix_property::sorted) !=
                            matrix_properties.cend();
     const bool is_symmetric =
-        matrix_properties.find(oneapi::mkl::sparse::matrix_property::symmetric) !=
+        matrix_properties.find(oneapi::math::sparse::matrix_property::symmetric) !=
         matrix_properties.cend();
 
     // Input matrix
@@ -48,8 +48,8 @@ int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, doubl
     std::vector<fpType> a_host;
     // Set non-zero values to the diagonal, except if the matrix is viewed as a unit matrix.
     const bool require_diagonal =
-        !(A_view.type_view == oneapi::mkl::sparse::matrix_descr::diagonal &&
-          A_view.diag_view == oneapi::mkl::diag::unit);
+        !(A_view.type_view == oneapi::math::sparse::matrix_descr::diagonal &&
+          A_view.diag_view == oneapi::math::diag::unit);
     intType nnz =
         generate_random_matrix<fpType, intType>(format, m, m, density_A_matrix, indexing, ia_host,
                                                 ja_host, a_host, is_symmetric, require_diagonal);
@@ -105,34 +105,35 @@ int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, doubl
     }
 
     sycl::event ev_copy, ev_spsv;
-    oneapi::mkl::sparse::matrix_handle_t A_handle = nullptr;
-    oneapi::mkl::sparse::dense_vector_handle_t x_handle = nullptr;
-    oneapi::mkl::sparse::dense_vector_handle_t y_handle = nullptr;
-    oneapi::mkl::sparse::spsv_descr_t descr = nullptr;
+    oneapi::math::sparse::matrix_handle_t A_handle = nullptr;
+    oneapi::math::sparse::dense_vector_handle_t x_handle = nullptr;
+    oneapi::math::sparse::dense_vector_handle_t y_handle = nullptr;
+    oneapi::math::sparse::spsv_descr_t descr = nullptr;
     std::unique_ptr<std::uint8_t, UsmDeleter> workspace_usm(nullptr, UsmDeleter(main_queue));
     try {
         init_sparse_matrix(main_queue, format, &A_handle, m, m, nnz, index, ia_usm, ja_usm, a_usm);
         for (auto property : matrix_properties) {
-            CALL_RT_OR_CT(oneapi::mkl::sparse::set_matrix_property, main_queue, A_handle, property);
+            CALL_RT_OR_CT(oneapi::math::sparse::set_matrix_property, main_queue, A_handle,
+                          property);
         }
-        CALL_RT_OR_CT(oneapi::mkl::sparse::init_dense_vector, main_queue, &x_handle, m, x_usm);
-        CALL_RT_OR_CT(oneapi::mkl::sparse::init_dense_vector, main_queue, &y_handle, m, y_usm);
+        CALL_RT_OR_CT(oneapi::math::sparse::init_dense_vector, main_queue, &x_handle, m, x_usm);
+        CALL_RT_OR_CT(oneapi::math::sparse::init_dense_vector, main_queue, &y_handle, m, y_usm);
 
-        CALL_RT_OR_CT(oneapi::mkl::sparse::init_spsv_descr, main_queue, &descr);
+        CALL_RT_OR_CT(oneapi::math::sparse::init_spsv_descr, main_queue, &descr);
 
         std::size_t workspace_size = 0;
-        CALL_RT_OR_CT(oneapi::mkl::sparse::spsv_buffer_size, main_queue, transpose_val,
+        CALL_RT_OR_CT(oneapi::math::sparse::spsv_buffer_size, main_queue, transpose_val,
                       alpha_host_or_usm_ptr, A_view, A_handle, x_handle, y_handle, alg, descr,
                       workspace_size);
         workspace_usm = malloc_device_uptr<std::uint8_t>(main_queue, workspace_size);
 
         sycl::event ev_opt;
-        CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::spsv_optimize, main_queue, transpose_val,
+        CALL_RT_OR_CT(ev_opt = oneapi::math::sparse::spsv_optimize, main_queue, transpose_val,
                       alpha_host_or_usm_ptr, A_view, A_handle, x_handle, y_handle, alg, descr,
                       workspace_usm.get(), mat_dependencies);
 
         spsv_dependencies.push_back(ev_opt);
-        CALL_RT_OR_CT(ev_spsv = oneapi::mkl::sparse::spsv, main_queue, transpose_val,
+        CALL_RT_OR_CT(ev_spsv = oneapi::math::sparse::spsv, main_queue, transpose_val,
                       alpha_host_or_usm_ptr, A_view, A_handle, x_handle, y_handle, alg, descr,
                       spsv_dependencies);
 
@@ -168,18 +169,18 @@ int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, doubl
             set_matrix_data(main_queue, format, A_handle, m, m, nnz, index, ia_usm, ja_usm, a_usm);
 
             std::size_t workspace_size_2 = 0;
-            CALL_RT_OR_CT(oneapi::mkl::sparse::spsv_buffer_size, main_queue, transpose_val,
+            CALL_RT_OR_CT(oneapi::math::sparse::spsv_buffer_size, main_queue, transpose_val,
                           alpha_host_or_usm_ptr, A_view, A_handle, x_handle, y_handle, alg, descr,
                           workspace_size_2);
             if (workspace_size_2 > workspace_size) {
                 workspace_usm = malloc_device_uptr<std::uint8_t>(main_queue, workspace_size_2);
             }
 
-            CALL_RT_OR_CT(ev_opt = oneapi::mkl::sparse::spsv_optimize, main_queue, transpose_val,
+            CALL_RT_OR_CT(ev_opt = oneapi::math::sparse::spsv_optimize, main_queue, transpose_val,
                           alpha_host_or_usm_ptr, A_view, A_handle, x_handle, y_handle, alg, descr,
                           workspace_usm.get(), mat_dependencies);
 
-            CALL_RT_OR_CT(ev_spsv = oneapi::mkl::sparse::spsv, main_queue, transpose_val,
+            CALL_RT_OR_CT(ev_spsv = oneapi::math::sparse::spsv, main_queue, transpose_val,
                           alpha_host_or_usm_ptr, A_view, A_handle, x_handle, y_handle, alg, descr,
                           { ev_opt });
         }
@@ -192,11 +193,11 @@ int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, doubl
         print_error_code(e);
         return 0;
     }
-    catch (const oneapi::mkl::unimplemented& e) {
+    catch (const oneapi::math::unimplemented& e) {
         wait_and_free_handles(main_queue, A_handle, x_handle, y_handle);
         if (descr) {
             sycl::event ev_release_descr;
-            CALL_RT_OR_CT(ev_release_descr = oneapi::mkl::sparse::release_spsv_descr, main_queue,
+            CALL_RT_OR_CT(ev_release_descr = oneapi::math::sparse::release_spsv_descr, main_queue,
                           descr);
             ev_release_descr.wait();
         }
@@ -207,7 +208,7 @@ int test_spsv(sycl::device* dev, sparse_matrix_format_t format, intType m, doubl
         return 0;
     }
     sycl::event ev_release_descr;
-    CALL_RT_OR_CT(ev_release_descr = oneapi::mkl::sparse::release_spsv_descr, main_queue, descr,
+    CALL_RT_OR_CT(ev_release_descr = oneapi::math::sparse::release_spsv_descr, main_queue, descr,
                   { ev_spsv });
     ev_release_descr.wait_and_throw();
     free_handles(main_queue, { ev_spsv }, A_handle, x_handle, y_handle);
@@ -230,9 +231,9 @@ TEST_P(SparseSpsvUsmTests, RealSinglePrecision) {
     using fpType = float;
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+                        oneapi::math::transpose::nontrans, num_passed, num_skipped);
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
+                        oneapi::math::transpose::trans, num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
@@ -245,9 +246,9 @@ TEST_P(SparseSpsvUsmTests, RealDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(GetParam());
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+                        oneapi::math::transpose::nontrans, num_passed, num_skipped);
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
+                        oneapi::math::transpose::trans, num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
@@ -259,11 +260,11 @@ TEST_P(SparseSpsvUsmTests, ComplexSinglePrecision) {
     using fpType = std::complex<float>;
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+                        oneapi::math::transpose::nontrans, num_passed, num_skipped);
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
+                        oneapi::math::transpose::trans, num_passed, num_skipped);
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::conjtrans, num_passed, num_skipped);
+                        oneapi::math::transpose::conjtrans, num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped
@@ -276,11 +277,11 @@ TEST_P(SparseSpsvUsmTests, ComplexDoublePrecision) {
     CHECK_DOUBLE_ON_DEVICE(GetParam());
     int num_passed = 0, num_skipped = 0;
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::nontrans, num_passed, num_skipped);
+                        oneapi::math::transpose::nontrans, num_passed, num_skipped);
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::trans, num_passed, num_skipped);
+                        oneapi::math::transpose::trans, num_passed, num_skipped);
     test_helper<fpType>(test_spsv<fpType, int32_t>, test_spsv<fpType, std::int64_t>, GetParam(),
-                        oneapi::mkl::transpose::conjtrans, num_passed, num_skipped);
+                        oneapi::math::transpose::conjtrans, num_passed, num_skipped);
     if (num_skipped > 0) {
         // Mark that some tests were skipped
         GTEST_SKIP() << "Passed: " << num_passed << ", Skipped: " << num_skipped

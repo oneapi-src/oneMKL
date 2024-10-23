@@ -21,11 +21,15 @@
 
 #include <complex>
 
-#include "mkl_version.h"
-#include "oneapi/mkl/types.hpp"
+// Intel(R) oneMKL headers
+#include <mkl_version.h>
+#include <oneapi/mkl/blas.hpp>
+
+#include "common_onemkl_conversion.hpp"
+#include "oneapi/math/types.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 
 template <typename T>
 class value_or_pointer {
@@ -80,5 +84,5 @@ namespace row_major {
 }
 
 } // namespace blas
-} // namespace mkl
+} // namespace math
 } // namespace oneapi

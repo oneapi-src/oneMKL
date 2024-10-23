@@ -23,13 +23,16 @@
 #include <CL/sycl.hpp>
 #endif
 
-#include "oneapi/mkl/types.hpp"
-#include "oneapi/mkl/lapack/types.hpp"
-#include "oneapi/mkl/lapack/detail/mklcpu/onemkl_lapack_mklcpu.hpp"
+// Intel(R) oneMKL header
+#include <oneapi/mkl/lapack.hpp>
+
+#include "oneapi/math/types.hpp"
+#include "oneapi/math/lapack/types.hpp"
+#include "oneapi/math/lapack/detail/mklcpu/onemath_lapack_mklcpu.hpp"
 #include "../mkl_common/mkl_lapack_backend.hpp"
 
 namespace oneapi {
-namespace mkl {
+namespace math {
 namespace lapack {
 namespace mklcpu {
 
@@ -37,5 +40,5 @@ namespace mklcpu {
 
 } // namespace mklcpu
 } // namespace lapack
-} // namespace mkl
+} // namespace math
 } // namespace oneapi
