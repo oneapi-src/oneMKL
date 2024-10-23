@@ -93,7 +93,7 @@ void spmv_buffer_size(sycl::queue& queue, oneapi::math::transpose opA, const voi
                       oneapi::math::sparse::spmv_alg /*alg*/,
                       oneapi::math::sparse::spmv_descr_t spmv_descr,
                       std::size_t& temp_buffer_size) {
-    // TODO: Add support for external workspace once the close-source oneMath backend supports it.
+    // TODO: Add support for external workspace once the Intel(R) oneMKL backends support it.
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     check_valid_spmv(__func__, opA, A_view, A_handle, x_handle, y_handle, is_alpha_host_accessible,

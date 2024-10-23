@@ -104,7 +104,7 @@ void spmm_buffer_size(sycl::queue& queue, oneapi::math::transpose opA,
                       oneapi::math::sparse::spmm_alg /*alg*/,
                       oneapi::math::sparse::spmm_descr_t spmm_descr,
                       std::size_t& temp_buffer_size) {
-    // TODO: Add support for external workspace once the close-source oneMath backend supports it.
+    // TODO: Add support for external workspace once the Intel(R) oneMKL backends support it.
     bool is_alpha_host_accessible = detail::is_ptr_accessible_on_host(queue, alpha);
     bool is_beta_host_accessible = detail::is_ptr_accessible_on_host(queue, beta);
     check_valid_spmm(__func__, opA, A_view, A_handle, B_handle, C_handle, is_alpha_host_accessible,
@@ -155,7 +155,7 @@ void spmm_optimize(sycl::queue& queue, oneapi::math::transpose opA, oneapi::math
         return;
     }
     internal_A_handle->can_be_reset = false;
-    // TODO: Add support for spmm_optimize once the close-source oneMath backend supports it.
+    // TODO: Add support for spmm_optimize once the Intel(R) oneMKL backends support it.
 }
 
 sycl::event spmm_optimize(sycl::queue& queue, oneapi::math::transpose opA,
@@ -177,7 +177,7 @@ sycl::event spmm_optimize(sycl::queue& queue, oneapi::math::transpose opA,
         return detail::collapse_dependencies(queue, dependencies);
     }
     internal_A_handle->can_be_reset = false;
-    // TODO: Add support for spmm_optimize once the close-source oneMath backend supports it.
+    // TODO: Add support for spmm_optimize once the Intel(R) oneMKL backends support it.
     return detail::collapse_dependencies(queue, dependencies);
 }
 
